@@ -6,25 +6,198 @@
 \begin{document}
 
 \begin{center}
-\title{ \bf Granular Materials }
-\author{ Pawel Gniewek }
-\maketitle
-
-\newpage
+%\title{ \bf Granular Materials }
+%\author{ Pawel Gniewek }
+%\maketitle
+\textsc{\Large Granular Materials}\\[1.0cm]
+\textsc{\LARGE Pawel Gniewek}\\[1.0cm]
 \vspace{0.5cm}
 \today
+
+\newpage
 \tableofcontents
 \end{center}
 
 \newpage
 
+\section{Ideas}
+\subsection{Simulations based on Scherck's papers}
+\begin{enumerate}
+ \item Simulate growing balls with some sort of repulsion: $V = \frac{K}{2}(r-\sigma)^{\alpha}$, where $\alpha=2.5$ is a Hertzian interaction.
+ The reasoning behind $\alpha >2.0$ is that when two balls collide and deform one another, 
+ the  interface between them, grows faster then the distance separating then gets smaller.
+ \item $\alpha=2,\frac{5}{2},0$ - harmonic, Hertzian(in 3D), and hard-spehre repulsion.
+ \item Simulate the box with a periodic boundary conditions. However if you want to introduce walls into your box
+ do it by the interactions with mirror images (in the respect of the position of the imaginary wall). Be carefull
+ around simulating the hole where balls can escape. 
+ \item Seed the box with balls' seeds, and then grow them to the desired density.
+ Monitor energy of the system. Calculate forces, and then if available relax the system: grow at the beginning and bisecting 
+ \item Use different size balls, let's say the radius ration $r_1/r_2 \approx 1.4$
+ \item What is boson peak ?
+ 
+\end{enumerate}
+
 \section{Papers}
 \subsection{Jamming is not just cool any more\cite{nagel:98}}
-ABCD
- 
-\section{Ideas}
+\begin{enumerate}
+ \item Jammed things: traffic, grainsand, powder raw material.
+ \item vibrations from the pounding can reinitiate flow.
+ \item When jammed, the disordered system is caught in a small region of phase space with no possibility to escape
+ \item Jammed systems are fundamentally different. If the applied stress changes the structure by even a little, the whole jam breaks up. 
+ \item One example of a system that is jammed and yet not fragile is foam.
+ \item supercooled water, which freezes into glassy state can also be considered as jammed system - sampling noneq. limited space.
+ \item Jamming can occure when density is high enough. 
+ \item One then can unjam the system by rising the temperature(like in the case of supercooled water), or by applying stress. 
+ \item ``Temperature`` - any kind of vibration (mechanical or thermal).
+ \item Glass may have a lower glass transition temperature under high shear stress. 
+ Likewise, a jammed granular material or foam may have a lower yield stress when random motions (that is, thermal fluctuations) are present.
+ \item Conceptual framework from which to investigate the jamming transition, 
+ suggesting a possible analogy between temperature and shear stress, the letter being considered alike a thermodynamic parameter.
+ \item Examples of three axes:
+ \begin{itemize}
+  \item A liquid with low viscosity solidifies into a glass when temperature is lowered.
+  \item Flowing foam becomes rigid when the applied stress is lowered.
+  \item Colloidal suspension loses the ability to flow when the density is increased. 
+ \end{itemize}
 
-\section{Granular Materials Labs}
+\end{enumerate}
+
+\subsection{Highly evolved grains \cite{ohern:13}}
+\begin{enumerate}
+ \item They are far-from-equilibrium systems, as they are too large to experience thermal fluctuations and thus must be externally driven to induce particle motion.
+ \item Packings of grains with wishbone shapes stiffen following a concave-up stress-strain curve, 
+ and possess failure stresses that are more than a factor of three larger than those for spherical grains.
+ \item Other relevant properties: density, shear modulus.Can be optimized as a function of interparticle forces, and packing protocol.
+ \item Long-standing open task: identifying the most dilute jammed packings of spherical particles.
+\end{enumerate}
+
+\subsection{Repulsive Contact Interactions Make Jammed Particulate Systems Inherently Nonharmonic\cite{schreck:11}}
+\begin{enumerate}
+ \item When isostatic(in which the number of contacts is the minimum required for mechanical stability) systems lose even a single contact, they become fluidized.
+ \item One-side repulsive potential make isostatic jammed system nonharmonic even in the limit of vanishing perturbation.
+ \item Isostatic jammed system becomes nonharmonic when even single conact is borke. It occurs above the amplitude $\delta_c$, which average over all exctiation modes $\left<\delta_c\right>$ tends to zero with the number of particles
+ \item Interactions potential: $V(r_{ij}) = \frac{\epsilon}{2} \left( 1 - \frac{r_{ij}}{\sigma_{ij}} \right)^2 \Theta\left( 1 - \frac{r_{ij}}{\sigma_{ij}} \right)$, where: $\sigma_{ij} = (\sigma_i + \sigma_j)/2$
+ \item The MS(mechanically stable) packings were generated using the compression and energy minimization protocol.
+ \item In nonharmonic regime the density of vibrational modes cannot be described using the dynamical matrix ($U_{x,y} = \partial^2 V / \partial x\partial y$)
+\end{enumerate}
+
+\subsection{Recent results on the jamming phase diagram \cite{con:10}}
+\begin{enumerate}
+ \item Soft, frictionless spheres, and jamming defined as a divergence in relaxation time.
+ \item At zero temperature and zero shear stress (on the voluem fraction axis i.e. no particle motions), jamming is identified as appearance of mechanical strenght.
+ \item The system accuaries mechanical strenth at J-point.
+ \item Jamming transition at J-point has mixed first-order-second-order behaviour:
+ coexistence of quantities varying continuously at the transition, such as the pressure or the shear modulus, 
+ and of quantities changing discontinuously, such as the mean contact number per particle. 
+ \item Jamming surface may be also considered as a surface of constant $\tau_g$, where $\tau_g$ is the longest available
+ relaxation time to an experiment or simulation - but there is a debate on the shape at $\tau=\infty$.
+ \item Some theoretical work suggest that true jamming for soft spheres system can occur only at T=0 (relaxation time diverge only at T=0).
+ \item Fluc's in athermal system occur only when system is flowing. When system is jammed no fluc's can ever occur. This is in contrast with the
+thermal case, in which fluctuations always occur, even if large fluctuations able to unjam the system may be so rare that they are not observed within any reasonable observation time.
+ \item Jamming may occur not at the specific singular poing $\phi$, but in the range $\phi=0.636-0.646$. The reason is that jammed system is
+ out-of-equilibrium so the behaviour may depend on the procedure. Thus jamming may occur in narrow, but still segmend of $\phi$.
+ \item At $\phi=0.646$ which can be obtained by slow 'equilibrium' compression, because at thaat density pressure diverge.
+\end{enumerate}
+
+\subsection{Jamming by shear\cite{bi:11}}
+\begin{enumerate}
+ \item A jammed system can resist small stresses without deforming irreversibly.
+ \item Jamming of frictional, disk-shaped grains can be induced by the application of shear 
+ stress at densities lower than the critical value, at which isotropic (shear-free) jamming occurs.
+ \item These jammed states are fragile when applied small shear strees - forces net percolate only in one direction.
+ \item When applied certain minimum  shear stress forces netwrok percolates in all directions and system becomes jammed -this transition is controlled 
+ by the fracion of force bearing particles which is independent on the density.
+ \item On $\phi$ axis in generalized Liu-Nagel diagram there exist two values $\phi_J$ and $\phi_S$. The former is the value at which isotropic jamming occur,
+ and below the latter no shear-jammin can occur. In between shear-jamming can occur. 
+ \item The value of $\phi_J$ depends on the protocol of jammed system preparation. 
+ \item Friction only slightly change the $\phi_J$, however it change number of contacts at jamming, more strongly than expected.
+ \item Fragile states - they have a strong force network that carries the majority of the shear stress (deviatoric stress) 
+ but which spans the system only in the compressive direction. 
+ \item Sshear jammed states - are characterized by two non-parallel populations of force chains.
+ \item The fraction of non-rattler grains ($f_{NR}$) controls the percolation of the force networks and emerges as the single parameter distinguishing between unjammed, fragile and shear-jammed states.
+ \item Starting from an unjammed state, the strong force network undergoes two sequential percolation transitions controlled by the non-rattler fraction, $f_{NR}$
+ \item Contact anisotropy(or stress anisotropy) acts as an order parameter. For values $\psi_J \gg \psi $it does not depend on $\psi$ but if goes to zero at $\psi_J$,
+ thus at $\psi=\psi_J$ jammed states become isotropic.
+\end{enumerate}
+
+
+\subsection{The Jamming Transition and the Marginally Jammed Solid\cite{liunagel:10}}
+\begin{enumerate}
+ \item The simplest possible jamming model: frinctoinless spheres intercationg via repulsive finite-range forces at zero temperature.
+ \item The simplest possible model:
+ \begin{itemize}
+  \item Spheres interact with a potential which vanish at some distance that defines their diamter
+  \item At zero temperature, the system is always in mechanical equilibrium
+  \item Jammed particles: any infinitesimal force will be resisted by the force network
+  \item At a critical packing fraction the system is in between liquid and solid.
+  \item The sharp transition exhibits discontinouity as in first-order phase transition, and power-law scaling , as in an ordinary critacal point. 
+  \item Zero-temperature transition with aspects of both first- and second- ordeer behaviour, and multiple diverging and vanishing length scales. 
+  \item The order parameter that characterize transition is Z, the average number of overlaps a particle has with neighbors. 
+  This value jumps discontinuously,,to $Z_c$ at T=0 - because the be in place in mech. eq. it must be surounded by other particles from other sides. 
+  \item For frictionless particles $Z_c=2d$. where $d$ is dimensionality.
+  \item Below the cutting length: $ \mathrm{l}^{\star}\sim \Delta\phi^{-1/2}$ system looks isostatic, but above it, it's overcoordinated and should behave as a normal elastic solid - can be observed by probing responce to a point force.
+  \item Pair-correlation function g(r) diverges at $\phi_J$ with first peak at $r=\sigma$ and amplitude $Z_c$, 
+  which aslo diverges as $g(r) \sim \Delta \phi^{-1}$, and $g(r) \propto \sqrt{r-\sigma}$
+  \item Numerically calculated exponents are the same in two and three dimensions indicate tahat the transition os mean-field-like. 
+  Upper critical dimension of the jamming transition should be d=2.
+  \item Each mecahnically stable configuration corresponds to a local minimum in the potential-energy landscape.
+  \item Different minima or mechanically stable configurations can have different jamming thresholds, $\phi_C$. 
+  The width of distribution vanish in the infinite system size. For 2D disks $\phi_J\approx0.84$ and for 3D spheres $\phi_J \approx 0.64$.
+  However, different protocol can provide yield different results, since even in infinity there is still distribution of jamming threashold. 
+  \item Jammed spheres at T=0 violate Debey law ($D(\omega)\sim\omega^{d-1}$). Instead $D(\omega)$ is plateau down to zero freq.
+  \item The existence of low-freq quasi-localized modes suggests that stability of jammed solids may be different from that of ordinary crystals.
+  \item a) Thermal excitations of the same energy gives larger amplitude (for some atoms) for these localized modes - thus making opportunity for breaking contacts.
+  \item b) Moreover these low-freq modes have realatively small en. barier to overcome when they are deforming
+  \item c) Finally low-participation ratio (mosty low-freq and high-freq modes) are highly unstable to compression.
+  \item Different mechanically stable packings created with different initial conditions have the same properties: elastic moduli, coord. number, and other quantities depending on $\Delta \phi$.
+ \end{itemize}
+ \item Isostatic jammed states can be cleanly studied at T=0, because they are mechanically stable, at configuration which correspond to metastable minimum.
+ \item Working at T=0 is appropriate for granular systems and foams, for which energy of even small rearrangement is many order of magnitude greater than thermal flucs.
+ \item 
+ \item Zero-temperature solid lose its rigidity by creating at least one soft-mode (i.e. mode with zero frequency). 
+ In this case the failure of creates another solid (and not a fluid). The complete loss of rigidity should be reflected in behavior
+ of just a single mode. The low-freq modes should display characteristic signature of jamming/unjamming. 
+ \item Low-freq modes are dominant exctitaions, thus they also control how it responds to a small increase in temperature or applied stress - on top of a decrease in density.
+ \item At temperatures greter than zero, a vanishing lenght scale - overlap distance - scales as: $\mathrm{l}_{w} \sim \phi - \phi_{\nu}(T)$, which is consisten with scaling at T=0.
+ \item Once rotational degrees of freedom are introduced, the isostatic number in three dimensions increase from $Z_{iso}=6$ to $Z_{iso}=10$.
+ However, at the jamming transition $Z_c$ does not jump discontinuously from 6 tp 10, when infinitesimally perturabtion to the shape is introduced. 
+ In fact the number of interacting neighbors at the transition increases continously as the shape is varied.
+ \item The resolution to the above is that soft modes (freq=0) localized at each sphere, are recruited in non-zero freq. band when deformation is applied.
+ At small distortions, $\epsilon$, the resulting rot. modes for a new band that lies below the band of translational modes found for spheres. 
+ Then, the onset freq. of the upper bound of modes scales as $\omega^{\star}\sim Z_c(\epsilon) -6$ - exctly the same scaling, that was observed forcompression. 
+ \item Frictional spheres:
+ \begin{itemize}
+  \item Particles have in addition to normal forces $f_n$ also tangential forces $f_t$, which are up to a threashold set by the friction law: $f_t < \mu f_n$.
+  \item The presence of tangential forces introduce another equations, thus change counting degrees of freedom.
+  \item At the jamming theshold, meechanically stable packings can exist over a range of values: $d+1 \le Z_x \le 2d$.
+  \item Contraty to frictionless particles, some properties of the system are not the same - they depend on the way the system was prepared!
+  \item However, it is the case that static shear modulus obeys the expected scaling fot J point with $Z_c$ replaced by $Z_{iso}^{\mu}$.
+  \item However, packing prepared genlty(and approaching the lowest density that can be typically be accesed for a given $\mu$) 
+  tend to have the properties similar to those of frictionless particles sphere packings near the jamming threshold.
+ \end{itemize}
+\end{enumerate}
+
+\subsection{Computational Modeling of Synthetic Microbial Biofilms \cite{rudge:12}}
+\begin{enumerate}
+ \item A key factor in the efficiency and robustness of biofilms lies in their spatial organization. 
+ \item For a typical colony there can be $10^4-10^5$ cells.
+ \item Rigid-body method that includes growth of cells.
+ \item In simulations of biofilms, each cell is coupled to many others through biophysical interactions and signaling. 
+ \item Since growth occurs on a longer timescale tan biochemical interactions, growth is updated in discrete steps, and intracellular int. and signaling is solved separately.
+ \item After each biophysical step, the state is of each cell is updated, and the intracellular and signaling systems are integrated forward by the appropriate time step.
+ \item Rod-shaped bacteria, the shape approxitamed by cylider capped with hemispherical ends - capsule.
+ \item In TYPICAL growth conditions cells exhibit very little deformation - thus cell lenght can be included as a degree of freedom (and the whole cell keeps the same shape).
+ \item A cell is described as $\bar{x}(t) = (c_x, c_y, c_z, \phi_x, \phi_y, \phi_z, L)^T$, where $(c_x, c_y, c_z)$ is cell position, and $(\phi_x, \phi_y, \phi)$ cell orientation.
+ Moreover each cell grows at a rate $\dot{L}$ - for small time periods growth is linearized -i.e. constant.
+ \item In the low Reynolds number regime appropriate for bacteria, viscous drag dominates inertia - and cells move by distance proportial to applied impulse. 
+ \item Upon cell division, a small amount of noise is added to the direction vecotr of each daughter cell - in account of imperfections in cell shape and alignment.
+ \item Approximatio of experimentally observed variation in cells' lenght a division threashold is uniformly distribute 3.5-4.5 $\mu m$.
+ \item Complex regulatory mechanics that determine cell behavious are sufficiently modeled based on empirical rules. 
+ \item Each cell contains set of variables describing its state: position, direction, lenght, radius, volume, area, species, signals, celltype, growthrate, divideFlag. 
+ \item Cell signaling is a key part of multicellular organization.  Signaling is introduced to th esimualtion by "medium".
+ \item Difficulties in simulating large bacterial populations are: (i) numerical stability of the solution to the simulated system (can be solved with rigid-body dynamics)
+ (ii) speed of simulation, which can be solved with e.g. - OpenCl and GPU.
+\end{enumerate}
 
 
 \thispagestyle{empty} % No slide header and footer
@@ -36,5 +209,5 @@ ABCD
 
 \end{document}
 
--Cruavzte ssh --progress --no-whole-file --stats --sparse --exclude *.svn*
+%-Cruavzte ssh --progress --no-whole-file --stats --sparse --exclude *.svn*
 
