@@ -129,10 +129,6 @@
 #==============================================================================
 #==============================================================================
 
-# Tell make that these are phony targets
-.PHONY: all help clean install uninstall
-
-
 include config.mk
 
 
@@ -141,15 +137,19 @@ objects=$(sources:.cpp=.o)
 
 biofilm: $(objects)
 	g++ -lm $^ -o $(BIN)/$@
-
+	
 main.o: main.cpp
-	
-Cell.o: $(SRC)/Cell.cpp $(SRC)/Cell.h
-	
-%.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 	
+Cell.o: $(SRC)/Cell.cpp $(SRC)/Cell.h
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Tell make that these are phony targets
+.PHONY: clean
+	
 clean:
-	rm -f biofilm $(objects)
+	rm -f $(BIN)/biofilm $(objects)
 
 

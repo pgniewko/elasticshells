@@ -22,6 +22,7 @@ private:
     double coor[3];
     double rot[3];
     double radius;
+    //
 };
 
 #endif	/* CELL_H */

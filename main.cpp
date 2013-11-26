@@ -4,6 +4,7 @@
  *
  * Created on November 25, 2013, 11:24 AM
  */
+
 #include <iostream>
 #include <stdlib.h>
 #include <cstdlib>
@@ -20,13 +21,14 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-    int N = 5;
+    int N = 7;
     Cell cells[N];
     for (int i = 0; i < N; i++) {
         cells[i].set_coor(1,1,1);
         cells[i].set_radius(1.0);
         cout << cells[i].calc_volume() << endl;
     }
+    //
     return 0;
 }
 

@@ -8,10 +8,10 @@
 # the Makefiles.
 
 # C++ compiler
-CXX=g++
+CC=g++
 
 # Flags for the C++ compiler
-CFLAGS=-Wall -ansi -pedantic -O3
+CFLAGS=-Wall -ansi -O3
 
 # Relative include and library paths for compilation of the examples
 #E_INC=-I./src
