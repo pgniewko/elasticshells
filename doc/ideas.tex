@@ -20,6 +20,44 @@
 
 \newpage
 
+\section{Motivation}
+\subsection{General information}
+\begin{itemize}
+ \item Bacteria (and biofils) are everywhere: Dental plaque, hydrothermal vents, tumors
+ \item $10^7 - 10^9$ species
+ \item Total biomass: $10^{11}$ tons, and $\sim 10^{30}$ cells.
+ \item 10x more cells in human body than human cells
+\end{itemize}
+
+\subsection{Modeling}
+\begin{itemize}
+ \item ODE/PDE mass transport and biochemical reactions models
+ \begin{itemize}
+  \item reaction/diffusion for biomass and substrates
+  \item fluid dynamics for the liquid flow
+  \item structural mechanics for biofilm growth and EPS
+ \end{itemize}
+ \item Discrete-element models
+  \begin{itemize}
+  \item Cellular Automata (rule based)
+  \item individual cells
+  \item biomass "particles"
+ \end{itemize}
+ \item Similarity to Granular materials: nails, medicine capsules, colloids and nono-particles, microtubules
+ \item Modeling by MD-kind simulations - including size dependent friction.
+ \item Cells grow(elongate) exponentailly $ l = l_0 e^{\alpha t}$, and divide when $l > l_m \approx 2l_0$.
+\end{itemize}
+
+\subsection{Properties}
+\begin{itemize}
+ \item Spontaneously formed local nematic order.
+ \item Size-, and position- depentend friction leads to streaming instability: fast cell remain small and escape trap, and slow cells grow and slow down even more.
+ \item Cell bulcking: Cells grow linealry, and increase longitudal component of stress tensor(Anisotropic stress). 
+ Then lateral displacement relieves compression.
+\end{itemize}
+
+
+
 \section{Ideas}
 \subsection{Simulations based on Scherck's papers}
 \begin{enumerate}
@@ -33,7 +71,7 @@
  \item Seed the box with balls' seeds, and then grow them to the desired density.
  Monitor energy of the system. Calculate forces, and then if available relax the system: grow at the beginning and bisecting 
  \item Use different size balls, let's say the radius ration $r_1/r_2 \approx 1.4$
- \item What is boson peak ?
+ \item Do attractive completely disrubt the scalling scenerio for the relaxation times that appear near point J for repulsive interactions.
  
 \end{enumerate}
 
@@ -175,6 +213,12 @@ thermal case, in which fluctuations always occur, even if large fluctuations abl
   \item However, packing prepared genlty(and approaching the lowest density that can be typically be accesed for a given $\mu$) 
   tend to have the properties similar to those of frictionless particles sphere packings near the jamming threshold.
  \end{itemize}
+ \item  Boson peak - it seems that it emerges as a result of appearance of new exctitations upon jamming.
+ One of the property of boson peak exctitations is that these exctitation are poor transporters of energy.
+ \item The ratio $C(T)/T^3$ of the heat capacity to the expected $T^3$ dependence (predicted by Debye model for xtalline solids), 
+ exhibits a characteristic peak - known as boson peak.
+ \item Anharmonic effects in jammed spheres packings are quite different from those in crystals. 
+ \item Moreover, the low-frequency(and quasi-localized) modes of jammed systems are, considerably more anharmonic than the high-frequency ones. 
 \end{enumerate}
 
 \subsection{Computational Modeling of Synthetic Microbial Biofilms \cite{rudge:12}}
@@ -197,6 +241,53 @@ thermal case, in which fluctuations always occur, even if large fluctuations abl
  \item Cell signaling is a key part of multicellular organization.  Signaling is introduced to th esimualtion by "medium".
  \item Difficulties in simulating large bacterial populations are: (i) numerical stability of the solution to the simulated system (can be solved with rigid-body dynamics)
  (ii) speed of simulation, which can be solved with e.g. - OpenCl and GPU.
+\end{enumerate}
+
+\subsection{Diffusion-Limited Growth in Bacterial Colony Formation \cite{MH:90}}
+\begin{enumerate}
+ \item When biological grotwh is governed by diffusion-limited processes, growing patterns show features such as screening, repulsion etc.
+ \item Growth of bacterial(Bacillus subtilis) colonies on agar plates is governed by DLA processes contained in plates.
+ \item Bacterial colonies growth is affected by environmental physical conditions and the way bacteria prolifirate. 
+ \item On plates, with nutritients concentration 1g/L colonies develop in fractal structure with a dimension $\approx 1.72$ - obtained from box counting method.
+ \item Branches screening effects observed - characteristic to pattern formation in Laplacian field.
+ \item Two colonies spearated by small distance repeal each other, and neve fuse - characteristic for Laplacian field. 
+ \item The Laplacian field is made by diffusin nutritients and not by some kind of growth-blocking metabolic waste. 
+ \item In the limit of low nutrient concentrations the growth of bacterial colonies is generally controlled by diffusion-limited processes.
+ \item DLA consists generally from two mechanisms: (i) Laplacian field and (ii) local growth mechanics. In case of bacterial colonies these are:
+ (i) nutritien concentration and (ii) bacterial proliferation. Moreover, for too high nutrients concentration DLA pattern is not fomred -  diff. is not limiting factor any longer. 
+\end{enumerate}
+
+\subsection{Vibrations of jammed disk packings with Hertzian interactions \cite{schreck:13}}
+\begin{enumerate}
+ \item Dry granular media - discrete grains, interact via purely repulsive, frictional contact interactions.
+ \item Sources of nonlinearity in dry materials include:
+ \begin{itemize}
+  \item the nonlinear form ofHertzian interactions betwen grainsans
+  \item conact breaking and formation
+  \item dissipation
+  \item rolling and sliding frictional contacts
+ \end{itemize}
+ \item This manuscript concerns nonlinearitis that arise from the shape of Hertzian interactoins.
+ \item (i) The shape of Hertzian interaction give rise to nonlinearities in the vib. response of jammed disk packings.
+ Right after the first contact is broken the system creates set of discrete harmonics and beats among these and normal mode freqs, 
+ unitl the moment where on average 1 conact is borken - then creates a continous spectrum of vibrations. 
+ \item (ii) These nonlinearities are weak compared to those generated by contact breaking.
+
+\end{enumerate}
+
+\subsection{Localized excitations in a vertically vibrated granular layer \cite{swinney:96}}
+\begin{enumerate}
+ \item Oscillons - stable,localized 2D exctiations.
+ \item Granular standing waves is a cooperative behaviour resulting from coolisions between grains. 
+ Those waves can from stripes, squares, hexagonals etc. 
+ \item Oscillons emerge under the same conditions as standing waves.
+ \item An oscillon is a small circullar simetric excitation w/ a freq f/2 (f - freq of shaking the plate on which grains are placed).
+ \item Oscillons are long lived objects. Moreover, since they are subharmonic craters and peaks can coexsist. 
+ \item Oscillons do not propagate, but they drift slowly - they need about 1000 cycles to drift the distance of one diameter. 
+ \item Oscillons of the same phase show short-range repulsions, and of the opposite phase-short range attration. 
+ \item With the above "interactions" when they collide, they create stable structures: diploe, polumer, trimer, ion-lattice - Coordination numbers higher than 3 are not creater - for an isolated structre.
+ \item Plannar patters can be considered in some cases as collection of oscillons. 
+ \item Oscillons form in narrow range of frequencies, when dissipation and hysteresis are large. 
 \end{enumerate}
 
 
