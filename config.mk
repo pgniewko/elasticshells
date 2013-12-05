@@ -1,6 +1,4 @@
-# Voro++, a 3D cell-based Voronoi library
-#
-# Author : Pawel Gniewek (LBL / UC Berkeley)
+# Author : Pawel Gniewek (UC Berkeley)
 # Email  : pawel.gniewek@berkeley.edu
 # Date   : November 25th 2013
 
@@ -8,19 +6,22 @@
 # the Makefiles.
 
 # C++ compiler
-CC=g++
+CXX=g++
 
 # Flags for the C++ compiler
-CFLAGS=-Wall -ansi -O3
+# The option "-Wall" tells the compiler to print all warnings.
+# "-O3" - optimization level
+DEBUG=-g
+CXXFLAGS=-Wall -O3 -fpermissive $(DEBUG)
 
-# Relative include and library paths for compilation of the examples
-#E_INC=-I./src
-#E_LIB=-L./lib
-
-# 
+# Local dirs 
 SRC=./src
 LIB=./lib
 BIN=./bin
+
+# Relative include and library paths for compilation of the examples
+#E_INC=-I.
+#E_LIB=-L.
 
 # Installation directory
 #PREFIX=/usr/local
