@@ -10,19 +10,20 @@
 
 class Cell 
 {
+protected:
+    double coor[3];
+    double rot[3];
+    double* params;
 
 public:
     Cell();
     Cell(const Cell& orig);
     virtual ~Cell();
-    void set_coor(double, double, double);
-    void set_radius(double);
-    double calc_volume();
-private:
-    double coor[3];
-    double rot[3];
-    double radius;
-    //
+    
+    virtual void set_coor(double, double, double);
+    virtual void set_rot(double, double, double);
+    virtual void set_params(double*, int) =0;
+    virtual double calc_volume() =0;
 };
 
 #endif	/* CELL_H */
