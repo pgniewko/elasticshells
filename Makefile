@@ -1,5 +1,6 @@
 # Author : Pawel Gniewek (UC Berkeley)
 # Email  : pawel.gniewek@berkeley.edu
+# License: BSD
 
 include config.mk
 
@@ -25,12 +26,14 @@ Simulator.o: $(SRC)/Simulator.cpp $(SRC)/Simulator.h
 
 
 # Tell make that these are phony targets
-.PHONY: build clean
+.PHONY: build clean test
 
+test: clean build
+	@echo Test done.
 
 build: $(PROGRAM)
-
+	@echo Build done.
 
 clean:
 	rm -f $(PROGRAM) $(OBJECTS)
-	echo Clean done
+	@echo Clean done.
