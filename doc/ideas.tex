@@ -9,7 +9,7 @@
 %\title{ \bf Granular Materials }
 %\author{ Pawel Gniewek }
 %\maketitle
-\textsc{\Large Granular Materials}\\[1.0cm]
+\textsc{\Large Granular Materials - Biofilms}\\[1.0cm]
 \textsc{\LARGE Pawel Gniewek}\\[1.0cm]
 \vspace{0.5cm}
 \today
@@ -54,6 +54,53 @@
  \item Size-, and position- depentend friction leads to streaming instability: fast cell remain small and escape trap, and slow cells grow and slow down even more.
  \item Cell bulcking: Cells grow linealry, and increase longitudal component of stress tensor(Anisotropic stress). 
  Then lateral displacement relieves compression.
+\end{itemize}
+
+\subsection{Contact Mechanics}
+\begin{itemize}
+ \item Central aspects:
+ \begin{enumerate}
+  \item Pressure and adhesion of acting perpendicular to the contacting bodies' surfaces(normal direction)
+  \item Frictional stresses acting tangentially between the surfaces.
+ \end{enumerate}
+
+ \item Contact Mechanical Models:
+ \begin{enumerate}
+  \item Hertz: fully elastic model
+  \item Bradley: purely Van der Waals model with rigid spheres
+  \item JKR (Johnson, Kendall, Roberts): fully elastic model considering adhesion in the contact zone  - The JKR model considers the effect of contact pressure and adhesion only inside the area of contact. 
+  Moreover the model includes histeresis effects - when pulled away they(objects like grains, cells etc.) elongate and stick beyond the distance that corresponds to the sum of their radii.
+  \item DMT(Derjaguin-Muller-Toporov): fully elastic, adhesive andVan der Waals model -  contact profile remains the same as in Hertzian contact but with additional attractive interactions outside the area of contact.
+ \end{enumerate}
+
+ \item Non-adhesive elastic contacts - normal forces exerted by the surface mainly depend on:
+ \begin{enumerate}
+  \item depth of indentation(d)
+  \item radius of the contact (a)
+  \item effective elastic modulus: $\frac{1}{E^{*}} = \frac{1-\nu_1^2}{E_1}+\frac{1-\nu_2^2}{E_2}$, where $E_1,E_2$ are the elastic moduli,
+  and $\nu_1,\nu_2$, are Poisson's ratios:
+  $\nu = \frac{\mathrm{transverse ~ fractional ~ contraction}}{\mathrm{longitudinal ~ fractional ~ stretch}}$
+ \end{enumerate}
+ \item The assuption to the Hertzian contact theory:
+ \begin{enumerate}
+  \item The strains are small and within the elastic limit,
+  \item Each body can be considered an elastic half-space, i.e., the area of contact is much smaller than the characteristic radius of the body,
+  \item The surfaces are continuous and non-conforming, and
+  \item The surfaces are frictionless.
+ \end{enumerate}
+ When these assumptions are violated, then it leads to problem called non-Hertzian. 
+ However for large loads Hertz theory works moslty fine.
+ 
+ \item Adhesive forces introduce changes to Hertzian model:
+ \begin{enumerate}
+  \item The area of contact was larger than that predicted by Hertz theory,
+  \item The area of contact had a non-zero value even when the load was removed, and
+  \item There was strong adhesion if the contacting surfaces were clean and dry.
+
+ \end{enumerate}
+
+
+
 \end{itemize}
 
 
@@ -289,6 +336,206 @@ thermal case, in which fluctuations always occur, even if large fluctuations abl
  \item Plannar patters can be considered in some cases as collection of oscillons. 
  \item Oscillons form in narrow range of frequencies, when dissipation and hysteresis are large. 
 \end{enumerate}
+
+
+\subsection{A cell-based simulation software for multi-cellular systems \cite{dd:10}}
+\begin{enumerate}
+ \item Multi-cellular systems are of multi-scale nature, and the research is shifting towards studies of whole cells or populations of cells
+ \item Several milions of cells (in 3D) are simulated by  agent-based models.
+ \item Each cell is modeled as an isotropic, elastic, and adhesive sphere.
+ \item Each cell is capable of migration, growth and division.
+ \item Cell-cell and cell-matrix is modeled by JKR model (validated by Chu et. al, 2005).
+ \item Cells are parametrized by: 
+ \begin{enumerate}
+  \item Young's modulus, 
+  \item Poisson ratio
+  \item the density of membrane receptors -  responsible for cell-cell and cell-substrate adhesion 
+  \item its (intrinsic) radius
+ \end{enumerate}
+ \item Prolifireting cells double their sizes, and deform into dumb-bells shape, before splitting into two daughter cells (Drasdo'95).
+ When the exerted pressure is $p_tot > p_0$ pressure then cell goes into rest phase G0. The orientation of the cell divisio is random.
+ 
+ \item Cell migration is modeled by Langevin equations: summarizing JKR force, friction forces (c-c, c-matrix: parametrized by friction coeff.), and optionally random forces.
+ \item Equation for diffusion and consumption of nutrients, growth factors, etc. 
+ on a lattice are solved using the Euler forward method 
+ (fulfilling the Courant-Friedrichs-Lewy condition i.e. time step must be smaller than the value providing numerical stability of the solution)
+ \item Comparsions between JKR, Hertz and DMT models suggests that the  precise form of the interaction force may have no significant impact on the multi-cellular dynamics.
+ \item In the absence of chemotactic signals, isolated cells in suspension or culture medium have been observed to perform an active random-walk-like movement(Gruler, 94; Glazier'96).
+ \item Cells parameters: diameter, diff const, energy of single adhesive bond, cell fric. const, cycle time, max. cycle time variation, Young modulus, densitiy of adhesion molecules. 
+\end{enumerate}
+
+\subsection{Johnson-Kendall-Roberts Theory Applied to Living Cells \cite{pin:05}}
+\begin{itemize}
+ \item When contacting surfaces adhere weakly and deform a little, then DMT approach works.
+ \item At higher adhesion and deformability, when surfaces are upon separating forces, 
+ there is a finite, nonzero contact area at separationt - then JKR theory ives the relation between the pull off force $F_s$ and the adhesion energy $W_{adh}$
+ \item When the cytoskeleton of the cells has a complete 3D structure that maintains a slightly deformable spherical shape, 
+ JKR theory is applicable to relate the separation force to the adhesion energy. In this case, when cytoskeleton is responsible for
+ cells' spherical shape, the cells do not behave like shells but like elastic spheres.
+ \item Adhesion(i.e. attraction) can be induced for example by depletion effect cause by nonadsorbing, water-soluble polymers.
+ \item Model was tested JKR theory based on ahdesion forces when pulling away two cells. 
+ \item Elastic behavior is expected up to the time, when cytoskeleton cannot reshape itself upon the force load (plastic flow, which take up to several minutes).
+ \item 
+\end{itemize}
+
+\subsection{Mechanically Driven Growth of Quasi-Two-Dimensional Microbial Colonies \cite{bw:13}}
+\begin{enumerate}
+ \item The strength of mechanical interactions determines the speed with which the colony expands in space, with diffusion of the nutrient playing a secondary role.
+ \item Cells are modeled as growing spherocylinders with a variable length.
+ \item The colony grows on a 2D flat surface with nutrient concentration c(x,y)( diffusion with a diff. coeff. D).
+ \item Nutrients are consumed at a rate $kf(c) = k\frac{c}{c_{half}+c}$ per unit biomass density, with half-saturation constant $c_{half}$.
+ \item Cells grow (by elongation) at a rate $v_gf(c)$. 
+ \item The cells interact mechanically  by the Hertzian theory of elastic contact.
+ \item the nutrient becomes depleted within the colony so that only cells in a thin layer at the front are growing.
+ \item nonmotile microorganisms replicate and push each other away as they grow.
+ \item Mechanical interactions are understood to be very important in such systems; 
+ in particular, mechanical pressure has been hypothesized to strongly affect the growth and apoptosis rates of cells, 
+ leading to an alternative form of growth limitation.
+ \item The density profile close to the edge decays according to a power law towards the uncompressed cell density $\rho_0$. 
+ It is in striking contrast to Fisher-Kolmogorov waves, which exhibit exponential density profiles in the wave tip.
+\end{enumerate}
+
+\subsection{Buckling instability in ordered bacterial colonies \cite{tsimring:11}}
+\begin{enumerate}
+ \item Complex spatio-temporal organization of bacterial colonies may depend on:
+ shape, motility, membrane structure, hemotaxis, cell,cellcommunication, and direct mechanical contact among cells in dense colonies.
+ \item In biofilms or colonies in cavities, long-range signaling may be of secondary importance. 
+ \item in close proximity, such as in biofilms, bacteria usually lose their flagellae and become non-motile.
+ \item In large colonies the perfect nematic order is never reached; 
+ multiple domains with different orientations are constantly regenerated in the bulk of the colony.
+ \item Growing colony of nematically ordered cells is prone to the buckling instability - destroying  perfec nematic order. 
+ This instability is related to the anisotropy of the stress tensor in the ordered cell colony.
+ \item Buckling instability occurs at the place where the density of cells and the pressure are greatest.
+ \item In continuum model granilarity of cells has been neglected, and cells were modeled as continous fileds: density $\rho(\mathbf{r})$ and velocity $\mathbf{v}(\mathbf{r})$.
+ \item When cells are densely packed, the 'cellular fluid' is incompressible.
+ \item Discrete-elements simulation:
+ \begin{itemize}
+  \item Each cell is represented by a spherocylinder with fixed diameter d and variable length l.
+  \item Cells grow exponentailly unitl they reach critical length, at which every cell is replaced by two daughter cells.
+  \item The cricital lenght is assigned randomly at cell's birth -  to break artifical synchornisation of cells division.
+  \item The normal and tangential (frictional) forces moving the cells are computed based on the overlap of virtual soft spheres centered at the nearest points on the  axes of interacting spherocylinders.
+  \item It is expected that the buckling instability may strongly affect the structure of bacterial populations 
+  in confined environments (such as surface-bound biofilms), if significant internal stresses develop there due to the cell growth.
+  \item Buckling istability may also affect the tissue growth and structure in multicellular organisms 
+ \end{itemize}
+
+\end{enumerate}
+
+\subsection{Particle-Based Multidimensional Multispecies Biofilm Model \cite{pic:04}}
+\begin{enumerate}
+ \item Processes ongoing in biofils:
+ \begin{enumerate}
+  \item growth and decay
+  \item division and spreading
+  \item substrate transport and reactions
+  \item biomass detahment
+  \item liquid flow past the bioflm
+  \item attachment
+ \end{enumerate}
+ \item Model:
+ \begin{enumerate}
+  \item Reactor contains two compartments: bulk liquid(completely mixed), and biofilm.
+  \item Biomass consists of active(up tp \#B types) and inert particles(that result of the decay of active particles).
+  \item Particle may represent an individual cell or cluster of cells.
+  \item Particles are hard-spheres.
+  \item The growth of every particle depends on accessible nutrients.
+  \item The total mass in spherical particles is limited by $M_{max}$, which is independent of particle's type.
+  \item When max mass limit is reached, new daughter particle is created, which touches mother particle in a random position, 
+  and part of mother's mass is redistributed among daughter particle.
+  \item PBC are used, and particles are spreading as a result of exerted forces by other particles.
+  \item Concentration field is solved numerically including reaction(nutr. consumption) component.
+ \end{enumerate}
+ \item Investigated properties:
+ \begin{enumerate}
+  \item spatial dist. of substrate concentration and fluxes
+  \item biofilm structure
+  \item total biofilm mass
+  \item dynamics of biomass distr.
+  \item dynamics of biofilm detachment
+  \item dynamics of solute concentration
+  \item steady-state concentration of biomass and solutes in the biofilm
+ \end{enumerate}
+ \item A perfect steady-state with respect to the spatial dist. of particles and solutes is not reached.
+ It is mainly due to stochasticity in the model, which comes from:
+ \begin{enumerate}
+  \item The initial distribution of biomass particles on the surface
+  \item random choice of direction for the placement of a daughter cell
+  \item uneven cell division
+ \end{enumerate}
+\end{enumerate}
+
+\subsection{A single-cell-based model of tumor growth in vitro: monolayers and spheroids \cite{dd:05}} 
+\begin{enumerate}
+ \item Types of models:
+ \begin{enumerate}
+  \item single-cell-based (including cellular-automata, and off-latice)
+  \item continuum models
+ \end{enumerate}
+
+ \item The model:
+ \begin{enumerate}
+  \item Basic unit of the model is a signle cell. Each cell is an elatic, sticky particle of limited compressibility and deformability.
+  It's also capable of active migration, growth and division.
+  \item During the divisin phase(mitosis) the cell has dumb-bell shape.
+  \item Attractive and repulsive interactions are modeled using JKR model.
+  \item Cells perform RW (in an absence of chemotactic signals) - characterize by diffusion constant D
+  \item Friction-dominated overdamped stochastic motion is modeled with Metropolis algorithm.
+  \item Glucose is limiting nutritent for the model of tumor spheroids in suspention.
+  Cells can grow only if the local glucese contentration is above a certain threshold, and die by necrosis bolow other conc. threshold.
+  \item Glucose is loally consumed with the rate $\hat{\gamma}$ and is described by partial-differential equation describing reaction-diffusion kinetics.
+  \item The influence of extracellular matrix on cells migration is neglected.
+  \item Average cell cycle time is influenced by nutritiens, regulatory factors, and mechanical stress.
+  \item Cell can grow only when if it's not extensively deformed (or compressed) - i.e. the growth of the cell may be controlled by the compression sensed by cell's cytoskeleton.
+  \item Three scenerios are possible:
+  \begin{enumerate}
+   \item Cell grows when a deformation is removed.
+   \item A cell that was subjected to the critical deformation longer then some threashold does not enter the cell cycle again.
+   \item If the critical deformation lasted longer than some specified time the cell undergoes apoptosis.
+  \end{enumerate}
+
+  \item Lysis of dead celly is modeled as a very fast or very slow process by: rmoving or not removeing at all a dead cell.
+ \end{enumerate}
+ \item Division of nonboundary cells(in tumer monolayer cells) is repressed by the neighbor contacts.
+ \item The highest proliferation actvity is close to the tumor boundary - where the local concentration of glucose is the highest, 
+ while inside the tumor a necrotic core forms.
+ \item If at the same time each cell is supplied with glucose then cells divide everywhere hence the tumor grows exponentially fast.
+ \item Simulations suggest that tumor grows exponentailly fast, but later is followed by a linear expansion of the tumor diamteres - both in layer and spherodi case.
+ \item It is suggested, that linear growth regime is characterized by a cell number increase confied to a surface layer. 
+ A nutritient limitation in tumor spheroids affects slighlty the expansion velocity.
+ \item In case cells are of the average size and in absence of apoptotic or nectoric core, the linear expansion regime is accompanied by power law $N \propto t^d$.
+ \item Cells at tumor boundary have performed more cell divisions and accumulated more mutation than cells in the interior, or in cells of a tumor of equal 
+ size 
+ \item Above a certain glucose concentration the growth kinetic in tumor spherodis should become independent of the glucose conc. and be determined by biochemical interactions only.
+ \item The extend of exponential growth depends on cessation of cell division conditions.
+ \item Increase of cell mobility (lower viscosity etc.) extends exponential growth phase, and increase the growth velocity.
+ \item In case of cell-cell adhesion absence, tumor initially grows exponentailly fast,  while the aggregate diameter grows as $R \propto \sqrt{t}$ and then corss into linear regime
+\end{enumerate}
+
+
+\subsection{Dissipative particle dynamics simulations for biological tissues: rheology and competition \cite{elgeti:11}}
+\begin{enumerate}
+ \item Mechanical stresses couple to the orientation of the mitotic spindle during cell division (Julicher'07).
+ \item Pressure strongly influences the expression of some genes (Farge'08).
+ \item Cell differentiation depends on the mechanical properties of the substrace - in particular th value of its elastic modulus.
+ \item Nonlinear elastic description of tissue has been very succesful.
+ \item At the early stage of development, many tissues should be considered as liquids (finite viscosity and isotropic surface tension).
+ \item The model:
+ \begin{enumerate}
+  \item Cell must reach some specified size, in order to enter mitosis stage - when it's reached (i.e. the distance between two particles creating a cell - see below) then cell divides
+  \item Each cell is modeled as two particles interacting via a repulsive growth force - a distance between this two particles represent cell's size.
+  \item Apoptosis acts randomly, removing cells with a constant rate $k_a$.
+  \item Forces are divided into attractive and repulsive.
+  \item Equations of motion are integrated with Dissipative particle dynamics(Nikunen'03).
+  The advantage oevr Langevin dynamics is that DD does not assume  the background dissipation to be the dominant mode of dissipation - e.g. dissipative forces may be transfered to neighboriing cells.
+  \item Cell division and apoptosis break momentum balance. In that case a small background dissipation is needed.
+  \item Particles belonging to the same cell act with repulsive potetnail. 
+  Volume exclusion is modeled with a repulvie forces $\sim r^{-5}$ up to some cutoff value, and adhesion is modeled as a linear force. 
+ \end{enumerate}
+ \item Adhesive forces are at the origin of surface tissue tension that cause tissue aggregation an d round up.
+ \item Cell division and apoptosis lead to fluidizaion of the tissue. 
+\end{enumerate}
+
+
 
 
 \thispagestyle{empty} % No slide header and footer
