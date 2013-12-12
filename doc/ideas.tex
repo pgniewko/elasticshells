@@ -525,8 +525,10 @@ thermal case, in which fluctuations always occur, even if large fluctuations abl
   \item Each cell is modeled as two particles interacting via a repulsive growth force - a distance between this two particles represent cell's size.
   \item Apoptosis acts randomly, removing cells with a constant rate $k_a$.
   \item Forces are divided into attractive and repulsive.
-  \item Equations of motion are integrated with Dissipative particle dynamics(Nikunen'03).
-  The advantage oevr Langevin dynamics is that DD does not assume  the background dissipation to be the dominant mode of dissipation - e.g. dissipative forces may be transfered to neighboriing cells.
+  \item Equations of motion are integrated with Dissipative Particle dynamics (Nikunen'03).
+  The advantage oevr Langevin dynamics is that DPD does not assume  the background dissipation to be the dominant mode of dissipation - e.g. dissipative forces may be transfered to neighboriing cells.
+  \item MY NOTE: alternatives to DPD are: fluctuating lattice-Boltzmann method(Ladd), or Stochastic Rotation Dynamics (Kapral). 
+  A good description of DPD is in "Understanding Molecular Simulations, 2nd Ed., Chpt:17"
   \item Cell division and apoptosis break momentum balance. In that case a small background dissipation is needed.
   \item Particles belonging to the same cell act with repulsive potetnail. 
   Volume exclusion is modeled with a repulvie forces $\sim r^{-5}$ up to some cutoff value, and adhesion is modeled as a linear force. 
@@ -536,6 +538,33 @@ thermal case, in which fluctuations always occur, even if large fluctuations abl
 \end{enumerate}
 
 
+\subsection{Mechanical Control of Cell flow in Multicellular Spheroids \cite{dm:13}}
+\begin{itemize}
+ \item In embrology, collective migration occurs during morphogenetic transformations, in the absence of any cell proliferation.
+ \item Cell migration is observed in tumors: in response to chemical cues, cancer cells can escape the primary tumor, and invide adjacent tissues. 
+ The process is either collective and single cell.
+ \item In tumors and spheroids, gradients of oxygen, grow factors etc. lead to increase of cell proliferatoin at the periphery, and apoptosis in the center, which drives cells flow.
+ \item Growt rate of multicellular spheroids is drastically reduced by an external mechanical stress (Capello'11, '12), and this effect saturates at 5000Pa
+ \item Cell division, rather than cell death or density, is affected by the mechanical stress.
+ \item In steady-state spheroids, in the absence of mechanical stress cells flow toward the center is observed. 
+ This convective motion is induced by cell division. 
+ \item In growin spheroids, in the absence of stress moving back and forth toward the center was obseerved.
+ It suggests that there is convergend flow, and divergent flow as well, but under the mechanical stress divergent flow is impeded. 
+ \item The transport model:
+ \begin{enumerate}
+  \item Particles(markers) flux is: $J = \nu \rho$, where $\nu $ is the cell velocity, and $\rho $ is markers density
+  \item diffusion of markers is neglected (they don't leave prolifiratnig cells)
+  \item Prolifireting cells diffusion contribute to the displacement as $\mathrm{d}/\mathrm{R}$, 
+  where $\mathrm{d}$ is cell's diameter and $\mathrm{R}$ is spheroid radius.
+  \item Chemotaxis is also neglected
+  \item Transport equation is: $\partial_t \rho + \nabla \nu \rho = 0$
+ \end{enumerate}
+ \item Growth rate decreased by 30\% under mechanical stress.
+ \item The mode, which is involving purely convection fluxes, is in very good agreement with the experiment, 
+ what suggests that for this system chemotaxis and diffusion are indeed negligible.
+
+ 
+\end{itemize}
 
 
 \thispagestyle{empty} % No slide header and footer
