@@ -1,13 +1,18 @@
-// Author : Pawel Gniewek (UC Berkeley)
-// Email  : pawel.gniewek@berkeley.edu
-// License: BSD
+/* 
+ * Author : Pawel Gniewek (UC Berkeley)
+ * Email  : pawel.gniewek@berkeley.edu
+ * License: BSD
+ */
 
-#include <stdio.h>     /* printf, fgets */s
+#include <stdio.h>     /* printf, fgets */
 #include <argp.h>
 #include <stdlib.h>     /* atoi,  strtod */
 #include <string>
 #include <iostream>
 #include <error.h>     /* error */
+#include <math.h>      /* log, sqrt */
+
+#include "./src/random.h"
 
 //#include "./src/Cell.h"
 //#include "./src/YeastCell.h"
@@ -41,6 +46,7 @@ struct arguments
 static struct argp_option options[] = {
     {0,0,0,0, "Input/Output options:", 1},
     {"verbose",  'v', 0,       0, "Produce verbose output" },
+        {"debug", 'd', 0, OPTION_ALIAS},
     {"quiet",    'q', 0,       0, "Don't produce any output" },
     {"silent",   's', 0,       OPTION_ALIAS },
     {"output",   'o', "FILE",  0, "Output to FILE instead of standard output" },
@@ -70,11 +76,11 @@ static int parse_opt (int key, char *arg, struct argp_state *state)
        arguments->output_file = "-";
        arguments->abort = 0;          
        break;
-            
+
       case 'q': case 's':
            arguments->silent = 1;
            break;
-      case 'v':
+      case 'v': case  'd':
            arguments->verbose = 1;
            break;
       case 'o':
@@ -114,6 +120,10 @@ static struct argp argp = { options, parse_opt, args_doc, doc };
      
 int main(int argc, char** argv) 
 {
+    /* Initialize MT19937 Pseudo-random-number generator. */
+    unsigned long init[4]={0x123, 0x234, 0x345, 0x456}, length=4;
+    init_by_array(init, length);
+    
     /* Parse our arguments; every option seen by parse_opt will
        be reflected in arguments. */
     struct arguments arguments;
@@ -121,8 +131,8 @@ int main(int argc, char** argv)
     argp_parse (&argp, argc, argv, 0, 0, &arguments);
     if (arguments.abort)
         error (10, 0, "ABORTED");
-       
-    if (arguments.verbose || !arguments.silent)
+
+    if (arguments.verbose && !arguments.silent)
     {
      
         printf ("OUTPUT_FILE = %s\n" 
@@ -132,6 +142,5 @@ int main(int argc, char** argv)
                  arguments.verbose ? "yes" : "no",
                  arguments.silent ? "yes" : "no");
     }
-       
     return 0;
 }

@@ -1,10 +1,3 @@
-/* 
- * File:   Cell.h
- * Author: pablo
- *
- * Created on November 25, 2013, 11:29 AM
- */
-
 #ifndef CELL_H
 #define	CELL_H
 

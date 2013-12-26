@@ -1,18 +1,13 @@
-/* 
- * File:   YeastCell.h
- * Author: pablo
- *
- * Created on December 3, 2013, 10:26 AM
- */
-
 #ifndef YEASTCELL_H
 #define	YEASTCELL_H
 
 #include "Cell.h"
 
-class YeastCell : public Cell {
+class YeastCell : public Cell 
+{
 public:
     YeastCell();
+     YeastCell(double);
     YeastCell(const YeastCell& orig);
     virtual ~YeastCell();
     double calc_volume();

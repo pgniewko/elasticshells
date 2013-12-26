@@ -1,10 +1,3 @@
-/* 
- * File:   Cell.cpp
- * Author: pablo
- * 
- * Created on November 25, 2013, 11:29 AM
- */
-
 #include "Cell.h"
 
 void Cell::set_coor(double x, double y, double z)
