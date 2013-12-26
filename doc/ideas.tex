@@ -106,21 +106,27 @@
 
 
 \section{Ideas}
-\subsection{Simulations based on Scherck's papers}
+\subsection{Experiments}
 \begin{enumerate}
- \item Simulate growing balls with some sort of repulsion: $V = \frac{K}{2}(r-\sigma)^{\alpha}$, where $\alpha=2.5$ is a Hertzian interaction.
- The reasoning behind $\alpha >2.0$ is that when two balls collide and deform one another, 
- the  interface between them, grows faster then the distance separating then gets smaller.
- \item $\alpha=2,\frac{5}{2},0$ - harmonic, Hertzian(in 3D), and hard-spehre repulsion.
- \item Simulate the box with a periodic boundary conditions. However if you want to introduce walls into your box
- do it by the interactions with mirror images (in the respect of the position of the imaginary wall). Be carefull
- around simulating the hole where balls can escape. 
- \item Seed the box with balls' seeds, and then grow them to the desired density.
- Monitor energy of the system. Calculate forces, and then if available relax the system: grow at the beginning and bisecting 
- \item Use different size balls, let's say the radius ration $r_1/r_2 \approx 1.4$
- \item Do attractive completely disrubt the scalling scenerio for the relaxation times that appear near point J for repulsive interactions.
- 
+ \item Maybe it is possible to inject GFP gene into yeast cell so it will shine when under mechanical stress - high pressure. 
+ Shining may be triggered by some sort of (heat) shock protein.
 \end{enumerate}
+
+%\subsection{Simulations based on Scherck's papers}
+%\begin{enumerate}
+% \item Simulate growing balls with some sort of repulsion: $V = \frac{K}{2}(r-\sigma)^{\alpha}$, where $\alpha=2.5$ is a Hertzian interaction.
+% The reasoning behind $\alpha >2.0$ is that when two balls collide and deform one another, 
+% the  interface between them, grows faster then the distance separating then gets smaller.
+% \item $\alpha=2,\frac{5}{2},0$ - harmonic, Hertzian(in 3D), and hard-spehre repulsion.
+% \item Simulate the box with a periodic boundary conditions. However if you want to introduce walls into your box
+% do it by the interactions with mirror images (in the respect of the position of the imaginary wall). Be carefull
+% around simulating the hole where balls can escape. 
+% \item Seed the box with balls' seeds, and then grow them to the desired density.
+% Monitor energy of the system. Calculate forces, and then if available relax the system: grow at the beginning and bisecting 
+% \item Use different size balls, let's say the radius ration $r_1/r_2 \approx 1.4$
+% \item Do attractive completely disrubt the scalling scenerio for the relaxation times that appear near point J for repulsive interactions.
+ 
+%\end{enumerate}
 
 \section{Papers}
 \subsection{Jamming is not just cool any more\cite{nagel:98}}
@@ -562,8 +568,107 @@ thermal case, in which fluctuations always occur, even if large fluctuations abl
  \item Growth rate decreased by 30\% under mechanical stress.
  \item The mode, which is involving purely convection fluxes, is in very good agreement with the experiment, 
  what suggests that for this system chemotaxis and diffusion are indeed negligible.
+\end{itemize}
 
- 
+\subsection{Modeling the impact of granular embedding media, and pulling versus pushing cells on growing cell clones \cite{dd:12}}
+\begin{itemize}
+ \item Growing tumor overcomes mechnical barrier by exerting mechanical stress on the host tissue (biomechanics) or secreting matrix-degrageting enzymes, that modify local environment (biochemical).
+ \item Biomechaniacal interactions play an important role in the growth control of tissues and tumors. 
+ \item Increase of the cell population diameter and proliferation pattern can be explained by biomechanical form of contact inhibition, conrolled by force threshold,
+ a pressure threshold, or a deformation threshold - above which cells become quiscent.
+ \item Cells have the capacity to change thier physical properties by intramolecular control processes.
+ \item In growing tumor two types of movement may exist:
+ \begin{enumerate}
+  \item pushing-type if cell division leads to local mechanical stress pushing neighbor cell in a direction of minimal mechanical compression
+  \item pulling-type may be triggered by the emergence of a border
+ \end{enumerate}
+ \item Model:
+ \begin{enumerate}
+  \item Each cell is an isotropic, elastic and adhesive object.  
+  \item Cells migarte, expand, grow and prolifirate.
+  \item Cell interacts other cells and underlying substrate.
+  \item Cell-cell interaction are described by JKR model (implicit equations in Parker'92) - however JKR neglects inhom. of cell material, 
+  deviation from spherical shape, and plastic deformation which results from re-organizing processes of the cytoskeleton. 
+  Also JKR model was used for adhesion forces between cells and underlying substrate (if present).
+  \item Environment(in which living cells exsist) can be made of non-dividing cells or intert granular objects.
+  \item Cells grow in steps $\Delta R$ unitl they double their size, and then divide.
+  \item Dividing cell deforms into dumb-bell, and then two cells are created and separated. 
+  \item If the total pressure exerted on cell is larger than a threshol value $p_0$, then it enters $G_0$ phase and do not divide. 
+  When the pressure is less than the threashold cell again enters the cell cycle.
+  \item A direction of dividing cell is random.
+  \item Cells in suspenstion perform an active random-walk-like movement (Gruler'94).
+  \item Cell migration is simulated as a friction-dominated over-damped motion with a stochastic contribution by a stochastic equation of motion for each cell.
+  \item Two different types of motions are tested: unbiased(isotropic), and biased (in a direction of minimal stress - e.g. pressure).
+  \item Despite the formal analogy to diffusion of colloids (Einsten relation). mechanism behid the motion is different, since cells regulate the motion on their own.
+  \item For media, if objects represent not-dividing cells the dynamics is like in the case of living cells, and if objects are granular particles thn ethe active moving force is 0.
+ \end{enumerate}
+ \item Isolated monolayers show linear growth kinetics after an initial exponential growth phase. 
+ \item Fingering patterns created by growing colony is quite robust in respoct to biomechanical properties of cells, and type of medium. 
+ However changes to  biomechanical properties impact growth rate of the colony.
+ \item Mecanical stress or strain-controlled cell cycle entrance mechanisms are able to explain many features of the growth patters 
+ in monolayers and multi-cellular phenotypes - both in absence and presente viscous- and viso-elastic medium.
+\end{itemize}
+
+\subsection{Good random number generators are (not so) easy to find \cite{hell:98}}
+"Anyone who considers arithmetical methods of producing random digits is, of course, in a state of sin."
+--John Von Neumann (1951), Applied Math Series 12 (1): 36-38.
+\begin{itemize}
+\item From a practitioner's point of view, random number generators are good if they yiled the correct results in as many applications as possible.
+\item Random number generatorsa are nothing more than deterministic algortihms that produce numbers with certain distribution properties.
+\item RNGs task is to give correct results in tests which are relevant to user - they are not to simulate randomness. 
+\item Two facts:
+\begin{enumerate}
+ \item With RNGs there are no guarantees, only predictions - it's because of finite sample size - indepentend of RNGs.
+ \item Althogh there are no guaratnees, there are mathematical safety-measures against wrong simulation results. 
+\end{enumerate}
+\item Empirical testing - we can run application-specific tests with known theoretical results and then compare them to empirical results - obtained from simulation.
+\item Theoretical support for RNGs: period length, structural properties, correlation behaviour etc. 
+\item RNGs:
+\begin{enumerate}
+ \item linear congruential generator (LCG): $y_{n+1} = ay_{n}+b(mod ~ m)$, where m, a, b, and $y_0$ must be chosen.
+ Random number in interval $x \in [0,1[$ is obtained by normalization: $x_n:y_n/m$.
+ \item Multiple recursive congruental generator(MRG): $y_{n+k} = \sum_{j=0}^{k-1}a_j y_{n+j} (mod ~ m)$
+ \item combined MRGs (cMRG): $x_n = x_n^{(1)} + x_{n}^{(2)} (mod ~ 1)$. $x_n^{(1)}$ and $x_{n}^{(2)}$ are already normalized values.
+ \item twisted generalized feedback shift-register (tGFSR): $x_{n+p} = x_{n+q}\oplus x_{n}A$, $n \ge 0$,
+ where w,p,q are parametres and A is $w\times w$ matrix with binary entries. This generator produce a sequence of w-bit integers.
+ \item Inversive congruential generators (ICG): $y_{n+1} = a\bar{y}_{n} + b (mod ~ m)$, where $\bar{c} = 1/y$ or in other words $\hat{c} = c^{p-2} (mod ~ p)$.
+ An important feature of ICGs is for prime modulus there is an absence of any lattice structure(for d-tuples).
+ \item Explicit inverse congruential generaotrs (EICG): $y_{n} = \bar{a(n + n_0) + b} (mod ~ p)$.
+\end{enumerate}
+\item Theoretical support: period length, the intrinsic structure, and correlation analysis.
+\item Random number generation is drawing without replacement, thus sample size should me much smaller than the period lenght of the generaotr.
+\item In the case of linear generators square root is prudent upper bound.
+\item Because of some intrinsic genrator structure, some types of simulation may fail.
+\item Correlation analysis(CAs) allows reliable prediction of the performence of the samples produced by RNGs. 
+CAs are nothing less than prototypes of simulation problems.
+\item Parralel simulations create some additional problems. Basically there are following methods to generate RNs on parallel processors(more details in Anderson'90):
+\begin{enumerate}
+ \item Assign L different generators to L different processors
+ \item Assign L different streams of one large-period generator to L processors
+ \begin{enumerate}
+  \item "leap-frog" - we assign the substream $(x_{nL+j})_{n\ge0}$ to processor j
+  \item "Splitting" - we assign whole segment $(x_n)_{n\ge n_j}$ to processor j, where $n_1,...,n_L$ is a set of initial values to assure disjointness of the substream.
+ \end{enumerate}
+\end{enumerate}
+\item Technique (i) cannot be recommended in general, since no resulsts on correlations between different random number generators(except EICG) have been reported.
+\item "Leap-frog" may be unsafe since some RGNs subsequences (e.g. LCG($2^{48},55151000561141,0$)) perform even worse whan RANDU in spectral test.
+Then if this subsecence is assigned to one of the processor, it may have serious consequences. 
+\item Splitting is unsafe also in the respect of lurking long-range correlations.
+\item RNG checklist
+ \begin{enumerate}
+  \item Theoretical support: period lenght, structural properties, correlation analysis.
+  \item Empirical evidences: variable sample size, two-or higher level tests
+  \item Practical aspects: tables of parameters available, portable implementations, parralelization techniques, large samples available
+ \end{enumerate}
+\item In general there is no safe generator. All have some unwanted sideeffects. 
+\item Good RNG is characterized by theoretical support, convincing empirical evidences, and positive practical tests. Such RNGs produce correct results in many, though not all, simulations.
+\item Three rules for using RNGs should be kept in mind:
+\begin{enumerate}
+ \item Don trust simulation results produced just by one RNG. Check the results with different RNG.
+ \item Do not combine, vectorize, or parralize random number generators without theoretical and empirical support
+ \item Get to know the properties of your random number generators.
+\end{enumerate}
+
 \end{itemize}
 
 
