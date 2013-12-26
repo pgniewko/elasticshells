@@ -1,6 +1,6 @@
 # Author : Pawel Gniewek (UC Berkeley)
 # Email  : pawel.gniewek@berkeley.edu
-# Date   : November 25th 2013
+# License: BSD
 
 # This a common configuration file that includes definitions used by all
 # the Makefiles.
@@ -13,11 +13,14 @@ CXX=g++
 # "-O3" - optimization level
 DEBUG=-g
 CXXFLAGS=-Wall -O3 -fpermissive $(DEBUG)
+LDLIBS=-lcppunit
 
 # Local dirs 
 SRC=./src
 LIB=./lib
 BIN=./bin
+
+TEST_SRC=./src/test
 
 # Relative include and library paths for compilation of the examples
 #E_INC=-I.

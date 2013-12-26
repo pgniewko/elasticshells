@@ -1,39 +1,47 @@
-# Author : Pawel Gniewek (UC Berkeley)
-# Email  : pawel.gniewek@berkeley.edu
-# License: BSD
-
 include config.mk
 
 PROGRAM=$(BIN)/biofilm
-SOURCES=./main.cpp \
-  $(SRC)/Cell.cpp \
-  $(SRC)/YeastCell.cpp \
-  $(SRC)/Simulator.cpp
+TEST_RUNNER=$(TEST_SRC)/test
+
+SOURCES=main.cpp \
+        $(wildcard $(SRC)/*.cpp)
 
 OBJECTS=$(SOURCES:.cpp=.o)
+
+TEST_SOURCES=$(wildcard $(TEST_SRC)/*.cpp) \
+             $(wildcard $(SRC)/*.cpp)
+
+TEST_OBJECTS=$(TEST_SOURCES:.cpp=.o)
 
 $(PROGRAM): $(OBJECTS)
 	g++ -lm $^ -o $@
 
+$(TEST_RUNNER): $(TEST_OBJECTS) 
+	g++ -lm $^ $(LDFLAGS) $(LDLIBS) -o $@
+
+
 main.o: main.cpp
 
-Cell.o: $(SRC)/Cell.cpp $(SRC)/Cell.h
+$(SRC)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 
-Simulator.o: $(SRC)/Simulator.cpp $(SRC)/Simulator.h
+$(TEST_SRC)/%.o: $(TEST_SRC)/%.cpp $(TEST_SRC)/%.h
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ 
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 
 
 # Tell make that these are phony targets
 .PHONY: build clean test
 
-test: clean build
+#test: clean build
+test: $(TEST_RUNNER)
+	@$(TEST_RUNNER)
 	@echo Test done.
 
 build: $(PROGRAM)
 	@echo Build done.
 
 clean:
-	rm -f $(PROGRAM) $(OBJECTS)
+	rm -f $(PROGRAM) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS)
 	@echo Clean done.
