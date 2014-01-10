@@ -13,13 +13,14 @@ TEST_SOURCES=$(wildcard $(TEST_SRC)/*.cpp) \
 
 TEST_OBJECTS=$(TEST_SOURCES:.cpp=.o)
 
+#Linking commands:
 $(PROGRAM): $(OBJECTS)
-	g++ -lm $^ -o $@
+	g++ -lm $^ $(LDFLAGS) -o $@
 
 $(TEST_RUNNER): $(TEST_OBJECTS) 
 	g++ -lm $^ $(LDFLAGS) $(LDLIBS) -o $@
 
-
+#Compilation commands:
 main.o: main.cpp
 
 $(SRC)/%.o: $(SRC)/%.cpp $(SRC)/%.h
