@@ -1,12 +1,9 @@
-#include <iostream>
-//#include "Cell.h"
 #include "YeastCell.h"
 
 using namespace std;
 
 YeastCell::YeastCell() {
     params = new (nothrow) double[1];
-//    cout << M_PI << " " << M_E << " " << M_SQRT2 << endl;
     if (params == 0)
         cout << "Error: memory could not be allocated";
 }
@@ -29,7 +26,8 @@ YeastCell::~YeastCell() {
 
 double YeastCell::calc_volume()
 {
-    double v = params[0] * params[0] * params[0];
+    double v = (4.0 * M_PI / 3.0) * params[0] * params[0] * params[0];
+    v = params[0] * params[0] * params[0];
     return (v);
 }
 

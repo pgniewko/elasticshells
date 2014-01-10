@@ -1,10 +1,3 @@
-/* 
- * File:   Simulator.h
- * Author: pablo
- *
- * Created on November 26, 2013, 2:43 PM
- */
-
 #ifndef SIMULATOR_H
 #define	SIMULATOR_H
 
@@ -13,6 +6,10 @@ public:
     Simulator();
     Simulator(const Simulator& orig);
     virtual ~Simulator();
+    
+    int generate_pos();
+    int read_pos(const char* filename);
+    void write_pos(const char* filename, bool wrap=1);
 private:
 
 };

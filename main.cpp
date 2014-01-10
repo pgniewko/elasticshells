@@ -14,10 +14,6 @@
 
 #include "./src/random.h"
 
-//#include "./src/Cell.h"
-//#include "./src/YeastCell.h"
-//#include "./src/Simulator.h"
-
 using namespace std;
 
 const char *argp_program_version ="biofilm 0.0.1";
@@ -131,7 +127,7 @@ int main(int argc, char** argv)
     argp_parse (&argp, argc, argv, 0, 0, &arguments);
     if (arguments.abort)
         error (10, 0, "ABORTED");
-
+    
     if (arguments.verbose && !arguments.silent)
     {
      

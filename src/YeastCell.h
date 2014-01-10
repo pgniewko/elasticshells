@@ -7,7 +7,7 @@ class YeastCell : public Cell
 {
 public:
     YeastCell();
-     YeastCell(double);
+    YeastCell(double);
     YeastCell(const YeastCell& orig);
     virtual ~YeastCell();
     double calc_volume();

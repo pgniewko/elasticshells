@@ -1,6 +1,9 @@
 #ifndef CELL_H
 #define	CELL_H
 
+#include <iostream>
+#include <cmath>
+
 class Cell 
 {
 protected:
