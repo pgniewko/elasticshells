@@ -110,6 +110,7 @@
 \begin{enumerate}
  \item Maybe it is possible to inject GFP gene into yeast cell so it will shine when under mechanical stress - high pressure. 
  Shining may be triggered by some sort of (heat) shock protein.
+ \item Lagrangian formalism is NOT well suited for systems where dissipative forces (e.g. friction) are present.
 \end{enumerate}
 
 %\subsection{Simulations based on Scherck's papers}
@@ -669,6 +670,31 @@ Then if this subsecence is assigned to one of the processor, it may have serious
  \item Get to know the properties of your random number generators.
 \end{enumerate}
 
+\end{itemize}
+
+\subsection{Dissipative Particle Dynamics \cite{ums:02}}
+\begin{itemize}
+ \item Brownian motion of uncharged colloids does not depend on the atomic details of the solvent.
+ \item The only properties of the medium that matter are: temperature, density, viscosity.
+ \item What we need is a model such that:
+ \begin{enumerate}
+  \item exhibits hydrodynamic properties.
+  \item has thermal fluc's that can drive Brownian motion.
+  \item is cheap to simulate.
+ \end{enumerate}
+ \item DPD reproduces correctly hydrodynamic behaviour - however there is no rigorous demonstration that this is true, 
+ depsite the fact that there is large body of numerical studies suggesting that at $\delta t \rightarrow 0$ DPD fluid is described by the Navier-Stokes equation.
+ \item To ensure, correct canonical distribution (in equil. simulation) dissipation and random noise are bounded by two relations: 
+ $\omega^{2}_{r} = \omega_{D}(r)$ and $\sigma^2 = 2k_BT\gamma$.
+ \item BD does not conserve momenta. In fact, the only thing BD conserves is number of particles. 
+ \item Time reveribility is also importnat in a DPD simulation, since only with a time-reversibility integration scheme can detailed balance be obeyed.
+\end{itemize}
+
+\subsection{Efficient numerical integrators for stochastic models \cite{cov:06a,cov:06b}}
+\begin{itemize}
+ \item A general method for deriving deterministic integratirs is based on the Trotter expansion.
+ \item This expansion preserve the symplectic structure of the dynamics and conserve the dynamical invariants.
+ \item Exact trotter integration requires generation of "coloured" noise.
 \end{itemize}
 
 
