@@ -47,6 +47,6 @@ clean:
 	@echo Clean done.
 	
 indent:
-	@astyle --style=allman -r -xn -xc -xl -C -xG -S -K -N -L -f -p -H -k1 -j "*.cpp"
-	@astyle --style=allman -r -xn -xc -xl -C -xG -S -K -N -L -f -p -H -k1 -j "*.h"
+	@astyle --style=allman -r -xn -xc -xl -C -xG -SKNL -wfpHj -k1 "*.cpp"
+	@astyle --style=allman -r -xn -xc -xl -C -xG -SKNL -wfpHj -k1 "*.h"
 	@./astyle-clean.sh
