@@ -7,18 +7,22 @@ void Cell::set_coor(double x, double y, double z)
     coor[2] = z;
 }
 
-void Cell::set_rot(double a1, double a2, double a3){
+void Cell::set_rot(double a1, double a2, double a3)
+{
     rot[0] = a1;
     rot[1] = a2;
     rot[2] = a3;
 }
 
-Cell::Cell() {
+Cell::Cell()
+{
 }
 
-Cell::Cell(const Cell& orig) {
+Cell::Cell(const Cell& orig)
+{
 }
 
-Cell::~Cell() {
+Cell::~Cell()
+{
 }
 

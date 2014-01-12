@@ -5,7 +5,8 @@
 #include <cppunit/TestResultCollector.h>
 #include <cppunit/TestRunner.h>
 
-int main() {
+int main()
+{
     //CPPUNIT_NS - namespace
     // Create the event manager and test controller
     CPPUNIT_NS::TestResult controller;

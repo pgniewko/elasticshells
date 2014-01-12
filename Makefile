@@ -35,7 +35,6 @@ $(TEST_SRC)/%.o: $(TEST_SRC)/%.cpp $(TEST_SRC)/%.h
 # Tell make that these are phony targets
 .PHONY: build clean test
 
-#test: clean build
 test: $(TEST_RUNNER)
 	@$(TEST_RUNNER)
 	@echo Test done.
@@ -46,3 +45,8 @@ build: $(PROGRAM)
 clean:
 	rm -f $(PROGRAM) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS)
 	@echo Clean done.
+	
+indent:
+	@astyle --style=allman -r -xn -xc -xl -C -xG -S -K -N -L -f -p -H -k1 -j "*.cpp"
+	@astyle --style=allman -r -xn -xc -xl -C -xG -S -K -N -L -f -p -H -k1 -j "*.h"
+	@./astyle-clean.sh

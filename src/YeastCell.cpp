@@ -2,25 +2,34 @@
 
 using namespace std;
 
-YeastCell::YeastCell() {
+YeastCell::YeastCell()
+{
     params = new (nothrow) double[1];
+
     if (params == 0)
+    {
         cout << "Error: memory could not be allocated";
+    }
 }
 
-YeastCell::YeastCell(double r) {
+YeastCell::YeastCell(double r)
+{
     params = new (nothrow) double[1];
 
     if (params == 0)
+    {
         cout << "Error: memory could not be allocated";
-    
+    }
+
     params[0] = r;
 }
 
-YeastCell::YeastCell(const YeastCell& orig) {
+YeastCell::YeastCell(const YeastCell& orig)
+{
 }
 
-YeastCell::~YeastCell() {
+YeastCell::~YeastCell()
+{
     delete[] params;
 }
 
@@ -33,7 +42,7 @@ double YeastCell::calc_volume()
 
 //void YeastCell::set_coor(double x, double y , double z)
 //{
-//    
+//
 //}
 
 void YeastCell::set_params(double* arr, int i)
