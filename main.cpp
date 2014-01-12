@@ -7,28 +7,19 @@
 #include <stdio.h>     /* printf, fgets */
 #include <argp.h>
 #include <stdlib.h>     /* atoi,  strtod */
-#include <string>
+//#include <string>
 #include <iostream>
 #include <error.h>     /* error */
 #include <math.h>      /* log, sqrt */
 #include <fstream>
 
 
+#include "src/arguments.h"
 #include "src/random.h"
 #include "src/Simulator.h"
 #include "src/Timer.h"
 
 using namespace std;
-
-struct Controls
-{
-    int transient;
-    int update_step;
-    char* fname;
-};
-
-Timer TT[10];
-
 
 const char* argp_program_version = "biofilm 0.0.1";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
@@ -40,34 +31,37 @@ static char doc[] =
 
 static char args_doc[] = "[STRING...]";
 
-struct arguments
-{
-    char** strings;               /* [string...] */
-    int silent, verbose, abort;   /* ‘-s’, ‘-v’, ‘--abort’ */
-    char* output_file;            /* file arg to ‘--output’ */
-    int n;                        /* count arg to ‘--repeat’ */
-    int t;
-    double dt, mu;
-    string cell_type;
-};
-
 #define OPT_ABORT  1            /* --abort */
 
 static struct argp_option options[] =
 {
     {0, 0, 0, 0, "Input/Output options:", 1},
-    {"verbose",  'v', 0,       0, "Produce verbose output" },
+    {"verbose",  'v', 0, 0, "Produce verbose output" },
     {"debug", 'd', 0, OPTION_ALIAS},
-    {"quiet",    'q', 0,       0, "Don't produce any output" },
-    {"silent",   's', 0,       OPTION_ALIAS },
+    {"quiet",    'q', 0, 0, "Don't produce any output" },
+    {"silent",   's', 0, OPTION_ALIAS},
+    {"input",   'i', "FILE",  0, "Input from FILE" },
     {"output",   'o', "FILE",  0, "Output to FILE instead of standard output" },
-    {"abort",    OPT_ABORT, 0, 0, "Abort before showing any output"},
+    {"log",   'l', "FILE",  0, "Print log to FILE instead of standard output" },
+    {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
+    
     {0, 0, 0, 0, "Simulation setup options:", -1},
-    {"cell_type", 'c', "STR", 0, "[tumor, yeast, bacteria]"},
-    { "time", 't', "NUM", OPTION_ARG_OPTIONAL, "..."},
-    { "dt", 777, "NUM", OPTION_ARG_OPTIONAL, "..."},
-    { "num", 'n', "INT", OPTION_ARG_OPTIONAL, "..."},
-    //{ "num", 'n', "INT", OPTION_ARG_OPTIONAL, "..."}, <- when you must specify the value
+    {"cell-type", 'c', "STR", 0, "[tumor, yeast, bacteria]"},
+    { "time", 't', "NUM", 0, "..."},
+    { "dl", 444, "NUM", 0, "..."},
+    { "n-iter", 666, "NUM", 0, "..."},
+    { "dt", 777, "NUM", 0, "..."},
+    { "step", 888, "INT", 0, "..."},
+    { "number", 'n', "INT", 0, "..."},
+    {"pbc", 111, 0, 0, "Periodic boundary conditions"},
+    {0, 0, 0, 0, "Simulation run options:", -1},
+    { "r-cut", 555, "NUM", 0, "..."},
+    {0, 'a', "NUM", 0, "..."},
+    {"gamma", 'g', "NUM", 0, "..."},
+    {"sigma", 999, "NUM", 0, "..."},
+    {"mass", 'm', "NUM", 0, "..."},
+    {"pair-dist", 011, "NUM", 0, "..."},
+    //{ "n-iter", 666, "NUM", OPTION_ARG_OPTIONAL, "..."},
     {0}
 };
 
@@ -82,11 +76,24 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
     {
         case ARGP_KEY_INIT:
             /* Default values. */
-            arguments->silent = 0;
+            arguments->silent = 1;
             arguments->verbose = 0;
-            arguments->output_file = "-";
+            arguments->output_file = "pos.coo";
+            arguments->input_file = "input.coo";
+            arguments->log_file = "log.txt";
             arguments->abort = 0;
-            arguments->n = 1;
+            arguments->n_particles = 1;
+            arguments->update_step = 1;
+            arguments->L = 10.0;
+            arguments->rcut = 1.0;
+            arguments->n_iter = 100;
+            arguments->pair_dist = 1.0;
+            arguments->dt = 0.05;
+            arguments->a = 25;
+            arguments->gamma = 4.5;
+            arguments->sigma = 3.0;
+            arguments->mass = 1.0;
+            arguments->pbc = false;
             break;
 
         case 'q':
@@ -95,28 +102,62 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
 
         case 'v':
-        case  'd':
+        case 'd':
             arguments->verbose = 1;
             break;
 
+        case 'i':
+            arguments->input_file = arg;
+            break;
+            
         case 'o':
             arguments->output_file = arg;
             break;
-
+            
+        case 'l':
+            arguments->log_file = arg;
+            break;
+            
         case 'c':
             arguments->cell_type = arg;
 
         case 'n':
-            arguments->n = arg ? atoi (arg) : 1;
+            arguments->n_particles = arg ? atoi (arg) : 1;
+            break;
+            
+        case 'a':
+            arguments->a = arg ? atoi (arg) : 25.0;
+            break;
+            
+        case 'g':
+            arguments->gamma = arg ? atoi (arg) : 4.5;
             break;
 
-        case 't':
-            arguments->t = arg ? strtod (arg, NULL) : 1.0;
+        case 'm':
+            arguments->mass = arg ? atoi (arg) : 1.0;
             break;
-
+            
+        case 011:
+            arguments->pair_dist = arg ? strtod (arg, NULL) : 1.0;
+            break;
+        
+        case 111:
+            arguments->pbc = false;
+            break;
+                 
         case 777:
             arguments->dt = arg ? strtod (arg, NULL) : 0.001;
+            break;
+            
+        case 666:
+            arguments->n_iter = arg ?  atoi (arg) : 100;
 
+        case 888:
+            arguments->update_step = arg ? atoi (arg) : 1;
+            
+        case 999:
+            arguments->sigma = arg ? strtod (arg, NULL) : 3.0;
+            
         case OPT_ABORT:
             arguments->abort = 1;
             break;
@@ -139,6 +180,8 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
 
+Timer clocks[10];
+
 int main(int argc, char** argv)
 {
     /* Initialize MT19937 Pseudo-random-number generator. */
@@ -153,7 +196,7 @@ int main(int argc, char** argv)
 
     if (arguments.abort)
     {
-        error (10, 0, "ABORTED");
+        error (123, 0, "ABORTED");
     }
 
     if (arguments.verbose && !arguments.silent)
@@ -168,73 +211,48 @@ int main(int argc, char** argv)
     }
 
     //************simulatoin is here
-    TT[0].tic();
+    clocks[0].tic();
     print_time();
-    Parameters Par;
-    Controls C;
-    // ../src/mydpd 0.05 100 input.coo out > log
-    Par.Nparticles = 4000;
-    Par.Nparticles = arguments.n;
-    cout << Par.Nparticles << " " << arguments.n << endl;
-    Par.L = 10;
 
-    //Par.Niter=atoi(argv[2]);
-    Par.Niter = 100;
-    Par.rcut = 1.0;
-    Par.pairdist = 1.0;
-    //Par.tau=atof(argv[1]);
-    Par.tau = 0.05;
-    //Par.infname =  argv[3];
-    Par.infname = "input.coo";
-    Par.a = 25;
-    Par.gamma = 4.5;
-    Par.sigma = 3.0;
-    Par.mass = 1.0;
-    C.transient = 0;
-    C.update_step = 1;
-    //C.fname = argv[4];
-    C.fname = "out";
+    Distance domain(arguments.L, arguments.L, arguments.L, Vector3D(0, 0, 0));
 
-    Distance domain(Par.L, Par.L, Par.L, Vector3D(0, 0, 0));
-
-    Simulator model(Par, domain );
-
-    ofstream os(C.fname);
+    Simulator model(arguments, domain );
+    
+    ofstream os(arguments.output_file);
     os.close();//reset file
-
     double t = 0.0;
 
-    for (int n = 0; n < Par.Niter; n++)
+    for (int n = 0; n < arguments.n_iter; n++)
     {
-        if ((n % C.update_step == 0) && (n >= C.transient))
+        if ((n % arguments.update_step == 0) && arguments.verbose == 0)
         {
             double T;
             Vector3D tot_P;
             model.state(T, tot_P);
             cout << "n=" << n << " t=" << t << " temp=" << T << " total_momentum = " << tot_P.length() << endl;
-            ofstream os(C.fname, ios::app);
+            ofstream os(arguments.output_file, ios::app);
             os << t << ' ' << T << '\n';
             os.close();
         }
 
-        TT[2].tic();
+        clocks[2].tic();
         model.integrate_trotter();
-        TT[2].toc();
-        t += model.Par.tau;
+        clocks[2].toc();
+        t += model.params.dt;
     }
 
-    TT[0].toc();
+    clocks[0].toc();
     int tt;
 
     for (tt = 0; tt < 3; tt++)
     {
-        cout << " " << TT[tt].time();
+        cout << " " << clocks[tt].time();
     }
 
     cout << '\n';
-    model.write_pos("pos.coo");
+    
+    model.write_pos(arguments.output_file);
     print_time();
-    //*****************************************************************************
 
     return 0;
 }
