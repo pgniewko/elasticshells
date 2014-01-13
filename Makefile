@@ -31,7 +31,6 @@ $(TEST_SRC)/%.o: $(TEST_SRC)/%.cpp $(TEST_SRC)/%.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 
-
 # Tell make that these are phony targets
 .PHONY: build clean test
 

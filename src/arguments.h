@@ -12,24 +12,24 @@ struct arguments
     int silent, verbose, abort;   /* ‘-s’, ‘-v’, ‘--abort’ */
     
     
-    char* input_file;            /* file arg to ‘--output’ */
-    char* output_file;            /* file arg to ‘--output’ */
-    char* log_file;            /* file arg to ‘--output’ */
+    char* input_file;          /* file arg to ‘--input’ */
+    char* output_file;         /* file arg to ‘--output’ */
+    char* log_file;            /* file arg to ‘--log’ */
+    char* cell_type;           /* */
     
-    
-    int update_step;
-    double mu;
-    string cell_type;
+    int log_step;
     int n_particles;
-    double L;
     int n_iter;
-    double rcut;
-    double dt;
-    double pair_dist;
+    
+    double L;
     double a;
+    double dt;
+    double mu;
     double gamma;
     double sigma;
     double mass;
+    double r_cut;
+    double pair_dist;
     
     bool pbc;
 };

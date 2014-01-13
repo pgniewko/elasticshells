@@ -29,7 +29,7 @@ class Simulator {
 //    Simulator(Vector3D* pp, Fields* fp, int _np, const Distance& _domain, const Parameters& par);
         //Simulator(const Parameters& par, const Distance& _domain);
         Simulator(const arguments& par, const Distance& _domain);
-        virtual ~Simulator();
+//        virtual ~Simulator();
 
         void integrate_euler();
         void integrate_DPD_VV();

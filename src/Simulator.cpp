@@ -82,12 +82,12 @@ Simulator::Simulator (const arguments& par, const Distance& _domain)
         fp[i].P -= P;    //remove average momentum
     }
 
-    compute_pairs(pl, domain, r, par.rcut, pairs);
+    compute_pairs(pl, domain, r, par.r_cut, pairs);
 }
 
-Simulator::~Simulator()
-{
-}
+//Simulator::~Simulator()
+//{
+//}
 
 int Simulator::read_pos(const char* filename)
 {
@@ -200,7 +200,7 @@ double Simulator::compute_forces(double dt, vector<Fields>& F, int NC)
             cout << "R_KL=0" << endl;
         }
 
-        if (R_kl < params.rcut)
+        if (R_kl < params.r_cut)
         {
             //k
             Fields fk = fp[k];
@@ -211,11 +211,11 @@ double Simulator::compute_forces(double dt, vector<Fields>& F, int NC)
             //geometry
             Vector3D e_kl(r_kl / R_kl);
             Vector3D U_kl(U_k - U_l);
-            double w_R = omega_R(R_kl, params.rcut);
+            double w_R = omega_R(R_kl, params.r_cut);
             double w_D = w_R * w_R;
 
-            Fc_kl = params.a * cforce(R_kl, params.rcut) * e_kl;
-            Ec += 0.5 * params.a * cforce(R_kl, params.rcut) * cforce(R_kl, params.rcut);
+            Fc_kl = params.a * cforce(R_kl, params.r_cut) * e_kl;
+            Ec += 0.5 * params.a * cforce(R_kl, params.r_cut) * cforce(R_kl, params.r_cut);
             Fr_kl = double(NC) * params.sigma * w_R * normal() * e_kl / sqrtdt;
             Fd_kl = - double(NC) * params.gamma * w_D * (U_kl * e_kl) * e_kl;
             F[k].P +=  Fc_kl + Fd_kl + Fr_kl;
@@ -259,7 +259,7 @@ double Simulator::compute_forces_trotter(double dt, int order)
         end = 0;
     }
 
-    //else abort();
+//    else abort(); /* "stdlib.h" */
 
     for (int ii = start; ii <= end; ii++)
     {
@@ -274,7 +274,7 @@ double Simulator::compute_forces_trotter(double dt, int order)
             cout << "R_KL=0" << endl;
         }
 
-        if (R_kl < params.rcut)
+        if (R_kl < params.r_cut)
         {
             //k
             Fields fk = fp[k];
@@ -285,22 +285,22 @@ double Simulator::compute_forces_trotter(double dt, int order)
             //geometry
             Vector3D e_kl(r_kl / R_kl);
             Vector3D P_kl(P_k - P_l);
-            double w_R = omega_R(R_kl, params.rcut);
+            double w_R = omega_R(R_kl, params.r_cut);
             double w_D = w_R * w_R;
 
             if (params.gamma > 0 && params.sigma > 0)
             {
                 double gamma1 = 2.0 * params.gamma * w_D;
                 Fr_kl = params.sigma * w_R * e_kl * sqrt((1.0 - exp(-2.0 * gamma1 * dt)) / (2.0 * gamma1) ) * normal();
-                Fd_kl = 0.5 * ( P_kl * e_kl - params.a * cforce(R_kl, params.rcut) / (params.gamma * w_D) ) * e_kl * ( exp(-2.0 * params.gamma * w_D * dt) - 1.0);
+                Fd_kl = 0.5 * ( P_kl * e_kl - params.a * cforce(R_kl, params.r_cut) / (params.gamma * w_D) ) * e_kl * ( exp(-2.0 * params.gamma * w_D * dt) - 1.0);
             }
             else
             {
                 Fr_kl *= 0.0;
-                Fd_kl = params.a * cforce(R_kl, params.rcut) * e_kl * dt;
+                Fd_kl = params.a * cforce(R_kl, params.r_cut) * e_kl * dt;
             }
 
-            Ec += 0.5 * params.a * cforce(R_kl, params.rcut) * cforce(R_kl, params.rcut);
+            Ec += 0.5 * params.a * cforce(R_kl, params.r_cut) * cforce(R_kl, params.r_cut);
             fp[k].P += Fd_kl + Fr_kl;
             fp[l].P += -Fd_kl - Fr_kl;
         }
@@ -313,7 +313,7 @@ void Simulator::integrate_euler()
 {
     vector<Fields> F(np, Fields());
     double dt = params.dt;
-    compute_pairs(pl, domain, r, params.rcut, pairs);
+    compute_pairs(pl, domain, r, params.r_cut, pairs);
     compute_forces(dt, F);
 
     for (int k = 0; k < np; k++)
@@ -352,7 +352,7 @@ void Simulator::integrate_DPD_VV()
         fp[k].P += 0.5 * F[k].P * dt;
     }
 
-    compute_pairs(pl, domain, r, params.rcut, pairs);
+    compute_pairs(pl, domain, r, params.r_cut, pairs);
     double Ec = compute_forces(dt, F);
 
     for (int k = 0; k < np; k++)
@@ -374,7 +374,7 @@ void Simulator::integrate_trotter()
         r[k] += fp[k].P / m * dt;    //1
     }
 
-    compute_pairs(pl, domain, r, params.rcut, pairs);
+    compute_pairs(pl, domain, r, params.r_cut, pairs);
 
     Ec = compute_forces_trotter(dt2, 1); //2
 }
