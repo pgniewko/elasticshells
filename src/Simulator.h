@@ -11,7 +11,6 @@
 #include "constants.h"
 #include "arguments.h"
 #include "Cell.h"
-#include "YeastCell.h"
 
 #include <error.h>     /* error */
 
