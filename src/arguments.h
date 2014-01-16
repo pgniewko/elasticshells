@@ -1,7 +1,7 @@
 #ifndef ARGUMENTS_H
 #define	ARGUMENTS_H
 
-#include <string>
+//#include <string>
 using namespace std;
 
 struct arguments
@@ -14,9 +14,12 @@ struct arguments
     
     char* input_file;          /* file arg to ‘--input’ */
     char* output_file;         /* file arg to ‘--output’ */
+    char* traj_file;         /* file arg to ‘--traj’ */
     char* log_file;            /* file arg to ‘--log’ */
-    char* cell_type;           /* */
     
+    char* integrator_a;
+    
+    int w;
     int log_step;
     int n_particles;
     int n_iter;
