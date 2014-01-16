@@ -3,7 +3,7 @@
 # License: BSD
 
 # C++ compiler
-CXX=g++
+CXX      := g++
 
 # Flags for the C++ compiler
 # -g --Enable debugging
@@ -12,20 +12,20 @@ CXX=g++
 # --Force the compiler to use the correct headers
 # -ansi --Don't use GNU ext; do use ansi standard.
 # "-O3" - optimization level
-DEBUG=-g
+DEBUG    := -g
 
 # Relative include and library paths for compilation of the examples
-INCLUDE=-Isrc
-LIB=-Llib
+INCLUDE  := -Isrc
+LIB      := -Llib
 
-CXXFLAGS=-Wall -O3 -fpermissive $(DEBUG) $(INCLUDE) -Wunused-but-set-variable
-LDFLAGS=$(LIB)
-LDLIBS=-lcppunit
+CXXFLAGS := -Wall -O3 -fpermissive $(DEBUG) $(INCLUDE) -Wunused-but-set-variable
+LDFLAGS  := $(LIB)
+LDLIBS   := -lcppunit
 
 # Local dirs 
-TEST_SRC=./src/test
-SRC=./src
-BIN=./bin
+TEST_SRC := ./src/test
+SRC      := ./src
+BIN      := ./bin
 
 # Installation directory
 #PREFIX=/usr/local

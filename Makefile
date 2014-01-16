@@ -1,17 +1,19 @@
 include config.mk
 
-PROGRAM=$(BIN)/biofilm
-TEST_RUNNER=$(TEST_SRC)/test
+PROGRAM      := $(BIN)/biofilm
+TEST_RUNNER  := $(TEST_SRC)/test
 
-SOURCES=main.cpp \
-        $(wildcard $(SRC)/*.cpp)
+SOURCES      := main.cpp \
+                $(wildcard $(SRC)/*.cpp)
 
-OBJECTS=$(SOURCES:.cpp=.o)
+HEADERS      := $(wildcard $(SRC)/*.h)
 
-TEST_SOURCES=$(wildcard $(TEST_SRC)/*.cpp) \
-             $(wildcard $(SRC)/*.cpp)
+OBJECTS      := $(SOURCES:.cpp=.o)
 
-TEST_OBJECTS=$(TEST_SOURCES:.cpp=.o)
+TEST_SOURCES := $(wildcard $(TEST_SRC)/*.cpp) \
+                $(wildcard $(SRC)/*.cpp)
+
+TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
 #Linking commands:
 $(PROGRAM): $(OBJECTS)
@@ -21,7 +23,7 @@ $(TEST_RUNNER): $(TEST_OBJECTS)
 	g++ -lm $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 #Compilation commands:
-main.o: main.cpp
+main.o: $(SOURCES) $(HEADERS) #main.cpp 
 
 $(SRC)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 
@@ -46,6 +48,6 @@ clean:
 	@echo Clean done.
 	
 indent:
-	@astyle --style=allman -r -xn -xc -xl -C -xG -SKNL -wfpHj -k1 "*.cpp"
-	@astyle --style=allman -r -xn -xc -xl -C -xG -SKNL -wfpHj -k1 "*.h"
+	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.cpp"
+	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.h"
 	@./astyle-clean.sh
