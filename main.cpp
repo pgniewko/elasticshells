@@ -20,7 +20,6 @@
 
 using namespace std;
 
-
 const char* argp_program_version = "biofilm 0.0.9";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
 
@@ -42,10 +41,12 @@ static struct argp_option options[] =
     {"input",    'i', "FILE",  0, "Input from FILE [default: ...]" },
     {"output",   'o', "FILE",  0, "Output to FILE instead of standard output [default: ... ]" },
     {"log",      'l', "FILE",  0, "Print log to FILE instead of standard output [default: ... ]" },
+    {"xyz",      't', "FILE",  0, "Print trajectory to FILE [default: ... ]" },
+    {"wrap",     'w', "FILE",  0, "Coordinates wrapping mode:0 - image, 1 - real [default: 1]" },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
     
     {0, 0, 0, 0, "Simulation Options:", 3},
-    {"cell-type", 'c', "STR", 0, "Three options are available: yeast, tumor, bacteria [default: yeast]"},
+    {"int",       991,  "STR", 0, "Integrator of equations of motion: velocity-verlet[vv], trotter[trot] [default: trot]"},
     {"size",      444, "NUM", 0, "Box size [default: 10.0]"},
     {"n-iter",    666, "NUM", 0, "Number of time steps [default: 100]"},
     {"dt",        777, "NUM", 0, "Time step [default: 0.05]"},
@@ -55,7 +56,7 @@ static struct argp_option options[] =
     
     {0,             0, 0, 0, "System Options:", 5},
     { "r-cut",    555, "NUM", 0, "Radius cut-off for pair interactions [default: 1.0]"},
-    {0,           'a', "NUM", 0, "[default: 25.0]"},
+    {0,           'a', "NUM", 0, "Repulsion parameter between bodies [default: 25.0]"},
     {"gamma",     'g', "NUM", 0, "Medium viscosity [default: 4.5]"},
     {"sigma",     999, "NUM", 0, "Radius of a particle [default: 3.0]"},
     {"mass",      'm', "NUM", 0, "Mass of a particle [default: 1.0]"},
@@ -77,9 +78,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->silent = 0;
             arguments->verbose = 1;
             arguments->output_file = "pos.coo";
-            arguments->input_file = "input.coo";
+            //arguments->input_file = "input.coo";
+            arguments->input_file = "";
+            arguments->traj_file = "traj.xyz";
             arguments->log_file = "log.txt";
-            arguments->cell_type = "yeast";
+            arguments->integrator_a = "trot";
             arguments->abort = 0;
             arguments->n_particles = 1;
             arguments->log_step = 1;
@@ -92,6 +95,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->gamma = 4.5;
             arguments->sigma = 3.0;
             arguments->mass = 1.0;
+            arguments->w = 1;
             arguments->pbc = false;
             break;
 
@@ -114,17 +118,21 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 'o':
             arguments->output_file = arg;
             break;
+
+        case 't':
+            arguments->traj_file = arg;
+            break;
             
         case 'l':
             arguments->log_file = arg;
             break;
-            
-        case 'c':
-            arguments->cell_type = arg;
-            break;
 
         case 'n':
             arguments->n_particles = arg ? atoi (arg) : 1;
+            break;
+            
+        case 'w':
+            arguments->w = arg ? atoi (arg) : 1;
             break;
             
         case 'a':
@@ -144,7 +152,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         
         case 301:
-            arguments->pbc = false;
+            arguments->pbc = true;
             break;
                  
         case 444:
@@ -165,6 +173,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 888:
             arguments->log_step = arg ? atoi (arg) : 1;
+            break;
+
+        case 991:
+            arguments->integrator_a = arg;
             break;
             
         case 999:
@@ -191,7 +203,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 }
 
 static struct argp argp = { options, parse_opt, args_doc, doc };
-
 
 Timer clocks[10];
 
@@ -223,17 +234,22 @@ int main(int argc, char** argv)
                 arguments.silent ? "yes" : "no");
     }
 
-    //************simulatoin is here
+    //************ simulation is here
     clocks[0].tic();
     print_time();
 
-    Distance domain(arguments.L, arguments.L, arguments.L, Vector3D(0, 0, 0));
+    Box domain(arguments.L, arguments.L, arguments.L, Vector3D(0, 0, 0));
 
     Simulator model(arguments, domain);
     
-    ofstream os(arguments.output_file);
-    os.close(); //reset file
-    double t = 0.0;
+    ofstream os;
+    os.open(arguments.log_file, ios::out | ios::trunc ); /* reset file */
+    os.close();
+    
+    ofstream ost(arguments.traj_file, ios::out | ios::trunc);
+    ost.close();
+    
+    double sim_time = 0.0;
 
     for (int n = 0; n < arguments.n_iter; n++)
     {
@@ -242,16 +258,19 @@ int main(int argc, char** argv)
             double T;
             Vector3D tot_P;
             model.state(T, tot_P);
-            cout << "n=" << n << " t=" << t << " temp=" << T << " total_momentum = " << tot_P.length() << endl;
-            ofstream os(arguments.output_file, ios::app);
-            os << t << ' ' << T << '\n';
+            cout << "n=" << n << " t=" << sim_time << " temp=" << T << " total_momentum = " << tot_P.length() << endl;
+            os.open(arguments.log_file, ios::app);
+            os << sim_time << ' ' << T << '\n';
             os.close();
+            
+            model.write_pos_traj(arguments.traj_file, arguments.w);
         }
 
         clocks[2].tic();
-        model.integrate_trotter();
+        model.integrate();
+        
         clocks[2].toc();
-        t += model.params.dt;
+        sim_time += model.params.dt;
     }
 
     clocks[0].toc();
@@ -264,7 +283,7 @@ int main(int argc, char** argv)
 
     cout << '\n';
     
-    model.write_pos(arguments.output_file);
+    model.write_pos(arguments.output_file, arguments.w);
     print_time();
 
     return 0;
