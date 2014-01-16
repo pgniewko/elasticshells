@@ -10,9 +10,9 @@ Pairlist::Pairlist(double _mindist, int _steps)
     margin = Vector3D(_mindist, _mindist, _mindist);
 }
 
-Pairlist::~Pairlist()
-{
-}
+//Pairlist::~Pairlist()
+//{
+//}
 
 int Pairlist::num_boxes() const
 {
@@ -56,7 +56,7 @@ inline void find_minmax(const Vector3D* r, int n, Vector3D& min, Vector3D& max)
     }
 }
 
-int Pairlist::findbox(Vector3D p, const Distance& dist) const
+int Pairlist::findbox(Vector3D p, const Box& dist) const
 {
     p = dist.delta(p) - lmin;
     int axb = (int)( p.x / pairdist.x);
@@ -65,7 +65,7 @@ int Pairlist::findbox(Vector3D p, const Distance& dist) const
     return  azb * xytotb + ayb * xb + axb;
 }
 
-void Pairlist::set_neighbors(const Distance& domain)
+void Pairlist::set_neighbors(const Box& domain)
 {
     static  int oxb = - 1, oyb = -1, ozb = - 1;
 
@@ -145,7 +145,7 @@ void Pairlist::set_neighbors(const Distance& domain)
 }
 
 
-void Pairlist::compute(const Distance& domain, const Vector3D* r, int np, int* aindex)
+void Pairlist::compute(const Box& domain, const Vector3D* r, int np, int* aindex)
 {
     double lx, ly, lz;
     lx = domain.a(); //set box size
