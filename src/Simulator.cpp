@@ -11,10 +11,12 @@ inline Vector3D maxwell_boltzmann(double m, const Vector3D& mean_v, double kT)
 
 int Simulator::initialize_pos(const char* filename, int np)
 {
-    if (std::string(filename).empty()) {
-       return random_pos(np);
+    if (std::string(filename).empty())
+    {
+        return random_pos(np);
     }
-    else {
+    else
+    {
         return read_pos(filename);
     }
 }
@@ -28,26 +30,27 @@ int Simulator::read_pos(const char* filename)
     {
         float x, y, z;
         sscanf(buf, "%f %f %f", &x, &y, &z);
-        cells.push_back(Cell(x,y,z));
+        cells.push_back(Cell(x, y, z));
     }
 
     is.close();
     return cells.size();
 }
 
-int Simulator::random_pos(int np) 
+int Simulator::random_pos(int np)
 {
     double a = box.a();
     double b = box.b();
     double c = box.c();
-    
+
     for (int i = 0; i < np; i++)
     {
         double x = uniform(0, a);
         double y = uniform(0, b);
         double z = uniform(0, c);
-        cells.push_back(Cell(x,y,z));
+        cells.push_back(Cell(x, y, z));
     }
+
     //error (123, 0, "ABORTED");
     return np;
 }
@@ -79,6 +82,7 @@ void Simulator::write_pos_traj(const char* filename, bool wrap)
 {
     ofstream os(filename, ios::app);
     os << np << "\n\n";
+
     //cout << filename << " " << np<< endl;
     for (int i = 0; i < np; i++)
     {
@@ -148,14 +152,14 @@ void compute_pairs(Pairlist& pl, Box& domain, vector<Cell>& cells, double RCUT, 
 Simulator::Simulator (const arguments& par, const Box& _domain)
     : params(par), box(_domain) , pl(Pairlist(par.pair_dist, 1))
 {
-    
+
     np = initialize_pos(par.input_file, par.n_particles);
-    
+
     set_integrator(params.integrator_a);
-    
+
     cells.resize(np, Cell());
-    
-    
+
+
     double T;
 
     if (params.gamma > 0)
@@ -170,10 +174,10 @@ Simulator::Simulator (const arguments& par, const Box& _domain)
     for (int i = 0; i < np; i++)
     {
         cells[i].mass = params.mass;
-        cells[i].f = Vector3D(0,0,0);
+        cells[i].f = Vector3D(0, 0, 0);
         //fp[i].P = params.mass * maxwell_boltzmann(params.mass, Vector3D(), T);
         cells[i].p = params.mass * maxwell_boltzmann(params.mass, Vector3D(), T);
-        
+
         //cout << fp[i].P << endl;
     }
 
@@ -198,12 +202,12 @@ void Simulator::state(double& T, Vector3D& P) const
 {
     double tot = 0.0;
     Vector3D tmp;
-    
+
     for (int i = 0; i < np; i++)
     {
         //tot += 0.5 * fp[i].P * fp[i].P / params.mass;
         //tmp += fp[i].P;
-        
+
         tot += 0.5 * cells[i].p * cells[i].p / cells[i].mass;
         tmp += cells[i].p;
     }
@@ -331,7 +335,7 @@ void Simulator::integrate_DPD_VV()
     vector<Vector3D> tmp_FP(np, Vector3D());
 
     double dt = params.dt;
-   //double m = params.mass;
+    //double m = params.mass;
 
     for (int k = 0; k < np; k++)
     {
@@ -378,9 +382,10 @@ double Simulator::compute_forces_trotter(double dt, int order)
         start = - pairs.size() + 1;
         end = 0;
     }
-    else {
+    else
+    {
         start = 0;
-        end = pairs.size() - 1;       
+        end = pairs.size() - 1;
     }
 
 //    else abort(); /* "stdlib.h" */
@@ -464,11 +469,11 @@ void Simulator::set_integrator(char* token)
     {
         this->set_integrator(&Simulator::integrate_DPD_VV);
     }
-    else if(STRCMP (token, "trot")) 
+    else if (STRCMP (token, "trot"))
     {
         this->set_integrator(&Simulator::integrate_trotter);
     }
-    else 
+    else
     {
         this->set_integrator(&Simulator::integrate_trotter);
     }

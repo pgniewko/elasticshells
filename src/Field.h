@@ -1,7 +1,8 @@
 #ifndef FIELD_H
 #define	FIELD_H
 
-class Field {
+class Field
+{
     public:
 
         Field();

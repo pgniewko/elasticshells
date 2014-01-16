@@ -44,7 +44,7 @@ static struct argp_option options[] =
     {"xyz",      't', "FILE",  0, "Print trajectory to FILE [default: ... ]" },
     {"wrap",     'w', "FILE",  0, "Coordinates wrapping mode:0 - image, 1 - real [default: 1]" },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
-    
+
     {0, 0, 0, 0, "Simulation Options:", 3},
     {"int",       991,  "STR", 0, "Integrator of equations of motion: velocity-verlet[vv], trotter[trot] [default: trot]"},
     {"size",      444, "NUM", 0, "Box size [default: 10.0]"},
@@ -53,7 +53,7 @@ static struct argp_option options[] =
     {"log-step",  888, "INT", 0, "[Log step interval [default: 1]"},
     {"number",    'n', "INT", 0, "Number of particles. Not in work when positions read from the file [default: 1]"},
     {"pbc",       301, 0, 0, "Use periodic boundary conditions [default: false]"},
-    
+
     {0,             0, 0, 0, "System Options:", 5},
     { "r-cut",    555, "NUM", 0, "Radius cut-off for pair interactions [default: 1.0]"},
     {0,           'a', "NUM", 0, "Repulsion parameter between bodies [default: 25.0]"},
@@ -67,7 +67,7 @@ static struct argp_option options[] =
 
 static int parse_opt (int key, char* arg, struct argp_state* state)
 {
-    /* Get the input argument from argp_parse, which 
+    /* Get the input argument from argp_parse, which
      * is a pointer to our arguments structure. */
     struct arguments* arguments = state->input;
 
@@ -114,7 +114,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 'i':
             arguments->input_file = arg;
             break;
-            
+
         case 'o':
             arguments->output_file = arg;
             break;
@@ -122,7 +122,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 't':
             arguments->traj_file = arg;
             break;
-            
+
         case 'l':
             arguments->log_file = arg;
             break;
@@ -130,15 +130,15 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 'n':
             arguments->n_particles = arg ? atoi (arg) : 1;
             break;
-            
+
         case 'w':
             arguments->w = arg ? atoi (arg) : 1;
             break;
-            
+
         case 'a':
             arguments->a = arg ? atoi (arg) : 25.0;
             break;
-            
+
         case 'g':
             arguments->gamma = arg ? atoi (arg) : 4.5;
             break;
@@ -146,30 +146,30 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 'm':
             arguments->mass = arg ? atoi (arg) : 1.0;
             break;
-            
+
         case 300:
             arguments->pair_dist = arg ? strtod (arg, NULL) : 1.0;
             break;
-        
+
         case 301:
             arguments->pbc = true;
             break;
-                 
+
         case 444:
             arguments->L = arg ? strtod (arg, NULL) : 10.0;
             break;
-            
+
         case 777:
             arguments->dt = arg ? strtod (arg, NULL) : 0.001;
             break;
-            
+
         case 666:
             arguments->n_iter = arg ?  atoi (arg) : 100;
             break;
-            
+
         case 555:
             arguments->r_cut = arg ?  strtod (arg, NULL) : 1.0;
-            break;    
+            break;
 
         case 888:
             arguments->log_step = arg ? atoi (arg) : 1;
@@ -178,11 +178,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 991:
             arguments->integrator_a = arg;
             break;
-            
+
         case 999:
             arguments->sigma = arg ? strtod (arg, NULL) : 3.0;
             break;
-            
+
         case OPT_ABORT:
             arguments->abort = 1;
             break;
@@ -241,14 +241,14 @@ int main(int argc, char** argv)
     Box domain(arguments.L, arguments.L, arguments.L, Vector3D(0, 0, 0));
 
     Simulator model(arguments, domain);
-    
+
     ofstream os;
     os.open(arguments.log_file, ios::out | ios::trunc ); /* reset file */
     os.close();
-    
+
     ofstream ost(arguments.traj_file, ios::out | ios::trunc);
     ost.close();
-    
+
     double sim_time = 0.0;
 
     for (int n = 0; n < arguments.n_iter; n++)
@@ -262,13 +262,13 @@ int main(int argc, char** argv)
             os.open(arguments.log_file, ios::app);
             os << sim_time << ' ' << T << '\n';
             os.close();
-            
+
             model.write_pos_traj(arguments.traj_file, arguments.w);
         }
 
         clocks[2].tic();
         model.integrate();
-        
+
         clocks[2].toc();
         sim_time += model.params.dt;
     }
@@ -282,7 +282,7 @@ int main(int argc, char** argv)
     }
 
     cout << '\n';
-    
+
     model.write_pos(arguments.output_file, arguments.w);
     print_time();
 

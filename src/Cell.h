@@ -5,7 +5,8 @@
 #include <cmath>
 #include "Vector3D.h"
 
-class Cell {
+class Cell
+{
     protected:
         double* params;
 
@@ -15,8 +16,10 @@ class Cell {
 //        Cell(const Cell& orig);
 //        virtual ~Cell();
 
-        virtual double calc_volume() {return 0.0;};
-        
+        virtual double calc_volume() {
+            return 0.0;
+        };
+
         Vector3D r;
         Vector3D p;
         Vector3D f;

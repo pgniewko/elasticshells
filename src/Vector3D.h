@@ -5,7 +5,8 @@
 #include <fstream>
 #include <math.h>
 
-class Vector3D {
+class Vector3D
+{
     public:
         typedef double DataType;
 

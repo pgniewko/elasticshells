@@ -5,7 +5,8 @@
 
 #include "YeastCell.h"
 
-class TestYeastCell : public CPPUNIT_NS::TestFixture {
+class TestYeastCell : public CPPUNIT_NS::TestFixture
+{
         CPPUNIT_TEST_SUITE(TestYeastCell);
 
         CPPUNIT_TEST(testMethod);

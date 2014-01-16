@@ -3,7 +3,8 @@
 
 #include "Vector3D.h"
 
-class Box {
+class Box
+{
     public:
         Box(void) : lx(0.0), ly(0.0), lz(0.0) {}
         Box(double l_x, double l_y, double l_z, Vector3D o);
@@ -19,15 +20,15 @@ class Box {
         double a() const {
             return lx;
         }
-        
+
         double b() const {
             return ly;
         }
-        
+
         double c() const {
             return lz;
         }
-        
+
         Vector3D origin() const {
             return O;
         }

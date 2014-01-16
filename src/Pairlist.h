@@ -11,7 +11,8 @@ using namespace std;
 typedef vector<int> IntList;
 typedef vector<IntList> BoxList;
 
-class Pairlist {
+class Pairlist
+{
     public:
 //    Pairlist();
         Pairlist(double mindist, int steps = 1);

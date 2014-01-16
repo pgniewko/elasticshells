@@ -23,14 +23,16 @@ using namespace std;
 //        Fields() : P(0.0, 0.0, 0.0) {}
 //};
 
-class Pair {
+class Pair
+{
     public:
         int k, l;
         Pair(int _k, int _l) : k(_k), l(_l) {}
 };
 
 
-class Simulator {
+class Simulator
+{
     public:
 //    Simulator(Vector3D* pp, Fields* fp, int _np, const Distance& _domain, const Parameters& par);
         //Simulator(const Parameters& par, const Distance& _domain);
@@ -57,11 +59,11 @@ class Simulator {
         vector<Pair> pairs;
         //vector<Fields> fp;
         //vector<Vector3D> r;
-        
+
         vector<Cell> cells;
-        
+
         int np;
-        
+
         void (Simulator::*integrator)();
         double compute_forces(double dt, vector<Vector3D>& dfp, int NC = 1);
         double compute_forces_trotter(double dt, int order = 0);
