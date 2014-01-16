@@ -1,4 +1,4 @@
-#include "Distance.h"
+#include "Box.h"
 
 //Distance::Distance()
 //{
@@ -7,16 +7,17 @@
 //    lz = 0.0;
 //}
 
-Distance::Distance(double l_x, double l_y, double l_z, Vector3D o)
+Box::Box(double l_x, double l_y, double l_z, Vector3D o)
 {
     this->set(l_x, l_y, l_z, o);
 }
 
-Distance::~Distance()
-{
-}
+//Box::~Box()
+//{
+//}
 
-void Distance::set(double l_x, double l_y, double l_z, Vector3D o)
+
+void Box::set(double l_x, double l_y, double l_z, Vector3D o)
 {
     lx = l_x;
     ly = l_y;
@@ -27,7 +28,7 @@ void Distance::set(double l_x, double l_y, double l_z, Vector3D o)
     O = o;
 }
 
-Vector3D Distance::delta(const Vector3D& p1) const
+Vector3D Box::delta(const Vector3D& p1) const
 {
     Vector3D delta = p1 - O;
     delta.x -= lx * rint( ilx * delta.x );
@@ -36,7 +37,7 @@ Vector3D Distance::delta(const Vector3D& p1) const
     return delta;
 }
 
-Vector3D Distance::delta(const Vector3D& p1, const  Vector3D& p2) const
+Vector3D Box::delta(const Vector3D& p1, const  Vector3D& p2) const
 {
     Vector3D delta = p1 - p2;
     delta.x -= lx * rint( ilx * delta.x );
@@ -45,7 +46,7 @@ Vector3D Distance::delta(const Vector3D& p1, const  Vector3D& p2) const
     return delta;
 }
 
-Vector3D Distance::image(const Vector3D& p1) const
+Vector3D Box::image(const Vector3D& p1) const
 {
     Vector3D delta = p1 - O;
     delta.x -= lx * rint( ilx * delta.x );

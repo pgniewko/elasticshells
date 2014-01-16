@@ -1,13 +1,13 @@
-#ifndef DISTANCE_H
-#define	DISTANCE_H
+#ifndef BOX_H
+#define	BOX_H
 
 #include "Vector3D.h"
 
-class Distance {
+class Box {
     public:
-        Distance(void) : lx(0.0), ly(0.0), lz(0.0) {}
-        Distance(double l_x, double l_y, double l_z, Vector3D o);
-        virtual ~Distance();
+        Box(void) : lx(0.0), ly(0.0), lz(0.0) {}
+        Box(double l_x, double l_y, double l_z, Vector3D o);
+//        virtual ~Box();
 
         void set(double l_x, double l_y, double l_z, Vector3D o);
 
@@ -19,12 +19,15 @@ class Distance {
         double a() const {
             return lx;
         }
+        
         double b() const {
             return ly;
         }
+        
         double c() const {
             return lz;
         }
+        
         Vector3D origin() const {
             return O;
         }
@@ -38,5 +41,5 @@ class Distance {
         Vector3D O;
 };
 
-#endif	/* DISTANCE_H */
+#endif	/*BOX_H */
 
