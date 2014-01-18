@@ -2,6 +2,7 @@
 #define	BOX_H
 
 #include "Vector3D.h"
+#include "Field.h"
 
 class Box
 {
@@ -15,7 +16,7 @@ class Box
         Vector3D delta(const Vector3D& p1) const;
         Vector3D delta(const Vector3D& p1, const Vector3D& p2) const;
         Vector3D image(const Vector3D& p1) const;
-
+        void evolve_fields();
 
         double a() const {
             return lx;
@@ -32,6 +33,7 @@ class Box
         Vector3D origin() const {
             return O;
         }
+        
         double volume() const {
             return lx * ly * lz;
         }
@@ -40,7 +42,8 @@ class Box
         double lx, ly, lz;
         double ilx, ily, ilz;
         Vector3D O;
+        
+        Field nutrients;
 };
 
 #endif	/*BOX_H */
-

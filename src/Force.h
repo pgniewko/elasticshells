@@ -11,9 +11,8 @@ public:
     Force();
     Force(const Force& orig);
     virtual ~Force();
-    void print() {cout << "print func" <<endl;};
     virtual Vector3D eval(Vector3D r_kl, Cell cell_k, Cell cell_l) =0;
-    inline virtual double magn(Vector3D r_kl, Cell cell_k, Cell cell_l) =0;
+    virtual double magn(Vector3D r_kl, Cell cell_k, Cell cell_l) =0;
 private:
 
 };

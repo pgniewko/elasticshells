@@ -151,7 +151,7 @@ void Pairlist::compute(const Box& domain, const Vector3D* r, int np, int* aindex
     lx = domain.a(); //set box size
     ly = domain.b();
     lz = domain.c();
-    lmin = domain.origin() - Vector3D(0.5 * lx, 0.5 * ly, 0.5 * lz); //in this case domain is centred
+    lmin = domain.origin() - Vector3D(0.5 * lx, 0.5 * ly, 0.5 * lz); //in this case domain is centered
     Vector3D min, max, side;
 
     if (!domain.a() || !domain.b() || !domain.c())    //at least one direction is NOT periodic
@@ -243,7 +243,7 @@ void Pairlist::compute(const Box& domain, const Vector3D* r, int np, int* aindex
     n++;
 }
 
-static void Pairlist::compute_pairs(Pairlist& pl, Box& domain, vector<Cell>& cells, double RCUT, vector<Pair>& pairs)
+void Pairlist::compute_pairs(Pairlist& pl, Box& domain, vector<Cell>& cells, double RCUT, vector<Pair>& pairs)
 {
     Vector3D pos[cells.size()];
 
@@ -252,12 +252,11 @@ static void Pairlist::compute_pairs(Pairlist& pl, Box& domain, vector<Cell>& cel
         pos[i] = cells[i].r;
     }
 
-
-    //pl.compute(domain, pos, r.size());
     pl.compute(domain, pos, cells.size());
     pairs.clear();
 
-    for (int k = 0; k < pl.boxlist.size(); k++)//iterate over boxes
+    for (int k = 0; k < pl.boxlist.size(); k++)
+    { //iterate over boxes
         for (int nbr = 0; nbr < pl.nbrlist[k].size(); nbr++)
         {
             //iterate over nbr boxes
@@ -287,4 +286,5 @@ static void Pairlist::compute_pairs(Pairlist& pl, Box& domain, vector<Cell>& cel
                 }
             }
         }
+    }
 }

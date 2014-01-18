@@ -1,12 +1,5 @@
 #include "Box.h"
 
-//Distance::Distance()
-//{
-//    lx = 0.0;
-//   ly = 0.0;
-//    lz = 0.0;
-//}
-
 Box::Box(double l_x, double l_y, double l_z, Vector3D o)
 {
     this->set(l_x, l_y, l_z, o);
@@ -53,4 +46,9 @@ Vector3D Box::image(const Vector3D& p1) const
     delta.y -= ly * rint( ily * delta.y );
     delta.z -= lz * rint( ilz * delta.z );
     return delta + O;
+}
+
+void Box::evolve_fields()
+{
+    nutrients.evolve();
 }

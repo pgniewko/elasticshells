@@ -234,7 +234,6 @@ int main(int argc, char** argv)
                 arguments.silent ? "yes" : "no");
     }
 
-    //************ simulation is here
     clocks[0].tic();
     print_time();
 
