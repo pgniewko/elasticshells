@@ -22,6 +22,7 @@ class Vector3D
         const Vector3D& operator /=(const DataType a);
         double length() const;
         double length2() const;
+        Vector3D direction() const;
 
         DataType x, y, z;
 

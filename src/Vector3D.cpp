@@ -35,6 +35,11 @@ double Vector3D::length2() const
     return x * x + y * y + z * z;
 }
 
+Vector3D Vector3D::direction() const
+{
+    return Vector3D(x, y, z) / this->length();
+}
+
 const Vector3D& Vector3D::operator +=(const Vector3D& v)
 {
     x += v.x;
