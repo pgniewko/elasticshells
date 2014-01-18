@@ -242,3 +242,49 @@ void Pairlist::compute(const Box& domain, const Vector3D* r, int np, int* aindex
 
     n++;
 }
+
+static void Pairlist::compute_pairs(Pairlist& pl, Box& domain, vector<Cell>& cells, double RCUT, vector<Pair>& pairs)
+{
+    Vector3D pos[cells.size()];
+
+    for (int i = 0; i < cells.size(); i++)
+    {
+        pos[i] = cells[i].r;
+    }
+
+
+    //pl.compute(domain, pos, r.size());
+    pl.compute(domain, pos, cells.size());
+    pairs.clear();
+
+    for (int k = 0; k < pl.boxlist.size(); k++)//iterate over boxes
+        for (int nbr = 0; nbr < pl.nbrlist[k].size(); nbr++)
+        {
+            //iterate over nbr boxes
+            int k1 =  pl.nbrlist[k][nbr];
+
+            for (int l = 0; l < pl.boxlist[ k ].size(); l++)  //iterate over atoms
+            {
+                int i =  pl.boxlist[k][l];
+                int startl1 = 0;
+
+                if (k1 == k)
+                {
+                    startl1 = l + 1;
+                }
+
+                for (int l1 = startl1; l1 < pl.boxlist[k1].size(); l1++)
+                {
+                    //iterate over atoms
+                    int j = pl.boxlist[k1][l1];
+                    Vector3D r_kl = domain.delta(cells[i].r, cells[j].r);
+                    double R_kl = r_kl.length();
+
+                    if (R_kl < RCUT && i != j)
+                    {
+                        pairs.push_back(Pair(i, j));
+                    }
+                }
+            }
+        }
+}
