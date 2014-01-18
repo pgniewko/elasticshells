@@ -33,7 +33,7 @@ class Box
         Vector3D origin() const {
             return O;
         }
-        
+
         double volume() const {
             return lx * ly * lz;
         }
@@ -42,7 +42,7 @@ class Box
         double lx, ly, lz;
         double ilx, ily, ilz;
         Vector3D O;
-        
+
         Field nutrients;
 };
 

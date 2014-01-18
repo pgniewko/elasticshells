@@ -7,7 +7,7 @@ class Field
         Field();
         Field(const Field& orig);
         virtual ~Field();
-        virtual void evolve(){};
+        virtual void evolve() {};
 };
 
 #endif	/* FIELD_H */

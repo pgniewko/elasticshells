@@ -30,30 +30,30 @@ class Simulator
         int initialize_pos(const char* filename, int np);
         int read_pos(const char* filename);
         int random_pos(int np);
-        void write_pos(const char* filename, bool wrap=1);
-        void write_pos_traj(const char* filename, bool wrap=1);
+        void write_pos(const char* filename, bool wrap = 1);
+        void write_pos_traj(const char* filename, bool wrap = 1);
         void integrate();
         void set_integrator(char* token);
         void set_forces();
         arguments params;
-       
+
 
     private:
         int np;
-        
+
         Box box;
-        
+
         Pairlist pl;
-        
-        Force * cForce;
+
+        Force* cForce;
         void (Simulator::*integrator)();
-        
+
         vector<Pair> pairs;
         vector<Cell> cells;
         vector<Vector3D> forces;
 
         double compute_forces(double dt);
-        double compute_forces_trotter(double dt, int order=0);
+        double compute_forces_trotter(double dt, int order = 0);
         void set_integrator(void (Simulator::*functoall)());
 };
 

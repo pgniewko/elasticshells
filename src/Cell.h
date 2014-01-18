@@ -16,9 +16,15 @@ class Cell
 //        Cell(const Cell& orig);
 //        virtual ~Cell();
 
-        virtual double calc_volume() { return 0.0; };
-        virtual double cforce_magnitude() { return cf.length(); }
-        virtual Vector3D cforce_direction() { return cf. direction(); };
+        virtual double calc_volume() {
+            return 0.0;
+        };
+        virtual double cforce_magnitude() {
+            return cf.length();
+        }
+        virtual Vector3D cforce_direction() {
+            return cf. direction();
+        };
         virtual Vector3D reset_cforce();
 
         Vector3D r;

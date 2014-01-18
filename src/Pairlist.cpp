@@ -256,7 +256,8 @@ void Pairlist::compute_pairs(Pairlist& pl, Box& domain, vector<Cell>& cells, dou
     pairs.clear();
 
     for (int k = 0; k < pl.boxlist.size(); k++)
-    { //iterate over boxes
+    {
+        //iterate over boxes
         for (int nbr = 0; nbr < pl.nbrlist[k].size(); nbr++)
         {
             //iterate over nbr boxes

@@ -50,7 +50,7 @@ int Simulator::random_pos(int np)
         double z = uniform(0, c);
         cells.push_back(Cell(x, y, z));
     }
-    
+
     return np;
 }
 
@@ -190,7 +190,7 @@ inline double weakrnd()
 
 double Simulator::compute_forces(double dt)
 {
-    
+
     double Ec = 0.0;
     Vector3D Fr_kl, Fd_kl, Fc_kl;
 
@@ -226,12 +226,12 @@ double Simulator::compute_forces(double dt)
             double w_R = omega_R(R_kl, params.r_cut);
             double w_D = w_R * w_R;
 
-            Fc_kl = cForce->eval(r_kl, cells[k], cells[l]);   
+            Fc_kl = cForce->eval(r_kl, cells[k], cells[l]);
             Fr_kl = params.sigma * w_R * normal() * e_kl / sqrtdt;
             Fd_kl = -params.gamma * w_D * (U_kl * e_kl) * e_kl;
             forces[k] +=  Fc_kl + Fd_kl + Fr_kl;
             forces[l] += -Fc_kl - Fd_kl - Fr_kl;
-            
+
             cells[k].cf +=  Fc_kl;
             cells[l].cf += -Fc_kl;
         }
@@ -253,15 +253,15 @@ void Simulator::integrate_euler()
 
     for (int k = 0; k < np; k++)
     {
-       cells[k].p += forces[k] * dt;
+        cells[k].p += forces[k] * dt;
     }
 }
 
-void Simulator::integrate_DPD_VV() 
+void Simulator::integrate_DPD_VV()
 /* agreement with original mydpd - without "-ffast-math -Wno-deprecated" flags */
 /* Otherwise round-off errors*/
 {
-    
+
     vector<Vector3D> tmp_P(np, Vector3D());
     vector<Vector3D> tmp_FP(np, Vector3D());
 
@@ -303,7 +303,7 @@ double Simulator::compute_forces_trotter(double dt, int order)
     {
         cells[i].reset_cforce();
     }
-    
+
     int start, end, step;
 
     if (order == 0)
@@ -350,12 +350,13 @@ double Simulator::compute_forces_trotter(double dt, int order)
             double w_D = w_R * w_R;
 
             Fc_kl = cForce->eval(r_kl, cells[k], cells[l]);
+
             if (params.gamma > 0 && params.sigma > 0)
             {
                 double gamma1 = 2.0 * params.gamma * w_D;
                 Fr_kl = params.sigma * w_R * e_kl * sqrt((1.0 - exp(-2.0 * gamma1 * dt)) / (2.0 * gamma1) ) * normal();
                 Fd_kl = 0.5 * ( P_kl * e_kl - cForce->magn(r_kl, cells[k], cells[l]) / (params.gamma * w_D) ) * e_kl * ( exp(-2.0 * params.gamma * w_D * dt) - 1.0);
-                
+
             }
             else
             {
@@ -366,10 +367,10 @@ double Simulator::compute_forces_trotter(double dt, int order)
             //Ec += 0.5 * params.a * cforce(R_kl, params.r_cut) * cforce(R_kl, params.r_cut);
             cells[k].p +=  Fd_kl + Fr_kl;
             cells[l].p += -Fd_kl - Fr_kl;
-            
+
             cells[k].cf +=  Fc_kl;
             cells[l].cf += -Fc_kl;
-            
+
         }
     }
 
@@ -381,7 +382,7 @@ void Simulator::integrate_trotter()
     double dt2 = 0.5 * params.dt;
     double dt =  params.dt;
 
-    double Ec = compute_forces_trotter(dt2, 0); //2 
+    double Ec = compute_forces_trotter(dt2, 0); //2
 
     for (int k = 0; k < np; k++)
     {
@@ -389,7 +390,7 @@ void Simulator::integrate_trotter()
     }
 
     Pairlist::compute_pairs(pl, box, cells, params.r_cut, pairs);
-    
+
     Ec = compute_forces_trotter(dt2, 1); //2
 }
 

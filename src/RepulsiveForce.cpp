@@ -1,6 +1,7 @@
 #include "RepulsiveForce.h"
 
-RepulsiveForce::RepulsiveForce(double a, double r_cut) {
+RepulsiveForce::RepulsiveForce(double a, double r_cut)
+{
     this->a = a;
     this->r_cut = r_cut;
 }
