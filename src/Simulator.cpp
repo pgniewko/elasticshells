@@ -50,8 +50,7 @@ int Simulator::random_pos(int np)
         double z = uniform(0, c);
         cells.push_back(Cell(x, y, z));
     }
-
-    //error (123, 0, "ABORTED");
+    
     return np;
 }
 
@@ -83,7 +82,6 @@ void Simulator::write_pos_traj(const char* filename, bool wrap)
     ofstream os(filename, ios::app);
     os << np << "\n\n";
 
-    //cout << filename << " " << np<< endl;
     for (int i = 0; i < np; i++)
     {
         Vector3D pos;
@@ -103,52 +101,6 @@ void Simulator::write_pos_traj(const char* filename, bool wrap)
     os.close();
 }
 
-void compute_pairs(Pairlist& pl, Box& domain, vector<Cell>& cells, double RCUT, vector<Pair>& pairs)
-{
-    Vector3D pos[cells.size()];
-
-    for (int i = 0; i < cells.size(); i++)
-    {
-        pos[i] = cells[i].r;
-    }
-
-
-    //pl.compute(domain, pos, r.size());
-    pl.compute(domain, pos, cells.size());
-    pairs.clear();
-
-    for (int k = 0; k < pl.boxlist.size(); k++)//iterate over boxes
-        for (int nbr = 0; nbr < pl.nbrlist[k].size(); nbr++)
-        {
-            //iterate over nbr boxes
-            int k1 =  pl.nbrlist[k][nbr];
-
-            for (int l = 0; l < pl.boxlist[ k ].size(); l++)  //iterate over atoms
-            {
-                int i =  pl.boxlist[k][l];
-                int startl1 = 0;
-
-                if (k1 == k)
-                {
-                    startl1 = l + 1;
-                }
-
-                for (int l1 = startl1; l1 < pl.boxlist[k1].size(); l1++)
-                {
-                    //iterate over atoms
-                    int j = pl.boxlist[k1][l1];
-                    Vector3D r_kl = domain.delta(cells[i].r, cells[j].r);
-                    double R_kl = r_kl.length();
-
-                    if (R_kl < RCUT && i != j)
-                    {
-                        pairs.push_back(Pair(i, j));
-                    }
-                }
-            }
-        }
-}
-
 Simulator::Simulator (const arguments& par, const Box& _domain)
     : params(par), box(_domain) , pl(Pairlist(par.pair_dist, 1))
 {
@@ -156,9 +108,10 @@ Simulator::Simulator (const arguments& par, const Box& _domain)
     np = initialize_pos(par.input_file, par.n_particles);
 
     set_integrator(params.integrator_a);
+    this->set_forces();
 
     cells.resize(np, Cell());
-
+    forces.resize(np, Vector3D());
 
     double T;
 
@@ -174,11 +127,8 @@ Simulator::Simulator (const arguments& par, const Box& _domain)
     for (int i = 0; i < np; i++)
     {
         cells[i].mass = params.mass;
-        cells[i].f = Vector3D(0, 0, 0);
-        //fp[i].P = params.mass * maxwell_boltzmann(params.mass, Vector3D(), T);
+        cells[i].cf = Vector3D(0, 0, 0);
         cells[i].p = params.mass * maxwell_boltzmann(params.mass, Vector3D(), T);
-
-        //cout << fp[i].P << endl;
     }
 
     Vector3D P;
@@ -186,17 +136,16 @@ Simulator::Simulator (const arguments& par, const Box& _domain)
 
     for (int i = 0; i < np; i++)
     {
-        //fp[i].P -= P;    //remove average momentum
         cells[i].p -= P;
     }
 
-    //compute_pairs(pl, box, r, par.r_cut, pairs, cells);
-    compute_pairs(pl, box, cells, par.r_cut, pairs);
+    Pairlist::compute_pairs(pl, box, cells, par.r_cut, pairs);
 }
 
-//Simulator::~Simulator()
-//{
-//}
+Simulator::~Simulator()
+{
+    delete cForce;
+}
 
 void Simulator::state(double& T, Vector3D& P) const
 {
@@ -205,9 +154,6 @@ void Simulator::state(double& T, Vector3D& P) const
 
     for (int i = 0; i < np; i++)
     {
-        //tot += 0.5 * fp[i].P * fp[i].P / params.mass;
-        //tmp += fp[i].P;
-
         tot += 0.5 * cells[i].p * cells[i].p / cells[i].mass;
         tmp += cells[i].p;
     }
@@ -220,11 +166,6 @@ void Simulator::state(double& T, Vector3D& P) const
 inline double omega_R(double r, double rcut)
 {
     return 1.0 -  r / rcut;
-}
-
-inline double cforce(double r, double rcut)
-{
-    return (1.0 -  r / rcut);
 }
 
 const double SQRT3 = sqrt(3.0);
@@ -247,27 +188,16 @@ inline double weakrnd()
     }
 }
 
-inline double rho_p(int p)
+double Simulator::compute_forces(double dt)
 {
-    double r = 0.0;
-
-    for (int i = 1; i <= p; i++)
-    {
-        r += 1.0 / double(i * i);
-    }
-
-    //return 1.0 / 12.0 - 1.0 / (2.0 * M_PI * M_PI) * r;
-    return 1.0 / 12.0 - 1.0 / (2.0 * PI * PI) * r;
-}
-
-double Simulator::compute_forces(double dt, vector<Vector3D>& F, int NC)
-{
+    
     double Ec = 0.0;
     Vector3D Fr_kl, Fd_kl, Fc_kl;
 
     for (int i = 0; i < np; i++)
     {
-        F[i] = Vector3D();
+        forces[i] = Vector3D();
+        cells[i].reset_cforce();
     }
 
     double sqrtdt = sqrt(dt);
@@ -287,23 +217,23 @@ double Simulator::compute_forces(double dt, vector<Vector3D>& F, int NC)
         if (R_kl < params.r_cut)
         {
             //k
-            //Fields fk = fp[k];
-            Vector3D U_k = cells[k].p / cells[k].mass ;//fk.P / params.mass;
+            Vector3D U_k = cells[k].p / cells[k].mass ;
             //l
-            //Fields fl = fp[l];
-            Vector3D U_l = cells[l].p / cells[l].mass; //fl.P / params.mass;
+            Vector3D U_l = cells[l].p / cells[l].mass;
             //geometry
             Vector3D e_kl(r_kl / R_kl);
             Vector3D U_kl(U_k - U_l);
             double w_R = omega_R(R_kl, params.r_cut);
             double w_D = w_R * w_R;
 
-            Fc_kl = params.a * cforce(R_kl, params.r_cut) * e_kl;
-            Ec += 0.5 * params.a * cforce(R_kl, params.r_cut) * cforce(R_kl, params.r_cut);
-            Fr_kl = double(NC) * params.sigma * w_R * normal() * e_kl / sqrtdt;
-            Fd_kl = - double(NC) * params.gamma * w_D * (U_kl * e_kl) * e_kl;
-            F[k] +=  Fc_kl + Fd_kl + Fr_kl;
-            F[l] += -Fc_kl - Fd_kl - Fr_kl;
+            Fc_kl = cForce->eval(r_kl, cells[k], cells[l]);   
+            Fr_kl = params.sigma * w_R * normal() * e_kl / sqrtdt;
+            Fd_kl = -params.gamma * w_D * (U_kl * e_kl) * e_kl;
+            forces[k] +=  Fc_kl + Fd_kl + Fr_kl;
+            forces[l] += -Fc_kl - Fd_kl - Fr_kl;
+            
+            cells[k].cf +=  Fc_kl;
+            cells[l].cf += -Fc_kl;
         }
     }
 
@@ -312,10 +242,9 @@ double Simulator::compute_forces(double dt, vector<Vector3D>& F, int NC)
 
 void Simulator::integrate_euler()
 {
-    vector<Vector3D> F(np, Vector3D());
     double dt = params.dt;
-    compute_pairs(pl, box, cells, params.r_cut, pairs);
-    compute_forces(dt, F);
+    Pairlist::compute_pairs(pl, box, cells, params.r_cut, pairs);
+    compute_forces(dt);
 
     for (int k = 0; k < np; k++)
     {
@@ -324,52 +253,57 @@ void Simulator::integrate_euler()
 
     for (int k = 0; k < np; k++)
     {
-        cells[k].p += F[k] * dt;
+       cells[k].p += forces[k] * dt;
     }
 }
 
-void Simulator::integrate_DPD_VV()
+void Simulator::integrate_DPD_VV() 
+/* agreement with original mydpd - without "-ffast-math -Wno-deprecated" flags */
+/* Otherwise round-off errors*/
 {
-    static vector<Vector3D> F(np, Vector3D());
+    
     vector<Vector3D> tmp_P(np, Vector3D());
     vector<Vector3D> tmp_FP(np, Vector3D());
 
     double dt = params.dt;
-    //double m = params.mass;
 
     for (int k = 0; k < np; k++)
     {
-        cells[k].r += cells[k].p / cells[k].mass * dt + 0.5 * F[k] / cells[k].mass * dt * dt;
+        cells[k].r += cells[k].p / cells[k].mass * dt + 0.5 * forces[k] / cells[k].mass * dt * dt;
     }
 
     for (int k = 0; k < np; k++)
     {
-        tmp_P[k] = cells[k].p; // fp[k].P;
-        tmp_FP[k] = F[k];
+        tmp_P[k] = cells[k].p;
+        tmp_FP[k] = forces[k];
     }
 
     for (int k = 0; k < np; k++)
     {
-        cells[k].p += 0.5 * F[k] * dt;
+        cells[k].p += 0.5 * forces[k] * dt;
     }
 
-    compute_pairs(pl, box, cells, params.r_cut, pairs);
-    double Ec = compute_forces(dt, F);
+    Pairlist::compute_pairs(pl, box, cells, params.r_cut, pairs);
+    double Ec = compute_forces(dt);
 
     for (int k = 0; k < np; k++)
     {
-        cells[k].p = tmp_P[k] + 0.5 * (F[k] + tmp_FP[k]) * dt;
+        cells[k].p = tmp_P[k] + 0.5 * (forces[k] + tmp_FP[k]) * dt;
     }
 }
 
 
 double Simulator::compute_forces_trotter(double dt, int order)
 {
-//	static double rhop =  rho_p(20);
     double Ec = 0.0;
     Vector3D Fr_kl, Fd_kl, Fc_kl;
     double sqrtdt = sqrt(dt);
 
+    for (int i = 0; i < np; i++)
+    {
+        cells[i].reset_cforce();
+    }
+    
     int start, end, step;
 
     if (order == 0)
@@ -406,34 +340,36 @@ double Simulator::compute_forces_trotter(double dt, int order)
         if (R_kl < params.r_cut)
         {
             //k
-            //Fields fk = fp[k];
-            Vector3D P_k = cells[k].p; //fk.P;
+            Vector3D P_k = cells[k].p;
             //l
-            //Fields fl = fp[l];
-            Vector3D P_l = cells[l].p; //fl.P;
+            Vector3D P_l = cells[l].p;
             //geometry
             Vector3D e_kl(r_kl / R_kl);
             Vector3D P_kl(P_k - P_l);
             double w_R = omega_R(R_kl, params.r_cut);
             double w_D = w_R * w_R;
 
+            Fc_kl = cForce->eval(r_kl, cells[k], cells[l]);
             if (params.gamma > 0 && params.sigma > 0)
             {
                 double gamma1 = 2.0 * params.gamma * w_D;
                 Fr_kl = params.sigma * w_R * e_kl * sqrt((1.0 - exp(-2.0 * gamma1 * dt)) / (2.0 * gamma1) ) * normal();
-                Fd_kl = 0.5 * ( P_kl * e_kl - params.a * cforce(R_kl, params.r_cut) / (params.gamma * w_D) ) * e_kl * ( exp(-2.0 * params.gamma * w_D * dt) - 1.0);
+                Fd_kl = 0.5 * ( P_kl * e_kl - cForce->magn(r_kl, cells[k], cells[l]) / (params.gamma * w_D) ) * e_kl * ( exp(-2.0 * params.gamma * w_D * dt) - 1.0);
+                
             }
             else
             {
                 Fr_kl *= 0.0;
-                Fd_kl = params.a * cforce(R_kl, params.r_cut) * e_kl * dt;
+                Fd_kl = Fc_kl * dt;
             }
 
-            Ec += 0.5 * params.a * cforce(R_kl, params.r_cut) * cforce(R_kl, params.r_cut);
-            //fp[k].P += Fd_kl + Fr_kl;
-            //fp[l].P += -Fd_kl - Fr_kl;
-            cells[k].p += Fd_kl + Fr_kl;
+            //Ec += 0.5 * params.a * cforce(R_kl, params.r_cut) * cforce(R_kl, params.r_cut);
+            cells[k].p +=  Fd_kl + Fr_kl;
             cells[l].p += -Fd_kl - Fr_kl;
+            
+            cells[k].cf +=  Fc_kl;
+            cells[l].cf += -Fc_kl;
+            
         }
     }
 
@@ -444,17 +380,16 @@ void Simulator::integrate_trotter()
 {
     double dt2 = 0.5 * params.dt;
     double dt =  params.dt;
-    //double m = params.mass;
 
-    double Ec = compute_forces_trotter(dt2, 0); //2
+    double Ec = compute_forces_trotter(dt2, 0); //2 
 
     for (int k = 0; k < np; k++)
     {
         cells[k].r += cells[k].p / cells[k].mass * dt;    //1
     }
 
-    compute_pairs(pl, box, cells, params.r_cut, pairs);
-
+    Pairlist::compute_pairs(pl, box, cells, params.r_cut, pairs);
+    
     Ec = compute_forces_trotter(dt2, 1); //2
 }
 
@@ -475,8 +410,13 @@ void Simulator::set_integrator(char* token)
     }
     else
     {
-        this->set_integrator(&Simulator::integrate_trotter);
+        this->set_integrator(&Simulator::integrate_DPD_VV);
     }
+}
+
+void Simulator::set_forces()
+{
+    cForce = new RepulsiveForce(params.a, params.r_cut);
 }
 
 void Simulator::integrate()
