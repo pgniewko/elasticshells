@@ -46,7 +46,7 @@ static struct argp_option options[] =
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0, 0, 0, 0, "Simulation Options:", 3},
-    {"int",       991,  "STR", 0, "Integrator of equations of motion: velocity-verlet[vv], trotter[trot] [default: trot]"},
+    {"int",       991,  "STR", 0, "Integrator of equations of motion: velocity-verlet[vv], trotter[trot] [default: vv]"},
     {"size",      444, "NUM", 0, "Box size [default: 10.0]"},
     {"n-iter",    666, "NUM", 0, "Number of time steps [default: 100]"},
     {"dt",        777, "NUM", 0, "Time step [default: 0.05]"},
@@ -82,7 +82,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->input_file = "";
             arguments->traj_file = "traj.xyz";
             arguments->log_file = "log.txt";
-            arguments->integrator_a = "trot";
+            arguments->integrator_a = "vv";
             arguments->abort = 0;
             arguments->n_particles = 1;
             arguments->log_step = 1;
