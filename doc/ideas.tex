@@ -697,6 +697,99 @@ Then if this subsecence is assigned to one of the processor, it may have serious
  \item Exact trotter integration requires generation of "coloured" noise.
 \end{itemize}
 
+\subsection{Measuring Cell Forces by a Photoelastic Method \cite{cur:07}}
+\begin{itemize}
+ \item Forces between groups of cells are likely to have complex and rather unpredictible distributions.
+ \item External mechanical stimualtion stimulates the cell cycle [Curtis and Seehar'78]
+\end{itemize}
+
+
+
+\subsection{Dissipative-particle-dynamics model of biofilm growth\cite{scheibe:11}}
+\begin{itemize}
+ \item For biofilm growth two types of nutritents are required: electrons-donor and electrons-acceptor.
+ Assuming that one of them is unlimited excess, the problem of food supply is reduced to only one substrate.
+ \item The concentration of substrate is governed by advection-diffusion-reaction equation:
+ \begin{equation}
+  \frac{\partial C_s(\mathbf{x},t)}{\partial t} + \mathbf{V}(\mathbf{x},t) \cdot \nabla C_s(\mathbf{x},t) = D_s(\mathbf{x},t) \nabla^2 C_s(\mathbf{x},t) -r_s(\mathbf{x},t)
+ \end{equation}
+ where: $\mathbf{V}$ is liquid velocity, $C_s(\mathbf{x},t)$ is substrate concentration, $D_s$ is substrate diffucion coefficient (it may be uniform over all space or vary),
+ and $r_s(\mathbf{x},t)$ is substrate consumption rate in biofilm phase. 
+
+ \item Substrate consumption is given by Monod-type function:
+ \begin{equation}
+  r_s = \frac{\mu_m}{Y_{bs}} \frac{C_bC_s}{(K_s + C_s)}
+ \end{equation}
+ where $\mu_m$ is the maximum biomass growth rate, $K_s$ is the substrate saturation constant, and $Y_{bs}$ is the biofilm yield coefficrint. 
+
+ \item The liquid velocity field is given by Navier-Stokes equations:
+ \begin{equation}
+  \nabla \cdot \mathbf{V} = 0
+ \end{equation}
+ \begin{equation}
+  \frac{\partial \mathbf{V}}{\partial t} + \mathbf{V} \cdot \nabla \mathbf{V} = -\nabla P/\rho + \nu\nabla^2 \mathbf{V}
+ \end{equation}
+ \item The kinetic model of biofilm growth describing biofilm growth is given as:
+ \begin{equation}
+  dC_b/dt = Y_{bs}(r_s - m_sC_b)
+ \end{equation}
+ where $m_s$ is maintenance coefficient representing the biomass decay effect. 
+ \item The biomass density has its maximum value $C_{bm}$, and whenever the biomass density $C_b$ grows larger than the threshold, the extra biomass
+ is redistributed giving rise to biofilm volume expansion. 
+ \item Liquid, biofilm and substratum(immobile background) are modeled as three different types of mesoparticles.
+ \item Solutions to N-S equations(for $\mathbf{V}$ and $\nabla \mathbf{V}$) 
+ are approximated by the low Much number flow of a slightly compressible liquid represented by DPD particles, and with velocity-verlet algorithm.
+ \item each DPD particle carries specified mass of biofilm and substrate. They are specified by substrate concentration $c_{s,i}$ and 
+ biomass density $c_{b,i}$. The change of substrate concentration is given by advection-reaction-diffusion equation.
+ Thus, on top of consumption of substrate due to biofilm growth, there is alos dissipative and random exchange between neighboring DPD particles.
+ \item Biomass particles are all for which $c_{b,i} >0$. When this value exceeds maximum biomass density $c_{bm}$ then that excess is instantenoulsy
+ transferred to neighboring fluid particles, and then they become biomass particles as well. 
+ (The exceess is assumed to be lost when there is no[withing a cutoff] liquid particle where biomass may be transferred).
+ \item However, because biofilm is growing moslty at the interface liquid:biofilm in the course of simulation it is unlikely that
+ biofilm particles may be discarded.
+ \item In the above model , biofilm is coarse-grained itself, what means one DPD is a collection of many cells.
+\end{itemize}
+
+\subsection{Force distribution in a granular medium \cite{nagel2:98}}
+\begin{itemize}
+ \item Force chains and spatially inhomogeneous stress distributions are characteristic of granular materials.
+ \item Spatial probability distribution P(F) for finding a normal force of magnitude F against a wall 
+ decays exponentially for forces larger than the mean   $\bar{F}$ - what means that in comparison with Gaussian  distribution
+ the probability of finding large forces is much higher. 
+ \item For $F > \bar{F}$ distribution of forces decays exponentailly, whereass for $F < \bar{F}$ it flattens out and approach a constant value.,
+ and increase toward force equal to 0.
+ \item Neither boundary conditions posed by the vertical container walls 
+ nor spatial correlations in the arrangement of beads due to crystallization near a wall during system preparation 
+ influences the distributions of forces P(F).
+ \item There is no correlations between laterla forces on different beads. 
+ \item The exponential tail of the distribution can be understood on the basis of a scalar model (q model)͒,
+ where it emerges as a result of a randomization process that occurs as forces are transmitted through the bulk of the bead pack.
+ \item However original q model predicts nonmonotonic behavior at $f\rightarrow0$ with $P(f)\rightarrow0$. 
+ The behaviour remains even if the forces correlations in a plane corection is introduced.
+\end{itemize}
+
+
+\subsection{Contact force measurements and stress-induced anisotropy in granular materials\cite{bob:05}}
+\begin{itemize}
+ \item The force network carrying the external load is different for shearing and isotropic compression - and is history dependent due to friction.
+ \item Forces resulting from these two loads have different angular (normal and tangential to the stress sdirection) distributions of contact forces,
+ patial correlations depending on the macroscopic preparation.
+ \item Forces have long-range correlations in the directtion of f-chains for shear loads, and are correlated over a short range for isotropic 
+ compression regardless of a direction. 
+ \item Normal forces distribution has peak around mean $\bar{F}$, exponential tail, and a dip for smaller forces (in contrast to Nagel'98 paper).
+ \item For isotropically compressed systems, the normal force distribution dips towards zero for forces below the mean, 
+ is broad around the mean, and decays  faster for large forces compared to the sheared system. 
+ The tangential force distributions have a nearly exponential tail for forces larger than the mean 
+ for both the sheared and the isotropically compressed system.
+ \item Mean of tangential forces is an order of magnitude less than the mean for normal forces. 
+ \item For both cases a distribution of Culomb failure criterion($S = |F_t|/\mu F_n$; $\mu$ is static friction coefficient)
+ shows that most of the contacts is below Coulomb failure condition (i.e. it does not slip).
+ \item Shear load presenst long range forces correlations  (up to 15 beads diameter) in the direction of applied force,
+ and short range correlations in a perpendicular direction - correlations were calcualated for forces larger than mean i.e. in exp. tail.
+ \item n complete contrast to sheared systems, the isotropically compressed system has nearly uniform force correlation in all directions.
+ \item Sheared systems exhibit not only geometric (distribution of contacts) but also mechanical anisotropy (distribution of forces).
+\end{itemize}
+
 
 \thispagestyle{empty} % No slide header and footer
 
