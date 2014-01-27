@@ -11,7 +11,7 @@ inline Vector3D maxwell_boltzmann(double m, const Vector3D& mean_v, double kT)
 
 int Simulator::initialize_pos(const char* filename, int np)
 {
-    if (std::string(filename).empty())
+    if (string(filename).empty())
     {
         return random_pos(np);
     }
@@ -158,7 +158,7 @@ void Simulator::state(double& T, Vector3D& P) const
         tmp += cells[i].p;
     }
 
-    T = 2.0 / 3.0 * tot / double(np - 1);
+    T = 2.0 / 3.0 * tot / double(max(1, np - 1));
     P = tmp / double(np);
 }
 
@@ -170,23 +170,23 @@ inline double omega_R(double r, double rcut)
 
 const double SQRT3 = sqrt(3.0);
 
-inline double weakrnd()
-{
-    double tmp = uniform(0.0, 1.0);
+//inline double weakrnd()
+//{
+//    double tmp = uniform(0.0, 1.0);
 
-    if (tmp >= 1.0 / 3.0)
-    {
-        return 0.0;
-    }
-    else if (tmp < 1.0 / 6.0)
-    {
-        return SQRT3;
-    }
-    else
-    {
-        return -SQRT3;
-    }
-}
+//    if (tmp >= 1.0 / 3.0)
+//    {
+//        return 0.0;
+//    }
+//    else if (tmp < 1.0 / 6.0)
+//    {
+//        return SQRT3;
+//    }
+//    else
+//    {
+//        return -SQRT3;
+//    }
+//}
 
 double Simulator::compute_forces(double dt)
 {
@@ -258,7 +258,7 @@ void Simulator::integrate_euler()
 }
 
 void Simulator::integrate_DPD_VV()
-/* agreement with original mydpd - without "-ffast-math -Wno-deprecated" flags */
+/* agreement with the original mydpd - without "-ffast-math -Wno-deprecated" flags */
 /* Otherwise round-off errors*/
 {
 
@@ -332,7 +332,7 @@ double Simulator::compute_forces_trotter(double dt, int order)
         Vector3D r_kl = box.delta(cells[k].r, cells[l].r);
         double R_kl = r_kl.length();
 
-        if (R_kl == 0.0)
+        if (R_kl == 0.0) //TODO: remove, but ensure correctness in tests
         {
             cout << "R_KL=0" << endl;
         }
@@ -346,16 +346,16 @@ double Simulator::compute_forces_trotter(double dt, int order)
             //geometry
             Vector3D e_kl(r_kl / R_kl);
             Vector3D P_kl(P_k - P_l);
-            double w_R = omega_R(R_kl, params.r_cut);
-            double w_D = w_R * w_R;
+            double w_r = omega_R(R_kl, params.r_cut);
+            double w_d = w_r * w_r;
 
             Fc_kl = cForce->eval(r_kl, cells[k], cells[l]);
 
             if (params.gamma > 0 && params.sigma > 0)
             {
-                double gamma1 = 2.0 * params.gamma * w_D;
-                Fr_kl = params.sigma * w_R * e_kl * sqrt((1.0 - exp(-2.0 * gamma1 * dt)) / (2.0 * gamma1) ) * normal();
-                Fd_kl = 0.5 * ( P_kl * e_kl - cForce->magn(r_kl, cells[k], cells[l]) / (params.gamma * w_D) ) * e_kl * ( exp(-2.0 * params.gamma * w_D * dt) - 1.0);
+                double gamma1 = 2.0 * params.gamma * w_d;
+                Fr_kl = params.sigma * w_r * e_kl * sqrt((1.0 - exp(-2.0 * gamma1 * dt)) / (2.0 * gamma1) ) * normal();
+                Fd_kl = 0.5 * ( P_kl * e_kl - cForce->magn(r_kl, cells[k], cells[l]) / (params.gamma * w_d) ) * e_kl * ( exp(-2.0 * params.gamma * w_d * dt) - 1.0);
 
             }
             else

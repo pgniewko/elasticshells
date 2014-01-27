@@ -12,7 +12,6 @@
 #include <error.h>     /* error */
 #include <math.h>      /* log, sqrt */
 
-
 #include "src/arguments.h"
 #include "src/random.h"
 #include "src/Simulator.h"
@@ -20,7 +19,7 @@
 
 using namespace std;
 
-const char* argp_program_version = "biofilm 0.0.9";
+const char* argp_program_version = "biofilm 0.1.0";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
 
 static char doc[] =
@@ -255,9 +254,9 @@ int main(int argc, char** argv)
         if ((n % arguments.log_step == 0) && arguments.verbose)
         {
             double T;
-            Vector3D tot_P;
-            model.state(T, tot_P);
-            cout << "n=" << n << " t=" << sim_time << " temp=" << T << " total_momentum = " << tot_P.length() << endl;
+            Vector3D tot_momentum;
+            model.state(T, tot_momentum);
+            cout << "n=" << n << " t=" << sim_time << " temp=" << T << " total_momentum = " << tot_momentum.length() << endl;
             os.open(arguments.log_file, ios::app);
             os << sim_time << ' ' << T << '\n';
             os.close();

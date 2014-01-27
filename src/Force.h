@@ -1,9 +1,11 @@
 #ifndef FORCE_H
 #define	FORCE_H
 
-#include "Vector3D.h"
-#include "Cell.h"
 #include <iostream>
+
+#include "Cell.h"
+#include "Vector3D.h"
+
 using namespace std;
 
 class Force
