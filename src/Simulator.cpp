@@ -278,9 +278,14 @@ void Simulator::integrate_DPD_VV()
         tmp_FP[k] = forces[k];
     }
 
+    // With lambda = 0.5 original VV is recovered
+    // update made for velocity, since dissipative forces depend on vel 
+    double lambda = 0.5;
+    
     for (int k = 0; k < np; k++)
     {
-        cells[k].p += 0.5 * forces[k] * dt;
+        cells[k].p += lambda * forces[k] * dt;
+        //cells[k].p += 0.5 * forces[k] * dt;
     }
 
     Pairlist::compute_pairs(pl, box, cells, params.r_cut, pairs);
