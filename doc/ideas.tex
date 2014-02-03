@@ -672,8 +672,29 @@ Then if this subsecence is assigned to one of the processor, it may have serious
 
 \end{itemize}
 
-\subsection{Dissipative Particle Dynamics \cite{ums:02}}
+\subsection{Dissipative Particle Dynamics \cite{ums:02,war:95, war:97}}
 \begin{itemize}
+ \item To study hydrodynamics the times scales needed are much larger than water relaxation(or collision) time $\tau$, 
+ and considered length-scales L are also much larger than the size of each solvent molecule(or interparticle distances). 
+ Thus the idea is to drop MD since it also provides too much details, which are redundant in studying hydrodynamics.
+ \item Molecuels are lumped into "fluid particles" in much the same spirit as the renormalisation group has been applied in polymer physics.
+ \item Hydrodynamics means that transport equation for the momentum density field, is coupled to the transport of mass.
+ \item On the other hand, the energy during the simulation is not conserved(is dissipated) what may be the problem when
+ there is a temperature gradient in the system.
+ \item Gallilean invariance impose $F_D$ and $F^R$ to be only dependent on: $r_{ij} = r_i - r_j$, and $v_{ij} = v_{i} - v_{j}$
+ and further requirement of isotropy emands that the forces should transform under rotations as vectors.
+ \item Finally, it is required that the dissipative forces $F^D$ are linear on the momentum and the 
+ random forces $F^R$ are independent of the momentum.
+ \item The total momentum conservation follows from symmetry property: $\zeta_{ij} = \zeta_{ji}$
+ \item Random force $F^R \sim \Delta t^{-1/2}$ ! The dependence of random force on $\Delta t$ is due to 
+ the agreement between MSD (wchich must be independent on $\Delta t$) - up to a friction factor - and number of time steps N (random kicks) applied to a particle - it can be calculated from the
+ average mean square force transfered to the particle.
+ \item There is no statistical difference  between the simulations using uniform random numbers and the simulations using Gaussian random 
+ numbers. Since uniform random numbers take less CPU time to generate than Gaussian random numbers do, a choice for uniform noise should be made.
+ 
+ \item In modyfied velocity-verlet model preditions for the veloicty in the future is made (by applying present forces with strenght $\lambda$),
+ and correct for this in the final step.
+ 
  \item Brownian motion of uncharged colloids does not depend on the atomic details of the solvent.
  \item The only properties of the medium that matter are: temperature, density, viscosity.
  \item What we need is a model such that:
@@ -685,8 +706,9 @@ Then if this subsecence is assigned to one of the processor, it may have serious
  \item DPD reproduces correctly hydrodynamic behaviour - however there is no rigorous demonstration that this is true, 
  depsite the fact that there is large body of numerical studies suggesting that at $\delta t \rightarrow 0$ DPD fluid is described by the Navier-Stokes equation.
  \item To ensure, correct canonical distribution (in equil. simulation) dissipation and random noise are bounded by two relations: 
- $\omega^{2}_{r} = \omega_{D}(r)$ and $\sigma^2 = 2k_BT\gamma$.
- \item BD does not conserve momenta. In fact, the only thing BD conserves is number of particles. 
+ $\omega^{2}_{r} = \omega_{D}(r)$ and $\sigma^2 = 2k_BT\gamma$. In the first condition, one of the function may be chosen arbitrarily, and second must follow from the relation.
+ The second relation sets the relation between temperature and fluctuations.
+ \item BD does not conserve momenta. In fact, the only thing BD conserves is number of particles, and thus only diffusive behavior can be observed.
  \item Time reveribility is also importnat in a DPD simulation, since only with a time-reversibility integration scheme can detailed balance be obeyed.
 \end{itemize}
 
