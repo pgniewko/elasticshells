@@ -9,7 +9,7 @@
 %\title{ \bf Granular Materials }
 %\author{ Pawel Gniewek }
 %\maketitle
-\textsc{\Large Models of static friction in granular simulations}\\[1.0cm]
+\textsc{\Large Models of dry friction in granular simulations}\\[1.0cm]
 \textsc{\LARGE Pawel Gniewek}\\[1.0cm]
 \vspace{0.5cm}
 \today
@@ -20,130 +20,143 @@
 
 \newpage
 
-\section{Sokolowski et al. \cite{sok92, sok93}}
-Simulations were performed in 2D with round and soft spherical particles. When two particles overlap three forces appear:
-\begin{enumerate}
- \item Elastic restoration force
- \item Dissipation due to inelasticity:
- \begin{equation}
-  \bar{f}_{diss} = -\gamma m_i (\bar{v}_{ij}\cdot \bar{r}_{ij})\bar{r}_{ij} / \bar{r}^2_{ij}
- \end{equation}
- where $\gamma$ is phenomenological dissipation coefficient, and $\bar{v}_{ij} = \bar{v}_{i} - \bar{v}_{j}$
- \item Shear force:
- \begin{equation}
-  \bar{f}_{s} = -\gamma_s m_i (\bar{v}_{ij}\cdot \bar{t}_{ij})\bar{t}_{ij} / \bar{r}^2_{ij}
- \end{equation}
- where $\gamma_s$ is shear friction coefficient, and $\bar{t}_{ij}$ is perpendicular to $\bar{r}_{ij}$
-\end{enumerate}
+\section{Definitions}
+Following measures are defined for the purpose of the later formalism:
 
-In fact friction should be proportional to normal force (Coulomb friction), and rotation was also neglected. 
-However under deviations from spherical shape rotation is strongly surpressed and (for vibrating granular matterial)
-effects of normal forces on friction can be neglected. However the major argument for neglecting Coulomb friction was 
-to have fewer fit parameters.
-
-In order to describie non-spherical particles site-site model is used. In site-site model, non-spherical
-grains are replaced by a collection of rigiditly glued spheres - Figure 1.
-Dynamics is solved in the same way as for spherical particles, but this time also a rotation of particles is considered. 
-This time, to define sliding friction new relative tangential velocity is introduced 
-(i,j - grains; n,m -spheres belonging to i and j, respectively):
+Deformation:
 \begin{equation}
- \bar{v}^{tang}_{i_{n}j_{m}} = \bar{v}_{i} - \bar{v}_{j} + \bar{\Omega}_{i} \times \bar{\rho}_{i_{n}} + \bar{\Omega}_j \times \bar{\rho}_{j_{m}}
-\end{equation}
-where: $\bar{\Omega}_i$ is angular velocity of a grain i, $\bar{\rho}_i$ denotes the distace from the point of contact
-between spheres i and j to the center of mass of the grain i.
-Then sliding force is:
-\begin{equation}
- \bar{f}^{slide}_{i_{n}j_{m}} = -\gamma_s m_i (\bar{v}^{tang}_{i_{n}j_{m}}\cdot \bar{t}_{i_{n}j_{m}}) \frac{ \bar{t}_{i_{n}j_{m}} } { |\bar{t}_{i_{n}j_{m}}|^2 }
+ \xi = \max(0, R_i + R_j - |\mathbf{x}_2 - \mathbf{x}_1|)
 \end{equation}
 
-and rolling force is:
+Vecotor normal to the contact surface:
 \begin{equation}
- \bar{f}^{roll}_{i_{n}j_{m}} = -\mu [\bar{f}_{el} + \bar{f}_{diss}] \cdot \bar{t}_{i_{n}j_{m}} \frac{ \bar{t}_{i_{n}j_{m}} } { |\bar{t}_{i_{n}j_{m}}|^2 }
+ \mathbf{n} = \frac{\mathbf{x}_{i} - \mathbf{x}_j}{|\mathbf{x}_{i} - \mathbf{x}_j|}
+\end{equation}
+and tangential contact vector (in 2D):
+\begin{equation}
+ \mathbf{t} = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix} \frac{\mathbf{x}_{i} - \mathbf{x}_j}{|\mathbf{x}_{i} - \mathbf{x}_j|}
 \end{equation}
 
-Then the total shear force is then:
+
+Normal and shear velocities are defined as follow:
 \begin{equation}
- \bar{f}^{roll}_{i_{n}j_{m}} = [\bar{f}_{el} + \bar{f}_{diss} + \min(\bar{f}^{slide}_{i_{n}j_{m}}, \bar{f}^{roll}_{i_{n}j_{m}})]  \frac{ \bar{t}_{i_{n}j_{m}} } { |\bar{t}_{i_{n}j_{m}}| }
-\end{equation}
-where again static friction has been neglected for simplicity and because models usually glue particles together to impose static friction.
-However sliding force and dissipating force implicityly incorporate effects of static friction.
-Additionally roughnes(and by this ability to dissipate kinetic energy) 
-of the box in which grains were simulated was accounted by giridly packing of particles similar to the ones used in simulation.
-
-\section{Poschel and Buchholtz \cite{pb93, pb94, pb95}}
-Many experimental results are consequences of static friction. The model by Poschel and Buchholtz 
-shows that such properites may be reproduced in simulations witout inlcuding static friction explicitely,
-but instead simulating nonspherical particles represented by the collection of spheres - Figure 2. 
-The total force expirienced by a pair of spheres is:
-\begin{equation}
- \bar{F} = F^{N} \bar{n} + F^{T} \bar{t} + F^{S} \bar{n}
-\end{equation}
-where (in 2D) $\bar{n}$ and $\bar{t}$ are normal and tangential vectors,
-
-$\bar{n} = \frac{\mathbf{x}_{i} - \mathbf{x}_j}{|\mathbf{x}_{i} - \mathbf{x}_j|} $, and
-
-$\bar{t} = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix} \frac{\mathbf{x}_{i} - \mathbf{x}_j}{|\mathbf{x}_{i} - \mathbf{x}_j|} $
-
-Normal force is a combination of elastic repulsion and kinetic energy dissipation:
-\begin{equation}
- F^{N}_{ij} = Y(r_j + r_j - |\mathbf{x}_{i} - \mathbf{x}_j| ) - \gamma_N m_{eff} (\dot{\mathbf{x}}_{i} - \dot{\mathbf{x}}_j)\cdot \bar{n}
-\end{equation}
-where: $m_{eff} = \frac{m_1 m_2}{m_1 + m_2}$
-$Y$ is Young modulus, and $\gamma_N$ being phenomenological friction coefficient (related to the coefficient of restitution).
-
-Contrary to \cite{sok93} spheres are not glued rigidly but connected by springs.
-This there is daping force between particles belonging to the same grain and connected by spring:
-\begin{equation}
- F^{S}_{ij} =\alpha \left(C^{(k)} -  |\mathbf{x}_{i} - \mathbf{x}_j| \right) + \gamma_{Sp} \frac{m_i}{2} |\dot{\mathbf{x}}_{i} - \dot{\mathbf{x}}_j|
-\end{equation}
-where $\alpha$ is the spring constant, and $\gamma_{Sp}$ is the dumping coefficient. $C^{(k)}$ is the "equilibrrium" distance.
-As it can be seen, interaction between particles in the same  graine are purely geometric without any intergrain friction.
-The static friction should be an emergent property as a result of grains' roughness. 
-An exception are spherical particles for which static friction has been included as equal to\cite{cs79, herr93, herr94}:
- 
-\begin{equation}
-F^{T}_{ij} = -sign(\bar{\nu}_{rel}) \min(\gamma_{s} m_{eff} |\bar{\nu}_{rel}| , \mu F^{N}_{ij} )
-\end{equation}
-where:
-$\bar{\nu}_{rel} = (\dot{\mathbf{x}}_{i} - \dot{\mathbf{x}}_j)\bar{t} + \bar{r}_i \dot{\bar{\Omega}}_i + \bar{r}_j \dot{\bar{\Omega}}_j$,
-$\dot{\bar{\Omega}}$ - angular velocity, $\gamma_s$ shear friction coefficient, $\mu$ - Coulomb coefficient.
-
-
-The spatial configuration of these
-spheres or polygons represents the microstructure of non-
-spherical particles. No explicit static friction force need be
-used for these compound non-spherical objects.
-
-
-\section{Schafer et al. \cite{sw95, schafer96}}
-Model in 2D. Review kind of paper.
-Let's define a deformation as being:
-\begin{equation}
- \xi = \max(0, R_i + R_j - |\mathbf{r}_2 - \mathbf{r}_1|)
-\end{equation}
-and $\mathbf{n}$ and $\mathbf{s}$ being normal and tangential vecotrs of the contact of two grains.
-Then normal and shear velocities are defined as:
-\begin{equation}
- \dot{\xi} = v_n = (\mathbf{v}_i - \mathbf{v}_j) \cdot \mathbf{n}
+ \dot{\xi} \equiv v_n = (\mathbf{v}_i - \mathbf{v}_j) \cdot \mathbf{n}
 \end{equation}
 and
+\begin{equation} \label{eq:vs1}
+ \mathbf{\nu}_s = (\mathbf{v}_i - \mathbf{v}_j) \cdot \mathbf{t}
+\end{equation}
+or in more general form:
+\begin{equation}  \label{eq:vs2}
+ \mathbf{\nu}^{rot}_s = (\mathbf{v}_i - \mathbf{v}_j) \cdot \mathbf{t} + \Omega_1 \times \mathbf{r}_1 + \Omega_2 \times \mathbf{r}_2
+\end{equation}
+where $\mathbf{r}_1$ and $\mathbf{r}_2$ go from the center of the grain to the point of the contact, and $\Omega$ being an angular velocity vector.
+
+\section{Forces}
+\begin{enumerate}
+ \item Normal forces accounting for elastic deformation and energy dissipation, which can be expressed in general form as:
+ \begin{equation}\label{eq:normal}
+  \mathbf{F}^{n} = \mathbf{F}^{el} + \mathbf{F}^{d} = -k_n\mathbf{\xi}^{\alpha} - \gamma_n \mathbf{\xi}^{\beta}\dot{\mathbf{\xi}}
+ \end{equation}
+
+
+ \item Tangential forces: $\mathbf{F}^{s}$
+ \item Fine structure forces: $\mathbf{F}^{f}$ - if grains have sub-structure.
+
+\end{enumerate}
+
+
+\section{Sokolowski et al. \cite{sok92, sok93}}
+Normal force in Sokolowski's model takes the form of equation \ref{eq:normal} with $\alpha=1.0$, and $\beta=0.0$.
+Then using equation \ref{eq:vs1} shear force is given by:
+
 \begin{equation}
- v_s = (\mathbf{v}_i - \mathbf{v}_j) \cdot \mathbf{s} + \omega_1 R_1 + \omega_2 R_2
+  \mathbf{F}^{s}_i = -\gamma_s m_i \mathbf{\nu}_s
 \end{equation}
 
-\subsection{Normal Impacts}
+However this model provides incorrect behavior for large velocoties since shear force should be restricted 
+by normal force (Coulomb friction). Additioanlly rotation of grains has been also neglected. 
+However when nonspherical shape of grains  strongly surpresses rotation and the effects of normal forces on friction can be neglected.
+
+For the case where non-spherical particles are needed so called "site-site" model is used. In site-site model, non-spherical
+grains are represented as a collection of rigiditly glued spheres - Figure \ref{fig:shapes}.
+Dynamics is solved in the same way as for spherical particles but for this case rotation of particles is also taken into account:
+
+\begin{equation}
+ \mathbf{F}^{s}_{ij} = \left[\mathbf{F}^{n}_i + \min(\mathbf{F}^{slide}_{ij}, \mathbf{F}^{roll}_{ij})\right]  \frac{ \mathbf{t}_{ij} } { |\mathbf{t}_{ij}| }
+\end{equation}
+
+where sliding force for spheres \textit{i} and \textit{j} belonging to grains \textit{n} and \textit{m} is:
+\begin{equation}
+ \mathbf{F}^{slide}_{ij} = -\gamma_s m_i \nu^{rot}_s
+\end{equation}
+and rolling force is:
+\begin{equation}
+ \mathbf{F}^{roll}_{ij} = -\mu\mathbf{F}^{n}_{i} \cdot \mathbf{t}_{ij} \frac{ \mathbf{t}_{ij}} { |\mathbf{t}_{ij}|^2 }
+\end{equation}
+
+Again static friction is neglected. % for simplicity and because models usually glue particles together to impose static friction.
+However sliding and rolling forces on top of intrinsic roughness of grains implicityly incorporate effects of static friction.
+%Additionally roughness (and by this ability to dissipate kinetic energy) 
+%of the box in which grains were simulated was accounted by giridly packing of particles similar to the ones used in simulation.
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.8\textwidth]{./pics/shapes.png}
+\caption{On the left tetrahedron is represented as 4 spheres. On the lest cube is represented as 9 spheres of different size. In each case spheres are rigidly connected.}
+\label{fig:shapes}
+\end{figure}
+
+\section{Poschel and Buchholtz \cite{pb93, pb94, pb95}}
+Despite the fact that many properties of nonspherical granular materials are consequences of static friction,
+Poschel and Buchholtz \textbf{show that such properites can be reproduced in simulations without explicityly inlcuding static friction.}
+Nonspherical particles are represented as a collection of interacting spheres - Figure \ref{fig:pb}. 
+The total force expirienced by a pair of spheres is:
+\begin{equation}
+ \mathbf{F} = \mathbf{F}^{n} + \mathbf{F}^{s} + \mathbf{F}^{f}
+\end{equation}
+
+Contrary to the representation in Figure \ref{fig:shapes} (\cite{sok93}), spheres are not glued rigidly but connected by elastic springs - Figure \ref{fig:pb}.
+To prevent sub-structural vibration damping component is also included:
+\begin{equation}
+ |\mathbf{F}^{f}_{ij}| =k_\alpha \left(C_{ij} -  |\mathbf{x}_{i} - \mathbf{x}_j| \right) + \gamma_{f} \frac{m_i}{2} |\dot{\mathbf{x}}_{i} - \dot{\mathbf{x}}_j|
+\end{equation}
+where $k_\alpha$ is the spring constant, and $\gamma_{f}$ is the dumping coefficient. $C_{ij}$ is the \textit{equilibrium} distance between spheres i and j
+which belong to the same grain.
+%As it can be seen, interaction between particles in the same  graine are purely geometric without any intergrain friction.
+The static friction should be an emergent property as a result of grains' roughness. 
+An exception are spherical particles for which static friction has been included as:\cite{cs79, herr93, herr94}:
+ 
+\begin{equation}
+\mathbf{F}^{s}_{i} = - \min(\gamma_{s} \tilde{m} |\mathbf{\nu}^{rot}_s| , \mu \mathbf{F}^{n}_{i} ) \frac{\mathbf{\nu}^{rot}_s}{|\mathbf{\nu}^{rot}_s|}
+\end{equation}
+where:
+$\gamma_s$ kinetic friction coefficient, $\mu$ - static friction coefficient, and $\tilde{m} = \frac{m_1m_2}{m_1+m_2}$
+
+
+%The spatial configuration of these spheres or polygons represents the microstructure of non-spherical particles. 
+%No explicit static friction force need to be used for these compound non-spherical objects.
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.8\textwidth]{./pics/pb.png}
+\caption{Square representad as a collection of 5 spheres conneced by (relatively stiff) harmonic springs. Roughness of the edges imitate static friction of the square.}
+\label{fig:pb}
+\end{figure}
+
+\section{Schafer et al. \cite{sw95, schafer96}}
+\subsection{Normal Impacts - limits of application of elasticity theory}
 Two colliding spheres undergo a deformation which is between perfeclty elastic and inelastic. Dissipation of kinetic energy may go through
 plastic deformation, visoelasticity, or exception of elastic waves. 
-The elasticity of the impact is 
-phenomenologically described by coefficient of normal resustitution being defined as $\epsilon = -v^{after}_n/v^{before}_n$. It is important
-to remember that $\epsilon$ depends on the particular case of collision but may also depend on the velocity of impact.
+The elasticity of the impact is phenomenologically described by coefficient of normal resustitution being defined as $\epsilon = -v^{after}_n/v^{before}_n$. 
+%It is important to remember that $\epsilon$ depends on the particular case of collision but may also depend on the velocity of impact.
 For two elastic materials, plastic deformation may occur for the object with the velocity of impact higher of equal to:
-\begin{equation}
- v^2_{yield} \approx 107 \frac{R^3_{eff} Y^5}{m_{eff} E^4_{eff}}
+\begin{equation} \label{eq:impact}
+ v^2_{yield} \approx 107 \frac{R^3_{eff} Y^5}{\tilde{m} E^4_{eff}}
 \end{equation}
-where : $m_{eff} = \frac{m_1m_2}{m_1 + m_2}$, $R_{eff} = \frac{R_1R_2}{R_1 + R_2}$, and $\frac{1}{E_{eff}} = \frac{1-\nu^2_1}{E_1} +\frac{1-\nu^2_2}{E_2}$; 
-$\nu$ being Poisson's ratio. Below that limit no plastic deformation occurs, and the energy is dissipated in a viscoelastic way.
-Modeling such force requires two components: repulsion and some sort of dissipation. The simplest form is damped harmonic oscilator:
+where : $\tilde{m} = \frac{m_1m_2}{m_1 + m_2}$, $R_{eff} = \frac{R_1R_2}{R_1 + R_2}$, and $\frac{1}{E_{eff}} = \frac{1-\nu^2_1}{E_1} +\frac{1-\nu^2_2}{E_2}$; 
+$\nu$ being Poisson's ratio. Below this limit no plastic deformation occurs and the energy is dissipated in a viscoelastic way.
+Modeling such force requires two components: repulsion and some sort of dissipation. The simplest form is damped harmonic oscilator - eq.\ref{eq:normal}:
 \begin{equation}
  F_{n} = \min(0,-k_n\xi - \gamma_n \dot{\xi})
 \end{equation}
@@ -160,59 +173,55 @@ introducing term: $ -\hat{\gamma}_n \xi^{1/2} \dot{\xi}$.
 
 
 \subsection{Frictinal contacts}
-Static friction for $v_s = 0$:
-\[
- F_s \le \mu_s F_n
-\]
+Static friction for $\nu_s = 0$:
+\begin{equation}
+ \mathbf{F}^s \le \mu_s \mathbf{F}^n
+\end{equation}
 and dynamic friction for $v_s \ne 0$:
-\[
- F_d = \mu_d F_n
-\]
+\begin{equation}
+ \mathbf{F}^s = \mu_s \mathbf{F}^n
+\end{equation}
 
-For elastically similar bodies shear stress do not modify normal force so Hertz model can be still applied. 
-The simplies dynamic shear force applies Coulomb rule \cite{haff86}:
-\[
- F_s = -\mu |F_n| sign(v_s)
-\]
-Obviously it cannot provide reversal of tangential velocity, it can only slow down $v_s$ to zero.
-However this model has discontinouity at $v_s = 0$ which in rolling regime ($v_s \Rightarrow 0$) gives jumps in the sign of 
+For similar bodies shear stress do not modify normal force so Hertz model can be still applied. 
+The simpliest dynamic shear force applies Coulomb rule \cite{haff86}:
+\begin{equation}
+ \mathbf{F}^s = -\mu |\mathbf{F}^n| \frac{\nu_s}{|\nu_s|}
+\end{equation}
+Obviously it cannot provide reversal of tangential velocity - it can only slow down $v_s$ to zero.
+Moreover this model has discontinouity at $v_s = 0$ which in rolling regime ($v_s \rightarrow 0$) gives jumps in the sign of 
 $F_s$ instead of just 0.
 
 Sometimes viscous friciton is also introdued \cite{sok92b}:
-\[
- F_s = -\gamma_s \nu_s
-\]
-where: $\gamma_s$ is shear damping constant with no clear physical meaning but it should provide values high enough for collisional properties.
-The problem is that when the force is nearly or larger the normal force
-model provides incorrect description (since it is not limited by $F_n$).
-Problems of both models can be overcome by combining them to get\cite{pb93, pb94, pb95}:
-\[
- F_s = -\min(|\gamma_s \nu_s|,|\mu F_n|) \cdot sign(\nu_s)
-\]
+\begin{equation}
+ \mathbf{F}^s = -\gamma_s \nu_s
+\end{equation}
+where: $\gamma_s$ is shear damping constant. % with no clear physical meaning but it should provide values high enough for collisional properties.
+The problem is that when the force is nearly the same or larger than the normal force,
+model provides incorrect description (since it is not limited by $\mathbf{F}^n$).
+These two problems can be overcome by \cite{pb93, pb94, pb95}:
+\begin{equation}
+ \mathbf{F}^s = -\min(|\gamma_s \nu_s|,|\mu \mathbf{F}^n|) \cdot \frac{\nu_s}{|\nu_s|}
+\end{equation}
 
-However the problem is that these model do not account tangential elasticity. 
-he shear friction forces discussed above can only slow
-movement in the tangent direction, not stop or reverse it.
-These rules are inadequate for applications that require truly
-static friction, such as heap formation, angles of repose, and
-the quasi-static stages of avalanches. In such situations, there
-is a threshold force below which the grains do not move at
-all, opposed by static friction originating in the even smaller
-scale surface interactions of particle contact.However, im-
-plementation of a simple threshold rule is history dependent
-and computationally intensive. 
+Finally the problem is that these models do not account for tangential elasticity. 
+The shear friction forces discussed above can only slow down the motion in the tangential direction.
+These rules are inadequate for applications that require truly static friction, such as heap formation, angles of repose, and
+the quasi-static stages of avalanches.  In such situations, there is a threshold force below which the grains do not move at  all, 
+opposed by static friction originating in the even smaller scale surface interactions of particle contact. 
+However implementations of a simple threshold rule are history dependent and computationally expensive. 
 
 
 \subsection{Tangential elasticity}
-TE first introuced by Cundell and Stuck \cite{cs79}, providing very accurate results and defined as:
+Tangential elasticity was first introuced by Cundell and Stuck \cite{cs79}, providing very accurate results and is given as:
 \begin{equation} \label{eq:fs}
- F_s = -\min(|k_s \xi|,|\mu F_n|) \cdot sign(\xi)
+ \mathbf{F}^s = -\min(|k_s \xi_s|,|\mu \mathbf{F}^n|) \cdot sign(\xi_s)
 \end{equation}
-where: $k_s$ is some tangential elasticity, and $\xi$ is the total dispalcement in a tangential direction that took place
-since the moment of contact creation(at $t_0$):
-\[
- \xi(t) = \int^{t}_{t_0} \nu_s(t')dt'
-\]
+where: $k_s$ is some tangential elasticity, and $\xi_s$ is the total dispalcement in a tangential direction that took place
+since the moment of a contact creation(at $t_0$):
+\begin{equation}
+ \xi_s(t) = \int^{t}_{t_0} \nu_s(t')dt'
+\end{equation}
+The interpretation of this model is a \textbf{transverse spring introduced at the position of contact}, which opose deformation of the contat.
 A naive implementation of these equations can lead to some unphysical behavior,
 since long-lasting contacts may involve several changes from rolling to sliding and
 back, without breaking contact between the disks. This in turn can produce arbitrarily large values for $\xi$, 
@@ -222,44 +231,34 @@ The second difficulty is that representing static friction with a fictitious spr
 of introducing tangential oscillations in the
 system. In order to damp them one needs to put some dissipation in this tangential
 interaction. Following the linear-spring dash-pot model one needs to add to \ref{eq:fs}
-a term of the form $\gamma_s \dot{\xi}$
+a term of the form $\gamma_s \dot{\xi}$ \cite{perez}.
 
-\cite{perez}
-
-The cotinuation of the tangential elasticity model is the model introducing force dependend elastcity \cite{wb86}:
-\[
- F_s(t+1) = F_s(t) + k_s(F_s(t), F_n(t), \Delta \xi(t)) |\xi(t-1) - \xi(t)|
-\]
-where $t$ denotes "time steps" performed in integration scheme till break of the contact. 
-In general $k_s$ incorporates information on initial parameters of the contact, directionality of a deformation of the contact,
-and normal deformation of the grain.
+%The cotinuation of the tangential elasticity model is the model introducing force dependend elastcity \cite{wb86}:
+%\begin{equation}
+% \mathbf{F}^s(t+1) = \mathbf{F}^s(t) + k_s(\mathbf{F}^s(t), \mathbf{F}^n(t), \Delta \xi_s(t)) |\xi_s(t-1) - \xi_s(t)|
+%\end{equation}
+%where $t$ denotes "time steps" performed in integration scheme till break of the contact. 
+%In general $k_s$ incorporates information on initial parameters of the contact, directionality of a deformation of the contact,
+%and normal deformation of the grain.
 
 \section{Mucha et al \cite{mucha05}}
-In order to draw upon the existing
-theory for spherical particles, we model non-spherical parti-
-cles with collections of spheres, avoiding overly stiff inter-
-actions by replacing internal springs with rigid motion con-
-straints. With static friction obtained via normal forces be-
-tween compounds of spheres, we can then limit our attention
-to dynamic shear forces.
-
-In such model The net force
-on a grain is simply the sum of the individual contact forces
-applied to its particles.
-
-\begin{figure}[tb]
-\centering
-\includegraphics[width=0.8\textwidth]{./pics/shapes.png}
-\caption{abc}
-\label{fig:shapes}
-\end{figure}
+In order to draw upon the existing theory for spherical particles, non-spherical particles are modeled with collections of spheres - Figure \ref{fig:camel}, 
+avoiding overly stiff interactions by replacing internal springs by rigid constraints. 
+With static friction obtained via normal forces between compounds of spheres, shear model is reduced to dynamic shear forces.
+In such model the net force on a grain is simply the sum of the individual contact forces applied to its particles,
+and static friction is the results of roughness of she surface. \textbf{Thus as a result of geometric hindrances static friction emerges implicityly.}
 
 \begin{figure}[tb]
 \centering
 \includegraphics[width=0.8\textwidth]{./pics/camel.png}
-\caption{abc}
+\caption{Camel represented as a set of small spheres. Other objects may interact with the camel by individual interaction with each sphere separately.}
 \label{fig:camel}
 \end{figure}
+
+\section{Comments}
+\begin{enumerate}
+ \item For our considerations impact velocities are so small that we can neglect possibility of plastic deformaiton fiven by \ref{eq:impact}
+\end{enumerate}
 
 
 
