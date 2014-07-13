@@ -21,7 +21,7 @@
 \newpage
 
 \section{Definitions}
-Following measures are defined for the purpose of the later formalism:
+Following measures are defined for the use in later parts:
 
 Deformation:
 \begin{equation}
@@ -103,7 +103,8 @@ However sliding and rolling forces on top of intrinsic roughness of grains impli
 \begin{figure}[tb]
 \centering
 \includegraphics[width=0.8\textwidth]{./pics/shapes.png}
-\caption{On the left tetrahedron is represented as 4 spheres. On the lest cube is represented as 9 spheres of different size. In each case spheres are rigidly connected.}
+\caption{On the left tetrahedron is represented as 4 rigidly connected spheres. On the right side cube is represented as 9 spheres of different size.
+Static friction is a result of geometric roughness of the surface (generating spatial hindrace) and dynamic friction \cite{sok93, mucha05}.}
 \label{fig:shapes}
 \end{figure}
 
@@ -140,7 +141,7 @@ $\gamma_s$ kinetic friction coefficient, $\mu$ - static friction coefficient, an
 \begin{figure}[tb]
 \centering
 \includegraphics[width=0.8\textwidth]{./pics/pb.png}
-\caption{Square representad as a collection of 5 spheres conneced by (relatively stiff) harmonic springs. Roughness of the edges imitate static friction of the square.}
+\caption{Square representad as a collection of 5 spheres conneced by (relatively stiff) harmonic springs. Roughness of the edges imitate static friction of the square \cite{pb93}.}
 \label{fig:pb}
 \end{figure}
 
@@ -199,7 +200,7 @@ where: $\gamma_s$ is shear damping constant. % with no clear physical meaning bu
 The problem is that when the force is nearly the same or larger than the normal force,
 model provides incorrect description (since it is not limited by $\mathbf{F}^n$).
 These two problems can be overcome by \cite{pb93, pb94, pb95}:
-\begin{equation}
+\begin{equation} \label{eq:stat1}
  \mathbf{F}^s = -\min(|\gamma_s \nu_s|,|\mu \mathbf{F}^n|) \cdot \frac{\nu_s}{|\nu_s|}
 \end{equation}
 
@@ -251,13 +252,30 @@ and static friction is the results of roughness of she surface. \textbf{Thus as 
 \begin{figure}[tb]
 \centering
 \includegraphics[width=0.8\textwidth]{./pics/camel.png}
-\caption{Camel represented as a set of small spheres. Other objects may interact with the camel by individual interaction with each sphere separately.}
+\caption{Camel represented as a set of small spheres\cite{mucha05}. Other objects may interact with the camel by individual interaction with each sphere separately.
+Friction is then reproduced with equation \ref{eq:stat1}.}
 \label{fig:camel}
 \end{figure}
 
 \section{Comments}
 \begin{enumerate}
- \item For our considerations impact velocities are so small that we can neglect possibility of plastic deformaiton fiven by \ref{eq:impact}
+ \item For our considerations impact velocities are so small that we can neglect possibility of plastic deformaiton given by \ref{eq:impact}.
+ \item Intorduction static friction has been not always necessary in order to reproduce physical properties of for example sand heaps.
+ \item Transverse spring given by equation \ref{eq:fs} needs monitoring a hisotry of the contact and decisive step on breaking a contact.
+ \item Non-spherical objects need a fine representation, which usually goes throuh covering a surface by sphere. This representaiton 
+ introduces roughness which is in many instatnces enough for reproducing static friction-like behavior on large scales - however is incorect on the local
+ scale - of the size of the interface of the contact.
+ \item Assuming molecular scale being $L_{mol}\approx 0.5 [nm]$, and accuracy resolution $\epsilon=0.001$, lenghtscale for which density flucs' can be neglected is:
+ $L_{micro} = \epsilon^{-2/3} L_{mol} = 50 [nm]$, and the lenghtscale at which macroscopic smoothness of the material allows us to intorduce phenomenological friction
+ parameter is $L_{macro} = \epsilon^{-1} L_{micor} = 50[\mu m]$, which is slightly larger than the dimension of mamalian cell. Thus if we want to intorduce even larger resolution 
+ to the description of yeast cell than the frictional description may not be a proper one.
+ \item \textbf{Friction on large scales may emeberge from the local andhesion of elements and non-smooth representation of cellulalr surface.}
+ \item Based on calculations presented in inertia.pdf it seems that cells motion is so much overdapned that they would not move even in case of the absence of 
+ other cell, thus in case of lack of self-propulsion cell suppose to react only to the external pushing forces, and in case of so negligible displacements,
+ equations \ref{eq:stat1} or  \ref{eq:fs} give us the same answer. 
+ \item Upon high compression (where cell wall can be burst)and assuming even relatively small friction coefficient $\nu \approx 0.1$ we see that 
+ the magnitude of friction force (assuming it is valid to define such) may be of the order of $F = $.
+ 
 \end{enumerate}
 
 
