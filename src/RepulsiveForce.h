@@ -22,4 +22,3 @@ class RepulsiveForce : public Force
 };
 
 #endif	/* REPULSIVEFORCE_H */
-

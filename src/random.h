@@ -47,4 +47,3 @@ inline double normal(void)
 }
 
 #endif	/* RANDOM_H */
-

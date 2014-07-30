@@ -21,4 +21,3 @@ class Force
 };
 
 #endif	/* FORCE_H */
-

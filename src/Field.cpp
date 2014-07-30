@@ -11,4 +11,3 @@ Field::Field(const Field& orig)
 Field::~Field()
 {
 }
-

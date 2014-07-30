@@ -32,4 +32,3 @@ inline void print_time()
 }
 
 #endif
-

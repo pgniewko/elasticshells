@@ -11,4 +11,3 @@ class Field
 };
 
 #endif	/* FIELD_H */
-

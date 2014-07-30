@@ -11,4 +11,3 @@ Force::Force(const Force& orig)
 Force::~Force()
 {
 }
-
