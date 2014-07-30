@@ -23,7 +23,7 @@ LDFLAGS  := $(LIB)
 LDLIBS   := -lcppunit
 
 # Local dirs 
-TEST_SRC := ./src/test
+TESTS    := ./tests
 SRC      := ./src
 BIN      := ./bin
 

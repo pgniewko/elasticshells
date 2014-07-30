@@ -1,7 +1,7 @@
 include config.mk
 
 PROGRAM      := $(BIN)/biofilm
-TEST_RUNNER  := $(TEST_SRC)/test
+TEST_RUNNER  := $(TESTS)/test
 
 SOURCES      := main.cpp \
                 $(wildcard $(SRC)/*.cpp)
@@ -10,7 +10,7 @@ HEADERS      := $(wildcard $(SRC)/*.h)
 
 OBJECTS      := $(SOURCES:.cpp=.o)
 
-TEST_SOURCES := $(wildcard $(TEST_SRC)/*.cpp) \
+TEST_SOURCES := $(wildcard $(TESTS)/*.cpp) \
                 $(wildcard $(SRC)/*.cpp)
 
 TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
@@ -27,7 +27,7 @@ main.o: $(SOURCES) $(HEADERS) #main.cpp
 
 $(SRC)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 
-$(TEST_SRC)/%.o: $(TEST_SRC)/%.cpp $(TEST_SRC)/%.h
+$(TESTS)/%.o: $(TESTS)/%.cpp $(TESTS)/%.h
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
