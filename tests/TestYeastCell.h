@@ -29,4 +29,3 @@ class TestYeastCell : public CPPUNIT_NS::TestFixture
 };
 
 #endif	/* NEWTESTCLASS_H */
-

@@ -44,4 +44,3 @@ void TestYeastCell::testFailedMethod()
 {
     CPPUNIT_ASSERT(true);
 }
-

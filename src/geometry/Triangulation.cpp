@@ -7,7 +7,7 @@
 
 using namespace std;
 
-// g++ main.cpp -lm -lGL -lGLU -lglut -lSDL
+// g++ Triangulation.cpp -lm -lGL -lGLU -lglut -lSDL
 // can represent vector too
 struct Point {
     Point operator +(const Point& p2) {
@@ -140,6 +140,8 @@ void renderingScript(const char* filename)
     }
     
     os << "cmd.do(\"show lines\")\n";
+    os << "cmd.do(\"bg white\")\n";
+
     os.close();
 }
 

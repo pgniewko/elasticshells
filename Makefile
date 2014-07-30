@@ -51,3 +51,6 @@ indent:
 	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.cpp"
 	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.h"
 	@./astyle-clean.sh
+	
+install:
+	@echo You must be root to install.
