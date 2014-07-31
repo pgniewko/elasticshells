@@ -4,36 +4,38 @@
 #include <SDL/SDL_opengl.h>
 #include <list>
 #include <cmath>
+#include "Point.h"
+#include "Triangle.h"
 
 using namespace std;
 
 // g++ Triangulation.cpp -lm -lGL -lGLU -lglut -lSDL
 // can represent vector too
-struct Point {
-    Point operator +(const Point& p2) {
-        return Point(x+p2.x, y+p2.y, z+p2.z);
-    }
-    Point operator *(float r) {
-        return Point(x*r, y*r, z*r);
-    }
-    Point(float a, float b, float c):x(a),y(b),z(c) {
-    }
-    void setLength(float r) {
-        float rl = r/length();
-        x *= rl;
-        y *= rl;
-        z *= rl;
-    }
-    float length() {
-        return sqrt(x*x+y*y+z*z);
-    }
-    float x, y, z;
-};
+//struct Point {
+//    Point operator +(const Point& p2) {
+//        return Point(x+p2.x, y+p2.y, z+p2.z);
+//    }
+//    Point operator *(float r) {
+//        return Point(x*r, y*r, z*r);
+//    }
+//    Point(float a, float b, float c):x(a),y(b),z(c) {
+//    }
+//    void setLength(float r) {
+//        float rl = r/length();
+//        x *= rl;
+//        y *= rl;
+//        z *= rl;
+//    }
+//    float length() {
+//        return sqrt(x*x+y*y+z*z);
+//    }
+//    float x, y, z;
+//};
 
-struct Triangle {
-    Triangle(Point m, Point n, Point o):a(m),b(n),c(o) {};
-    Point a, b, c;
-};
+//struct Triangle {
+//    Triangle(Point m, Point n, Point o):a(m),b(n),c(o) {};
+//    Point a, b, c;
+//};
 
 std::list<Triangle> tris;
 
@@ -73,6 +75,9 @@ void resizeGL(int width, int height)
 
 void subdivide()
 {
+    printf("jestem ... \n");
+    
+    int counter = 0;
     std::list<Triangle> newTris;
     float l = tris.begin()->a.length();
     for(std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i) { // go through all triangles
@@ -80,6 +85,8 @@ void subdivide()
         mid.setLength(l); // put in on the sphere
         newTris.push_back(Triangle(i->b, i->c, mid)); // remember new triangles
         newTris.push_back(Triangle(i->a, i->c, mid));
+        counter++;
+        printf("trojkat no: %d\n", counter);
     }
     tris.swap(newTris); // use new set of triangles;
 }
