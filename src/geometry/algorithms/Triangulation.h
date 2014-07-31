@@ -12,7 +12,7 @@ public:
     Triangulation(const Triangulation& orig);
     virtual ~Triangulation();
     virtual list<Triangle> triangulate() =0;
-private:
+protected:
     std::list<Triangle> tris;
 
 };

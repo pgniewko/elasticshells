@@ -75,7 +75,7 @@ void resizeGL(int width, int height)
 
 void subdivide()
 {
-    printf("jestem ... \n");
+//    printf("jestem ... \n");
     
     int counter = 0;
     std::list<Triangle> newTris;
@@ -86,7 +86,7 @@ void subdivide()
         newTris.push_back(Triangle(i->b, i->c, mid)); // remember new triangles
         newTris.push_back(Triangle(i->a, i->c, mid));
         counter++;
-        printf("trojkat no: %d\n", counter);
+//        printf("trojkat no: %d\n", counter);
     }
     tris.swap(newTris); // use new set of triangles;
 }

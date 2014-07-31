@@ -6,7 +6,7 @@
 class Triangle {
 public:
 //    Triangle();
-    Triangle(Point m, Point n, Point o);
+    Triangle(Point, Point, Point);
     Triangle(const Triangle& orig);
     virtual ~Triangle();
     Point a, b, c;

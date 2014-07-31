@@ -4,9 +4,11 @@ PROGRAM      := $(BIN)/biofilm
 TEST_RUNNER  := $(TESTS)/test
 
 SOURCES      := main.cpp \
-                $(wildcard $(SRC)/*.cpp)
+                $(wildcard $(SRC)/*.cpp) \
+                $(wildcard $(SRC)/geometry/*.cpp)
 
-HEADERS      := $(wildcard $(SRC)/*.h)
+HEADERS      := $(wildcard $(SRC)/*.h) \
+	        $(wildcard $(SRC)/geometry/*.h)
 
 OBJECTS      := $(SOURCES:.cpp=.o)
 

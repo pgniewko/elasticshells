@@ -7,7 +7,7 @@
 class Point {
 public:
 //    Point();
-    Point(float a, float b, float c);
+    Point(float, float, float);
     Point(const Point& orig);
     virtual ~Point();
     

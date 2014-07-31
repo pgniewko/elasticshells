@@ -7,7 +7,7 @@ class SimpleTriangulation : public Triangulation
 {
 public:
     SimpleTriangulation();
-    SimpleTriangulation(int depth);
+    SimpleTriangulation(int);
     SimpleTriangulation(const SimpleTriangulation& orig);
     virtual ~SimpleTriangulation();
     list<Triangle> triangulate();
