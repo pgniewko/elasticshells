@@ -7,7 +7,7 @@
 //    z = 0.0;
 //}
 
-Point::Point(float a, float b, float c) :x(a),y(b),z(c) {}
+Point::Point(float a, float b, float c) : x(a), y(b), z(c) {}
 
 Point::Point(const Point& orig) : x(orig.x), y(orig.y), z(orig.z){}
 

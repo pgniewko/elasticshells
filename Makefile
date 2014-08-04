@@ -5,10 +5,12 @@ TEST_RUNNER  := $(TESTS)/test
 
 SOURCES      := main.cpp \
                 $(wildcard $(SRC)/*.cpp) \
-                $(wildcard $(SRC)/geometry/*.cpp)
+                $(wildcard $(SRC)/geometry/*.cpp) \
+		$(wildcard $(SRC)/geometry/algorithms/*.cpp)
 
 HEADERS      := $(wildcard $(SRC)/*.h) \
-	        $(wildcard $(SRC)/geometry/*.h)
+	        $(wildcard $(SRC)/geometry/*.h) \
+	        $(wildcard $(SRC)/geometry/algorithms/*.h)
 
 OBJECTS      := $(SOURCES:.cpp=.o)
 

@@ -1,15 +1,15 @@
 #ifndef TRIANGLE_H
 #define	TRIANGLE_H
 
-#include "Point.h"
+#include "Vector3D.h"
 
 class Triangle {
 public:
 //    Triangle();
-    Triangle(Point, Point, Point);
+    Triangle(Vector3D, Vector3D, Vector3D);
     Triangle(const Triangle& orig);
     virtual ~Triangle();
-    Point a, b, c;
+    Vector3D a, b, c;
      
 private:
    
