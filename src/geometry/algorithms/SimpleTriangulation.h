@@ -1,7 +1,11 @@
 #ifndef SIMPLETRIANGULATION_H
 #define	SIMPLETRIANGULATION_H
 
+#include <iostream>    /* cout, cin */
+
 #include "Triangulation.h"
+
+using namespace std;
 
 class SimpleTriangulation : public Triangulation
 {

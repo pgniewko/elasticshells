@@ -2,6 +2,7 @@
 #define	TRIANGULATION_H
 
 #include <list>
+#include <iostream> 
 #include "../Triangle.h"
 
 using namespace std;
@@ -12,8 +13,10 @@ public:
     Triangulation(const Triangulation& orig);
     virtual ~Triangulation();
     virtual list<Triangle> triangulate() =0;
+    void saveTriangulatedSurface(const char*, bool);
+    void saveRenderingScript(const char*, const char*);
 protected:
-    std::list<Triangle> tris;
+    list<Triangle> tris;
 
 };
 
