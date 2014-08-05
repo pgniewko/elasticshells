@@ -5,12 +5,14 @@
 #include <fstream>
 #include <math.h>
 
+using namespace std;
+
 class Vector3D
 {
     public:
 //        typedef double DataType;
 
-//        Vector3D();
+        Vector3D();
         Vector3D(double ix, double iy, double iz);
         Vector3D(const Vector3D& orig);
         virtual ~Vector3D();
@@ -21,6 +23,9 @@ class Vector3D
 //        const Vector3D& operator /=(const double a);
         Vector3D operator *(double);
         Vector3D operator +(const Vector3D&);
+        Vector3D operator -(const Vector3D&);
+        Vector3D& operator +=(const Vector3D&);
+        Vector3D& operator /=(const double);
         double length() const;
         double length2() const;
  //       Vector3D direction() const;
@@ -40,12 +45,12 @@ class Vector3D
 //    return s;
 //}
 
-//template <class OutputStreamT>
-//inline OutputStreamT& operator<<(OutputStreamT& s, const Vector3D& v)
-//{
-//    s <<  v.x << ' ' << v.y << ' ' << v.z << ' ';
-//    return s;
-//}
+template <class OutputStreamT>
+inline OutputStreamT& operator<<(OutputStreamT& s, const Vector3D& v)
+{
+    s <<  v.x << ' ' << v.y << ' ' << v.z << ' ';
+    return s;
+}
 
 //inline Vector3D operator+(const Vector3D& u, const Vector3D& v)
 //{
@@ -110,4 +115,6 @@ class Vector3D
 //    return v * (1.0 / a);
 //}
 
+
 #endif	/* VECTOR3D_H */
+

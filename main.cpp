@@ -14,10 +14,11 @@
 #include <list>
 
 #include "src/geometry/algorithms/SimpleTriangulation.h"
-#include "src/geometry/Point.h"
+#include "src/geometry/Vector3D.h"
 #include "src/arguments.h"
 #include "src/random.h"
 #include "src/Timer.h"
+#include "src/Cell.h"
 
 using namespace std;
 
@@ -243,6 +244,41 @@ int main(int argc, char** argv)
     list<Triangle> triang = sm.triangulate();
     sm.saveTriangulatedSurface("cells.xyz", false);
     sm.saveRenderingScript("render_cells.py","cells.xyz");
+    
+//    Triangle t1 = Triangle(Vector3D(0,0,0), Vector3D(1,0,0),Vector3D(0,1,0));
+//    cout << "area=" << t1.area() << endl;
+    
+//    Triangle t2 = Triangle(Vector3D(0,0,0), Vector3D(1,1,0),Vector3D(1,-1,0));
+//     cout << "area=" << t2.area() << endl;
+     
+//    Triangle t3 = Triangle(Vector3D(0,0,0), Vector3D(1,1,0),Vector3D(-1,-1,0));
+//     cout << "area=" << t3.area() << endl;
+     
+//    Triangle t4 = Triangle(Vector3D(0,0,0), Vector3D(1,1,0),Vector3D(-1,0,0));
+//     cout << "area=" << t4.area() << endl;
+    
+    //Cell cell;
+    for (int i = 1; i <= 10; i++)
+    {
+        SimpleTriangulation smx(i);
+        list<Triangle> tris = smx.triangulate();
+        Cell cell(tris);
+        double surf = cell.surfaceArea();
+        cell.calcCM();
+        double volume = cell.volume();
+        int nofaces = cell.numberofFaces();
+        int novertices = cell.numberofVertices();
+        double v0 = 4.0 * M_PI * sqrt(3.0)*sqrt(3.0)*sqrt(3.0) / 3.0;
+        double s0 = 4.0 * M_PI * sqrt(3.0)*sqrt(3.0);
+        cout << "depth= " << i;
+        cout << " surface= " << surf;
+        cout << " s0= " << s0;
+        cout << " volume= " << volume;
+        cout << " v0= " << v0;
+        cout << " #faces= " << nofaces;
+        cout << " #vertices= " << novertices;
+        cout << endl;
+    }
     
     print_time();
     return 0;

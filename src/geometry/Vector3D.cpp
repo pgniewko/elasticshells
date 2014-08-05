@@ -1,6 +1,6 @@
 #include "Vector3D.h"
 
-//Vector3D::Vector3D()
+Vector3D::Vector3D() : x(0), y(9), z(0) {}
 //{
 //    x = 0;
 //    y = 0;
@@ -98,7 +98,28 @@ Vector3D Vector3D::operator +(const Vector3D& v)
     return Vector3D(x + v.x, y + v.y, z + v.z);
 }
 
+Vector3D Vector3D::operator -(const Vector3D& v) 
+{
+    return Vector3D(x - v.x, y - v.y, z - v.z);
+}
+
 Vector3D Vector3D::operator *(double r) 
 {
     return Vector3D(x * r, y * r, z * r);
+}
+
+Vector3D& Vector3D::operator +=(const Vector3D& v)
+{
+    x += v.x;
+    y += v.y;
+    z += v.z;
+    return *this;
+}
+
+Vector3D& Vector3D::operator /= (const double a) 
+{
+    x /= a;
+    y /= a;
+    z /= a;
+    return *this;
 }

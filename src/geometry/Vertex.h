@@ -2,7 +2,6 @@
 #define	VERTEX_H
 
 #include "Vector3D.h"
-#include "Point.h"
 
 class Vertex {
 public:
@@ -10,9 +9,13 @@ public:
     Vertex(const Vertex& orig);
     virtual ~Vertex();
 private:
-//    Vector3D force;
-//    Vector3D velocity;
-    
+    Vector3D force;
+    Vector3D velocity;
+    Vector3D xyz;
+    int id;
+    int bneigs [10];
+    int nbneigs [10];
+    double mass;
 
 };
 
