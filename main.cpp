@@ -258,7 +258,7 @@ int main(int argc, char** argv)
 //     cout << "area=" << t4.area() << endl;
     
     //Cell cell;
-    for (int i = 1; i <= 10; i++)
+    for (int i = 2; i <= 2; i++)
     {
         SimpleTriangulation smx(i);
         list<Triangle> tris = smx.triangulate();
