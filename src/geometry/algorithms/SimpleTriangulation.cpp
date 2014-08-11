@@ -21,7 +21,10 @@ list<Triangle> SimpleTriangulation::triangulate()
 //        return NULL;
     if (depth == 0)
     {
-       tris.push_back( Triangle(Vector3D(0,0,0), Vector3D(0,0,0), Vector3D(0,0,0) ) );
+    Vector3D v1(0, 0, 0);
+    Vector3D v2(0, 0, 0);
+    Vector3D v3(0, 0, 0);
+       tris.push_back( Triangle(v1,v2,v3) );
     } 
     else
     {
@@ -39,7 +42,11 @@ void SimpleTriangulation::createCube()
 {
     // create cube
     //top
-    tris.push_back(Triangle(Vector3D(1, 1, 1), Vector3D(-1, 1, -1), Vector3D(1, 1, -1)));
+    Vector3D v1(1, 1, 1);
+    Vector3D v2(-1, 1, -1);
+    Vector3D v3(1, 1, -1);
+    //tris.push_back(Triangle(Vector3D(1, 1, 1), Vector3D(-1, 1, -1), Vector3D(1, 1, -1)));
+    tris.push_back(Triangle(v1,v2,v3));
     tris.push_back(Triangle(Vector3D(-1, 1, -1), Vector3D(1, 1, 1), Vector3D(-1, 1, 1)));
     //bottom
     tris.push_back(Triangle(Vector3D(1, -1, 1), Vector3D(-1, -1, -1), Vector3D(1, -1, -1)));

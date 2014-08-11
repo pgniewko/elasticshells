@@ -23,7 +23,20 @@ Vertex::Vertex(double x, double y, double z) : xyz(x, y, z)
 
 Vertex::Vertex(Vector3D v) : xyz(v) {}
 
-Vertex::Vertex(const Vertex& orig) {}
+Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz) , id(orig.getId()), mass(orig.getMass())
+{
+    bondedNo = 0;
+    noTris = 0;
+    mass = 1.0;
+    id = -1;
+    for (int i = 0; i < NEIGH_SIZE; i++)
+    {
+        neigsIds[i] = -1.0;
+        k0[i] = -1.0;
+        trisIds[i] = -1;
+    }
+//    cout << "robie kupe" << endl;
+}
 
 Vertex::~Vertex() {}
 
@@ -59,4 +72,13 @@ void Vertex::addTriangle(int i)
 {
     trisIds[noTris] = i;
     noTris++;
+}
+
+void Vertex::printVertex()
+{
+    cout << " Memory address = " << this;
+    cout << " Id = " << id;    
+    cout << " Mass = " << mass;
+    cout << " " << xyz;
+    cout << endl;
 }

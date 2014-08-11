@@ -21,14 +21,15 @@ public:
     void calcCM();
     int numberofFaces() ;
     int numberofVertices();
-    void createDataStructure();
-    void calcForces();
-    void calcForces(const Cell&);
+//    void createDataStructure();
+//    void calcForces();
+//    void calcForces(const Cell&);
     Vector3D cm;
     list<Triangle> tris;
     list<Vertex> vertices;
 private:
-    bool isUnique(list<Vector3D>&, Vector3D&) ;
+    bool isUnique(list<Vector3D>&, Vector3D&); 
+//    void constructTriangles();
     
 
 };

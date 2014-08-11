@@ -19,6 +19,7 @@ public:
     double getMass();
     void addNeigh(int);
     void addTriangle(int);
+    void printVertex();
     
     Vector3D force;
     Vector3D velocity;
