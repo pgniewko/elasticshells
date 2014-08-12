@@ -1,7 +1,6 @@
 #include "Tetrahedron.h"
 
-Tetrahedron::Tetrahedron(Vector3D m, Vector3D n, Vector3D o, Vector3D p) : a(m), b(n), c(o), d(p) 
-{}
+Tetrahedron::Tetrahedron(Vector3D m, Vector3D n, Vector3D o, Vector3D p) : a(m), b(n), c(o), d(p) {}
 
 Tetrahedron::Tetrahedron(const Tetrahedron& orig) : a(orig.a), b(orig.b), c(orig.c), d(orig.d){}
 

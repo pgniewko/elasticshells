@@ -2,9 +2,9 @@
 
 Vector3D::Vector3D() : x(0), y(0), z(0) {}
 
-Vector3D::Vector3D(double a, double b, double c) : x(a), y(b), z(c){}
+Vector3D::Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
 
-Vector3D::Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {cout << "kopiando " << endl;}
+Vector3D::Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}
 
 Vector3D::~Vector3D() {}
 

@@ -245,69 +245,17 @@ int main(int argc, char** argv)
     Vector3D vc (1,-1,0);
     Triangle t(va,vb,vc);
     /*-----------------------------------------------------------------------*/
-//    SimpleTriangulation sm(3);
-//    list<Triangle> tris = sm.triangulate();
-//    sm.saveTriangulatedSurface("cells.xyz", false);
-//    sm.saveRenderingScript("render_cells.py","cells.xyz");
-//    Cell cell(tris);
-//    double surf = cell.surfaceArea();
-//    cell.calcCM();
-//    double volume = cell.volume();
-//    int nofaces = cell.numberofFaces();
-//    int novertices = cell.numberofVertices();
-//    double v0 = 4.0 * M_PI * sqrt(3.0)*sqrt(3.0)*sqrt(3.0) / 3.0;
-//    double s0 = 4.0 * M_PI * sqrt(3.0)*sqrt(3.0);
-//    cout << "depth= " << 3;
-//    cout << " surface= " << surf;
-//    cout << " s0= " << s0;
-//    cout << " volume= " << volume;
-//    cout << " v0= " << v0;
-//    cout << " #faces= " << nofaces;
-//    cout << " #vertices= " << novertices;
-//    cout << endl;
+    SimpleTriangulation sm(4);
+    list<Triangle> tris = sm.triangulate();
+    sm.saveTriangulatedSurface("cells.xyz", false);
+    sm.saveRenderingScript("render_cells.py","cells.xyz");
+    Cell cell(tris);
+    double surf = cell.calcSurfaceArea();
+    cout << "SURFACE AREA= " << surf <<  endl;
+    cell.calcCM();
+    double volume = cell.calcVolume();
+    cout << "VOLUME= " << volume <<endl;
     
-//    cell.createDataStructure();
-
-
-
-
-//==============================================================================    
-    
-//    Triangle t1 = Triangle(Vector3D(0,0,0), Vector3D(1,0,0),Vector3D(0,1,0));
-//    cout << "area=" << t1.area() << endl;
-    
-//    Triangle t2 = Triangle(Vector3D(0,0,0), Vector3D(1,1,0),Vector3D(1,-1,0));
-//     cout << "area=" << t2.area() << endl;
-     
-//    Triangle t3 = Triangle(Vector3D(0,0,0), Vector3D(1,1,0),Vector3D(-1,-1,0));
-//     cout << "area=" << t3.area() << endl;
-     
-//    Triangle t4 = Triangle(Vector3D(0,0,0), Vector3D(1,1,0),Vector3D(-1,0,0));
-//     cout << "area=" << t4.area() << endl;
-    
-    //Cell cell;
-//    for (int i = 2; i <= 2; i++)
-//    {
-//        SimpleTriangulation smx(i);
-//        list<Triangle> tris = smx.triangulate();
-//        Cell cell(tris);
-//        double surf = cell.surfaceArea();
-//        cell.calcCM();
-//        double volume = cell.volume();
-//        int nofaces = cell.numberofFaces();
-//        int novertices = cell.numberofVertices();
-//        double v0 = 4.0 * M_PI * sqrt(3.0)*sqrt(3.0)*sqrt(3.0) / 3.0;
-//        double s0 = 4.0 * M_PI * sqrt(3.0)*sqrt(3.0);
-//        cout << "depth= " << i;
-//        cout << " surface= " << surf;
-//        cout << " s0= " << s0;
-//        cout << " volume= " << volume;
-//        cout << " v0= " << v0;
-//        cout << " #faces= " << nofaces;
-//        cout << " #vertices= " << novertices;
-//        cout << endl;
-//    }
-//==============================================================================       
     print_time();
     return 0;
 }

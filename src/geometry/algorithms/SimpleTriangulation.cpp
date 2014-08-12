@@ -21,15 +21,12 @@ list<Triangle> SimpleTriangulation::triangulate()
 //        return NULL;
     if (depth == 0)
     {
-    Vector3D v1(0, 0, 0);
-    Vector3D v2(0, 0, 0);
-    Vector3D v3(0, 0, 0);
-       tris.push_back( Triangle(v1,v2,v3) );
+       tris.push_back( Triangle(Vector3D(0, 0, 0),Vector3D(0, 0, 0), Vector3D(0, 0, 0)) );
     } 
     else
     {
         createCube();
-        for (int i = 0; i < (depth-1); i++)
+        for (int i = 0; i < (depth - 1); i++)
         {
             subdivide();
         }
@@ -42,29 +39,25 @@ void SimpleTriangulation::createCube()
 {
     // create cube
     //top
-    Vector3D v1(1, 1, 1);
-    Vector3D v2(-1, 1, -1);
-    Vector3D v3(1, 1, -1);
-    //tris.push_back(Triangle(Vector3D(1, 1, 1), Vector3D(-1, 1, -1), Vector3D(1, 1, -1)));
-    tris.push_back(Triangle(v1,v2,v3));
-    tris.push_back(Triangle(Vector3D(-1, 1, -1), Vector3D(1, 1, 1), Vector3D(-1, 1, 1)));
+    tris.push_back(Triangle(Vector3D( 1, 1, 1), Vector3D(-1, 1,-1), Vector3D( 1, 1,-1)));
+    tris.push_back(Triangle(Vector3D(-1, 1,-1), Vector3D( 1, 1, 1), Vector3D(-1, 1, 1)));
     //bottom
-    tris.push_back(Triangle(Vector3D(1, -1, 1), Vector3D(-1, -1, -1), Vector3D(1, -1, -1)));
-    tris.push_back(Triangle(Vector3D(-1, -1, -1), Vector3D(1, -1, 1), Vector3D(-1, -1, 1)));
+    tris.push_back(Triangle(Vector3D( 1,-1, 1), Vector3D(-1,-1,-1), Vector3D( 1,-1,-1)));
+    tris.push_back(Triangle(Vector3D(-1,-1,-1), Vector3D( 1,-1, 1), Vector3D(-1,-1, 1)));
 
     //right
-    tris.push_back(Triangle(Vector3D(1, 1, 1), Vector3D(1, -1, -1), Vector3D(1, 1, -1)));
-    tris.push_back(Triangle(Vector3D(1, -1, -1), Vector3D(1, 1, 1), Vector3D(1, -1, 1)));
+    tris.push_back(Triangle(Vector3D( 1, 1, 1), Vector3D( 1,-1,-1), Vector3D( 1, 1,-1)));
+    tris.push_back(Triangle(Vector3D( 1,-1,-1), Vector3D( 1, 1, 1), Vector3D( 1,-1, 1)));
     //left
-    tris.push_back(Triangle(Vector3D(-1, 1, 1), Vector3D(-1, -1, -1), Vector3D(-1, 1, -1)));
-    tris.push_back(Triangle(Vector3D(-1, -1, -1), Vector3D(-1, 1, 1), Vector3D(-1, -1, 1)));
+    tris.push_back(Triangle(Vector3D(-1, 1, 1), Vector3D(-1,-1,-1), Vector3D(-1, 1,-1)));
+    tris.push_back(Triangle(Vector3D(-1,-1,-1), Vector3D(-1, 1, 1), Vector3D(-1,-1, 1)));
 
     //front
-    tris.push_back(Triangle(Vector3D(1, 1, 1), Vector3D(-1, -1, 1), Vector3D(1, -1, 1)));
-    tris.push_back(Triangle(Vector3D(-1, -1, 1), Vector3D(1, 1, 1), Vector3D(-1, 1, 1)));
+    tris.push_back(Triangle(Vector3D( 1, 1, 1), Vector3D(-1,-1, 1), Vector3D( 1,-1, 1)));
+    tris.push_back(Triangle(Vector3D(-1,-1, 1), Vector3D( 1, 1, 1), Vector3D(-1, 1, 1)));
     //rear
-    tris.push_back(Triangle(Vector3D(1, 1, -1), Vector3D(-1, -1, -1), Vector3D(1, -1, -1)));
-    tris.push_back(Triangle(Vector3D(-1, -1, -1), Vector3D(1, 1, -1), Vector3D(-1, 1, -1)));
+    tris.push_back(Triangle(Vector3D( 1, 1,-1), Vector3D(-1,-1,-1), Vector3D( 1,-1,-1)));
+    tris.push_back(Triangle(Vector3D(-1,-1,-1), Vector3D( 1, 1,-1), Vector3D(-1, 1,-1)));
     /**/
 }
 
@@ -74,7 +67,7 @@ void SimpleTriangulation::subdivide()
     std::list<Triangle> newTris;
     float l = tris.begin()->a.length();
     for(std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i) { // go through all triangles
-        Vector3D mid = (i->a + i->b) * 0.5f; // point betwenn points A and B
+        Vector3D mid = (i->a + i->b) * 0.5f; // point between points A and B
         mid.setLength(l); // put in on the sphere
         newTris.push_back(Triangle(i->b, i->c, mid)); // remember new triangles
         newTris.push_back(Triangle(i->a, i->c, mid));
