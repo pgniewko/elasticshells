@@ -19,20 +19,19 @@ struct arguments
 
     char* integrator_a;
 
-    int w;
+    int d;
     int log_step;
     int n_particles;
-    int n_iter;
 
     double L;
     double a;
     double dt;
+    double dp;
     double mu;
-    double gamma;
-    double sigma;
+    double k;
     double mass;
+    double ttime;
     double r_cut;
-    double pair_dist;
 
     bool pbc;
 };

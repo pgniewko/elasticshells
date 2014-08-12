@@ -21,10 +21,10 @@ TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
 #Linking commands:
 $(PROGRAM): $(OBJECTS)
-	g++ -lm $^ $(LDFLAGS) -o $@
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 $(TEST_RUNNER): $(TEST_OBJECTS) 
-	g++ -lm $^ $(LDFLAGS) $(LDLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 #Compilation commands:
 main.o: $(SOURCES) $(HEADERS) #main.cpp 

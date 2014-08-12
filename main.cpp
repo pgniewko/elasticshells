@@ -46,25 +46,25 @@ static struct argp_option options[] =
     {"output",   'o', "FILE",  0, "Output to FILE instead of standard output [default: ... ]" },
     {"log",      'l', "FILE",  0, "Print log to FILE instead of standard output [default: ... ]" },
     {"xyz",      't', "FILE",  0, "Print trajectory to FILE [default: ... ]" },
-    {"wrap",     'w', "FILE",  0, "Coordinates wrapping mode:0 - image, 1 - real [default: 1]" },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0, 0, 0, 0, "Simulation Options:", 3},
-    {"int",       991,  "STR", 0, "Integrator of equations of motion: velocity-verlet[vv], trotter[trot] [default: vv]"},
+    {"int",       991,  "STR", 0, "Integrator of equations of motion: velocity-verlet[vv], simple[se] [default: vv]"},
     {"size",      444, "NUM", 0, "Box size [default: 10.0]"},
-    {"n-iter",    666, "NUM", 0, "Number of time steps [default: 100]"},
+    {"depth",     454, "INT", 0, "SimpleTriangulation depth [default: 3]"},
     {"dt",        777, "NUM", 0, "Time step [default: 0.05]"},
+    {"ttime",     788, "NUM", 0, "Total simulation time [default: 1.0]"},
     {"log-step",  888, "INT", 0, "[Log step interval [default: 1]"},
     {"number",    'n', "INT", 0, "Number of particles. Not in work when positions read from the file [default: 1]"},
     {"pbc",       301, 0, 0, "Use periodic boundary conditions [default: false]"},
 
     {0,             0, 0, 0, "System Options:", 5},
     { "r-cut",    555, "NUM", 0, "Radius cut-off for pair interactions [default: 1.0]"},
-    {0,           'a', "NUM", 0, "Repulsion parameter between bodies [default: 25.0]"},
-    {"gamma",     'g', "NUM", 0, "Medium viscosity [default: 4.5]"},
-    {"sigma",     999, "NUM", 0, "Radius of a particle [default: 3.0]"},
+    {0,           'a', "NUM", 0, "Repulsion parameter between bodies [default: 1.0]"},
     {"mass",      'm', "NUM", 0, "Mass of a particle [default: 1.0]"},
-    {"pair-dist", 300, "NUM", 0, "[default: 1.0]"},
+    {"gamma",     'k', "NUM", 0, "Spring constant [default: 1.0]"},
+    {"mu",        967, "NUM", 0, "Viscosity coefficient [default: 1.0]"},
+    {"dp",        987, "NUM", 0, "Osmotic pressure difference [default: 0.0]"},
     {0}
 };
 
@@ -81,25 +81,23 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             /* Default values. */
             arguments->silent = 0;
             arguments->verbose = 1;
-            arguments->output_file = "pos.coo";
-            //arguments->input_file = "input.coo";
-            arguments->input_file = "";
+            arguments->output_file = "cells.xyz";
+            arguments->input_file = "cells.in";
             arguments->traj_file = "traj.xyz";
-            arguments->log_file = "log.txt";
+            arguments->log_file = "biofilm.log";
             arguments->integrator_a = "vv";
             arguments->abort = 0;
             arguments->n_particles = 1;
             arguments->log_step = 1;
-            arguments->L = 10.0;
             arguments->r_cut = 1.0;
-            arguments->n_iter = 100;
-            arguments->pair_dist = 1.0;
             arguments->dt = 0.05;
-            arguments->a = 25.0;
-            arguments->gamma = 4.5;
-            arguments->sigma = 3.0;
+            arguments->ttime = 1.0;
+            arguments->dp = 0.0;
+            arguments->a = 1.0;
             arguments->mass = 1.0;
-            arguments->w = 1;
+            arguments->mu = 1.0;
+            arguments->k = 1.0;
+            arguments->L = 10.0;
             arguments->pbc = false;
             break;
 
@@ -135,30 +133,38 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->n_particles = arg ? atoi (arg) : 1;
             break;
 
-        case 'w':
-            arguments->w = arg ? atoi (arg) : 1;
-            break;
+//        case 'w':
+//            arguments->w = arg ? atoi (arg) : 1;
+//            break;
 
         case 'a':
-            arguments->a = arg ? atoi (arg) : 25.0;
+            arguments->a = arg ? strtod (arg, NULL) : 1.0;
             break;
 
-        case 'g':
-            arguments->gamma = arg ? atoi (arg) : 4.5;
-            break;
+//        case 'g':
+//            arguments->gamma = arg ? atoi (arg) : 4.5;
+//            break;
 
         case 'm':
-            arguments->mass = arg ? atoi (arg) : 1.0;
+            arguments->mass = arg ? strtod (arg, NULL) : 1.0;
+            break;
+            
+        case 'k':
+            arguments->k = arg ? strtod (arg, NULL) : 1.0;
             break;
 
-        case 300:
-            arguments->pair_dist = arg ? strtod (arg, NULL) : 1.0;
-            break;
+//        case 300:
+//            arguments->pair_dist = arg ? strtod (arg, NULL) : 1.0;
+//            break;
 
         case 301:
             arguments->pbc = true;
             break;
 
+        case 454:
+            arguments->d = arg ? atoi (arg) : 3;
+            break;            
+            
         case 444:
             arguments->L = arg ? strtod (arg, NULL) : 10.0;
             break;
@@ -166,10 +172,14 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 777:
             arguments->dt = arg ? strtod (arg, NULL) : 0.001;
             break;
-
-        case 666:
-            arguments->n_iter = arg ?  atoi (arg) : 100;
+            
+        case 788:
+            arguments->ttime = arg ? strtod (arg, NULL) : 1.0;
             break;
+            
+//        case 666:
+//            arguments->n_iter = arg ?  atoi (arg) : 100;
+//            break;
 
         case 555:
             arguments->r_cut = arg ?  strtod (arg, NULL) : 1.0;
@@ -182,10 +192,18 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 991:
             arguments->integrator_a = arg;
             break;
-
-        case 999:
-            arguments->sigma = arg ? strtod (arg, NULL) : 3.0;
+            
+         case 987:
+            arguments->dp = arg ? strtod (arg, NULL) : 0.0;
             break;
+            
+         case 967:
+            arguments->mu = arg ? strtod (arg, NULL) : 1.0;
+            break;            
+
+//        case 999:
+//            arguments->sigma = arg ? strtod (arg, NULL) : 3.0;
+//            break;
 
         case OPT_ABORT:
             arguments->abort = 1;
@@ -246,7 +264,7 @@ int main(int argc, char** argv)
     Vector3D vc (1,-1,0);
     Triangle t(va,vb,vc);
     /*-----------------------------------------------------------------------*/
-    SimpleTriangulation sm(3);
+    SimpleTriangulation sm(4);
     list<Triangle> tris = sm.triangulate();
     sm.saveTriangulatedSurface("cells.xyz", false);
     sm.saveRenderingScript("render_cells.py","cells.xyz");

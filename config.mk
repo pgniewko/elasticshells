@@ -18,7 +18,7 @@ DEBUG    := -g
 INCLUDE  := -Isrc
 LIB      := -Llib
 
-CXXFLAGS := -Wall -O3 -fpermissive $(DEBUG) $(INCLUDE) -Wunused-but-set-variable
+CXXFLAGS := -lm -Wall -O3 -fpermissive $(DEBUG) $(INCLUDE) -Wunused-but-set-variable
 LDFLAGS  := $(LIB)
 LDLIBS   := -lcppunit
 
