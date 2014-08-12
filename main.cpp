@@ -13,6 +13,7 @@
 #include <math.h>      /* log, sqrt */
 #include <list>
 
+
 #include "src/geometry/algorithms/SimpleTriangulation.h"
 #include "src/geometry/Vector3D.h"
 #include "src/geometry/Triangle.h"
