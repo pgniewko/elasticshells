@@ -5,7 +5,6 @@
 #define TRIAN_MAX 10
 
 #include "Vector3D.h"
-//#include "VertexTriangle.h"
 
 class Vertex
 {
@@ -21,14 +20,20 @@ public:
     double getMass();
     void printVertex();
     
+    void addNeighbor(int, double);
+    void addTriangle(int);
+    
     Vector3D force;
     Vector3D velocity;
     Vector3D xyz;
     
-    //Vertex neighbors[NEIGH_MAX];
-    //double k0 [NEIGH_MAX];
-    //VertexTriangle vtris [TRIAN_MAX];
+    int neighbors[NEIGH_MAX];
+    int vertextri[TRIAN_MAX];
+    double k0[NEIGH_MAX];
     
+    int nneigh;
+    int ntrian;
+
 private:
     int id;
     double mass;

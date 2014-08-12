@@ -8,6 +8,8 @@ Cell::Cell(list<Triangle> tris) : numberV(0), numberT(0)
 {
     constructVertices(tris);
     constructVTriangles(tris);
+    setTopology();
+//    printTopology();
 }
 
 Cell::Cell(const Cell& orig) {
@@ -71,8 +73,56 @@ void Cell::constructVTriangles(list<Triangle> tris)
         ptrc = getVertex(i->c);
         VertexTriangle vrxt(ptra, ptrb, ptrc);
         triangles[numberT] = VertexTriangle(vrxt);
+        triangles[numberT].setId(numberT);
         numberT++;
     }
+}
+
+void Cell::setTopology()
+{
+//    double k0tmp;
+    for (int i = 0; i < numberT; i++)
+    {   
+        
+        Vector3D ab = triangles[i].a->xyz - triangles[i].b->xyz;
+        Vector3D ac = triangles[i].a->xyz - triangles[i].c->xyz;
+        Vector3D bc = triangles[i].b->xyz - triangles[i].c->xyz;
+        
+        double abl = ab.length();
+        double acl = ac.length();
+        double bcl = bc.length();
+        
+        int aid = triangles[i].a->getId();
+        int bid = triangles[i].b->getId();
+        int cid = triangles[i].c->getId();
+        
+        int tid = triangles[i].id;
+        
+        //cout << "triangle id :" << triangles[i].id << " ; ver ids "<< aid << " " << bid << " "<<cid << endl; 
+
+        triangles[i].a->addNeighbor(bid, abl);
+        triangles[i].a->addNeighbor(cid, acl);
+
+        triangles[i].b->addNeighbor(aid, abl);
+        triangles[i].b->addNeighbor(cid, bcl);
+
+        triangles[i].c->addNeighbor(aid, acl);
+        triangles[i].c->addNeighbor(bid, bcl);
+        
+        triangles[i].a->addTriangle(tid);
+        triangles[i].b->addTriangle(tid);
+        triangles[i].c->addTriangle(tid);
+        
+    }
+}
+
+void Cell::printTopology()
+{
+ for (int i = 0; i < numberV; i++)
+ {
+     vertices[i].printVertex();
+     //cout << i << " " << vertices[i].nneigh << endl;
+ }
 }
 
 Vertex * Cell::getVertex(const Vector3D v)
@@ -146,4 +196,54 @@ int Cell::numberofFaces()
 int Cell::numberofVertices() 
 {
     return numberV;
+}
+
+
+void Cell::saveTriangulatedSurface(const char* filename)
+{
+    int index;
+    ofstream os(filename);
+    os << numberV << "\n" ;
+    for (int i = 0; i < numberV; i++)
+    {
+        index = (vertices[i].getId()+1) ;
+        os << "H" << index << " "<< vertices[i].xyz.x << " " << vertices[i].xyz.y << " " << vertices[i].xyz.z << "\n";
+    }
+    os.close();
+}
+
+void Cell::saveRenderingScript(const char* filename, const char* cellsfile)
+{
+    ofstream os(filename);
+    os << "from pymol.cgo import *\n";
+    os << "from pymol import cmd \n\n";
+    os << "cmd.do(\"load " << cellsfile << ", cells\")\n";
+    os << "cmd.do(\"hide all\")\n";
+    os << "cmd.do(\"set sphere_color, tv_red\")\n";
+    os << "cmd.do(\"set line_color, marine\")\n";
+    os << "cmd.do(\"show spheres\")\n";
+    os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
+    os << "cmd.do(\"rebuild\")\n";
+
+
+    int iidx, jidx;
+    
+    for (int i = 0; i < numberV; i++)
+    {
+        iidx = (vertices[i].getId()+1);
+        for (int j = 0; j < vertices[i].nneigh; j++)
+        {
+                
+                jidx = (vertices[i].neighbors[j]+1);
+                //if(iidx > jidx )
+                //{
+                  os << "cmd.do(\"bond /cells///UNK`/H"<< iidx << ", /cells///UNK`/H" << jidx << "\")\n";
+                //}
+            
+        }
+    }
+    
+    os << "cmd.do(\"show lines\")\n";
+    os << "cmd.do(\"bg white\")\n";
+    os.close();
 }

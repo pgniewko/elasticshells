@@ -27,7 +27,10 @@ public:
     int numberofFaces() ;
     int numberofVertices();
     
-    void createDataStructure();
+    
+//    void createDataStructure();
+    void setTopology();
+    void printTopology();
 //    void calcForces();
 //    void calcForces(const Cell&);
     Vector3D cm;
@@ -35,6 +38,9 @@ public:
     VertexTriangle triangles[MAX_T];
     int numberV;
     int numberT;
+    
+    void saveTriangulatedSurface(const char*);
+    void saveRenderingScript(const char*, const char*);
     
     
 private:

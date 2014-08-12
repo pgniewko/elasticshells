@@ -245,7 +245,7 @@ int main(int argc, char** argv)
     Vector3D vc (1,-1,0);
     Triangle t(va,vb,vc);
     /*-----------------------------------------------------------------------*/
-    SimpleTriangulation sm(4);
+    SimpleTriangulation sm(3);
     list<Triangle> tris = sm.triangulate();
     sm.saveTriangulatedSurface("cells.xyz", false);
     sm.saveRenderingScript("render_cells.py","cells.xyz");
@@ -256,6 +256,8 @@ int main(int argc, char** argv)
     double volume = cell.calcVolume();
     cout << "VOLUME= " << volume <<endl;
     
+    cell.saveTriangulatedSurface("new_cells.xyz");
+    cell.saveRenderingScript("new_render_cells.py","new_cells.xyz");
     print_time();
     return 0;
 }
