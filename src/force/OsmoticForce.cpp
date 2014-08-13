@@ -5,4 +5,3 @@ OsmoticForce::OsmoticForce() {}
 OsmoticForce::OsmoticForce(const OsmoticForce& orig) {}
 
 OsmoticForce::~OsmoticForce() {}
-

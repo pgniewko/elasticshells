@@ -25,4 +25,3 @@ private:
 };
 
 #endif	/* GEOMETRYTESTS_H */
-

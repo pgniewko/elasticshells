@@ -44,4 +44,3 @@ private:
 };
 
 #endif	/* VERTEX_H */
-

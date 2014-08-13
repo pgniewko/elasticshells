@@ -22,4 +22,3 @@ void GeometryTests::testMethod() {
 void GeometryTests::testFailedMethod() {
     CPPUNIT_ASSERT(false);
 }
-

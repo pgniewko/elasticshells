@@ -1,7 +1,7 @@
-#include "Vector3D.h"
-
 #ifndef TETRAHEDRON_H
 #define	TETRAHEDRON_H
+
+#include "Vector3D.h"
 
 class Tetrahedron {
 public:
@@ -16,4 +16,3 @@ private:
 };
 
 #endif	/* TETRAHEDRON_H */
-

@@ -22,4 +22,3 @@ public:
 };
 
 #endif	/* VERTEXTRIANGLE_H */
-

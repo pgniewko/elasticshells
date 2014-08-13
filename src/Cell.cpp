@@ -33,6 +33,7 @@ void Cell::constructVertices(list<Triangle> tris)
             ztmp = i->a.z;
             vertices[numberV] = Vertex(xtmp, ytmp, ztmp);
             vertices[numberV].setId(numberV);
+           // vertices[numberV].
             numberV++;
         }
         

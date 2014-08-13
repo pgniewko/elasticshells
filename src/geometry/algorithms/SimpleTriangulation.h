@@ -23,4 +23,3 @@ private:
 };
 
 #endif	/* SIMPLETRIANGULATION_H */
-

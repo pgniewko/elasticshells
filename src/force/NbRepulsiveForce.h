@@ -26,4 +26,3 @@ private:
 };
 
 #endif	/* NBREPULSIVEFORCE_H */
-

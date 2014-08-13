@@ -16,6 +16,7 @@
 #include "src/geometry/algorithms/SimpleTriangulation.h"
 #include "src/geometry/Vector3D.h"
 #include "src/geometry/Triangle.h"
+#include "src/geometry/Vertex.h"
 #include "src/arguments.h"
 #include "src/random.h"
 #include "src/Timer.h"
@@ -279,6 +280,10 @@ int main(int argc, char** argv)
     
     Vector3D v1(0, 0, 0);
     Vector3D v2(1, 1, 2);
+    Vertex * vrtxptr;
+    //Vertex  vrtxptr(1,1,1);
+    //cout << vrtxptr->xyz <endl;
+    
     double gamma1 = 1.0;
     double gamma2 = 2.0;
     double R01 = 2.0;

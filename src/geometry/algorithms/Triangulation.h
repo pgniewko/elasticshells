@@ -21,4 +21,3 @@ protected:
 };
 
 #endif	/* TRIANGULATION_H */
-

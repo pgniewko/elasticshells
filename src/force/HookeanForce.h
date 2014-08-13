@@ -20,4 +20,3 @@ public:
 
 };
 #endif	/* HOOKEANFORCE_H */
-
