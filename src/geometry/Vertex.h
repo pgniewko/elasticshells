@@ -22,6 +22,10 @@ public:
     
     void addNeighbor(int, double);
     void addTriangle(int);
+    void voidForce();
+    void voidVelocity();
+    
+    bool isBonded(int);
     
     Vector3D force;
     Vector3D velocity;
@@ -29,7 +33,7 @@ public:
     
     int neighbors[NEIGH_MAX];
     int vertextri[TRIAN_MAX];
-    double k0[NEIGH_MAX];
+    double R0[NEIGH_MAX];
     
     int nneigh;
     int ntrian;

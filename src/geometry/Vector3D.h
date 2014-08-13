@@ -26,7 +26,6 @@ class Vector3D
         double length2() const;
         double angle(const Vector3D&) const;
         void setLength(double);
-
         double x, y, z;
 
 };

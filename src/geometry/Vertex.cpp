@@ -19,7 +19,7 @@ void Vertex::addNeighbor(int idx, double k0n)
         if (neighbors[i] == idx)  return;
     }
     neighbors[nneigh] = idx;
-    k0[nneigh] = k0n;
+    R0[nneigh] = k0n;
     nneigh++;
 }
 
@@ -31,6 +31,29 @@ void Vertex::addTriangle(int idx)
     }
     vertextri[ntrian] = idx;
     ntrian++;    
+}
+
+bool Vertex::isBonded(int vidx)
+{
+    for (int i = 0; i < nneigh; i++)
+    {
+        if (neighbors[i] == vidx) return true;
+    }
+    return false;
+}
+
+void Vertex::voidForce()
+{
+    force.x = 0.0;
+    force.y = 0.0;
+    force.z = 0.0;
+}
+
+void Vertex::voidVelocity()
+{
+    velocity.x = 0.0;
+    velocity.y = 0.0;
+    velocity.z = 0.0;
 }
 
 int Vertex::setId(int idx)
