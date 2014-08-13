@@ -8,8 +8,7 @@
 #include <fstream>     /* ios, ofstream*/
 #include <stdio.h>     /* printf, fgets */
 #include <argp.h>      /* argp_parse */
-#include <stdlib.h>    /* atoi,  strtod */
-#include <error.h>     /* error */
+#include <stdlib.h>    /* atoi,  strtod */ 
 #include <math.h>      /* log, sqrt */
 #include <list>
 
@@ -243,7 +242,8 @@ int main(int argc, char** argv)
 
     if (arguments.abort)
     {
-        error (123, 0, "ABORTED");
+        printf("PROGRAM FORCED TO >ABORT< \n");
+        exit(123);
     }
 
     if (arguments.verbose && !arguments.silent)
