@@ -9,9 +9,13 @@
 
 #include "geometry/Vector3D.h"
 #include "geometry/Tetrahedron.h"
-#include "geometry/Vertex.h"
 #include "geometry/Triangle.h"
 #include "geometry/VertexTriangle.h"
+#include "geometry/Vertex.h"
+
+#include "force/HookeanForce.h"
+#include "force/OsmoticForce.h"
+#include "force/NbRepulsiveForce.h"
 
 using namespace std;
 
@@ -31,7 +35,7 @@ public:
 //    void createDataStructure();
     void setTopology();
     void printTopology();
-//    void calcForces();
+    void calcForces();
 //    void calcForces(const Cell&);
     Vector3D cm;
     Vertex vertices[MAX_V];

@@ -116,6 +116,50 @@ void Cell::setTopology()
     }
 }
 
+void Cell::calcForces()
+{
+    cout << "licze harm. forces" << endl;
+    double R0;
+    double gamma = 1.0;
+    int idxj;
+    
+    for (int i = 0; i < numberV; i++)
+    {
+        for (int j = 0; j < vertices[i].nneigh; j++)
+        {
+            R0 = vertices[i].R0[j];
+            idxj = vertices[i].neighbors[j];
+            vertices[i].force += HookeanForce::calcForce(vertices[idxj].xyz, vertices[i].xyz, R0, gamma);
+        }
+    }
+    
+   
+    double Rc = 0.5;
+    double a  = 1.0;
+    for (int i = 0; i < numberV; i++)
+    {
+        for (int j = 0; j < numberV; j++)
+        {
+            if (i != j && !vertices[i].isBonded(j))
+            {
+                vertices[i].force += NbRepulsiveForce::calcForce(vertices[j].xyz, vertices[i].xyz, Rc, a);
+            }
+        }
+    }
+
+    double dp = 0.05;
+    calcCM();
+    for (int i = 0; i < numberT; i++)
+    {
+        Vector3D fa = OsmoticForce::calcForce(triangles[i].a->xyz, triangles[i].b->xyz, triangles[i].c->xyz, cm, dp);
+        Vector3D fb = OsmoticForce::calcForce(triangles[i].b->xyz, triangles[i].c->xyz, triangles[i].a->xyz, cm, dp);
+        Vector3D fc = OsmoticForce::calcForce(triangles[i].c->xyz, triangles[i].a->xyz, triangles[i].b->xyz, cm, dp);
+        triangles[i].a->force += fa;
+        triangles[i].b->force += fb;
+        triangles[i].c->force += fc;
+    }
+}
+
 void Cell::printTopology()
 {
  for (int i = 0; i < numberV; i++)
