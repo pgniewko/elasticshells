@@ -20,6 +20,7 @@
 #include "src/random.h"
 #include "src/Timer.h"
 #include "src/Cell.h"
+#include "src/force/HookeanForce.h"
 
 using namespace std;
 
@@ -48,22 +49,22 @@ static struct argp_option options[] =
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0, 0, 0, 0, "Simulation Options:", 3},
-    {"int",       991,  "STR", 0, "Integrator of equations of motion: velocity-verlet[vv], simple[se] [default: vv]"},
-    {"size",      444, "NUM", 0, "Box size [default: 10.0]"},
-    {"depth",     454, "INT", 0, "SimpleTriangulation depth [default: 3]"},
-    {"dt",        777, "NUM", 0, "Time step [default: 0.05]"},
-    {"ttime",     788, "NUM", 0, "Total simulation time [default: 1.0]"},
-    {"log-step",  888, "INT", 0, "[Log step interval [default: 1]"},
     {"number",    'n', "INT", 0, "Number of particles. Not in work when positions read from the file [default: 1]"},
     {"pbc",       301, 0, 0, "Use periodic boundary conditions [default: false]"},
+    {"size",      401, "NUM", 0, "Box size [default: 10.0]"},
+    {"depth",     501, "INT", 0, "SimpleTriangulation depth [default: 3]"},
+    {"dt",        601, "NUM", 0, "Time step [default: 0.05]"},
+    {"ttime",     602, "NUM", 0, "Total simulation time [default: 1.0]"},
+    {"log-step",  603, "INT", 0, "[Log step interval [default: 1]"},
+    {"int",       701, "STR", 0, "Integrator of equations of motion: velocity-verlet[vv], simple[se] [default: vv]"},
 
     {0,             0, 0, 0, "System Options:", 5},
-    { "r-cut",    555, "NUM", 0, "Radius cut-off for pair interactions [default: 1.0]"},
     {0,           'a', "NUM", 0, "Repulsion parameter between bodies [default: 1.0]"},
     {"mass",      'm', "NUM", 0, "Mass of a particle [default: 1.0]"},
     {"gamma",     'k', "NUM", 0, "Spring constant [default: 1.0]"},
-    {"mu",        967, "NUM", 0, "Viscosity coefficient [default: 1.0]"},
-    {"dp",        987, "NUM", 0, "Osmotic pressure difference [default: 0.0]"},
+    {"mu",        801, "NUM", 0, "Viscosity coefficient [default: 1.0]"},
+    {"dp",        802, "NUM", 0, "Osmotic pressure difference [default: 0.0]"},
+    {"r-cut",     803, "NUM", 0, "Radius cut-off for pair interactions [default: 1.0]"},
     {0}
 };
 
@@ -93,6 +94,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ttime = 1.0;
             arguments->dp = 0.0;
             arguments->a = 1.0;
+            arguments->d = 3;
             arguments->mass = 1.0;
             arguments->mu = 1.0;
             arguments->k = 1.0;
@@ -132,17 +134,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->n_particles = arg ? atoi (arg) : 1;
             break;
 
-//        case 'w':
-//            arguments->w = arg ? atoi (arg) : 1;
-//            break;
-
         case 'a':
             arguments->a = arg ? strtod (arg, NULL) : 1.0;
             break;
-
-//        case 'g':
-//            arguments->gamma = arg ? atoi (arg) : 4.5;
-//            break;
 
         case 'm':
             arguments->mass = arg ? strtod (arg, NULL) : 1.0;
@@ -152,57 +146,45 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->k = arg ? strtod (arg, NULL) : 1.0;
             break;
 
-//        case 300:
-//            arguments->pair_dist = arg ? strtod (arg, NULL) : 1.0;
-//            break;
-
         case 301:
             arguments->pbc = true;
             break;
-
-        case 454:
-            arguments->d = arg ? atoi (arg) : 3;
-            break;            
             
-        case 444:
+        case 401:
             arguments->L = arg ? strtod (arg, NULL) : 10.0;
             break;
+            
+        case 501:
+            arguments->d = arg ? atoi (arg) : 3;
+            break;
 
-        case 777:
+        case 601:
             arguments->dt = arg ? strtod (arg, NULL) : 0.001;
             break;
             
-        case 788:
+        case 602:
             arguments->ttime = arg ? strtod (arg, NULL) : 1.0;
             break;
-            
-//        case 666:
-//            arguments->n_iter = arg ?  atoi (arg) : 100;
-//            break;
 
-        case 555:
-            arguments->r_cut = arg ?  strtod (arg, NULL) : 1.0;
-            break;
-
-        case 888:
+        case 603:
             arguments->log_step = arg ? atoi (arg) : 1;
             break;
-
-        case 991:
+            
+        case 701:
             arguments->integrator_a = arg;
             break;
             
-         case 987:
+         case 801:
+            arguments->mu = arg ? strtod (arg, NULL) : 1.0;
+            break;  
+            
+        case 802:
             arguments->dp = arg ? strtod (arg, NULL) : 0.0;
             break;
             
-         case 967:
-            arguments->mu = arg ? strtod (arg, NULL) : 1.0;
-            break;            
-
-//        case 999:
-//            arguments->sigma = arg ? strtod (arg, NULL) : 3.0;
-//            break;
+        case 803:
+            arguments->r_cut = arg ?  strtod (arg, NULL) : 1.0;
+            break;    
 
         case OPT_ABORT:
             arguments->abort = 1;
@@ -248,7 +230,6 @@ int main(int argc, char** argv)
 
     if (arguments.verbose && !arguments.silent)
     {
-
         printf ("OUTPUT_FILE = %s\n"
                 "VERBOSE = %s\n"
                 "SILENT = %s\n",
@@ -256,6 +237,17 @@ int main(int argc, char** argv)
                 arguments.verbose ? "yes" : "no",
                 arguments.silent ? "yes" : "no");
     }
+    
+    ofstream os;
+    os.open(arguments.log_file, ios::out | ios::trunc ); /* reset file */
+    os.close();
+
+    ofstream ost(arguments.traj_file, ios::out | ios::trunc);
+    ost.close();
+    
+    int n_iter = (int) arguments.ttime / arguments.dt;
+    int depth = arguments.d;
+    
 
     clocks[0].tic();
     print_time();
@@ -264,7 +256,8 @@ int main(int argc, char** argv)
     Vector3D vc (1,-1,0);
     Triangle t(va,vb,vc);
     /*-----------------------------------------------------------------------*/
-    SimpleTriangulation sm(4);
+    SimpleTriangulation sm(2);
+    cout << "arguments.d " << arguments.d << endl;
     list<Triangle> tris = sm.triangulate();
     sm.saveTriangulatedSurface("cells.xyz", false);
     sm.saveRenderingScript("render_cells.py","cells.xyz");
@@ -277,6 +270,31 @@ int main(int argc, char** argv)
     
     cell.saveTriangulatedSurface("new_cells.xyz");
     cell.saveRenderingScript("new_render_cells.py","new_cells.xyz");
+    
+    cell.calcForces();
+    
+    clocks[0].toc();
     print_time();
+    
+    
+    Vector3D v1(0, 0, 0);
+    Vector3D v2(1, 1, 2);
+    double gamma1 = 1.0;
+    double gamma2 = 2.0;
+    double R01 = 2.0;
+    double R02 = sqrt(6.0);
+    double R03 = 3.0;
+    
+    cout << HookeanForce::calcForce(v1,v2, R01,gamma1) <<endl;
+    cout << HookeanForce::calcForce(v2,v1, R01,gamma1) <<endl;
+    cout << HookeanForce::calcForce(v1,v2, R01,gamma2) <<endl;
+    
+    cout << HookeanForce::calcForce(v1,v2, R02,gamma1) <<endl;
+    cout << HookeanForce::calcForce(v2,v1, R02,gamma1) <<endl;
+    cout << HookeanForce::calcForce(v1,v2, R02,gamma2) <<endl;
+    
+    cout << HookeanForce::calcForce(v1,v2, R03,gamma1) <<endl;
+    cout << HookeanForce::calcForce(v2,v1, R03,gamma1) <<endl;
+    cout << HookeanForce::calcForce(v1,v2, R03,gamma2) <<endl;
     return 0;
 }

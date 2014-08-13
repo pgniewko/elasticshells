@@ -12,10 +12,10 @@ struct arguments
     int silent, verbose, abort;   /* ‘-s’, ‘-v’, ‘--abort’ */
 
 
-    char* input_file;          /* file arg to ‘--input’ */
-    char* output_file;         /* file arg to ‘--output’ */
-    char* traj_file;         /* file arg to ‘--traj’ */
-    char* log_file;            /* file arg to ‘--log’ */
+    char* input_file;             /* file arg to ‘--input’ */
+    char* output_file;            /* file arg to ‘--output’ */
+    char* traj_file;              /* file arg to ‘--traj’ */
+    char* log_file;               /* file arg to ‘--log’ */
 
     char* integrator_a;
 
