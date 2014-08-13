@@ -6,11 +6,13 @@ TEST_RUNNER  := $(TESTS)/test
 SOURCES      := main.cpp \
                 $(wildcard $(SRC)/*.cpp) \
                 $(wildcard $(SRC)/geometry/*.cpp) \
-		$(wildcard $(SRC)/geometry/algorithms/*.cpp)
+		$(wildcard $(SRC)/geometry/algorithms/*.cpp) \
+		$(wildcard $(SRC)/force/*.cpp) \
 
 HEADERS      := $(wildcard $(SRC)/*.h) \
 	        $(wildcard $(SRC)/geometry/*.h) \
-	        $(wildcard $(SRC)/geometry/algorithms/*.h)
+	        $(wildcard $(SRC)/geometry/algorithms/*.h) \
+		$(wildcard $(SRC)/force/*.h) \
 
 OBJECTS      := $(SOURCES:.cpp=.o)
 
@@ -21,10 +23,10 @@ TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
 #Linking commands:
 $(PROGRAM): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
 
 $(TEST_RUNNER): $(TEST_OBJECTS) 
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) $(LDLIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) $^ -o $@
 
 #Compilation commands:
 main.o: $(SOURCES) $(HEADERS) #main.cpp 
