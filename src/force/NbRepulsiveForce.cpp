@@ -1,15 +1,7 @@
 #include "NbRepulsiveForce.h"
 
-NbRepulsiveForce::NbRepulsiveForce() 
-{
-    
-}
+NbRepulsiveForce::NbRepulsiveForce() {}
 
-NbRepulsiveForce::NbRepulsiveForce(const NbRepulsiveForce& orig) 
-{
-}
+NbRepulsiveForce::NbRepulsiveForce(const NbRepulsiveForce& orig) {}
 
-NbRepulsiveForce::~NbRepulsiveForce() 
-{
-}
-
+NbRepulsiveForce::~NbRepulsiveForce() {}
