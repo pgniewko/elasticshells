@@ -35,7 +35,9 @@ public:
     void setTopology();
     void printTopology();
     void calcForces();
-//    void calcForces(const Cell&);
+    void calcForces(const Cell&);
+    void addVelocity(const Vector3D&);
+    void addXYZ(const Vector3D&);
     Vector3D cm;
     Vertex vertices[MAX_V];
     VertexTriangle triangles[MAX_T];

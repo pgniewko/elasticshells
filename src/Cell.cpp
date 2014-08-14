@@ -12,10 +12,12 @@ Cell::Cell(list<Triangle> tris) : numberV(0), numberT(0)
 //    printTopology();
 }
 
-Cell::Cell(const Cell& orig) {
+Cell::Cell(const Cell& orig) 
+{
 }
 
-Cell::~Cell() {
+Cell::~Cell() 
+{
 }
 
 void Cell::constructVertices(list<Triangle> tris)
@@ -161,6 +163,20 @@ void Cell::calcForces()
     }
 }
 
+void Cell::calcForces(const Cell& other_cell)
+{    
+    double Rc = 0.5;
+    double a  = 1.0;
+    for (int i = 0; i < numberV; i++)
+    {
+        for (int j = 0; i < other_cell.numberV; j++)
+        {
+            vertices[i].force += NbRepulsiveForce::calcForce(other_cell.vertices[j].xyz, vertices[i].xyz, Rc, a);
+        }
+    }
+    
+}
+
 void Cell::printTopology()
 {
  for (int i = 0; i < numberV; i++)
@@ -231,6 +247,22 @@ void Cell::calcCM()
 
     tmp /= M;
     cm = tmp;
+}
+
+void Cell::addVelocity(const Vector3D& nv)
+{
+    for (int i = 0; i < numberV; i++)
+    {
+        vertices[i].velocity += nv;
+    }
+}
+
+void Cell::addXYZ(const Vector3D& nxyz)
+{
+    for (int i = 0; i < numberV; i++)
+    {
+        vertices[i].xyz += nxyz;
+    }    
 }
 
 int Cell::numberofFaces() 

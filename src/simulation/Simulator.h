@@ -2,6 +2,9 @@
 #define	SIMULATOR_H
 
 #define MAX_CELLS 100
+#define STRCMP(a,b) (!strcmp(a,b))
+
+#include "../Cell.h"
 
 using namespace std;
 class Simulator {
@@ -18,9 +21,14 @@ public:
     void setIntegrator(char* token);
     
     void addCell(const Cell&);
+    
+    void calcForces();
+    void move();
         
 private:
+    vector<Cell> cells;
     void (Simulator::*integrator)();
+    int numberofCells;
     
 
 };
