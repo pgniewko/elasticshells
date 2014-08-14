@@ -8,9 +8,7 @@ struct arguments
 {
     char** strings;               /* [string...] */
 
-
     int silent, verbose, abort;   /* ‘-s’, ‘-v’, ‘--abort’ */
-
 
     char* input_file;             /* file arg to ‘--input’ */
     char* output_file;            /* file arg to ‘--output’ */

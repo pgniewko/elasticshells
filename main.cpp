@@ -82,10 +82,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             /* Default values. */
             arguments->silent = 0;
             arguments->verbose = 1;
-            arguments->output_file = "cells.xyz";
-            arguments->input_file = "cells.in";
-            arguments->traj_file = "traj.xyz";
-            arguments->log_file = "biofilm.log";
+            arguments->output_file = "./data/cells.xyz";
+            arguments->input_file = "./data/cells.in";
+            arguments->traj_file = "./data/render.py";
+            arguments->log_file = "./data/biofilm.log";
             arguments->integrator_a = "vv";
             arguments->abort = 0;
             arguments->n_particles = 1;
@@ -257,11 +257,11 @@ int main(int argc, char** argv)
     Vector3D vc (1,-1,0);
     Triangle t(va,vb,vc);
     /*-----------------------------------------------------------------------*/
-    SimpleTriangulation sm(2);
     cout << "arguments.d " << arguments.d << endl;
+    SimpleTriangulation sm(arguments.d);
+
+    
     list<Triangle> tris = sm.triangulate();
-    sm.saveTriangulatedSurface("cells.xyz", false);
-    sm.saveRenderingScript("render_cells.py","cells.xyz");
     Cell cell(tris);
     double surf = cell.calcSurfaceArea();
     cout << "SURFACE AREA= " << surf <<  endl;
@@ -269,8 +269,8 @@ int main(int argc, char** argv)
     double volume = cell.calcVolume();
     cout << "VOLUME= " << volume <<endl;
     
-    cell.saveTriangulatedSurface("new_cells.xyz");
-    cell.saveRenderingScript("new_render_cells.py","new_cells.xyz");
+    cell.saveTriangulatedSurface(arguments.output_file);
+    cell.saveRenderingScript(arguments.traj_file, arguments.output_file);
     
     cell.calcForces();
     
@@ -280,9 +280,6 @@ int main(int argc, char** argv)
     
     Vector3D v1(0, 0, 0);
     Vector3D v2(1, 1, 2);
-    Vertex * vrtxptr;
-    //Vertex  vrtxptr(1,1,1);
-    //cout << vrtxptr->xyz <endl;
     
     double gamma1 = 1.0;
     double gamma2 = 2.0;
