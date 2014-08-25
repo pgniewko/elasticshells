@@ -6,11 +6,13 @@ TEST_RUNNER  := $(TESTS)/test
 SOURCES      := main.cpp \
                 $(wildcard $(SRC)/*.cpp) \
                 $(wildcard $(SRC)/geometry/*.cpp) \
+                $(wildcard $(SRC)/simulation/*.cpp) \
 		$(wildcard $(SRC)/geometry/algorithms/*.cpp) \
 		$(wildcard $(SRC)/force/*.cpp) \
 
 HEADERS      := $(wildcard $(SRC)/*.h) \
 	        $(wildcard $(SRC)/geometry/*.h) \
+	        $(wildcard $(SRC)/simulation/*.h) \
 	        $(wildcard $(SRC)/geometry/algorithms/*.h) \
 		$(wildcard $(SRC)/force/*.h) \
 

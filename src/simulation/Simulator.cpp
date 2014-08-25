@@ -1,20 +1,44 @@
-#include <vector>
-
 #include "Simulator.h"
 
-Simulator::Simulator() {
+Simulator::Simulator(const arguments& args) : params(args)
+{
+    dt = params.dt;
+    a = params.a;
+    d = params.d;
+    dp = params.dp;
+    gamma = params.k;
+    Rc = params.r_cut;
+    ttotal = params.ttime;
+    nsteps = (int) ttotal / dt;
+    
+    ncells = params.n_particles;
+    setIntegrator(params.integrator_a);
+    
+    cout << "dt: " << dt << endl;
+    cout << "a: "  << a <<  endl;
+    cout << "d: " << d << endl;
 }
 
-Simulator::Simulator(const Simulator& orig) {
+Simulator::Simulator(const Simulator& orig) 
+{
 }
 
-Simulator::~Simulator() {
+Simulator::~Simulator() 
+{
 }
 
 void Simulator::addCell(const Cell& newCell)
 {
     cells.push_back(newCell);
     numberofCells++;
+}
+
+void Simulator::addCell()
+{
+   SimpleTriangulation sm(params.d);
+   list<Triangle> tris = sm.triangulate();
+   Cell newCell(tris);
+   addCell(newCell);
 }
 
 void Simulator::calcForces()
@@ -35,7 +59,6 @@ void Simulator::calcForces()
 
 void Simulator::integrateEuler()
 {
-    double dt = 0.01;
     double m;
     for (int i = 0; i < numberofCells; i++) {
         for (int j = 0; j < cells[i].numberV; j++)
@@ -50,7 +73,6 @@ void Simulator::integrateEuler()
 
 void Simulator::integrateDampedEuler()
 {
-    double dt = 0.01;
     for (int i = 0; i < numberofCells; i++) {
         for (int j = 0; j < cells[i].numberV; j++)
         {
@@ -63,7 +85,6 @@ void Simulator::integrateDampedEuler()
 
 void Simulator::integrateVv()
 {
-    double dt = 0.01;
     double m;
     for (int i = 0; i < numberofCells; i++) {
         for (int j = 0; j < cells[i].numberV; j++)
@@ -78,6 +99,11 @@ void Simulator::integrateVv()
         }
     
     }    
+}
+
+void Simulator::setIntegrator(void (Simulator::*functoall)())
+{
+    integrator = functoall;
 }
 
 void Simulator::setIntegrator(char* token)
@@ -104,4 +130,31 @@ void Simulator::setIntegrator(char* token)
 void Simulator::integrate()
 {
     (*this.*integrator)();
+}
+
+void Simulator::moveCell(const Vector3D& v3d, int cellid)
+{
+    cells[cellid].addXYZ(v3d);
+}
+
+void Simulator::addCellVel(const Vector3D& v3d, int cellid)
+{
+    cells[cellid].addVelocity(v3d);
+}
+
+void Simulator::saveCellsState()
+{
+    int index;
+    cout << "saving in: " << params.output_file << endl;
+    ofstream os(params.output_file);
+    for (int i = 0; i < numberofCells; i++)
+    {
+        os << cells[i].numberV << "\n" ;
+        for (int j = 0; j < cells[i].numberV; j++)
+        {
+            index = (cells[i].vertices[j].getId()+1) ;
+            os << "H" << index << " "<< cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z << "\n";
+        }  
+    }
+    os.close();
 }

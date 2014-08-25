@@ -22,6 +22,7 @@
 #include "src/Timer.h"
 #include "src/Cell.h"
 #include "src/force/HookeanForce.h"
+#include "src/simulation/Simulator.h"
 
 using namespace std;
 
@@ -50,7 +51,7 @@ static struct argp_option options[] =
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0, 0, 0, 0, "Simulation Options:", 3},
-    {"number",    'n', "INT", 0, "Number of particles. Not in work when positions read from the file [default: 1]"},
+    {"number",    'n', "INT", 0, "Number init of particles. Not in work when positions read from the file [default: 1]"},
     {"pbc",       301, 0, 0, "Use periodic boundary conditions [default: false]"},
     {"size",      401, "NUM", 0, "Box size [default: 10.0]"},
     {"depth",     501, "INT", 0, "SimpleTriangulation depth [default: 3]"},
@@ -202,6 +203,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         default:
             return ARGP_ERR_UNKNOWN;
     }
+    
 
     return 0;
 }
@@ -252,51 +254,59 @@ int main(int argc, char** argv)
 
     clocks[0].tic();
     print_time();
-    Vector3D va (0,0,0);
-    Vector3D vb (1, 1,0);
-    Vector3D vc (1,-1,0);
-    Triangle t(va,vb,vc);
+    
+    Simulator simulator(arguments);
+    simulator.addCell();
+    cout << "numof cells " << simulator.getNumberOfCells() << endl;
+    Vector3D shift (5,5,5);
+    simulator.addCell();
+    cout << "numof cells " << simulator.getNumberOfCells() << endl;
+    simulator.moveCell(shift,1);
+    simulator.saveCellsState();
+    //Vector3D vb (1, 1,0);
+    //Vector3D vc (1,-1,0);
+    //Triangle t(va,vb,vc);
     /*-----------------------------------------------------------------------*/
-    cout << "arguments.d " << arguments.d << endl;
-    SimpleTriangulation sm(arguments.d);
+    //cout << "arguments.d " << arguments.d << endl;
+    //SimpleTriangulation sm(arguments.d);
 
     
-    list<Triangle> tris = sm.triangulate();
-    Cell cell(tris);
-    double surf = cell.calcSurfaceArea();
-    cout << "SURFACE AREA= " << surf <<  endl;
-    cell.calcCM();
-    double volume = cell.calcVolume();
-    cout << "VOLUME= " << volume <<endl;
+    //list<Triangle> tris = sm.triangulate();
+    //Cell cell(tris);
+    //double surf = cell.calcSurfaceArea();
+    //cout << "SURFACE AREA= " << surf <<  endl;
+    //cell.calcCM();
+    //double volume = cell.calcVolume();
+    //cout << "VOLUME= " << volume <<endl;
     
-    cell.saveTriangulatedSurface(arguments.output_file);
-    cell.saveRenderingScript(arguments.traj_file, arguments.output_file);
+    //cell.saveTriangulatedSurface(arguments.output_file);
+    //cell.saveRenderingScript(arguments.traj_file, arguments.output_file);
     
-    cell.calcForces();
+    //cell.calcForces();
     
-    clocks[0].toc();
-    print_time();
+    //clocks[0].toc();
+    //print_time();
     
     
-    Vector3D v1(0, 0, 0);
-    Vector3D v2(1, 1, 2);
+    //Vector3D v1(0, 0, 0);
+    //Vector3D v2(1, 1, 2);
     
-    double gamma1 = 1.0;
-    double gamma2 = 2.0;
-    double R01 = 2.0;
-    double R02 = sqrt(6.0);
-    double R03 = 3.0;
+    //double gamma1 = 1.0;
+    //double gamma2 = 2.0;
+    //double R01 = 2.0;
+    //double R02 = sqrt(6.0);
+    //double R03 = 3.0;
     
-    cout << HookeanForce::calcForce(v1,v2, R01,gamma1) <<endl;
-    cout << HookeanForce::calcForce(v2,v1, R01,gamma1) <<endl;
-    cout << HookeanForce::calcForce(v1,v2, R01,gamma2) <<endl;
+    //cout << HookeanForce::calcForce(v1,v2, R01,gamma1) <<endl;
+    //cout << HookeanForce::calcForce(v2,v1, R01,gamma1) <<endl;
+    //cout << HookeanForce::calcForce(v1,v2, R01,gamma2) <<endl;
     
-    cout << HookeanForce::calcForce(v1,v2, R02,gamma1) <<endl;
-    cout << HookeanForce::calcForce(v2,v1, R02,gamma1) <<endl;
-    cout << HookeanForce::calcForce(v1,v2, R02,gamma2) <<endl;
+    //cout << HookeanForce::calcForce(v1,v2, R02,gamma1) <<endl;
+    //cout << HookeanForce::calcForce(v2,v1, R02,gamma1) <<endl;
+    //cout << HookeanForce::calcForce(v1,v2, R02,gamma2) <<endl;
     
-    cout << HookeanForce::calcForce(v1,v2, R03,gamma1) <<endl;
-    cout << HookeanForce::calcForce(v2,v1, R03,gamma1) <<endl;
-    cout << HookeanForce::calcForce(v1,v2, R03,gamma2) <<endl;
+    //cout << HookeanForce::calcForce(v1,v2, R03,gamma1) <<endl;
+    //cout << HookeanForce::calcForce(v2,v1, R03,gamma1) <<endl;
+    //cout << HookeanForce::calcForce(v1,v2, R03,gamma2) <<endl;
     return 0;
 }
