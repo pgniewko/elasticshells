@@ -12,7 +12,7 @@ Cell::Cell(list<Triangle> tris) : numberV(0), numberT(0)
 //    printTopology();
 }
 
-Cell::Cell(const Cell& orig) 
+Cell::Cell(const Cell& orig) : numberV(orig.numberV), numberT(orig.numberT), vertices(orig.vertices), triangles(orig.triangles), cm(orig.cm)
 {
 }
 

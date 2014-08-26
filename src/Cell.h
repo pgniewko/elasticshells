@@ -20,7 +20,7 @@ using namespace std;
 
 class Cell {
 public:
-//    Cell();
+    //Cell();
     Cell(list<Triangle>);
     Cell(const Cell& orig);
     virtual ~Cell();

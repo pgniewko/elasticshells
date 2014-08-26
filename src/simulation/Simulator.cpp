@@ -90,15 +90,39 @@ void Simulator::integrateVv()
         for (int j = 0; j < cells[i].numberV; j++)
         {
             m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].xyz += cells[i].vertices[j].velocity; // x(t+1)_a = x(t) + v(t)*dt
+            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].velocity; // x(t+1)_a = x(t) + v(t)*dt
             cells[i].vertices[j].xyz += 0.5 * dt * dt * cells[i].vertices[j].force / m; // x(t+1) = x(t+1)_a + 0.5*dt*dt* a(t)
             
             cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; //v(t+1)_1 = v(t) + 0.5 * dt * a(t)
-            calcForces();
+            //calcForces();
             cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
         }
     
     }    
+}
+
+void Simulator::simulate()
+{
+    for (int i = 0; i < nsteps; i++)
+    {
+        doStep();
+    }
+        
+}
+
+void Simulator::simulate(int steps)
+{
+    for (int i = 0; i < steps; i++)
+    {
+        doStep();
+    }
+        
+}
+
+void Simulator::doStep()
+{
+    //calcForces();
+    integrate();
 }
 
 void Simulator::setIntegrator(void (Simulator::*functoall)())
@@ -142,19 +166,31 @@ void Simulator::addCellVel(const Vector3D& v3d, int cellid)
     cells[cellid].addVelocity(v3d);
 }
 
-void Simulator::saveCellsState()
+void Simulator::saveCellsState(const char* fileout)
 {
     int index;
-    cout << "saving in: " << params.output_file << endl;
-    ofstream os(params.output_file);
+    cout << "saving in: " << fileout << endl;
+    ofstream os(fileout);
+    int totalnumber = 0;
+
     for (int i = 0; i < numberofCells; i++)
     {
-        os << cells[i].numberV << "\n" ;
+        totalnumber += cells[i].numberV;
+    }    
+    os << totalnumber << "\n" ;
+    for (int i = 0; i < numberofCells; i++)
+    {
+        //os << cells[i].numberV << "\n" ;
         for (int j = 0; j < cells[i].numberV; j++)
         {
             index = (cells[i].vertices[j].getId()+1) ;
             os << "H" << index << " "<< cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z << "\n";
+            cout << "H" << index << " "<< cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z << "\n";
         }  
     }
-    os.close();
+    os.close();    
+}
+void Simulator::saveCellsState()
+{
+    saveCellsState(params.output_file);
 }

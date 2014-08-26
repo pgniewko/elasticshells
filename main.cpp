@@ -257,12 +257,19 @@ int main(int argc, char** argv)
     
     Simulator simulator(arguments);
     simulator.addCell();
+    //int ijk = 1;
     cout << "numof cells " << simulator.getNumberOfCells() << endl;
     Vector3D shift (5,5,5);
+    Vector3D vel (1,1,1);
     simulator.addCell();
     cout << "numof cells " << simulator.getNumberOfCells() << endl;
     simulator.moveCell(shift,1);
+    simulator.addCellVel(vel,1);
     simulator.saveCellsState();
+    simulator.doStep();
+    simulator.saveCellsState("./data/dupa1.xyz");
+    simulator.doStep();
+    simulator.saveCellsState("./data/dupa2.xyz");
     //Vector3D vb (1, 1,0);
     //Vector3D vc (1,-1,0);
     //Triangle t(va,vb,vc);

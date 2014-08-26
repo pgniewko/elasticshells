@@ -1,7 +1,7 @@
 #ifndef SIMULATOR_H
 #define	SIMULATOR_H
 
-#define MAX_CELLS 1000
+#define MAX_CELLS 100
 
 #include <cstring>
 #include <vector>
@@ -24,6 +24,9 @@ public:
     void integrateVv();
     void integrateDampedEuler();
     
+    void simulate();
+    void simulate(int);
+    void doStep();
     void integrate();
     void setIntegrator(char* token);
     
@@ -41,6 +44,7 @@ public:
     int getNumberOfCells() {return numberofCells;}
     
     void saveCellsState();
+    void saveCellsState(const char*);
         
 private:
     

@@ -1,7 +1,7 @@
 include config.mk
 
 PROGRAM      := $(BIN)/biofilm
-TEST_RUNNER  := $(TESTS)/test
+TEST_RUNNER  := $(TESTS)/testsrunner
 
 SOURCES      := main.cpp \
                 $(wildcard $(SRC)/*.cpp) \
