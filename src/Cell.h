@@ -11,6 +11,7 @@
 #include "geometry/Triangle.h"
 #include "geometry/Vertex.h"
 #include "geometry/VertexTriangle.h"
+#include "geometry/algorithms/SimpleTriangulation.h"
 
 #include "force/HookeanForce.h"
 #include "force/OsmoticForce.h"
@@ -20,7 +21,7 @@ using namespace std;
 
 class Cell {
 public:
-    //Cell();
+    Cell(int);
     Cell(list<Triangle>);
     Cell(const Cell& orig);
     virtual ~Cell();
@@ -32,28 +33,33 @@ public:
     
     
 //    void createDataStructure();
-    void setTopology();
-    void printTopology();
+    
+    void printCell();
     void calcForces();
     void calcForces(const Cell&);
     void addVelocity(const Vector3D&);
     void addXYZ(const Vector3D&);
-    Vector3D cm;
-    Vertex vertices[MAX_V];
-    VertexTriangle triangles[MAX_T];
-    int numberV;
-    int numberT;
     
     void saveTriangulatedSurface(const char*);
     void saveRenderingScript(const char*, const char*);
     
+    Vector3D cm;
+    Vertex vertices[MAX_V];
+    VertexTriangle triangles[MAX_T];
     
 private:
-    bool isUnique(list<Vector3D>&, Vector3D&);
-    Vertex * getVertex(const Vector3D);
+    bool isUnique(list<Vector3D>&, const Vector3D&);
+    int getVertex(const Vector3D);
     void constructVertices(list<Triangle>);
     void constructVTriangles(list<Triangle>);
-    
+    void constructTopology();
+    //void addVector(list<Vector3D>&, const Vector3D&);
+    int numberV;
+    int numberT;
+    double Rc;
+    double a;
+    double dp;
+    double gamma;
 
 };
 
