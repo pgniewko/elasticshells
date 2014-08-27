@@ -61,7 +61,7 @@ void Simulator::integrateEuler()
 {
     double m;
     for (int i = 0; i < numberofCells; i++) {
-        for (int j = 0; j < cells[i].numberV; j++)
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             cells[i].vertices[j].xyz += cells[i].vertices[j].velocity * dt;
             m = cells[i].vertices[j].getMass();
@@ -74,7 +74,7 @@ void Simulator::integrateEuler()
 void Simulator::integrateDampedEuler()
 {
     for (int i = 0; i < numberofCells; i++) {
-        for (int j = 0; j < cells[i].numberV; j++)
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             cells[i].vertices[j].xyz += cells[i].vertices[j].velocity * dt;
             cells[i].vertices[j].velocity *= 0.0;
@@ -87,7 +87,7 @@ void Simulator::integrateVv()
 {
     double m;
     for (int i = 0; i < numberofCells; i++) {
-        for (int j = 0; j < cells[i].numberV; j++)
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             m = cells[i].vertices[j].getMass();
             cells[i].vertices[j].xyz += dt * cells[i].vertices[j].velocity; // x(t+1)_a = x(t) + v(t)*dt
@@ -175,13 +175,13 @@ void Simulator::saveCellsState(const char* fileout)
 
     for (int i = 0; i < numberofCells; i++)
     {
-        totalnumber += cells[i].numberV;
+        totalnumber += cells[i].numberofVertices();
     }    
     os << totalnumber << "\n" ;
     for (int i = 0; i < numberofCells; i++)
     {
         //os << cells[i].numberV << "\n" ;
-        for (int j = 0; j < cells[i].numberV; j++)
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             index = (cells[i].vertices[j].getId()+1) ;
             os << "H" << index << " "<< cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z << "\n";

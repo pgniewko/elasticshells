@@ -28,10 +28,3 @@ void Vector3DTests::testFailedMethod()
 {
     CPPUNIT_ASSERT(false);
 }
-
-void Vector3DTests::testConstructor()
-{
-    Vector3D v3d();
-     CPPUNIT_ASSERT_EQUAL(0, v3d.length() ); 
-}
-

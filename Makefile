@@ -19,7 +19,11 @@ HEADERS      := $(wildcard $(SRC)/*.h) \
 OBJECTS      := $(SOURCES:.cpp=.o)
 
 TEST_SOURCES := $(wildcard $(TESTS)/*.cpp) \
-                $(wildcard $(SRC)/*.cpp)
+                $(wildcard $(SRC)/*.cpp) \
+                $(wildcard $(SRC)/geometry/*.cpp) \
+                $(wildcard $(SRC)/simulation/*.cpp) \
+		$(wildcard $(SRC)/geometry/algorithms/*.cpp) \
+		$(wildcard $(SRC)/force/*.cpp)
 
 TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
@@ -50,7 +54,7 @@ test: $(TEST_RUNNER)
 
 build: $(PROGRAM)
 	@echo Build done.
-
+	
 clean:
 	rm -f $(PROGRAM) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS)
 	@echo Clean done.

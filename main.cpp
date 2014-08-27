@@ -248,72 +248,11 @@ int main(int argc, char** argv)
     ofstream ost(arguments.traj_file, ios::out | ios::trunc);
     ost.close();
     
-    int n_iter = (int) arguments.ttime / arguments.dt;
-    int depth = arguments.d;
-    
 
     clocks[0].tic();
     print_time();
     
-    Simulator simulator(arguments);
-    simulator.addCell();
-    //int ijk = 1;
-    cout << "numof cells " << simulator.getNumberOfCells() << endl;
-    Vector3D shift (5,5,5);
-    Vector3D vel (1,1,1);
-    simulator.addCell();
-    cout << "numof cells " << simulator.getNumberOfCells() << endl;
-    simulator.moveCell(shift,1);
-    simulator.addCellVel(vel,1);
-    simulator.saveCellsState();
-    simulator.doStep();
-    simulator.saveCellsState("./data/dupa1.xyz");
-    simulator.doStep();
-    simulator.saveCellsState("./data/dupa2.xyz");
-    //Vector3D vb (1, 1,0);
-    //Vector3D vc (1,-1,0);
-    //Triangle t(va,vb,vc);
-    /*-----------------------------------------------------------------------*/
-    //cout << "arguments.d " << arguments.d << endl;
-    //SimpleTriangulation sm(arguments.d);
-
-    
-    //list<Triangle> tris = sm.triangulate();
-    //Cell cell(tris);
-    //double surf = cell.calcSurfaceArea();
-    //cout << "SURFACE AREA= " << surf <<  endl;
-    //cell.calcCM();
-    //double volume = cell.calcVolume();
-    //cout << "VOLUME= " << volume <<endl;
-    
-    //cell.saveTriangulatedSurface(arguments.output_file);
-    //cell.saveRenderingScript(arguments.traj_file, arguments.output_file);
-    
-    //cell.calcForces();
-    
-    //clocks[0].toc();
-    //print_time();
-    
-    
-    //Vector3D v1(0, 0, 0);
-    //Vector3D v2(1, 1, 2);
-    
-    //double gamma1 = 1.0;
-    //double gamma2 = 2.0;
-    //double R01 = 2.0;
-    //double R02 = sqrt(6.0);
-    //double R03 = 3.0;
-    
-    //cout << HookeanForce::calcForce(v1,v2, R01,gamma1) <<endl;
-    //cout << HookeanForce::calcForce(v2,v1, R01,gamma1) <<endl;
-    //cout << HookeanForce::calcForce(v1,v2, R01,gamma2) <<endl;
-    
-    //cout << HookeanForce::calcForce(v1,v2, R02,gamma1) <<endl;
-    //cout << HookeanForce::calcForce(v2,v1, R02,gamma1) <<endl;
-    //cout << HookeanForce::calcForce(v1,v2, R02,gamma2) <<endl;
-    
-    //cout << HookeanForce::calcForce(v1,v2, R03,gamma1) <<endl;
-    //cout << HookeanForce::calcForce(v2,v1, R03,gamma1) <<endl;
-    //cout << HookeanForce::calcForce(v1,v2, R03,gamma2) <<endl;
-    return 0;
+    Cell cell(arguments.d);
+    cell.printCell();
+    return (EXIT_SUCCESS);
 }

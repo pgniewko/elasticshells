@@ -3,8 +3,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "../src/geometry/Vector3D.h"
-
 class Vector3DTests : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(Vector3DTests);
 
@@ -18,7 +16,6 @@ public:
     virtual ~Vector3DTests();
     void setUp();
     void tearDown();
-    void testConstructor();
 
 private:
     void testMethod();
