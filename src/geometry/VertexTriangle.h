@@ -9,15 +9,15 @@ class Vertex;
 class VertexTriangle {
 public:
     VertexTriangle();
-    VertexTriangle(Vertex*, Vertex*, Vertex*);
+    VertexTriangle(int, int, int);
     VertexTriangle(const VertexTriangle& orig);
     virtual ~VertexTriangle();
     void setId(int);
-    double area();
+    double area(const Vertex[]);
     
-    Vertex * a;
-    Vertex * b;
-    Vertex * c;
+    void printVertexTriangle();
+    
+    int ia, ib, ic;
     int id;
 };
 

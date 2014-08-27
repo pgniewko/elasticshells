@@ -4,6 +4,7 @@
 #define NEIGH_MAX 10
 #define TRIAN_MAX 10
 
+#include <stdlib.h>
 #include "Vector3D.h"
 
 class Vertex
@@ -21,15 +22,15 @@ public:
     void printVertex();
     
     void addNeighbor(int, double);
+    bool isNeighbor(int);
     void addTriangle(int);
+    
     void voidForce();
     void voidVelocity();
     
-    bool isBonded(int);
-    
+    Vector3D xyz;
     Vector3D force;
     Vector3D velocity;
-    Vector3D xyz;
     
     int neighbors[NEIGH_MAX];
     int vertextri[TRIAN_MAX];

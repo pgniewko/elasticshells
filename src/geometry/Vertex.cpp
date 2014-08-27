@@ -2,17 +2,37 @@
 
 Vertex::Vertex() : xyz(0, 0, 0), nneigh(0), ntrian(0), mass(1.0){}
 
-Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), nneigh(0), ntrian(0), mass(1.0){}
+Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), nneigh(0), ntrian(0), mass(1.0)
+{}
 
 Vertex::Vertex(Vector3D v) : xyz(v), nneigh(0), ntrian(0), mass(1.0) {}
 
-Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), nneigh(orig.nneigh), ntrian(orig.ntrian), id(orig.getId()), mass(orig.getMass())
-{}
+Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(orig.velocity),
+                                     nneigh(orig.nneigh), ntrian(orig.ntrian), 
+                                     id(orig.id), mass( orig.mass )
+{
+    for (int i = 0; i < nneigh; i++)
+    {
+        neighbors[i] = orig.neighbors[i];
+        R0[i] = orig.R0[i];
+    }
+    
+    for (int i = 0; i < ntrian; i++)
+    {
+        vertextri[i] = orig.vertextri[i];
+    }
+}
 
 Vertex::~Vertex() {}
 
 void Vertex::addNeighbor(int idx, double k0n)
 {
+ 
+    if ( nneigh - 1 >  NEIGH_MAX)
+    {
+        cerr << "To many neighbors: " << nneigh  << " my id: " << id << endl;
+        exit(123);
+    }
     
     for (int i = 0; i < nneigh; i++)
     {
@@ -23,23 +43,28 @@ void Vertex::addNeighbor(int idx, double k0n)
     nneigh++;
 }
 
-void Vertex::addTriangle(int idx)
-{
-    for (int i = 0; i < ntrian; i++)
-    {
-        if (vertextri[i] == idx) return;
-    }
-    vertextri[ntrian] = idx;
-    ntrian++;    
-}
-
-bool Vertex::isBonded(int vidx)
+bool Vertex::isNeighbor(int vidx)
 {
     for (int i = 0; i < nneigh; i++)
     {
         if (neighbors[i] == vidx) return true;
     }
     return false;
+}
+
+void Vertex::addTriangle(int idx)
+{
+    if ( nneigh - 1 >  TRIAN_MAX)
+    {
+        cerr << "To many triangles: " << ntrian << " my id: " << id << endl;
+        exit(123);
+    }
+    for (int i = 0; i < ntrian; i++)
+    {
+        if (vertextri[i] == idx) return;
+    }
+    vertextri[ntrian] = idx;
+    ntrian++;    
 }
 
 void Vertex::voidForce()
@@ -80,7 +105,9 @@ double Vertex::getMass()
 
 void Vertex::printVertex()
 {
+    cout << "myid=" << id << " "; 
     cout << "nneigh= " << nneigh << " ntrian=" << ntrian << " ";
+    cout << " x=" << xyz.x << " y=" << xyz.y << " z=" << xyz.z << " : ";
     for (int i = 0; i < nneigh; i++)
     {
         cout << neighbors[i] << " " ;

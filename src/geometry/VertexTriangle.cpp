@@ -4,16 +4,10 @@ VertexTriangle::VertexTriangle()
 {
 }
 
-VertexTriangle::VertexTriangle(Vertex * v, Vertex * w, Vertex * z) 
-{
-    a = v;
-    b = w;
-    c = z;
-}
+VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c) {}
 
-VertexTriangle::VertexTriangle(const VertexTriangle& orig) : a(orig.a), b(orig.b), c(orig.c) 
-{
-}
+VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(orig.ib), ic(orig.ic) 
+{}
 
 VertexTriangle::~VertexTriangle() {}
 
@@ -22,8 +16,14 @@ void VertexTriangle::setId(int idx)
     id = idx;
 }
 
-double VertexTriangle::area()
+void VertexTriangle::printVertexTriangle()
 {
-    Triangle t(a->xyz, b->xyz, c->xyz);
+    cout << "my id=" << id << " ";
+    cout << " ia =" << ia << " ib =" << ib << " ic =" << ic << endl;
+}
+
+double VertexTriangle::area(const Vertex vs[])
+{
+    Triangle t(vs[ia].xyz, vs[ib].xyz, vs[ic].xyz);
     return t.area();
 }
