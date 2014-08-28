@@ -3,6 +3,8 @@
 
 #define MAX_CELLS 100
 
+#include <fstream>
+#include <float.h>      /* DBL_MAX */
 #include <cstring>
 #include <vector>
 
@@ -45,11 +47,15 @@ public:
     
     void saveCellsState();
     void saveCellsState(const char*);
+    void renderScript();
+    
+    void setBoxSize(double);
+    
+    void printCell(int);
+    
+    int getTotalVertices();
         
 private:
-    
-    int ncells;
-    
     vector<Cell> cells;
     void (Simulator::*integrator)();
     void setIntegrator(void (Simulator::*functoall)());
@@ -65,7 +71,10 @@ private:
     int nsteps;
     int d;
     
-
+    int boxSize;
+    
+    char* trajfile;
+    char* script;
 };
 
 #endif	/* SIMULATOR_H */

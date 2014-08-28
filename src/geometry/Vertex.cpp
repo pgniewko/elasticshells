@@ -108,6 +108,7 @@ void Vertex::printVertex()
     cout << "myid=" << id << " "; 
     cout << "nneigh= " << nneigh << " ntrian=" << ntrian << " ";
     cout << " x=" << xyz.x << " y=" << xyz.y << " z=" << xyz.z << " : ";
+    cout << " x=" << force.x << " y=" << force.y << " z=" << force.z << " : ";
     for (int i = 0; i < nneigh; i++)
     {
         cout << neighbors[i] << " " ;

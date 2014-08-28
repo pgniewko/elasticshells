@@ -19,7 +19,8 @@ Cell::Cell(list<Triangle> tris) : numberV(0), numberT(0)
 }
 
 Cell::Cell(const Cell& orig) : cm(orig.cm), vertices(orig.vertices), triangles(orig.triangles),
-                               numberV(orig.numberV), numberT(orig.numberT)
+                               numberV(orig.numberV), numberT(orig.numberT),
+                               Rc(orig.Rc), a(orig.a), dp(orig.dp), gamma(orig.gamma)
 {}
 
 Cell::~Cell() {}
@@ -147,17 +148,18 @@ void Cell::calcForces()
         {
             R0ij = vertices[i].R0[j];
             idxj = vertices[i].neighbors[j];
-            vertices[i].force += HookeanForce::calcForce(vertices[idxj].xyz, vertices[i].xyz, R0ij, gamma);
+            vertices[i].force += HookeanForce::calcForce(vertices[i].xyz, vertices[idxj].xyz, R0ij, gamma);
         }
     }
     
+
     for (int i = 0; i < numberV; i++)
     {
         for (int j = 0; j < numberV; j++)
         {
-            if (i != j && !vertices[i].isNeighbor(j))
+            if (i != j && ! vertices[i].isNeighbor(j))
             {
-                vertices[i].force += NbRepulsiveForce::calcForce(vertices[j].xyz, vertices[i].xyz, Rc, a);
+                vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, vertices[j].xyz, Rc, a);
             }
         }
     }
@@ -186,9 +188,9 @@ void Cell::calcForces(const Cell& other_cell)
 {    
     for (int i = 0; i < numberV; i++)
     {
-        for (int j = 0; i < other_cell.numberV; j++)
+        for (int j = 0; j < other_cell.numberV; j++)
         {
-            vertices[i].force += NbRepulsiveForce::calcForce(other_cell.vertices[j].xyz, vertices[i].xyz, Rc, a);
+            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[j].xyz, Rc, a);
         }
     }
     
@@ -311,7 +313,7 @@ void Cell::saveRenderingScript(const char* filename, const char* cellsfile)
     os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
     os << "cmd.do(\"rebuild\")\n";
 
-
+//show spheres;alter elem h, vdw=0.1;rebuild
     int iidx, jidx;
     
     for (int i = 0; i < numberV; i++)
@@ -327,4 +329,25 @@ void Cell::saveRenderingScript(const char* filename, const char* cellsfile)
     os << "cmd.do(\"show lines\")\n";
     os << "cmd.do(\"bg white\")\n";
     os.close();
+}
+
+void Cell::setRc(double rc)
+{
+    Rc = rc;
+    cout << "rc="<<rc<<"Setting Rc=" << Rc <<endl;
+}
+
+void Cell::setA(double A)
+{
+    a = A;
+}
+
+void Cell::setDp(double dP)
+{
+    dp = dP;
+}
+
+void Cell::setGamma(double g)
+{
+    gamma = g;
 }

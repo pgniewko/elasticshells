@@ -31,9 +31,6 @@ public:
     int numberofFaces() ;
     int numberofVertices();
     
-    
-//    void createDataStructure();
-    
     void printCell();
     void calcForces();
     void calcForces(const Cell&);
@@ -42,6 +39,11 @@ public:
     
     void saveTriangulatedSurface(const char*);
     void saveRenderingScript(const char*, const char*);
+    
+    void setRc(double);
+    void setA(double);
+    void setDp(double);
+    void setGamma(double);
     
     Vector3D cm;
     Vertex vertices[MAX_V];
@@ -53,7 +55,6 @@ private:
     void constructVertices(list<Triangle>);
     void constructVTriangles(list<Triangle>);
     void constructTopology();
-    //void addVector(list<Vector3D>&, const Vector3D&);
     int numberV;
     int numberT;
     double Rc;

@@ -51,7 +51,7 @@ static struct argp_option options[] =
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0, 0, 0, 0, "Simulation Options:", 3},
-    {"number",    'n', "INT", 0, "Number init of particles. Not in work when positions read from the file [default: 1]"},
+    {"number",    'n', "INT", 0, "Init number of particles. Not in work when positions read from the file [default: 1]"},
     {"pbc",       301, 0, 0, "Use periodic boundary conditions [default: false]"},
     {"size",      401, "NUM", 0, "Box size [default: 10.0]"},
     {"depth",     501, "INT", 0, "SimpleTriangulation depth [default: 3]"},
@@ -83,9 +83,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             /* Default values. */
             arguments->silent = 0;
             arguments->verbose = 1;
-            arguments->output_file = "./data/cells.xyz";
+            arguments->output_file = "./data/render.xyz";
             arguments->input_file = "./data/cells.in";
-            arguments->traj_file = "./data/render.py";
+            arguments->traj_file = "./data/traj.xyz";
             arguments->log_file = "./data/biofilm.log";
             arguments->integrator_a = "vv";
             arguments->abort = 0;
@@ -241,18 +241,21 @@ int main(int argc, char** argv)
                 arguments.silent ? "yes" : "no");
     }
     
-    ofstream os;
-    os.open(arguments.log_file, ios::out | ios::trunc ); /* reset file */
-    os.close();
-
-    ofstream ost(arguments.traj_file, ios::out | ios::trunc);
-    ost.close();
-    
-
     clocks[0].tic();
     print_time();
     
-    Cell cell(arguments.d);
-    cell.printCell();
+    Simulator simulator(arguments);
+    simulator.addCell();
+    simulator.addCell();
+    
+    
+    Vector3D vel(-.5,-.55,-.55);
+    Vector3D shift(4,4,4);
+    simulator.addCellVel(vel, 1);
+    simulator.moveCell(shift, 1);
+    simulator.calcForces();
+    simulator.simulate(2000);
+    
+    
     return (EXIT_SUCCESS);
 }
