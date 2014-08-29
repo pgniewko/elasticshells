@@ -16,7 +16,7 @@ DEBUG    := -g
 
 # Relative include and library paths for compilation of the examples
 INCLUDE  := -I$(CURDIR)/src
-LIB      :=
+LIB      := -L/usr/lib
 
 CXXFLAGS := -lm -Wall -O3 -fpermissive $(DEBUG) $(INCLUDE) -Wunused-but-set-variable
 LDFLAGS  := $(LIB)

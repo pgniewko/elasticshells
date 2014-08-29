@@ -32,7 +32,7 @@ $(PROGRAM): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
 
 $(TEST_RUNNER): $(TEST_OBJECTS) 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 #Compilation commands:
 main.o: $(SOURCES) $(HEADERS) #main.cpp 
