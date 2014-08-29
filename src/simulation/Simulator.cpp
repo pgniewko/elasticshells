@@ -1,6 +1,6 @@
 #include "Simulator.h"
 
-Simulator::Simulator(const arguments& args) : params(args), boxSize(DBL_MAX), numberofCells(0)
+Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), boxSize(DBL_MAX)
 {
     dt = params.dt;
     a = params.a;
