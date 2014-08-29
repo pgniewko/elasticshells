@@ -8,9 +8,9 @@
 #include <cstring>
 #include <vector>
 
-#include "../Cell.h"
-#include "../arguments.h"
-#include "../geometry/algorithms/SimpleTriangulation.h"
+#include "Cell.h"
+#include "arguments.h"
+#include "geometry/algorithms/SimpleTriangulation.h"
 
 using namespace std;
 

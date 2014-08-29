@@ -6,16 +6,15 @@
 
 #include <list>
 
+#include "force/HookeanForce.h"
+#include "force/OsmoticForce.h"
+#include "force/NbRepulsiveForce.h"
 #include "geometry/Vector3D.h"
 #include "geometry/Tetrahedron.h"
 #include "geometry/Triangle.h"
 #include "geometry/Vertex.h"
 #include "geometry/VertexTriangle.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
-
-#include "force/HookeanForce.h"
-#include "force/OsmoticForce.h"
-#include "force/NbRepulsiveForce.h"
 
 using namespace std;
 

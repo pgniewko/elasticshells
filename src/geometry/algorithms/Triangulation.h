@@ -3,6 +3,7 @@
 
 #include <list>
 #include <iostream> 
+
 #include "../Triangle.h"
 
 using namespace std;

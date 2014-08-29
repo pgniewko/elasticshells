@@ -10,18 +10,11 @@
 #include <argp.h>      /* argp_parse */
 #include <stdlib.h>    /* atoi,  strtod */ 
 #include <math.h>      /* log, sqrt */
-#include <list>
 
-
-#include "src/geometry/algorithms/SimpleTriangulation.h"
-#include "src/geometry/Vector3D.h"
-#include "src/geometry/Triangle.h"
-#include "src/geometry/Vertex.h"
-#include "src/arguments.h"
-#include "src/random.h"
 #include "src/Timer.h"
-#include "src/Cell.h"
-#include "src/force/HookeanForce.h"
+#include "src/random.h"
+#include "src/arguments.h"
+#include "src/geometry/Vector3D.h"
 #include "src/simulation/Simulator.h"
 
 using namespace std;
@@ -249,8 +242,8 @@ int main(int argc, char** argv)
     simulator.addCell();
     
     
-    Vector3D vel(-.5,-.55,-.55);
-    Vector3D shift(4,4,4);
+    Vector3D vel(-.5,-.5,-.5);
+    Vector3D shift(4,4,5);
     simulator.addCellVel(vel, 1);
     simulator.moveCell(shift, 1);
     simulator.calcForces();

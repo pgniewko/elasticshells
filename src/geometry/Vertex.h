@@ -5,6 +5,7 @@
 #define TRIAN_MAX 10
 
 #include <stdlib.h>
+
 #include "Vector3D.h"
 
 class Vertex

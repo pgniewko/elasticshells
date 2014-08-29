@@ -15,8 +15,8 @@ CXX      := g++
 DEBUG    := -g
 
 # Relative include and library paths for compilation of the examples
-INCLUDE  := -Isrc
-LIB      := -Llib
+INCLUDE  := -I$(CURDIR)/src
+LIB      :=
 
 CXXFLAGS := -lm -Wall -O3 -fpermissive $(DEBUG) $(INCLUDE) -Wunused-but-set-variable
 LDFLAGS  := $(LIB)
