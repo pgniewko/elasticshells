@@ -6,7 +6,7 @@ NbRepulsiveForce::NbRepulsiveForce(const NbRepulsiveForce& orig) {}
 
 NbRepulsiveForce::~NbRepulsiveForce() {}
 
-static Vector3D NbRepulsiveForce::calcForce(const Vector3D& va, const Vector3D& vb, const double Rc, const double a)
+Vector3D NbRepulsiveForce::calcForce(const Vector3D& va, const Vector3D& vb, const double Rc, const double a)
 {
         Vector3D dR = vb - va;
         double r2 = dR.length2();
