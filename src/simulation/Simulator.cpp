@@ -25,22 +25,45 @@ Simulator::~Simulator()
 
 void Simulator::addCell(const Cell& newCell)
 {
-    cells.push_back(newCell);
-    numberofCells++;
+    try
+    {
+        if (cells.size() == MAX_CELLS) 
+            throw MaxSizeException();
+        
+        cells.push_back(newCell);
+        numberofCells++;        
+    } 
+    catch (MaxSizeException& e)
+    {
+        e.what();
+        return;
+    }
 }
 
 void Simulator::addCell()
 {
-   SimpleTriangulation sm(params.d);
-   list<Triangle> tris = sm.triangulate();
-   Cell newCell(tris);
+    
+    try
+    {
+        if (cells.size() == MAX_CELLS) 
+            throw MaxSizeException();
+        
+        SimpleTriangulation sm(params.d);
+        list<Triangle> tris = sm.triangulate();
+        Cell newCell(tris);
    
-   newCell.setA(a);
-   newCell.setDp(dp);
-   newCell.setRc(Rc);
-   newCell.setGamma(gamma);
+        newCell.setA(a);
+        newCell.setDp(dp);
+        newCell.setRc(Rc);
+        newCell.setGamma(gamma);
    
-   addCell(newCell);
+        addCell(newCell);       
+    } 
+    catch (MaxSizeException& e)
+    {
+        e.what();
+        return;
+    }
 }
 
 void Simulator::calcForces()

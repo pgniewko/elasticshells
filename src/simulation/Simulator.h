@@ -10,7 +10,9 @@
 
 #include "Cell.h"
 #include "arguments.h"
+#include "exceptions/MaxSizeException.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
+
 
 using namespace std;
 

@@ -11,19 +11,23 @@ SOURCES      := main.cpp \
 		$(wildcard $(SRC)/force/*.cpp) \
 
 HEADERS      := $(wildcard $(SRC)/*.h) \
+		$(wildcard $(SRC)/exceptions/*.h) \
 	        $(wildcard $(SRC)/geometry/*.h) \
 	        $(wildcard $(SRC)/simulation/*.h) \
 	        $(wildcard $(SRC)/geometry/algorithms/*.h) \
 		$(wildcard $(SRC)/force/*.h) \
 
-OBJECTS      := $(SOURCES:.cpp=.o)
-
 TEST_SOURCES := $(wildcard $(TESTS)/*.cpp) \
                 $(wildcard $(SRC)/*.cpp) \
+		$(wildcard $(SRC)/exceptions/*.cpp) \
                 $(wildcard $(SRC)/geometry/*.cpp) \
                 $(wildcard $(SRC)/simulation/*.cpp) \
 		$(wildcard $(SRC)/geometry/algorithms/*.cpp) \
-		$(wildcard $(SRC)/force/*.cpp)
+		$(wildcard $(SRC)/force/*.cpp) \
+
+
+OBJECTS      := $(SOURCES:.cpp=.o)
+
 
 TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
@@ -59,7 +63,7 @@ clean:
 	rm -f $(PROGRAM) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS)
 	@echo Clean done.
 	
-test: $(TEST_RUNNER)
+tests: $(TEST_RUNNER)
 	@$(TEST_RUNNER)
 	@echo Test done.
 
