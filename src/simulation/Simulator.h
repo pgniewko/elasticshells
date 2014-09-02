@@ -49,13 +49,16 @@ public:
     
     void saveCellsState();
     void saveCellsState(const char*);
-    void renderScript();
+    void renderScript(bool box=false);
     
     void setBoxSize(double);
     
     void printCell(int);
     
     int getTotalVertices();
+    
+    void printBox(ofstream&);
+    
         
 private:
     vector<Cell> cells;
@@ -72,11 +75,14 @@ private:
     double ttotal;
     int nsteps;
     int d;
+    double bs;
     
     int boxSize;
     
     char* trajfile;
     char* script;
+    
+    bool drawBox;
 };
 
 #endif	/* SIMULATOR_H */

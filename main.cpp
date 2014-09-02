@@ -46,6 +46,7 @@ static struct argp_option options[] =
     {0, 0, 0, 0, "Simulation Options:", 3},
     {"number",    'n', "INT", 0, "Init number of particles. Not in work when positions read from the file [default: 1]"},
     {"pbc",       301, 0, 0, "Use periodic boundary conditions [default: false]"},
+    {"dbox",      302, 0, 0, "Draw [default: true]"},
     {"size",      401, "NUM", 0, "Box size [default: 10.0]"},
     {"depth",     501, "INT", 0, "SimpleTriangulation depth [default: 3]"},
     {"dt",        601, "NUM", 0, "Time step [default: 0.05]"},
@@ -60,6 +61,7 @@ static struct argp_option options[] =
     {"mu",        801, "NUM", 0, "Viscosity coefficient [default: 1.0]"},
     {"dp",        802, "NUM", 0, "Osmotic pressure difference [default: 0.0]"},
     {"r-cut",     803, "NUM", 0, "Radius cut-off for pair interactions [default: 1.0]"},
+    {"bs",        804, "NUM", 0, "Box size [default: 10.0]"},
     {0}
 };
 
@@ -76,7 +78,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             /* Default values. */
             arguments->silent = 0;
             arguments->verbose = 1;
-            arguments->output_file = "./data/render.xyz";
+            arguments->output_file = "./data/render.py";
             arguments->input_file = "./data/cells.in";
             arguments->traj_file = "./data/traj.xyz";
             arguments->log_file = "./data/biofilm.log";
@@ -88,6 +90,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->dt = 0.05;
             arguments->ttime = 1.0;
             arguments->dp = 0.0;
+            arguments->bs = 10.0;
             arguments->a = 1.0;
             arguments->d = 3;
             arguments->mass = 1.0;
@@ -95,6 +98,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->k = 1.0;
             arguments->L = 10.0;
             arguments->pbc = false;
+            arguments->draw_box = true;
             break;
 
         case 'q':
@@ -145,6 +149,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->pbc = true;
             break;
             
+        case 302:
+            arguments->draw_box = true;
+            break;    
+            
         case 401:
             arguments->L = arg ? strtod (arg, NULL) : 10.0;
             break;
@@ -179,7 +187,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             
         case 803:
             arguments->r_cut = arg ?  strtod (arg, NULL) : 1.0;
-            break;    
+            break;
+           
+        case 804:
+            arguments->bs = arg ?  strtod (arg, NULL) : 10.0;
+            break;   
 
         case OPT_ABORT:
             arguments->abort = 1;
@@ -247,7 +259,7 @@ int main(int argc, char** argv)
     simulator.addCellVel(vel, 1);
     simulator.moveCell(shift, 1);
     simulator.calcForces();
-    simulator.simulate(2000);
+    simulator.simulate(100);
     
     
     return (EXIT_SUCCESS);

@@ -30,8 +30,10 @@ struct arguments
     double mass;
     double ttime;
     double r_cut;
+    double bs;
 
     bool pbc;
+    bool draw_box;
 };
 
 #endif	/* ARGUMENTS_H */

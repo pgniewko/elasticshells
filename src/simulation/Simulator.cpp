@@ -6,6 +6,8 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), bo
     a = params.a;
     d = params.d;
     dp = params.dp;
+    bs = params.bs;
+    drawBox = params.draw_box;
     gamma = params.k;
     Rc = params.r_cut;
     ttotal = params.ttime;
@@ -140,7 +142,7 @@ void Simulator::simulate()
 
 void Simulator::simulate(int steps)
 {
-    renderScript();
+    renderScript(drawBox);
     int lastCellIndex = 0;
     int index;
     ofstream os;
@@ -226,12 +228,16 @@ void Simulator::addCellVel(const Vector3D& v3d, int cellid)
     cells[cellid].addVelocity(v3d);
 }
 
-void Simulator::renderScript()
+void Simulator::renderScript(bool box)
 {
     ofstream os;
     os.open(script);
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
+    if (box)
+    {
+        printBox(os);
+    }
     os << "cmd.do(\"load " << trajfile << ", cells\")\n";
     os << "cmd.do(\"hide all\")\n";
     os << "cmd.do(\"set sphere_color, tv_red\")\n";
@@ -258,7 +264,16 @@ void Simulator::renderScript()
     }
     
     os << "cmd.do(\"show lines\")\n";
-    os << "cmd.do(\"bg white\")\n";
+    os << "cmd.do(\"bg white\")\n\n";
+    
+    if (box)
+    {
+        os << "B = Box( ("<< -bs << "," << bs <<"), ("<< -bs << "," << bs <<"), ("<< -bs << "," << bs <<"), ";
+        os << 2*bs << ", 2.5, color=(0.0,0.0,0.0) )\n";
+        os << "obj = B.box\n";
+        os << "cmd.load_cgo(obj, \"box\", 1)\n";
+    }
+    
     os.close();
 }
 
@@ -305,4 +320,92 @@ int Simulator::getTotalVertices()
         totalnumber += cells[i].numberofVertices();
     }
     return totalnumber;
+}
+
+
+void Simulator::printBox(ofstream& os)
+{
+    os << "class Box(object):\n";
+    os << "  def __init__ (self, x_ax, y_ax, z_ax, step, linewidth, color):\n";
+    os << "    lw = linewidth\n";
+    os << "    c1 = color[0]\n";
+    os << "    c2 = color[1]\n";
+    os << "    c3 = color[2]\n";
+    os << "\n";
+    os << "    self.box=[]  \n";   
+    os << "\n";
+    os << "    self.box.append(LINEWIDTH)\n";
+    os << "    self.box.append(float(lw))\n";
+    os << "    self.box.append(BEGIN)\n";
+    os << "    self.box.append(LINES)\n";
+    os << "    self.box.append(COLOR)\n";
+    os << "    self.box.append(c1)\n";
+    os << "    self.box.append(c2)\n";
+    os << "    self.box.append(c3)\n";
+    os << "\n";  
+    os << "    X = range(x_ax[0],x_ax[1]+1,step)\n";
+    os << "    Y = range(y_ax[0],y_ax[1]+1,step)\n";
+    os << "    Z = range(z_ax[0],z_ax[1]+1,step)\n"; 
+    os << "\n";
+    os << "    x_end = x_ax[1] - x_ax[0]\n";
+    os << "    y_end = y_ax[1] - y_ax[0]\n";
+    os << "    z_end = z_ax[1] - z_ax[0]\n";
+    os << "\n";
+    os << "    l = len(X)\n"; 
+    os << "\n";    
+    os << "    for i in range(len(X)):\n";
+    os << "        for j in range(len(Y)):\n";
+    os << "            x1 = X[i]\n";
+    os << "            y1 = Y[j]\n";
+    os << "            z1 = z_ax[0]\n";
+    os << "            x2 = x1\n";
+    os << "            y2 = y1\n";
+    os << "            z2 = z1 + z_end\n";
+    os << "\n";    
+    os << "            self.box.append(VERTEX)\n";
+    os << "            self.box.append(float(x1))\n";
+    os << "            self.box.append(float(y1))\n";
+    os << "            self.box.append(float(z1))\n";
+    os << "            self.box.append(VERTEX)\n";
+    os << "            self.box.append(float(x2))\n";
+    os << "            self.box.append(float(y2))\n";
+    os << "            self.box.append(float(z2))\n";
+    os << "\n";
+    os << "    for i in range(len(X)):\n";
+    os << "        for j in range(len(Z)):\n";
+    os << "            x1 = X[i]\n";
+    os << "            y1 = y_ax[0]\n";
+    os << "            z1 = Z[j]\n";
+    os << "            x2 = x1\n";
+    os << "            y2 = y1 + y_end\n";
+    os << "            z2 = z1\n";
+    os << "\n";
+    os << "            self.box.append(VERTEX)\n";
+    os << "            self.box.append(float(x1))\n";
+    os << "            self.box.append(float(y1))\n";
+    os << "            self.box.append(float(z1))\n";
+    os << "            self.box.append(VERTEX)\n";
+    os << "            self.box.append(float(x2))\n";
+    os << "            self.box.append(float(y2))\n";
+    os << "            self.box.append(float(z2))\n";
+    os << "\n";
+    os << "    for i in range(len(Y)):\n";
+    os << "        for j in range(len(Z)):\n";
+    os << "            x1 = x_ax[0]\n";
+    os << "            y1 = Y[i]\n";
+    os << "            z1 = Z[j]\n";
+    os << "            x2 = x1 + x_end\n";
+    os << "            y2 = y1\n";
+    os << "            z2 = z1\n";
+    os << "\n";
+    os << "            self.box.append(VERTEX)\n";
+    os << "            self.box.append(float(x1))\n";
+    os << "            self.box.append(float(y1))\n";
+    os << "            self.box.append(float(z1))\n";
+    os << "            self.box.append(VERTEX)\n";
+    os << "            self.box.append(float(x2))\n";
+    os << "            self.box.append(float(y2))\n";
+    os << "            self.box.append(float(z2))\n";
+    os << "\n";
+    os << "    self.box.append(END)\n\n\n";
 }
