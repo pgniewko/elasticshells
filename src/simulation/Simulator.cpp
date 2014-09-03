@@ -15,6 +15,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), bo
     script = params.output_file;
     nsteps = (int) ttotal / dt;
     setIntegrator(params.integrator_a);
+    
 }
 
 Simulator::Simulator(const Simulator& orig) 
@@ -72,8 +73,18 @@ void Simulator::calcForces()
 {
     for (int i = 0 ; i < numberofCells; i++)
     {
+        cells[i].voidForces();
+    }
+    
+    for (int i = 0 ; i < numberofCells; i++)
+    {
         cells[i].calcForces();
     }
+    
+    for (int i = 0 ; i < numberofCells; i++)
+    {
+        cells[i].calcForces(bs);
+    }    
     
     for (int i = 0; i < numberofCells; i++) 
     {

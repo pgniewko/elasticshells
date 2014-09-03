@@ -33,6 +33,7 @@ public:
     void printCell();
     void calcForces();
     void calcForces(const Cell&);
+    void calcForces(const double);
     void addVelocity(const Vector3D&);
     void addXYZ(const Vector3D&);
     
@@ -43,6 +44,8 @@ public:
     void setA(double);
     void setDp(double);
     void setGamma(double);
+    
+    void voidForces();
     
     Vector3D cm;
     Vertex vertices[MAX_V];

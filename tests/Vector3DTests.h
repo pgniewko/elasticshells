@@ -22,7 +22,7 @@ public:
     void tearDown();
 
 private:
-    
+    Vector3D *v1, *v2, *v3, *v4, *v5, *v6;
     void testConstructor();
     
     void testMethod();

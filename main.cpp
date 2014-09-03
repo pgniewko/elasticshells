@@ -51,7 +51,8 @@ static struct argp_option options[] =
     {"depth",     501, "INT", 0, "SimpleTriangulation depth [default: 3]"},
     {"dt",        601, "NUM", 0, "Time step [default: 0.05]"},
     {"ttime",     602, "NUM", 0, "Total simulation time [default: 1.0]"},
-    {"log-step",  603, "INT", 0, "[Log step interval [default: 1]"},
+    {"log-step",  603, "INT", 0, "Log step interval [default: 1]"},
+    {"ns",        604, "INT", 0, "Number of simulation steps [default: 100]"},
     {"int",       701, "STR", 0, "Integrator of equations of motion: velocity-verlet[vv], simple[se] [default: vv]"},
 
     {0,             0, 0, 0, "System Options:", 5},
@@ -86,6 +87,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->abort = 0;
             arguments->n_particles = 1;
             arguments->log_step = 1;
+            arguments->nsteps = 100;
             arguments->r_cut = 1.0;
             arguments->dt = 0.05;
             arguments->ttime = 1.0;
@@ -158,7 +160,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
             
         case 501:
-            arguments->d = arg ? atoi (arg) : 3;
+            arguments->d = arg ? min(atoi (arg), 10) : 3;
             break;
 
         case 601:
@@ -171,6 +173,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 603:
             arguments->log_step = arg ? atoi (arg) : 1;
+            break;
+            
+        case 604:
+            arguments->nsteps = arg ? atoi (arg) : 100;
             break;
             
         case 701:
@@ -249,17 +255,22 @@ int main(int argc, char** argv)
     clocks[0].tic();
     print_time();
     
+    
+
     Simulator simulator(arguments);
     simulator.addCell();
-    simulator.addCell();
+    //simulator.addCell();
     
+    
+    //cout << max(122,123) << endl;
     
     Vector3D vel(-.5,-.5,-.5);
-    Vector3D shift(4,4,5);
-    simulator.addCellVel(vel, 1);
-    simulator.moveCell(shift, 1);
+    //Vector3D shift(4,4,5);
+    //simulator.addCellVel(vel, 1);
+    simulator.addCellVel(vel, 0);
+    //simulator.moveCell(shift, 1);
     simulator.calcForces();
-    simulator.simulate(100);
+    simulator.simulate(arguments.nsteps);
     
     
     return (EXIT_SUCCESS);

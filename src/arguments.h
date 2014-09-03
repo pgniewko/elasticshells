@@ -20,6 +20,7 @@ struct arguments
     int d;
     int log_step;
     int n_particles;
+    int nsteps;
 
     double L;
     double a;
