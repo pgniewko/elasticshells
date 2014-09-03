@@ -160,7 +160,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
             
         case 501:
-            arguments->d = arg ? min(atoi (arg), 10) : 3;
+            arguments->d = arg ? atoi (arg) : 3;
             break;
 
         case 601:
@@ -259,16 +259,16 @@ int main(int argc, char** argv)
 
     Simulator simulator(arguments);
     simulator.addCell();
-    //simulator.addCell();
+    simulator.addCell();
     
     
     //cout << max(122,123) << endl;
     
     Vector3D vel(-.5,-.5,-.5);
-    //Vector3D shift(4,4,5);
-    //simulator.addCellVel(vel, 1);
-    simulator.addCellVel(vel, 0);
-    //simulator.moveCell(shift, 1);
+    Vector3D shift(4,4,5);
+    simulator.addCellVel(vel, 1);
+    simulator.addCellVel(-vel, 0);
+    simulator.moveCell(shift, 1);
     simulator.calcForces();
     simulator.simulate(arguments.nsteps);
     

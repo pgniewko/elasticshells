@@ -6,8 +6,7 @@ VertexTriangle::VertexTriangle()
 
 VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c) {}
 
-VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(orig.ib), ic(orig.ic) 
-{}
+VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(orig.ib), ic(orig.ic) {}
 
 VertexTriangle::~VertexTriangle() {}
 

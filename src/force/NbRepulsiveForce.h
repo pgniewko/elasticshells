@@ -1,6 +1,7 @@
 #ifndef NBREPULSIVEFORCE_H
 #define	NBREPULSIVEFORCE_H
 
+#include "Environment.h"
 #include "geometry/Vector3D.h"
 
 class NbRepulsiveForce 

@@ -1,6 +1,7 @@
 #ifndef OSMOTICFORCE_H
 #define	OSMOTICFORCE_H
 
+#include "Environment.h"
 #include "geometry/Vector3D.h"
 
 class OsmoticForce

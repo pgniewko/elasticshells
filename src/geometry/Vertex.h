@@ -1,11 +1,12 @@
 #ifndef VERTEX_H
 #define	VERTEX_H
 
-#define NEIGH_MAX 10
-#define TRIAN_MAX 10
+//#define NEIGH_MAX 10
+//#define TRIAN_MAX 10
 
 #include <stdlib.h>
 
+#include "Environment.h"
 #include "Vector3D.h"
 
 class Vertex

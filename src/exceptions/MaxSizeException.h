@@ -5,13 +5,10 @@
 #include <exception>
 using namespace std;
 
-struct MaxSizeException : public exception
+class MaxSizeException : public std::runtime_error
 {
-  const char * what () const throw ()
-  {
-    return "MAX number of elements reached.\nNo action will be taken.";
-  }
+public:
+  MaxSizeException(const string& what_arg) : runtime_error( what_arg ) {}
 };
 
 #endif	/* MAXSIZEEXCEPTION_H */
-

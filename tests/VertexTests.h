@@ -3,13 +3,15 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "constants.h"
+#include "Environment.h"
 #include "geometry/Vertex.h"
 
 class VertexTests : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(VertexTests);
     CPPUNIT_TEST(testMethod);
-    CPPUNIT_TEST(testFailedMethod);
+    
+    CPPUNIT_TEST_FAIL(testFailedMethod);
+    
     CPPUNIT_TEST_SUITE_END();
 
 public:

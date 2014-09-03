@@ -1,6 +1,7 @@
 #ifndef VERTEXTRIANGLE_H
 #define	VERTEXTRIANGLE_H
 
+#include "Environment.h"
 #include "Vertex.h"
 #include "Triangle.h"
 

@@ -3,6 +3,7 @@
 
 #include <iostream>    /* cout, cin */
 
+#include "Environment.h"
 #include "Triangulation.h"
 
 using namespace std;

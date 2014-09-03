@@ -17,3 +17,14 @@ double Tetrahedron::volume() const
     volume /= 6.0;
     return volume;
 }
+
+double Tetrahedron::volumeSgn() const
+{   
+    Vector3D AD = a - d;
+    Vector3D BD = b - d;
+    Vector3D CD = c - d;
+    Vector3D CcrossD = cross(BD, CD);
+    double volume = AD * CcrossD;
+    volume /= 6.0;
+    return volume / fabs(volume);
+}

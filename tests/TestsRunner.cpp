@@ -21,7 +21,7 @@ int main()
 
     // Add the top suite to the test runner
     CPPUNIT_NS::TestRunner runner;
-    runner.addTest(CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest());
+    runner.addTest(CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest()); // Retrieve all registered suites
     runner.run(controller);
 
     // Print test in a compiler compatible format.

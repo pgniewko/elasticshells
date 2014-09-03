@@ -1,6 +1,7 @@
 #ifndef TRIANGLE_H
 #define	TRIANGLE_H
 
+#include "Environment.h"
 #include "Vector3D.h"
 
 class Triangle {

@@ -3,7 +3,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "constants.h"
+#include "Environment.h"
 #include "geometry/Vector3D.h"
 
 class Vector3DTests : public CPPUNIT_NS::TestFixture {

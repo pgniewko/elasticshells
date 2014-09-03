@@ -1,6 +1,7 @@
 #ifndef TETRAHEDRON_H
 #define	TETRAHEDRON_H
 
+#include "Environment.h"
 #include "Vector3D.h"
 
 class Tetrahedron {
@@ -10,6 +11,7 @@ public:
     Tetrahedron(const Tetrahedron& orig);
     virtual ~Tetrahedron();
     double volume() const;
+    double volumeSgn() const;
     Vector3D a, b, c, d;
 private:
 

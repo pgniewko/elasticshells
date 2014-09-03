@@ -1,9 +1,11 @@
 #ifndef VECTOR3D_H
 #define	VECTOR3D_H
+//#pragma once
 
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include "Environment.h"
 #include "exceptions/DataException.h"
 
 using namespace std;

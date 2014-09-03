@@ -21,6 +21,6 @@ void VertexTests::testMethod() {
 }
 
 void VertexTests::testFailedMethod() {
-    CPPUNIT_ASSERT(true);
-    //CPPUNIT_ASSERT(++*example == 1);
+    //CPPUNIT_ASSERT(true);
+    CPPUNIT_ASSERT(false);
 }
