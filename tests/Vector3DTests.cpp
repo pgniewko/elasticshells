@@ -39,6 +39,7 @@ void Vector3DTests::testMethod()
 void Vector3DTests::testFailedMethod() 
 {
     CPPUNIT_ASSERT(true);
+    //CPPUNIT_ASSERT(false);
 }
 
 void Vector3DTests::testConstructor()
