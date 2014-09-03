@@ -148,9 +148,7 @@ void Cell::calcForces()
         {
             R0ij = vertices[i].R0[j];
             idxj = vertices[i].neighbors[j];
-            //cout << " in hamornic " << vertices[i].xyz << endl;
             vertices[i].force += HookeanForce::calcForce(vertices[i].xyz, vertices[idxj].xyz, R0ij, gamma);
-            //cout << HookeanForce::calcForce(vertices[i].xyz, vertices[idxj].xyz, R0ij, gamma) << endl;
         }
     }
     
@@ -176,21 +174,33 @@ void Cell::calcForces()
         ivb = triangles[i].ib;
         ivc = triangles[i].ic;
         
+        
+        
         Vector3D fa = OsmoticForce::calcForce(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm, dp);
         Vector3D fb = OsmoticForce::calcForce(vertices[ivb].xyz, vertices[ivc].xyz, vertices[iva].xyz, cm, dp);
         Vector3D fc = OsmoticForce::calcForce(vertices[ivc].xyz, vertices[iva].xyz, vertices[ivb].xyz, cm, dp);
         
-        vertices[iva].force += fa;
-        vertices[ivb].force += fb;
-        vertices[ivc].force += fc;
-    }
-}
-
-void Cell::voidForces()
-{
-    for (int i = 0; i < numberV; i++)
-    {
-        vertices[i].force *= 0.0;
+        if (iva == 0) {
+            Tetrahedron tetr(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm);
+            //cout << "Volume sign: " << tetr.volumeSgn() << endl; 
+            //cout << " i= " << i << "; iva = " << iva << "; ivb " << ivb << "; ivc " << ivc << endl;
+            //cout << fa << endl;
+            //cout << fb << endl;
+            //cout << fc << endl;
+            //cout << "(x,y,z): "<< vertices[iva].xyz << endl;
+            //cout << vertices[ivb].xyz << endl;
+            //cout << vertices[ivc].xyz << endl;
+            //cout << " ------------------- " << endl;
+        }
+        Tetrahedron tetra(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm);
+        Tetrahedron tetrb(vertices[ivb].xyz, vertices[ivc].xyz, vertices[iva].xyz, cm);
+        Tetrahedron tetrc(vertices[ivc].xyz, vertices[iva].xyz, vertices[ivb].xyz, cm);
+        vertices[iva].force += -tetra.volumeSgn() * fa;
+        vertices[ivb].force += -tetrb.volumeSgn() * fb;
+        vertices[ivc].force += -tetrc.volumeSgn() * fc;
+        
+        //if (iva == 0)
+        //    cout << "force="  << vertices[iva].force << endl;
     }
 }
 
@@ -215,20 +225,11 @@ void Cell::calcForces(const double bs)
     {
         if (vertices[i].xyz.x != 0 )
         {
-            //cout << " vertex.x :" << vertices[i].xyz.x << endl;
             sgnx = vertices[i].xyz.x / fabs(vertices[i].xyz.x);
             wallYZ.x = sgnx * bs;
             wallYZ.y = vertices[i].xyz.y;
             wallYZ.z = vertices[i].xyz.z;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, Rc, a);
-            if (NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, Rc, a).length() != 0)
-            {
-                //cout << " YZ " << NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, Rc, a) << endl;
-                //cout << " WALL YZ " << wallYZ << endl;
-                //cout << "vertex.xyz " << vertices[i].xyz << endl;
-                //cout << "sgnx " << sgnx << endl;
-                //exit(123);
-            }
         }
 
         if (vertices[i].xyz.y != 0 )
@@ -238,14 +239,6 @@ void Cell::calcForces(const double bs)
             wallXZ.y = sgny * bs;
             wallXZ.z = vertices[i].xyz.z;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, Rc, a);
-            if (NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, Rc, a).length() != 0)
-            {
-                //cout << " XZ " << NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, Rc, a) << endl;
-               // cout << " WALL XZ " << wallXZ << endl;
-                //cout << "vertex.xyz " << vertices[i].xyz << endl;
-                //cout << "sgny " << sgny << "abs: " << fabs(vertices[i].xyz.y) << endl;
-                //exit(123);
-            }
         }
 
         if (vertices[i].xyz.z != 0 )
@@ -255,39 +248,15 @@ void Cell::calcForces(const double bs)
             wallXY.y = vertices[i].xyz.y;
             wallXY.z = sgnz * bs;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a);
-            if (NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a).length() != 0)
-            {
-                //cout << " XY " << NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a) << endl;
-                //cout << " WALL XY " << wallXY << endl;
-                //cout << "vertex.xyz " << vertices[i].xyz << endl;
-                //cout << "sgnz " << sgnz << endl;
-                //exit(123);
-            }
         }        
-        //sgny = vertices[i].xyz.y / abs(vertices[i].xyz.y);
-        //sgnz = vertices[i].xyz.z / abs(vertices[i].xyz.z);
-        
+    }
+}
 
-        
-        
-        //wallXZ.x = vertices[i].xyz.x;
-        //wallXZ.y = sgny * bs;
-        //wallXZ.z = vertices[i].xyz.z;
-        
-        //wallXY.x = vertices[i].xyz.x;
-        //wallXY.y = vertices[i].xyz.y;
-        //wallXY.z = sgnz * bs;
-        
-        
-        //cout << vertices[i].xyz << "wallyz" << wallXZ << " sgnx " <<sgnx << " vert.x " <<  vertices[i].xyz.x<<endl;
-        
-        //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, Rc, a);
-        //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, Rc, a);
-        //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a);
-        
-        //cout << "repx "<< NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, Rc, a) << endl;
-        //cout << "repy "<< NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, Rc, a) << endl;
-        //cout << "repz "<< NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a) << endl;
+void Cell::voidForces()
+{
+    for (int i = 0; i < numberV; i++)
+    {
+        vertices[i].voidForce();
     }
 }
 
@@ -429,7 +398,6 @@ void Cell::saveRenderingScript(const char* filename, const char* cellsfile)
 void Cell::setRc(double rc)
 {
     Rc = rc;
-    cout << "rc="<<rc<<"Setting Rc=" << Rc <<endl;
 }
 
 void Cell::setA(double A)

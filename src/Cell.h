@@ -1,11 +1,12 @@
 #ifndef CELL_H
 #define	CELL_H
 
-#define MAX_V 200
-#define MAX_T 500
+//#define MAX_V 200
+//#define MAX_T 500
 
 #include <list>
 
+#include "Environment.h"
 #include "force/HookeanForce.h"
 #include "force/OsmoticForce.h"
 #include "force/NbRepulsiveForce.h"
