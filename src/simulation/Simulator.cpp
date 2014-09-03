@@ -8,6 +8,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), bo
     dp = params.dp;
     bs = params.bs;
     drawBox = params.draw_box;
+    pbc = params.pbc;
     gamma = params.k;
     Rc = params.r_cut;
     ttotal = params.ttime;
@@ -16,29 +17,57 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), bo
     nsteps = (int) ttotal / dt;
     setIntegrator(params.integrator_a);
     
+    try
+    {
+        diagnoseParams();
+    }
+    catch(NotImplementedException& e)
+    {
+        cout <<  e.what() << endl;
+        exit(1);
+    }
+    catch(DataException& e)
+    {
+        cout << e.what() << endl;
+        exit(1);
+    }
 }
 
-Simulator::Simulator(const Simulator& orig) 
-{
-}
+Simulator::Simulator(const Simulator& orig) {}
 
-Simulator::~Simulator() 
+Simulator::~Simulator() {}
+
+void Simulator::diagnoseParams()
 {
+    if (d == 0)
+        throw NotImplementedException("NotImplementedException:\n"
+                "Single point representation is not implemented yet. "
+                "Simulator is about to terminate !");
+    if (d > 7)
+        throw DataException("DataException:\n"
+                "Depth of a triangulation to large ! "
+                "For machine's safety Simulator is going to terminate !");
+    
+    if (pbc)
+        throw NotImplementedException("NotImplementedException:\n"
+                "Periodic boundary conditions are  not implemented yet."
+                "Simulator is about to terminate !");
 }
 
 void Simulator::addCell(const Cell& newCell)
 {
     try
     {
-        if (cells.size() == MAX_CELLS) 
-            throw MaxSizeException();
+        if (cells.size() == MAX_CELLS)
+            throw MaxSizeException("Maximum number of cells reached."
+                                    "New cell will not be added !");
         
         cells.push_back(newCell);
         numberofCells++;        
     } 
     catch (MaxSizeException& e)
     {
-        e.what();
+        cout << e.what() << endl;
         return;
     }
 }
@@ -49,7 +78,8 @@ void Simulator::addCell()
     try
     {
         if (cells.size() == MAX_CELLS) 
-            throw MaxSizeException();
+            throw MaxSizeException("Maximum number of cells reached."
+                                    "New cell will not be added !");
         
         SimpleTriangulation sm(params.d);
         list<Triangle> tris = sm.triangulate();
@@ -64,28 +94,32 @@ void Simulator::addCell()
     } 
     catch (MaxSizeException& e)
     {
-        e.what();
+        cout << e.what() << endl;
         return;
     }
 }
 
 void Simulator::calcForces()
 {
+    // RESET FORCES
     for (int i = 0 ; i < numberofCells; i++)
     {
         cells[i].voidForces();
     }
     
+    // CALCULATE INTRA-CELLULAR FORCES 
     for (int i = 0 ; i < numberofCells; i++)
     {
         cells[i].calcForces();
     }
     
+    // CALCULATE FORCES BETWEEN CELLS AND BOX
     for (int i = 0 ; i < numberofCells; i++)
     {
         cells[i].calcForces(bs);
     }    
     
+    // CALCULATE INTER-CELLULAR FORCES
     for (int i = 0; i < numberofCells; i++) 
     {
         for (int j = 0; j < numberofCells; j++) 
@@ -142,6 +176,12 @@ void Simulator::integrateVv()
     }    
 }
 
+void Simulator::doStep()
+{
+    calcForces();
+    integrate();
+}
+
 void Simulator::simulate()
 {
     for (int i = 0; i < nsteps; i++)
@@ -190,12 +230,6 @@ void Simulator::simulate(int steps)
     }
     
     os.close();
-}
-
-void Simulator::doStep()
-{
-    calcForces();
-    integrate();
 }
 
 void Simulator::setIntegrator(void (Simulator::*functoall)())

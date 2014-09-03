@@ -1,16 +1,19 @@
 #ifndef SIMULATOR_H
 #define	SIMULATOR_H
 
-#define MAX_CELLS 100
+//#define MAX_CELLS 100
 
 #include <fstream>
 #include <float.h>      /* DBL_MAX */
 #include <cstring>
 #include <vector>
 
+#include "Environment.h"
 #include "Cell.h"
 #include "arguments.h"
 #include "exceptions/MaxSizeException.h"
+#include "exceptions/DataException.h"
+#include "exceptions/NotImplementedException.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 
 
@@ -58,12 +61,13 @@ public:
     int getTotalVertices();
     
     void printBox(ofstream&);
-    
         
 private:
+    
     vector<Cell> cells;
     void (Simulator::*integrator)();
     void setIntegrator(void (Simulator::*functoall)());
+    void diagnoseParams();
     int numberofCells;
     
     double dt;
@@ -82,6 +86,7 @@ private:
     char* trajfile;
     char* script;
     
+    bool pbc;
     bool drawBox;
 };
 
