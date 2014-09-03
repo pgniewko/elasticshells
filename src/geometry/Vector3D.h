@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include "exceptions/DataException.h"
 
 using namespace std;
 

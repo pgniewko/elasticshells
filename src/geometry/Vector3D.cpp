@@ -20,14 +20,20 @@ double Vector3D::length2() const
 
 void Vector3D::setLength(double r) 
 {
-    double rl = r / length();
-    x *= rl;
-    y *= rl;
-    z *= rl;
+    if (length() != 0)
+    {
+        double rl = r / length();
+        x *= rl;
+        y *= rl;
+        z *= rl;
+    }
 }
 
 double Vector3D::angle(const Vector3D& v) const
 {
+    if (this->length() == 0 || v.length() == 0)
+        throw DataException("Zero length vector");
+        
     double d = *this * v;
     double l1 = length();
     double l2 = v.length();
