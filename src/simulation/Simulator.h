@@ -53,6 +53,7 @@ public:
     void saveCellsState();
     void saveCellsState(const char*);
     void renderScript(bool box=false);
+    void saveSurfaceScript();
     
     void setBoxSize(double);
     
@@ -61,6 +62,8 @@ public:
     int getTotalVertices();
     
     void printBox(ofstream&);
+    
+    Cell getCell(int);
         
 private:
     
@@ -77,6 +80,7 @@ private:
     double R0;
     double Rc;
     double ttotal;
+    double initcellmass;
     int nsteps;
     int d;
     double bs;
@@ -85,6 +89,7 @@ private:
     
     char* trajfile;
     char* script;
+    char* surfaceScript;
     
     bool pbc;
     bool drawBox;

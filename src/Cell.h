@@ -27,6 +27,7 @@ public:
     virtual ~Cell();
     double calcSurfaceArea();
     double calcVolume();
+    double getMass();
     void calcCM();
     int numberofFaces() ;
     int numberofVertices();
@@ -38,13 +39,14 @@ public:
     void addVelocity(const Vector3D&);
     void addXYZ(const Vector3D&);
     
-    void saveTriangulatedSurface(const char*);
-    void saveRenderingScript(const char*, const char*);
+//    void saveTriangulatedSurface(const char*);
+//    void saveRenderingScript(const char*, const char*);
     
     void setRc(double);
     void setA(double);
     void setDp(double);
     void setGamma(double);
+    //void setMass();
     
     void voidForces();
     

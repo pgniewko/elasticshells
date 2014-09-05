@@ -14,6 +14,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), bo
     ttotal = params.ttime;
     trajfile = params.traj_file;
     script = params.output_file;
+    surfaceScript = params.surface_file;
     nsteps = (int) ttotal / dt;
     setIntegrator(params.integrator_a);
     
@@ -43,7 +44,7 @@ void Simulator::diagnoseParams()
         throw NotImplementedException("NotImplementedException:\n"
                 "Single point representation is not implemented yet. "
                 "Simulator is about to terminate !");
-    if (d > 7)
+    if (d > 9)
         throw DataException("DataException:\n"
                 "Depth of a triangulation to large ! "
                 "For machine's safety Simulator is going to terminate !");
@@ -169,11 +170,19 @@ void Simulator::integrateVv()
             cells[i].vertices[j].xyz += 0.5 * dt * dt * cells[i].vertices[j].force / m; // x(t+1) = x(t+1)_a + 0.5*dt*dt* a(t)
             
             cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; //v(t+1)_1 = v(t) + 0.5 * dt * a(t)
-            //calcForces();
+           
+            //cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
+        }
+    }
+    
+    calcForces();
+    for (int i = 0; i < numberofCells; i++) {
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        {
+            m = cells[i].vertices[j].getMass();
             cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
         }
-    
-    }    
+    }
 }
 
 void Simulator::doStep()
@@ -194,6 +203,7 @@ void Simulator::simulate()
 void Simulator::simulate(int steps)
 {
     renderScript(drawBox);
+    saveSurfaceScript();
     int lastCellIndex = 0;
     int index;
     ofstream os;
@@ -247,7 +257,7 @@ void Simulator::setIntegrator(char* token)
     {
         this->setIntegrator(&Simulator::integrateEuler);
     }
-    else if (STRCMP (token, 'de'))
+    else if (STRCMP (token, "de"))
     {
         this->setIntegrator(&Simulator::integrateDampedEuler);
     }
@@ -314,7 +324,7 @@ void Simulator::renderScript(bool box)
     if (box)
     {
         os << "B = Box( ("<< -bs << "," << bs <<"), ("<< -bs << "," << bs <<"), ("<< -bs << "," << bs <<"), ";
-        os << 2*bs << ", 2.5, color=(0.0,0.0,0.0) )\n";
+        os << " 2.5, color=(0.0,0.0,0.0) )\n";
         os << "obj = B.box\n";
         os << "cmd.load_cgo(obj, \"box\", 1)\n";
     }
@@ -322,12 +332,96 @@ void Simulator::renderScript(bool box)
     os.close();
 }
 
+void Simulator::saveSurfaceScript()
+{
+    ofstream os;
+    os.open(surfaceScript);
+    os << "from pymol.cgo import *\n";
+    os << "from pymol import cmd \n\n";
+    
+
+    os << "def compute_normal(x1, y1, z1, x2, y2, z2, x3, y3, z3):\n\n";
+
+    os << "  nx = (y2-y1)*(z3-z2) - (z2-z1)*(y3-y2)\n";
+    os << "  ny = (z2-z1)*(x3-x2) - (x2-x1)*(z3-z2)\n";
+    os << "  nz = (x2-x1)*(y3-y2) - (y2-y1)*(x3-x2)\n\n";
+
+    os << "  return (nx,ny,nz)\n\n\n";
+
+    os << "def draw_plane_cgo(name, apex1, apex2, apex3, color=(1,1,1)):\n";
+    os << "  x1,y1,z1 = map(float,apex1)\n";
+    os << "  x2,y2,z2 = map(float,apex2)\n";
+    os << "  x3,y3,z3 = map(float,apex3)\n";
+    os << "  if type(color) == type(''):\n";
+    os << "    color = map(float,color.replace('(','').replace(')','').split(','))\n\n";
+
+    os << "  # Compute the normal vector for the triangle\n";
+    os << "  normal1 = compute_normal(x1, y1, z1, x2, y2, z2, x3, y3, z3)\n\n";
+
+    os << "  # Create the CGO objects\n";
+    os << "  obj = [\n";
+
+    os << "    BEGIN, TRIANGLE_STRIP,\n\n";
+
+    os << "    COLOR, color[0], color[1], color[2],\n";
+    os << "    NORMAL, normal1[0], normal1[1], normal1[2],\n";
+    os << "    NORMAL, -normal1[0], -normal1[1], -normal1[2],\n";
+    os << "    VERTEX, x1, y1, z1,\n";
+    os << "    VERTEX, x2, y2, z2,\n";
+    os << "    VERTEX, x3, y3, z3,\n\n";
+
+    os << "    END\n";
+    os << "  ]\n\n";
+
+    os << "  # Display them\n";
+    os << "  cmd.load_cgo(obj, name)\n\n";
+
+    os << "def draw_plane(name,atom1='(pk1)',atom2='(pk2)',atom3='(pk3)',color=(1,1,1)):\n";
+    os << "# get coordinates from atom selections\n";
+    os << "  coor1 = cmd.get_model(atom1).atom[0].coord\n";
+    os << "  coor2 = cmd.get_model(atom2).atom[0].coord\n";
+    os << "  coor3 = cmd.get_model(atom3).atom[0].coord\n";
+    os << "  draw_plane_cgo(name,coor1,coor2,coor3,color)\n\n";
+
+    os << "cmd.extend(\"draw_plane\", draw_plane)\n\n\n";
+          
+    int iidx, jidx;
+    int lastCellIndex = 0;
+    for (int i = 0; i < numberofCells; i++)
+    {
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        {
+            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
+            os << "cmd.do(\"select H "<< iidx << ", name H" << iidx << "\")\n";
+        }
+        lastCellIndex = cells[i].numberofVertices();
+    }
+    
+    
+    lastCellIndex = 0;
+    int faceCounter = 0;
+    int idxa, idxb, idxc;
+    for (int i = 0; i < numberofCells; i++)
+    {
+        for (int j = 0; j < cells[i].numberofFaces(); j++)
+        {
+            idxa = cells[i].triangles[j].ia + 1 + lastCellIndex;
+            idxb = cells[i].triangles[j].ib + 1 + lastCellIndex;
+            idxc = cells[i].triangles[j].ic + 1 + lastCellIndex;
+            os << "cmd.do(\"draw_plane \\\"face"<<faceCounter<<"\\\", H_"<< idxa << ", H_" << idxb << ", H_" << idxc<< ", (0.8, 0.8, 0.8) \")\n";
+            faceCounter++;
+        }
+        lastCellIndex = cells[i].numberofVertices();
+    }
+    
+}
+
 void Simulator::saveCellsState(const char* fileout)
 {
     int index;
     ofstream os;
     os.open(fileout);
-    cout << fileout << endl;
+//    cout << fileout << endl;
     int totalnumber = getTotalVertices();
    
     os << totalnumber << "\n" ;
@@ -340,6 +434,12 @@ void Simulator::saveCellsState(const char* fileout)
         }  
     }
     os.close();    
+}
+
+//TODO: make it safe
+Cell Simulator::getCell(int cell_index)
+{
+    return cells[cell_index];
 }
 
 void Simulator::saveCellsState()
@@ -370,87 +470,49 @@ int Simulator::getTotalVertices()
 
 void Simulator::printBox(ofstream& os)
 {
-    os << "class Box(object):\n";
-    os << "  def __init__ (self, x_ax, y_ax, z_ax, step, linewidth, color):\n";
-    os << "    lw = linewidth\n";
-    os << "    c1 = color[0]\n";
-    os << "    c2 = color[1]\n";
-    os << "    c3 = color[2]\n";
-    os << "\n";
-    os << "    self.box=[]  \n";   
-    os << "\n";
-    os << "    self.box.append(LINEWIDTH)\n";
-    os << "    self.box.append(float(lw))\n";
-    os << "    self.box.append(BEGIN)\n";
-    os << "    self.box.append(LINES)\n";
-    os << "    self.box.append(COLOR)\n";
-    os << "    self.box.append(c1)\n";
-    os << "    self.box.append(c2)\n";
-    os << "    self.box.append(c3)\n";
-    os << "\n";  
-    os << "    X = range(x_ax[0],x_ax[1]+1,step)\n";
-    os << "    Y = range(y_ax[0],y_ax[1]+1,step)\n";
-    os << "    Z = range(z_ax[0],z_ax[1]+1,step)\n"; 
-    os << "\n";
-    os << "    x_end = x_ax[1] - x_ax[0]\n";
-    os << "    y_end = y_ax[1] - y_ax[0]\n";
-    os << "    z_end = z_ax[1] - z_ax[0]\n";
-    os << "\n";
-    os << "    l = len(X)\n"; 
-    os << "\n";    
-    os << "    for i in range(len(X)):\n";
-    os << "        for j in range(len(Y)):\n";
-    os << "            x1 = X[i]\n";
-    os << "            y1 = Y[j]\n";
-    os << "            z1 = z_ax[0]\n";
-    os << "            x2 = x1\n";
-    os << "            y2 = y1\n";
-    os << "            z2 = z1 + z_end\n";
-    os << "\n";    
-    os << "            self.box.append(VERTEX)\n";
-    os << "            self.box.append(float(x1))\n";
-    os << "            self.box.append(float(y1))\n";
-    os << "            self.box.append(float(z1))\n";
-    os << "            self.box.append(VERTEX)\n";
-    os << "            self.box.append(float(x2))\n";
-    os << "            self.box.append(float(y2))\n";
-    os << "            self.box.append(float(z2))\n";
-    os << "\n";
-    os << "    for i in range(len(X)):\n";
-    os << "        for j in range(len(Z)):\n";
-    os << "            x1 = X[i]\n";
-    os << "            y1 = y_ax[0]\n";
-    os << "            z1 = Z[j]\n";
-    os << "            x2 = x1\n";
-    os << "            y2 = y1 + y_end\n";
-    os << "            z2 = z1\n";
-    os << "\n";
-    os << "            self.box.append(VERTEX)\n";
-    os << "            self.box.append(float(x1))\n";
-    os << "            self.box.append(float(y1))\n";
-    os << "            self.box.append(float(z1))\n";
-    os << "            self.box.append(VERTEX)\n";
-    os << "            self.box.append(float(x2))\n";
-    os << "            self.box.append(float(y2))\n";
-    os << "            self.box.append(float(z2))\n";
-    os << "\n";
-    os << "    for i in range(len(Y)):\n";
-    os << "        for j in range(len(Z)):\n";
-    os << "            x1 = x_ax[0]\n";
-    os << "            y1 = Y[i]\n";
-    os << "            z1 = Z[j]\n";
-    os << "            x2 = x1 + x_end\n";
-    os << "            y2 = y1\n";
-    os << "            z2 = z1\n";
-    os << "\n";
-    os << "            self.box.append(VERTEX)\n";
-    os << "            self.box.append(float(x1))\n";
-    os << "            self.box.append(float(y1))\n";
-    os << "            self.box.append(float(z1))\n";
-    os << "            self.box.append(VERTEX)\n";
-    os << "            self.box.append(float(x2))\n";
-    os << "            self.box.append(float(y2))\n";
-    os << "            self.box.append(float(z2))\n";
-    os << "\n";
-    os << "    self.box.append(END)\n\n\n";
+  os << "class Box(object):\n";
+  os << "  def __init__ (self, x, y, z, linewidth, color):\n";
+  os << "    lw = linewidth\n";
+  os << "    c1 = color[0]\n";
+  os << "    c2 = color[1]\n";
+  os << "    c3 = color[2]\n";
+
+  os << "    self.box = [\n";
+  os << "    LINEWIDTH, float(lw), BEGIN, LINES,\n";
+  os << "    COLOR,  color[0], color[1], color[2],\n";
+
+  os << "    VERTEX, x[0], y[0], z[0],\n";
+  os << "    VERTEX, x[1], y[0], z[0],\n";
+  os << "    VERTEX, x[0], y[0], z[0],\n";
+  os << "    VERTEX, x[0], y[1], z[0],\n";
+  os << "    VERTEX, x[0], y[0], z[0],\n"; 
+  os << "    VERTEX, x[0], y[0], z[1],\n"; 
+
+  os << "    VERTEX, x[1], y[1], z[1],\n";
+  os << "    VERTEX, x[1], y[1], z[0],\n"; 
+  os << "    VERTEX, x[1], y[1], z[1],\n";
+  os << "    VERTEX, x[0], y[1], z[1],\n";    
+  os << "    VERTEX, x[1], y[1], z[1],\n";
+  os << "    VERTEX, x[1], y[0], z[1],\n"; 
+
+  os << "    VERTEX, x[0], y[0], z[1],\n"; 
+  os << "    VERTEX, x[1], y[0], z[1],\n"; 
+
+  os << "    VERTEX, x[0], y[1], z[0],\n"; 
+  os << "    VERTEX, x[0], y[1], z[1],\n"; 
+
+  os << "    VERTEX, x[0], y[1], z[0],\n"; 
+  os << "    VERTEX, x[1], y[1], z[0],\n";
+
+  os << "    VERTEX, x[0], y[0], z[1],\n"; 
+  os << "    VERTEX, x[0], y[1], z[1],\n";      
+
+  os << "    VERTEX, x[1], y[0], z[0],\n"; 
+  os << "    VERTEX, x[1], y[1], z[0],\n";
+
+  os << "    VERTEX, x[1], y[0], z[0],\n";
+  os << "    VERTEX, x[1], y[0], z[1],\n";
+
+  os << "    END\n";
+  os << "    ]\n\n\n";
 }

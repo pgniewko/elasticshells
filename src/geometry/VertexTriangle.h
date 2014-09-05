@@ -19,7 +19,7 @@ public:
     void printVertexTriangle();
     
     int ia, ib, ic;
-    int id;
+    int myindex;
 };
 
 #endif	/* VERTEXTRIANGLE_H */

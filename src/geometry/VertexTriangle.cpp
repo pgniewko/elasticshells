@@ -12,12 +12,12 @@ VertexTriangle::~VertexTriangle() {}
 
 void VertexTriangle::setId(int idx)
 {
-    id = idx;
+    myindex = idx;
 }
 
 void VertexTriangle::printVertexTriangle()
 {
-    cout << "my id=" << id << " ";
+    cout << "my id=" << myindex << " ";
     cout << " ia =" << ia << " ib =" << ib << " ic =" << ic << endl;
 }
 

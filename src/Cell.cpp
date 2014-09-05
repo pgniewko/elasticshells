@@ -119,7 +119,7 @@ void Cell::constructTopology()
         double acl = ac.length();
         double bcl = bc.length();
         
-        int tid = triangles[i].id;
+        int tid = triangles[i].myindex;
 
         vertices[aid].addNeighbor(bid, abl);
         vertices[aid].addNeighbor(cid, acl);
@@ -307,6 +307,16 @@ double Cell::calcVolume()
     return volume;
 }
 
+double Cell::getMass()
+{
+    double totalMass = 0.0;
+    for (int i = 0; i < numberV; i++)
+    {
+        totalMass += vertices[i].getMass();
+    }
+    return totalMass;
+}
+
 void Cell::calcCM()
 {
     Vector3D tmp(0.0, 0.0, 0.0);
@@ -351,49 +361,50 @@ int Cell::numberofVertices()
 }
 
 
-void Cell::saveTriangulatedSurface(const char* filename)
-{
-    int index;
-    ofstream os(filename);
-    os << numberV << "\n" ;
-    for (int i = 0; i < numberV; i++)
-    {
-        index = (vertices[i].getId()+1) ;
-        os << "H" << index << " "<< vertices[i].xyz.x << " " << vertices[i].xyz.y << " " << vertices[i].xyz.z << "\n";
-    }
-    os.close();
-}
+//void Cell::saveTriangulatedSurface(const char* filename)
+//{
+//    int index;
+//    ofstream os(filename);
+//    os << numberV << "\n" ;
+//    for (int i = 0; i < numberV; i++)
+//    {
+//        index = (vertices[i].getId()+1) ;
+//        os << "H" << index << " "<< vertices[i].xyz.x << " " << vertices[i].xyz.y << " " << vertices[i].xyz.z << "\n";
+//    }
+//    os.close();
+//}
 
-void Cell::saveRenderingScript(const char* filename, const char* cellsfile)
-{
-    ofstream os(filename);
-    os << "from pymol.cgo import *\n";
-    os << "from pymol import cmd \n\n";
-    os << "cmd.do(\"load " << cellsfile << ", cells\")\n";
-    os << "cmd.do(\"hide all\")\n";
-    os << "cmd.do(\"set sphere_color, tv_red\")\n";
-    os << "cmd.do(\"set line_color, marine\")\n";
-    os << "cmd.do(\"show spheres\")\n";
-    os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
-    os << "cmd.do(\"rebuild\")\n";
+//void Cell::saveRenderingScript(const char* filename, const char* cellsfile)
+//{
+//    ofstream os(filename);
+//    os << "from pymol.cgo import *\n";
+//    os << "from pymol import cmd \n\n";
+//    os << "cmd.do(\"load " << cellsfile << ", cells\")\n";
+//    os << "cmd.do(\"hide all\")\n";
+//    os << "cmd.do(\"set sphere_color, tv_red\")\n";
+//    os << "cmd.do(\"set line_color, marine\")\n";
+//    os << "cmd.do(\"show spheres\")\n";
+//    os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
+//    os << "cmd.do(\"rebuild\")\n";
 
 //show spheres;alter elem h, vdw=0.1;rebuild
-    int iidx, jidx;
+//    int iidx, jidx;
     
-    for (int i = 0; i < numberV; i++)
-    {
-        iidx = (vertices[i].getId()+1);
-        for (int j = 0; j < vertices[i].nneigh; j++)
-        {
-            jidx = (vertices[i].neighbors[j]+1);
-            os << "cmd.do(\"bond /cells///UNK`/H"<< iidx << ", /cells///UNK`/H" << jidx << "\")\n";
-        }
-    }
+//    for (int i = 0; i < numberV; i++)
+//    {
+//        iidx = (vertices[i].getId()+1);
+//        for (int j = 0; j < vertices[i].nneigh; j++)
+//        {
+//            jidx = (vertices[i].neighbors[j]+1);
+//            os << "cmd.do(\"bond /cells///UNK`/H"<< iidx << ", /cells///UNK`/H" << jidx << "\")\n";
+//        }
+//    }
     
-    os << "cmd.do(\"show lines\")\n";
-    os << "cmd.do(\"bg white\")\n";
-    os.close();
-}
+//    os << "cmd.do(\"show lines\")\n";
+//    os << "cmd.do(\"bg white\")\n";
+//    os.close();
+//}
+
 
 void Cell::setRc(double rc)
 {

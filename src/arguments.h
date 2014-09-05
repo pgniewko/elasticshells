@@ -14,7 +14,8 @@ struct arguments
     char* output_file;            /* file arg to ‘--output’ */
     char* traj_file;              /* file arg to ‘--traj’ */
     char* log_file;               /* file arg to ‘--log’ */
-
+    char* surface_file;           
+    
     char* integrator_a;
 
     int d;

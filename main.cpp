@@ -39,6 +39,7 @@ static struct argp_option options[] =
     {"silent",   's', 0, OPTION_ALIAS},
     {"input",    'i', "FILE",  0, "Input from FILE [default: ...]" },
     {"output",   'o', "FILE",  0, "Output to FILE instead of standard output [default: ... ]" },
+    {"surf",     011, "FILE",  0, "Output to SURFACE-FILE instead of standard output [default: ... ]" },
     {"log",      'l', "FILE",  0, "Print log to FILE instead of standard output [default: ... ]" },
     {"xyz",      't', "FILE",  0, "Print trajectory to FILE [default: ... ]" },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
@@ -80,6 +81,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->silent = 0;
             arguments->verbose = 1;
             arguments->output_file = "./data/render.py";
+            arguments->surface_file = "./data/surf.py";
             arguments->input_file = "./data/cells.in";
             arguments->traj_file = "./data/traj.xyz";
             arguments->log_file = "./data/biofilm.log";
@@ -146,6 +148,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 'k':
             arguments->k = arg ? strtod (arg, NULL) : 1.0;
             break;
+            
+        case 011:
+            arguments->surface_file = arg;
+            break;    
 
         case 301:
             arguments->pbc = true;
@@ -266,12 +272,14 @@ int main(int argc, char** argv)
     
     Vector3D vel(-.5,-.5,-.5);
     Vector3D shift(4,4,5);
-    simulator.addCellVel(vel, 1);
-    simulator.addCellVel(-vel, 0);
+    simulator.addCellVel(-vel, 1);
+    simulator.addCellVel(vel, 0);
     simulator.moveCell(shift, 1);
     simulator.calcForces();
     simulator.simulate(arguments.nsteps);
     
+    //cout << "cell #1 mass = " << simulator.getCell(0).getMass() << endl;
+    //cout << "cell #2 mass = " << simulator.getCell(1).getMass() << endl;
     
     return (EXIT_SUCCESS);
 }
