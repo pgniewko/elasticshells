@@ -135,6 +135,7 @@ void Simulator::calcForces()
 
 void Simulator::integrateEuler()
 {
+    calcForces();
     double m;
     for (int i = 0; i < numberofCells; i++) {
         for (int j = 0; j < cells[i].numberofVertices(); j++)
@@ -147,20 +148,31 @@ void Simulator::integrateEuler()
     }
 }
 
-void Simulator::integrateDampedEuler()
+void Simulator::heunMethod()
 {
-    for (int i = 0; i < numberofCells; i++) {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
-        {
-            cells[i].vertices[j].xyz += cells[i].vertices[j].velocity * dt;
-            cells[i].vertices[j].velocity *= 0.0;
-        }
     
-    }    
 }
+
+void Simulator::midpointRungeKutta()
+{
+    
+}
+
+//void Simulator::integrateDampedEuler()
+//{
+//    for (int i = 0; i < numberofCells; i++) {
+//        for (int j = 0; j < cells[i].numberofVertices(); j++)
+//        {
+//            cells[i].vertices[j].xyz += cells[i].vertices[j].velocity * dt;
+//            cells[i].vertices[j].velocity *= 0.0;
+//        }
+//    
+//    }    
+//}
 
 void Simulator::integrateVv()
 {
+    calcForces();
     double m;
     for (int i = 0; i < numberofCells; i++) {
         for (int j = 0; j < cells[i].numberofVertices(); j++)
@@ -187,7 +199,7 @@ void Simulator::integrateVv()
 
 void Simulator::doStep()
 {
-    calcForces();
+//    calcForces();
     integrate();
 }
 
@@ -253,13 +265,13 @@ void Simulator::setIntegrator(char* token)
     {
         this->setIntegrator(&Simulator::integrateVv);
     }
-    else if (STRCMP (token, "eu"))
+    else if (STRCMP (token, "fe"))
     {
         this->setIntegrator(&Simulator::integrateEuler);
     }
-    else if (STRCMP (token, "de"))
+    else if (STRCMP (token, "hm"))
     {
-        this->setIntegrator(&Simulator::integrateDampedEuler);
+        this->setIntegrator(&Simulator::heunMethod);
     }
     else
     {

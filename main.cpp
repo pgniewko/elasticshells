@@ -54,7 +54,7 @@ static struct argp_option options[] =
     {"ttime",     602, "NUM", 0, "Total simulation time [default: 1.0]"},
     {"log-step",  603, "INT", 0, "Log step interval [default: 1]"},
     {"ns",        604, "INT", 0, "Number of simulation steps [default: 100]"},
-    {"int",       701, "STR", 0, "Integrator of equations of motion: velocity-verlet[vv], simple[se] [default: vv]"},
+    {"int",       701, "STR", 0, "Integrator of equations of motion: [vv], [fe], [hm], [rk2] [default: fe]"},
 
     {0,             0, 0, 0, "System Options:", 5},
     {0,           'a', "NUM", 0, "Repulsion parameter between bodies [default: 1.0]"},
@@ -265,16 +265,16 @@ int main(int argc, char** argv)
 
     Simulator simulator(arguments);
     simulator.addCell();
-    simulator.addCell();
+    //simulator.addCell();
     
     
     //cout << max(122,123) << endl;
     
-    Vector3D vel(-.5,-.5,-.5);
-    Vector3D shift(4,4,5);
-    simulator.addCellVel(-vel, 1);
-    simulator.addCellVel(vel, 0);
-    simulator.moveCell(shift, 1);
+    //Vector3D vel(-.5,-.5,-.5);
+    ///Vector3D shift(4,4,5);
+    //simulator.addCellVel(-vel, 0);
+    //simulator.addCellVel(-vel, 0);
+    //simulator.moveCell(shift, 1);
     simulator.calcForces();
     simulator.simulate(arguments.nsteps);
     

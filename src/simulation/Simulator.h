@@ -29,7 +29,9 @@ public:
     
     void integrateEuler();
     void integrateVv();
-    void integrateDampedEuler();
+    void heunMethod();
+    void midpointRungeKutta();
+
     
     void simulate();
     void simulate(int);
