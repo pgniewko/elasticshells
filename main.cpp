@@ -50,10 +50,12 @@ static struct argp_option options[] =
     {"dbox",      302, 0, 0, "Draw [default: true]"},
     {"size",      401, "NUM", 0, "Box size [default: 10.0]"},
     {"depth",     501, "INT", 0, "SimpleTriangulation depth [default: 3]"},
-    {"dt",        601, "NUM", 0, "Time step [default: 0.05]"},
+    {"dt",        601, "NUM", 0, "Time step [default: 0.01]"},
     {"ttime",     602, "NUM", 0, "Total simulation time [default: 1.0]"},
     {"log-step",  603, "INT", 0, "Log step interval [default: 1]"},
     {"ns",        604, "INT", 0, "Number of simulation steps [default: 100]"},
+    {"save-step", 605, "INT", 0, "Save step interval [default: 1]"},
+    {"box-step",  606, "INT", 0, "Box manipulation step interval [default: 1]"},
     {"int",       701, "STR", 0, "Integrator of equations of motion: [vv], [fe], [hm], [rk2] [default: fe]"},
 
     {0,             0, 0, 0, "System Options:", 5},
@@ -61,9 +63,11 @@ static struct argp_option options[] =
     {"mass",      'm', "NUM", 0, "Mass of a particle [default: 1.0]"},
     {"gamma",     'k', "NUM", 0, "Spring constant [default: 1.0]"},
     {"mu",        801, "NUM", 0, "Viscosity coefficient [default: 1.0]"},
-    {"dp",        802, "NUM", 0, "Osmotic pressure difference [default: 0.0]"},
+    {"dp",        802, "NUM", 0, "Osmotic pressure [default: 0.0]"},
     {"r-cut",     803, "NUM", 0, "Radius cut-off for pair interactions [default: 1.0]"},
-    {"bs",        804, "NUM", 0, "Box size [default: 10.0]"},
+    {"bsx",       804, "NUM", 0, "X Box size [default: 10.0]"},
+    {"bsy",       805, "NUM", 0, "Y Box size [default: 10.0]"},
+    {"bsz",       806, "NUM", 0, "Z Box size [default: 10.0]"},
     {0}
 };
 
@@ -87,14 +91,21 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->log_file = "./data/biofilm.log";
             arguments->integrator_a = "vv";
             arguments->abort = 0;
-            arguments->n_particles = 1;
+            arguments->n_cells = 1;
             arguments->log_step = 1;
+            arguments->save_step = 1;
+            arguments->box_step = 1;
             arguments->nsteps = 100;
             arguments->r_cut = 1.0;
-            arguments->dt = 0.05;
+            arguments->dt = 0.01;
             arguments->ttime = 1.0;
             arguments->dp = 0.0;
-            arguments->bs = 10.0;
+            arguments->bsx = 10.0;
+            arguments->bsy = 10.0;
+            arguments->bsz = 10.0;
+            arguments->bsdx = 0.0;
+            arguments->bsdy = 0.0;
+            arguments->bsdz = 0.0;
             arguments->a = 1.0;
             arguments->d = 3;
             arguments->mass = 1.0;
@@ -134,7 +145,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
 
         case 'n':
-            arguments->n_particles = arg ? atoi (arg) : 1;
+            arguments->n_cells = arg ? atoi (arg) : 1;
             break;
 
         case 'a':
@@ -185,6 +196,14 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->nsteps = arg ? atoi (arg) : 100;
             break;
             
+        case 605:
+            arguments->save_step = arg ? atoi (arg) : 1;
+            break;
+            
+        case 606:
+            arguments->box_step = arg ? atoi (arg) : 1;
+            break;    
+            
         case 701:
             arguments->integrator_a = arg;
             break;
@@ -202,8 +221,16 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
            
         case 804:
-            arguments->bs = arg ?  strtod (arg, NULL) : 10.0;
-            break;   
+            arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;
+            break;
+            
+        case 805:
+            arguments->bsy = arg ?  strtod (arg, NULL) : 10.0;
+            break;
+            
+        case 806:
+            arguments->bsz = arg ?  strtod (arg, NULL) : 10.0;
+            break;    
 
         case OPT_ABORT:
             arguments->abort = 1;
@@ -265,16 +292,16 @@ int main(int argc, char** argv)
 
     Simulator simulator(arguments);
     simulator.addCell();
-    //simulator.addCell();
+    simulator.addCell();
     
     
     //cout << max(122,123) << endl;
     
-    //Vector3D vel(-.5,-.5,-.5);
-    ///Vector3D shift(4,4,5);
-    //simulator.addCellVel(-vel, 0);
-    //simulator.addCellVel(-vel, 0);
-    //simulator.moveCell(shift, 1);
+    Vector3D vel(-.5,-.5,-.5);
+    Vector3D shift(0,-3.6,0);
+    simulator.addCellVel(vel, 0);
+    simulator.addCellVel(-vel, 1);
+    simulator.moveCell(shift, 1);
     simulator.calcForces();
     simulator.simulate(arguments.nsteps);
     

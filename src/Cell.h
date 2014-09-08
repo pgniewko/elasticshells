@@ -16,6 +16,7 @@
 #include "geometry/Vertex.h"
 #include "geometry/VertexTriangle.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
+#include "simulation/Box.h"
 
 using namespace std;
 
@@ -35,7 +36,7 @@ public:
     void printCell();
     void calcForces();
     void calcForces(const Cell&);
-    void calcForces(const double);
+    void calcForces(const Box&);
     void addVelocity(const Vector3D&);
     void addXYZ(const Vector3D&);
     

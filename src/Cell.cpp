@@ -216,17 +216,20 @@ void Cell::calcForces(const Cell& other_cell)
     
 }
 
-void Cell::calcForces(const double bs)
+void Cell::calcForces(const Box& box)
 {
     Vector3D wallYZ, wallXZ, wallXY;
     double sgnx, sgny, sgnz;
+    double bsx = box.getX();
+    double bsy = box.getY();
+    double bsz = box.getZ();
     
     for (int i = 0; i < numberV; i++)
     {
         if (vertices[i].xyz.x != 0 )
         {
             sgnx = vertices[i].xyz.x / fabs(vertices[i].xyz.x);
-            wallYZ.x = sgnx * bs;
+            wallYZ.x = sgnx * bsx;
             wallYZ.y = vertices[i].xyz.y;
             wallYZ.z = vertices[i].xyz.z;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, Rc, a);
@@ -236,7 +239,7 @@ void Cell::calcForces(const double bs)
         {
             sgny = vertices[i].xyz.y / fabs(vertices[i].xyz.y);
             wallXZ.x = vertices[i].xyz.x;
-            wallXZ.y = sgny * bs;
+            wallXZ.y = sgny * bsy;
             wallXZ.z = vertices[i].xyz.z;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, Rc, a);
         }
@@ -246,7 +249,7 @@ void Cell::calcForces(const double bs)
             sgnz = vertices[i].xyz.z / fabs(vertices[i].xyz.z);
             wallXY.x = vertices[i].xyz.x;
             wallXY.y = vertices[i].xyz.y;
-            wallXY.z = sgnz * bs;
+            wallXY.z = sgnz * bsz;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a);
         }        
     }

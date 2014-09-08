@@ -20,7 +20,9 @@ struct arguments
 
     int d;
     int log_step;
-    int n_particles;
+    int save_step;
+    int box_step;
+    int n_cells;
     int nsteps;
 
     double L;
@@ -32,8 +34,13 @@ struct arguments
     double mass;
     double ttime;
     double r_cut;
-    double bs;
-
+    
+    double bsx;
+    double bsy;
+    double bsz;
+    double bsdx;
+    double bsdy;
+    double bsdz;
     bool pbc;
     bool draw_box;
 };
