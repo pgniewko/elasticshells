@@ -22,13 +22,15 @@ public:
     void setDz(const double);
     double getDz();
     
+    void resize();
+    
 private:
-    double dx;
-    double dy;
-    double dz;
     double x;
     double y;
     double z;
+    double dx;
+    double dy;
+    double dz;
 };
 
 #endif	/* BOX_H */

@@ -11,6 +11,13 @@ Box::Box(const Box& orig) : x(orig.x), y(orig.y), z(orig.z),
 
 Box::~Box() {}
 
+void Box::resize()
+{
+    x += dx;
+    y += dy;
+    z += dz;
+}
+
 void Box::setX(const double newx) {x = newx;}
 double Box::getX() {return x;}
 void Box::setY(const double newy) {y = newy;}
