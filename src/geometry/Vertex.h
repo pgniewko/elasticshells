@@ -34,6 +34,10 @@ public:
     Vector3D force;
     Vector3D velocity;
     
+    Vector3D tmp_xyz;
+    Vector3D tmp_force;
+    Vector3D tmp_velocity;
+    
     int neighbors[NEIGH_MAX];
     int vertextri[TRIAN_MAX];
     double R0[NEIGH_MAX];
