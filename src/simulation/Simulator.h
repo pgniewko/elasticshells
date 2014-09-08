@@ -8,6 +8,7 @@
 #include <cstring>
 #include <vector>
 
+#include "Box.h"
 #include "Environment.h"
 #include "Cell.h"
 #include "arguments.h"
@@ -35,7 +36,6 @@ public:
     
     void simulate();
     void simulate(int);
-    void doStep();
     void integrate();
     void setIntegrator(char* token);
     
@@ -85,9 +85,14 @@ private:
     double initcellmass;
     int nsteps;
     int d;
-    double bs;
+    //double bs;
     
-    int boxSize;
+    int logStep;
+    int saveStep;
+    int boxStep;
+    
+    Box box;
+    //int boxSize;
     
     char* trajfile;
     char* script;

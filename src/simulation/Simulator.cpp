@@ -1,12 +1,13 @@
 #include "Simulator.h"
 
-Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), boxSize(DBL_MAX)
+Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), box(0,0,0), 
+        logStep(params.log_step), saveStep(params.save_step), boxStep(params.box_step)
 {
     dt = params.dt;
     a = params.a;
     d = params.d;
     dp = params.dp;
-    bs = params.bs;
+//    bs = params.bs;
     drawBox = params.draw_box;
     pbc = params.pbc;
     gamma = params.k;
@@ -17,6 +18,13 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), bo
     surfaceScript = params.surface_file;
     nsteps = (int) ttotal / dt;
     setIntegrator(params.integrator_a);
+    
+    box.setX(params.bsx);
+    box.setY(params.bsy);
+    box.setZ(params.bsz);
+    box.setDx(params.bsdx);
+    box.setDy(params.bsdy);
+    box.setDz(params.bsdz);
     
     try
     {
@@ -34,7 +42,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), bo
     }
 }
 
-Simulator::Simulator(const Simulator& orig) {}
+Simulator::Simulator(const Simulator& orig) : box(orig.box){}
 
 Simulator::~Simulator() {}
 
@@ -117,7 +125,7 @@ void Simulator::calcForces()
     // CALCULATE FORCES BETWEEN CELLS AND BOX
     for (int i = 0 ; i < numberofCells; i++)
     {
-        cells[i].calcForces(bs);
+        cells[i].calcForces(box);
     }    
     
     // CALCULATE INTER-CELLULAR FORCES
@@ -140,9 +148,8 @@ void Simulator::integrateEuler()
     for (int i = 0; i < numberofCells; i++) {
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
-            cells[i].vertices[j].xyz += cells[i].vertices[j].velocity * dt;
             m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].velocity += cells[i].vertices[j].force * dt / m;
+            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / m;
         }
     
     }
@@ -150,25 +157,68 @@ void Simulator::integrateEuler()
 
 void Simulator::heunMethod()
 {
+    calcForces();
+    double m;
     
+    for (int i = 0; i < numberofCells; i++) {
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        {
+            cells[i].vertices[j].tmp_xyz = cells[i].vertices[j].xyz;
+            cells[i].vertices[j].tmp_force = cells[i].vertices[j].force;
+        }
+    }
+    
+    //move the whole time-step and calculate  forces
+    for (int i = 0; i < numberofCells; i++) {
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        {
+            m = cells[i].vertices[j].getMass();
+            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / m;
+        }
+    }
+    calcForces();
+    
+    // Move the whole time-step upon the forces acting in the half-time-step
+    for (int i = 0; i < numberofCells; i++) {
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        {
+            m = cells[i].vertices[j].getMass();
+            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + 0.5 * dt * ( cells[i].vertices[j].tmp_force + cells[i].vertices[j].force) / m;
+        }
+    }  
 }
 
 void Simulator::midpointRungeKutta()
 {
+    calcForces();
+    double m;
     
+    for (int i = 0; i < numberofCells; i++) {
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        {
+            cells[i].vertices[j].tmp_xyz = cells[i].vertices[j].xyz;
+        }
+    }
+    
+    //move half time-step and calculate  forces
+    for (int i = 0; i < numberofCells; i++) {
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        {
+            m = cells[i].vertices[j].getMass();
+            cells[i].vertices[j].xyz += 0.5 * dt * cells[i].vertices[j].force / m;
+        }
+    }
+    calcForces();
+    
+    // Move the whole time-step upon the forces acting in the half-time-step
+    for (int i = 0; i < numberofCells; i++) {
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        {
+            m = cells[i].vertices[j].getMass();
+            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + dt * cells[i].vertices[j].force / m;
+        }
+    }    
 }
-
-//void Simulator::integrateDampedEuler()
-//{
-//    for (int i = 0; i < numberofCells; i++) {
-//        for (int j = 0; j < cells[i].numberofVertices(); j++)
-//        {
-//            cells[i].vertices[j].xyz += cells[i].vertices[j].velocity * dt;
-//            cells[i].vertices[j].velocity *= 0.0;
-//        }
-//    
-//    }    
-//}
 
 void Simulator::integrateVv()
 {
@@ -182,8 +232,6 @@ void Simulator::integrateVv()
             cells[i].vertices[j].xyz += 0.5 * dt * dt * cells[i].vertices[j].force / m; // x(t+1) = x(t+1)_a + 0.5*dt*dt* a(t)
             
             cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; //v(t+1)_1 = v(t) + 0.5 * dt * a(t)
-           
-            //cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
         }
     }
     
@@ -197,17 +245,25 @@ void Simulator::integrateVv()
     }
 }
 
-void Simulator::doStep()
-{
-//    calcForces();
-    integrate();
-}
-
 void Simulator::simulate()
 {
     for (int i = 0; i < nsteps; i++)
     {
-        doStep();
+        integrate();
+        if (i % boxStep == 0)
+        {
+            box.resize();
+        }
+        
+        if (i % saveStep == 0)
+        {
+            
+        }
+        
+        if (i % logStep == 0)
+        {
+            
+        }
     }
         
 }
@@ -235,7 +291,7 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i < steps; i++)
     {
-        doStep();
+        integrate();
         os << getTotalVertices() << "\n";
         lastCellIndex = 0;
         for (int i = 0; i < numberofCells; i++)
@@ -295,13 +351,13 @@ void Simulator::addCellVel(const Vector3D& v3d, int cellid)
     cells[cellid].addVelocity(v3d);
 }
 
-void Simulator::renderScript(bool box)
+void Simulator::renderScript(bool boxFlag)
 {
     ofstream os;
     os.open(script);
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
-    if (box)
+    if (boxFlag)
     {
         printBox(os);
     }
@@ -333,10 +389,13 @@ void Simulator::renderScript(bool box)
     os << "cmd.do(\"show lines\")\n";
     os << "cmd.do(\"bg white\")\n\n";
     
-    if (box)
+    if (boxFlag)
     {
-        os << "B = Box( ("<< -bs << "," << bs <<"), ("<< -bs << "," << bs <<"), ("<< -bs << "," << bs <<"), ";
-        os << " 2.5, color=(0.0,0.0,0.0) )\n";
+        os << "B = Box(";
+        os << "("<< -box.getX() << "," << box.getX() <<"),";
+        os << "("<< -box.getY() << "," << box.getY() <<"),";
+        os << "("<< -box.getZ() << "," << box.getZ() <<"),";
+        os << " 2.5, color=(0.0, 0.0, 0.0) )\n";
         os << "obj = B.box\n";
         os << "cmd.load_cgo(obj, \"box\", 1)\n";
     }
@@ -459,9 +518,11 @@ void Simulator::saveCellsState()
     saveCellsState(params.output_file);
 }
 
-void Simulator::setBoxSize(double bs)
+void Simulator::setBoxSize(const double bs)
 {
-    boxSize = bs;
+    box.setX(bs);
+    box.setY(bs);
+    box.setZ(bs);
 }
 
 void Simulator::printCell(int i)
