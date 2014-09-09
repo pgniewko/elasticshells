@@ -56,7 +56,9 @@ static struct argp_option options[] =
     {"ns",        604, "INT", 0, "Number of simulation steps [default: 100]"},
     {"save-step", 605, "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  606, "INT", 0, "Box manipulation step interval [default: 1]"},
-    {"int",       701, "STR", 0, "Integrator of equations of motion: [vv], [fe], [hm], [rk2] [default: fe]"},
+    {"vlist-step",607, "INT", 0, "Verlet-list step interval [default: 100]"},
+    {"int",       701, "STR", 0, "Integrator of equations of motion: "
+                                 "Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], Velocity-Verlet[vv] [default: fe]"},
 
     {0,             0, 0, 0, "System Options:", 5},
     {0,           'a', "NUM", 0, "Repulsion parameter between bodies [default: 1.0]"},
@@ -95,6 +97,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->log_step = 1;
             arguments->save_step = 1;
             arguments->box_step = 1;
+            arguments->vlist_step = 100;
             arguments->nsteps = 100;
             arguments->r_cut = 1.0;
             arguments->dt = 0.01;
@@ -202,6 +205,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             
         case 606:
             arguments->box_step = arg ? atoi (arg) : 1;
+            break;
+            
+        case 607:
+            arguments->vlist_step = arg ? atoi (arg) : 100;
             break;    
             
         case 701:

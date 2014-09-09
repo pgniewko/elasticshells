@@ -1,21 +1,28 @@
 #include "Box.h"
 
 Box::Box(double bsx, double bsy, double bsz) : x(bsx), y(bsy), z(bsz), 
-        dx(0), dy(0), dz(0) {}
+        xe(0), ye(0), ze(0), dx(0), dy(0), dz(0) {}
 
 Box::Box(double bsx, double bsy, double bsz, double dbs) : x(bsx), y(bsy), z(bsz), 
-        dx(dbs), dy(dbs), dz(dbs) {}
+        xe(0), ye(0), ze(0), dx(dbs), dy(dbs), dz(dbs) {}
 
 Box::Box(const Box& orig) : x(orig.x), y(orig.y), z(orig.z), 
-        dx(orig.dx), dy(orig.dy), dz(orig.dz){}
+        xe(orig.xe), ye(orig.ye), ze(orig.ze), dx(orig.dx), dy(orig.dy), dz(orig.dz){}
 
 Box::~Box() {}
 
 void Box::resize()
 {
-    x += dx;
-    y += dy;
-    z += dz;
+    if (x + dx >= xe) {x += dx;}
+    
+    if (y + dy >= ye) {y += dy;}
+    
+    if (z + dz >= ze) {z += dz;}
+}
+
+double Box::getVolume()
+{
+    return 2.0 * x * 2.0 * y * 2.0 * z;
 }
 
 void Box::setX(const double newx) {x = newx;}
@@ -31,3 +38,7 @@ void Box::setDy(const double newdy) {dy = newdy;}
 double Box::getDy() {return dy;}
 void Box::setDz(const double newdz) {dz = newdz;}
 double Box::getDz() {return dz;}
+
+void Box::setXend(const double xend) {xe = xend;}
+void Box::setYend(const double yend) {ye = yend;}
+void Box::setZend(const double zend) {ze = zend;}

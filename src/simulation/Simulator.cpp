@@ -247,25 +247,26 @@ void Simulator::integrateVv()
 
 void Simulator::simulate()
 {
-    for (int i = 0; i < nsteps; i++)
-    {
-        integrate();
-        if (i % boxStep == 0)
-        {
-            box.resize();
-        }
-        
-        if (i % saveStep == 0)
-        {
-            
-        }
-        
-        if (i % logStep == 0)
-        {
-            
-        }
-    }
-        
+    simulate(nsteps);
+//    for (int i = 0; i < nsteps; i++)
+//    {
+//        integrate();
+//        if (i % boxStep == 0)
+//        {
+//            box.resize();
+//        }
+//        
+//        if (i % saveStep == 0)
+//        {
+//            
+//        }
+//        
+//        if (i % logStep == 0)
+//        {
+//            
+//        }
+//    }
+//        
 }
 
 void Simulator::simulate(int steps)
@@ -317,11 +318,7 @@ void Simulator::setIntegrator(void (Simulator::*functoall)())
 
 void Simulator::setIntegrator(char* token)
 {
-    if (STRCMP (token, "vv"))
-    {
-        this->setIntegrator(&Simulator::integrateVv);
-    }
-    else if (STRCMP (token, "fe"))
+    if (STRCMP (token, "fe"))
     {
         this->setIntegrator(&Simulator::integrateEuler);
     }
@@ -329,12 +326,19 @@ void Simulator::setIntegrator(char* token)
     {
         this->setIntegrator(&Simulator::heunMethod);
     }
+    else if (STRCMP (token, "rk"))
+    {
+        this->setIntegrator(&Simulator::midpointRungeKutta);
+    }
+    else if (STRCMP (token, "vv"))
+    {
+        this->setIntegrator(&Simulator::integrateVv);
+    }
     else
     {
         this->setIntegrator(&Simulator::integrateEuler);
     }
 }
-
 
 void Simulator::integrate()
 {
