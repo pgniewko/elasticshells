@@ -73,6 +73,7 @@ private:
     void (Simulator::*integrator)();
     void setIntegrator(void (Simulator::*functoall)());
     void diagnoseParams();
+    void rebuildVerletLists();
     int numberofCells;
     
     double dt;
@@ -83,12 +84,14 @@ private:
     double Rc;
     double ttotal;
     double initcellmass;
+    double verlet_r;
     int nsteps;
     int d;
     //double bs;
     
     int logStep;
     int saveStep;
+    int vlistStep;
     int boxStep;
     
     Box box;

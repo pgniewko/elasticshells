@@ -1,7 +1,7 @@
 #include "Simulator.h"
 
 Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), box(0,0,0), 
-        logStep(params.log_step), saveStep(params.save_step), boxStep(params.box_step)
+        logStep(params.log_step), saveStep(params.save_step), boxStep(params.box_step), vlistStep(params.vlist_step)
 {
     dt = params.dt;
     a = params.a;
@@ -12,6 +12,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), bo
     pbc = params.pbc;
     gamma = params.k;
     Rc = params.r_cut;
+    verlet_r = params.verlet_r;
     ttotal = params.ttime;
     trajfile = params.traj_file;
     script = params.output_file;
@@ -98,7 +99,9 @@ void Simulator::addCell()
         newCell.setDp(dp);
         newCell.setRc(Rc);
         newCell.setGamma(gamma);
-   
+        newCell.setVerletR(verlet_r);
+        newCell.setCellId(numberofCells);
+        
         addCell(newCell);       
     } 
     catch (MaxSizeException& e)
@@ -133,10 +136,11 @@ void Simulator::calcForces()
     {
         for (int j = 0; j < numberofCells; j++) 
         {
-            if (i != j)
-            {
-                cells[i].calcForces(cells[j]);    
-            }
+            //if (i != j)
+            //{
+                //cells[i].calcForces(cells[j]);
+                cells[i].calcForcesVL(cells[j]);   
+            //}
         }
     }
 }
@@ -247,30 +251,12 @@ void Simulator::integrateVv()
 
 void Simulator::simulate()
 {
-    simulate(nsteps);
-//    for (int i = 0; i < nsteps; i++)
-//    {
-//        integrate();
-//        if (i % boxStep == 0)
-//        {
-//            box.resize();
-//        }
-//        
-//        if (i % saveStep == 0)
-//        {
-//            
-//        }
-//        
-//        if (i % logStep == 0)
-//        {
-//            
-//        }
-//    }
-//        
+    simulate(nsteps);       
 }
 
 void Simulator::simulate(int steps)
-{
+{   
+    rebuildVerletLists();
     renderScript(drawBox);
     saveSurfaceScript();
     int lastCellIndex = 0;
@@ -292,6 +278,11 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i < steps; i++)
     {
+        if ( (i+1) % vlistStep == 0)
+        {
+            rebuildVerletLists();
+        }
+        
         integrate();
         os << getTotalVertices() << "\n";
         lastCellIndex = 0;
@@ -353,6 +344,22 @@ void Simulator::moveCell(const Vector3D& v3d, int cellid)
 void Simulator::addCellVel(const Vector3D& v3d, int cellid)
 {
     cells[cellid].addVelocity(v3d);
+}
+
+void Simulator::rebuildVerletLists()
+{
+    for (int i = 0; i < numberofCells; i++)
+    {
+        cells[i].voidVerletLsit();
+    }
+    
+    for (int i = 0; i < numberofCells; i++)
+    {
+        for (int j = 0; j < numberofCells; j ++)
+        {
+           cells[i].builtVerletList(cells[j]);    
+        }
+    }
 }
 
 void Simulator::renderScript(bool boxFlag)

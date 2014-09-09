@@ -3,13 +3,9 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(Vector3DTests);
 
-Vector3DTests::Vector3DTests() 
-{
-}
+Vector3DTests::Vector3DTests() {}
 
-Vector3DTests::~Vector3DTests() 
-{
-}
+Vector3DTests::~Vector3DTests() {}
 
 void Vector3DTests::setUp() 
 {

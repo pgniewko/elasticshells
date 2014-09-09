@@ -1,9 +1,6 @@
 #ifndef VERTEX_H
 #define	VERTEX_H
 
-//#define NEIGH_MAX 10
-//#define TRIAN_MAX 10
-
 #include <stdlib.h>
 
 #include "Environment.h"
@@ -42,8 +39,12 @@ public:
     int vertextri[TRIAN_MAX];
     double R0[NEIGH_MAX];
     
+    int nbvertices[NBNEI_MAX];
+    int nbcellid[NBNEI_MAX];
+    
     int nneigh;
     int ntrian;
+    int nbneigh;
 
 private:
     int id;

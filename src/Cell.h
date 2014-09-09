@@ -1,10 +1,8 @@
 #ifndef CELL_H
 #define	CELL_H
 
-//#define MAX_V 200
-//#define MAX_T 500
-
 #include <list>
+#include <vector>
 
 #include "Environment.h"
 #include "force/HookeanForce.h"
@@ -32,11 +30,15 @@ public:
     void calcCM();
     int numberofFaces() ;
     int numberofVertices();
+    void builtVerletList(const Cell&);
+    void voidVerletLsit();
     
     void printCell();
     void calcForces();
-    void calcForces(const Cell&);
-    void calcForces(const Box&);
+    //void calcForces(const Cell&);
+    void calcForcesVL(const Cell&);
+    //void calcForces(const vector<Cell>&);
+    void calcForces(Box&);
     void addVelocity(const Vector3D&);
     void addXYZ(const Vector3D&);
     
@@ -47,13 +49,16 @@ public:
     void setA(double);
     void setDp(double);
     void setGamma(double);
-    //void setMass();
+    void setCellId(int);
+    void setVerletR(double);
     
     void voidForces();
     
     Vector3D cm;
     Vertex vertices[MAX_V];
     VertexTriangle triangles[MAX_T];
+    
+    int cellId;
     
 private:
     bool isUnique(list<Vector3D>&, const Vector3D&);
@@ -67,6 +72,9 @@ private:
     double a;
     double dp;
     double gamma;
+    double verletR;
+    
+    
 
 };
 

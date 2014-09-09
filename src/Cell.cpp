@@ -1,6 +1,6 @@
 #include "Cell.h"
 
-Cell::Cell(int depth) : numberV(0), numberT(0)
+Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0)
 {
     SimpleTriangulation sm(depth);
     list<Triangle> tris = sm.triangulate();
@@ -10,7 +10,7 @@ Cell::Cell(int depth) : numberV(0), numberT(0)
     calcVolume();
 }
 
-Cell::Cell(list<Triangle> tris) : numberV(0), numberT(0)
+Cell::Cell(list<Triangle> tris) : cellId(-1), numberV(0), numberT(0)
 {
     constructVertices(tris);
     constructVTriangles(tris);
@@ -19,8 +19,8 @@ Cell::Cell(list<Triangle> tris) : numberV(0), numberT(0)
 }
 
 Cell::Cell(const Cell& orig) : cm(orig.cm), vertices(orig.vertices), triangles(orig.triangles),
-                               numberV(orig.numberV), numberT(orig.numberT),
-                               Rc(orig.Rc), a(orig.a), dp(orig.dp), gamma(orig.gamma)
+                               cellId(orig.cellId), numberV(orig.numberV), numberT(orig.numberT),
+                               Rc(orig.Rc), a(orig.a), dp(orig.dp), gamma(orig.gamma), verletR(orig.verletR)
 {}
 
 Cell::~Cell() {}
@@ -137,6 +137,82 @@ void Cell::constructTopology()
     }
 }
 
+void Cell::voidVerletLsit()
+{
+    for (int i = 0; i < numberV; i++)
+    {
+        vertices[i].nbneigh = 0;
+    }
+    
+//    cout << "ALL VOIDED" << endl;
+//        cout << "my cellid="<<cellId << endl;
+//    for (int i = 0; i < numberV; i++ )
+//    {
+//        cout << " vert no= "<< i << " ";
+//        for (int j = 0; j < vertices[i].nbneigh; j++)
+            
+//        {
+//            cout << "("<<vertices[i].nbcellid[j] << ","<< vertices[i].nbvertices[j]<<  ") ";
+//       }
+//        cout <<endl;
+//    }
+//        cout << "<<<>>><<>><<>>" << endl;
+}
+
+void Cell::builtVerletList(const Cell& other_cell)
+{
+    Vector3D distance_jk;
+    if (this->cellId != other_cell.cellId)
+    {
+        for (int j = 0; j < numberV; j++)
+        {
+            for (int k = 0; k < other_cell.numberV; k++ )
+            {
+                    
+                distance_jk = vertices[j].xyz - other_cell.vertices[k].xyz;
+                if (distance_jk.length() <= Rc * verletR)
+                {
+                    //if (k == 0 && other_cell.cellId == 0) cout << "akuku" << endl; 
+                    vertices[j].nbvertices[vertices[j].nbneigh] = k;
+                    vertices[j].nbcellid[vertices[j].nbneigh] = other_cell.cellId;
+                    vertices[j].nbneigh++;
+                }
+            }
+        } 
+    }
+    else
+    {
+        //cout << "jestem tutaj" << endl;
+        for (int j = 0; j < numberV; j++)
+        {
+            //vertices[j].nbneigh++;
+            for (int k = 0; k < numberV; k++)
+            {
+                distance_jk = vertices[j].xyz - vertices[k].xyz;
+                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= Rc * verletR)
+                {
+                    //cout << " vertices[j].nbneigh= "<< vertices[j].nbneigh << "k= " << k << " other_cell.cellId= "<<other_cell.cellId << " "<< distance_jk.length() << endl;
+                    vertices[j].nbvertices[vertices[j].nbneigh] = k;
+                    vertices[j].nbcellid[vertices[j].nbneigh] = other_cell.cellId;
+                    vertices[j].nbneigh++;
+                }
+            }
+        }
+    }
+    
+    //cout << "my cellid="<<cellId << " other_cell_id" << other_cell.cellId <<endl;
+    //for (int i = 0; i < numberV; i++ )
+    //{
+    //    cout << " vert no= "<< i << " ";
+    //    for (int j = 0; j < vertices[i].nbneigh; j++)
+    //        
+    //    {
+    //        cout << "("<<vertices[i].nbcellid[j] << ","<< vertices[i].nbvertices[j]<<  ") ";
+    //    }
+    //    cout <<endl;
+    //}
+}
+
 void Cell::calcForces()
 {
     double R0ij;
@@ -153,16 +229,16 @@ void Cell::calcForces()
     }
     
 
-    for (int i = 0; i < numberV; i++)
-    {
-        for (int j = 0; j < numberV; j++)
-        {
-            if (i != j && ! vertices[i].isNeighbor(j))
-            {
-                vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, vertices[j].xyz, Rc, a);
-            }
-        }
-    }
+    //for (int i = 0; i < numberV; i++)
+    //{
+    //    for (int j = 0; j < numberV; j++)
+    //    {
+    //        if (i != j && ! vertices[i].isNeighbor(j))
+    //        {
+    //            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, vertices[j].xyz, Rc, a);
+    //        }
+    //    }
+    //}
 
     
     calcCM();
@@ -173,50 +249,71 @@ void Cell::calcForces()
         iva = triangles[i].ia;
         ivb = triangles[i].ib;
         ivc = triangles[i].ic;
-        
-        
-        
+
         Vector3D fa = OsmoticForce::calcForce(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm, dp);
         Vector3D fb = OsmoticForce::calcForce(vertices[ivb].xyz, vertices[ivc].xyz, vertices[iva].xyz, cm, dp);
         Vector3D fc = OsmoticForce::calcForce(vertices[ivc].xyz, vertices[iva].xyz, vertices[ivb].xyz, cm, dp);
-        
-        if (iva == 0) {
-            Tetrahedron tetr(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm);
-            //cout << "Volume sign: " << tetr.volumeSgn() << endl; 
-            //cout << " i= " << i << "; iva = " << iva << "; ivb " << ivb << "; ivc " << ivc << endl;
-            //cout << fa << endl;
-            //cout << fb << endl;
-            //cout << fc << endl;
-            //cout << "(x,y,z): "<< vertices[iva].xyz << endl;
-            //cout << vertices[ivb].xyz << endl;
-            //cout << vertices[ivc].xyz << endl;
-            //cout << " ------------------- " << endl;
-        }
         Tetrahedron tetra(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm);
         Tetrahedron tetrb(vertices[ivb].xyz, vertices[ivc].xyz, vertices[iva].xyz, cm);
         Tetrahedron tetrc(vertices[ivc].xyz, vertices[iva].xyz, vertices[ivb].xyz, cm);
+        
         vertices[iva].force += -tetra.volumeSgn() * fa;
         vertices[ivb].force += -tetrb.volumeSgn() * fb;
         vertices[ivc].force += -tetrc.volumeSgn() * fc;
-        
-        //if (iva == 0)
-        //    cout << "force="  << vertices[iva].force << endl;
     }
 }
 
-void Cell::calcForces(const Cell& other_cell)
-{    
+//void Cell::calcForces(const Cell& other_cell)
+//{    
+//    for (int i = 0; i < numberV; i++)
+//    {
+//        for (int j = 0; j < other_cell.numberV; j++)
+//        {
+//            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[j].xyz, Rc, a);
+//        }
+//    }
+//    
+//}
+
+void Cell::calcForcesVL(const Cell& other_cell)
+{
+    int ocellid = other_cell.cellId;
+    int vertid;
+    
     for (int i = 0; i < numberV; i++)
     {
-        for (int j = 0; j < other_cell.numberV; j++)
+        //cout << "vertices["<<i<<"]"<<".nbneigh=" << vertices[i].nbneigh << endl;
+        for (int j = 0; j < vertices[i].nbneigh; j++)
         {
-            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[j].xyz, Rc, a);
+            if (vertices[i].nbcellid[j] == ocellid)
+            {
+                vertid = vertices[i].nbvertices[j];
+                vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[vertid].xyz, Rc, a);
+                //cout << "i= " << i << " vertid= " << vertid << " myid = " << cellId << " ocellid= " << ocellid << endl;
+                //cout <<  NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[vertid].xyz, Rc, a) << endl;
+            }           
         }
     }
     
 }
 
-void Cell::calcForces(const Box& box)
+//void Cell::calcForces(const vector<Cell>& cells)
+//{
+//    int cellid = -1;
+//    int vertid = -1;
+//    for (int i = 0; i < numberV; i++)
+//    {
+//        for (int j = 0; j < vertices[i].nbneigh; j++)
+//        {
+//            cellid = vertices[i].nbcellid[j];
+//            vertid = vertices[i].nbvertices[j];
+//            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, cells[cellid].vertices[vertid].xyz, Rc, a);
+//        }
+//        
+//    }    
+//}
+
+void Cell::calcForces(Box& box)
 {
     Vector3D wallYZ, wallXZ, wallXY;
     double sgnx, sgny, sgnz;
@@ -427,4 +524,14 @@ void Cell::setDp(double dP)
 void Cell::setGamma(double g)
 {
     gamma = g;
+}
+
+void Cell::setCellId(int ix)
+{
+    cellId = ix;
+}
+
+void Cell::setVerletR(double vr)
+{
+    verletR = vr;
 }

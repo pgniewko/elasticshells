@@ -70,6 +70,7 @@ static struct argp_option options[] =
     {"bsx",       804, "NUM", 0, "X Box size [default: 10.0]"},
     {"bsy",       805, "NUM", 0, "Y Box size [default: 10.0]"},
     {"bsz",       806, "NUM", 0, "Z Box size [default: 10.0]"},
+    {"verlet-r",  807, "NUM", 0, "Verlet radius [default: 2 times R_c]"},
     {0}
 };
 
@@ -100,6 +101,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->vlist_step = 100;
             arguments->nsteps = 100;
             arguments->r_cut = 1.0;
+            arguments->verlet_r = 2.0;
             arguments->dt = 0.01;
             arguments->ttime = 1.0;
             arguments->dp = 0.0;
@@ -237,6 +239,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             
         case 806:
             arguments->bsz = arg ?  strtod (arg, NULL) : 10.0;
+            break;
+            
+        case 807:
+            arguments->verlet_r = arg ?  strtod (arg, NULL) : 2.0;
             break;    
 
         case OPT_ABORT:
@@ -304,12 +310,13 @@ int main(int argc, char** argv)
     
     //cout << max(122,123) << endl;
     
-    Vector3D vel(-.5,-.5,-.5);
-    Vector3D shift(0,-3.6,0);
-    simulator.addCellVel(vel, 0);
-    simulator.addCellVel(-vel, 1);
+    //Vector3D vel(-.5,-.5,-.5);
+    //Vector3D vel(-.0,-.0,-.0);
+    Vector3D shift(0,-3.65,0);
+    //simulator.addCellVel(vel, 0);
+    //simulator.addCellVel(-vel, 1);
     simulator.moveCell(shift, 1);
-    simulator.calcForces();
+    //simulator.calcForces();
     simulator.simulate(arguments.nsteps);
     
     //cout << "cell #1 mass = " << simulator.getCell(0).getMass() << endl;

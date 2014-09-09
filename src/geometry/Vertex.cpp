@@ -1,14 +1,15 @@
 #include "Vertex.h"
 
-Vertex::Vertex() : xyz(0, 0, 0), nneigh(0), ntrian(0), mass(1.0){}
+Vertex::Vertex() : xyz(0, 0, 0), nneigh(0), ntrian(0), nbneigh(0), id(-1), mass(1.0) {}
 
-Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), nneigh(0), ntrian(0), mass(1.0)
+Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), nneigh(0), ntrian(0), nbneigh(0), id(-1), mass(1.0)
 {}
 
-Vertex::Vertex(Vector3D v) : xyz(v), nneigh(0), ntrian(0), mass(1.0) {}
+Vertex::Vertex(Vector3D v) : xyz(v), nneigh(0), ntrian(0), nbneigh(0), id(-1), mass(1.0) {}
 
 Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(orig.velocity),
-                                     nneigh(orig.nneigh), ntrian(orig.ntrian), 
+                                     tmp_xyz(orig.tmp_xyz), tmp_force(orig.tmp_force), tmp_velocity(orig.tmp_velocity),
+                                     nneigh(orig.nneigh), ntrian(orig.ntrian), nbneigh(orig.nbneigh),
                                      id(orig.id), mass( orig.mass )
 {
     for (int i = 0; i < nneigh; i++)
@@ -21,6 +22,13 @@ Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(
     {
         vertextri[i] = orig.vertextri[i];
     }
+    
+    for (int i = 0; i < nbneigh; i++)
+    {
+        nbvertices[i] = orig.nbvertices[i];
+        nbcellid[i] = orig.nbcellid[i];
+    }
+    //cout <<" im being copied, my id= "<< id  <<endl;
 }
 
 Vertex::~Vertex() {}

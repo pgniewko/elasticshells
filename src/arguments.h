@@ -35,6 +35,7 @@ struct arguments
     double mass;
     double ttime;
     double r_cut;
+    double verlet_r;
     
     double bsx;
     double bsy;
