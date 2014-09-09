@@ -9,6 +9,7 @@
 class VertexTests : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(VertexTests);
     CPPUNIT_TEST(testMethod);
+    CPPUNIT_TEST(testConstructor);
     
     CPPUNIT_TEST_FAIL(testFailedMethod);
     
@@ -19,9 +20,10 @@ public:
     virtual ~VertexTests();
     void setUp();
     void tearDown();
+    void testConstructor();
 
 private:
-    int *example;
+    Vertex * v1;
     void testMethod();
     void testFailedMethod();
 };
