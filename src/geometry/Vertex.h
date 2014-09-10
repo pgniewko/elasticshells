@@ -5,6 +5,7 @@
 
 #include "Environment.h"
 #include "Vector3D.h"
+#include "exceptions/MaxSizeException.h"
 
 class Vertex
 {
@@ -26,6 +27,11 @@ public:
     
     void voidForce();
     void voidVelocity();
+    
+    int getNumNeighbors();
+    int getNumVTriangles();
+    int getNeighborId(int);
+    double getNeighborR0(int);
     
     Vector3D xyz;
     Vector3D force;

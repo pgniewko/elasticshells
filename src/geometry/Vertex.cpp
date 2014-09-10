@@ -28,7 +28,6 @@ Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(
         nbvertices[i] = orig.nbvertices[i];
         nbcellid[i] = orig.nbcellid[i];
     }
-    //cout <<" im being copied, my id= "<< id  <<endl;
 }
 
 Vertex::~Vertex() {}
@@ -36,19 +35,31 @@ Vertex::~Vertex() {}
 void Vertex::addNeighbor(int idx, double k0n)
 {
  
-    if ( nneigh - 1 >  NEIGH_MAX)
+    try
     {
-        cerr << "To many neighbors: " << nneigh  << " my id: " << id << endl;
-        exit(123);
-    }
+        if (getNumNeighbors() >= MAX_CELLS)
+            throw MaxSizeException("Maximum number of neighbors has been reached."
+                                    "New neighbor will not be added !");
+        
+        //if ( nneigh - 1 >  NEIGH_MAX)
+        //{
+        //    cerr << "To many neighbors: " << nneigh  << " my id: " << id << endl;
+        //    exit(123);
+        //}
     
-    for (int i = 0; i < nneigh; i++)
-    {
-        if (neighbors[i] == idx)  return;
+        for (int i = 0; i < nneigh; i++)
+        {
+            if (neighbors[i] == idx)  return;
+        }
+        neighbors[nneigh] = idx;
+        R0[nneigh] = k0n;
+        nneigh++;
     }
-    neighbors[nneigh] = idx;
-    R0[nneigh] = k0n;
-    nneigh++;
+    catch (MaxSizeException& e)
+    {
+        cout << e.what() << endl;
+        return;
+    }
 }
 
 bool Vertex::isNeighbor(int vidx)
@@ -62,17 +73,29 @@ bool Vertex::isNeighbor(int vidx)
 
 void Vertex::addTriangle(int idx)
 {
-    if ( nneigh - 1 >  TRIAN_MAX)
+    try
     {
-        cerr << "To many triangles: " << ntrian << " my id: " << id << endl;
-        exit(123);
+        if (getNumNeighbors() >= TRIAN_MAX)
+            throw MaxSizeException("Maximum number of triangles has been reached."
+                                    "New triangle will not be added !");
+        
+    //if ( nneigh - 1 >  TRIAN_MAX)
+   // {
+   //     cerr << "To many triangles: " << ntrian << " my id: " << id << endl;
+   //     exit(123);
+    //}
+        for (int i = 0; i < ntrian; i++)
+        {
+            if (vertextri[i] == idx) return;
+        }
+        vertextri[ntrian] = idx;
+        ntrian++;    
     }
-    for (int i = 0; i < ntrian; i++)
+    catch (MaxSizeException& e)
     {
-        if (vertextri[i] == idx) return;
+        cout << e.what() << endl;
+        return;
     }
-    vertextri[ntrian] = idx;
-    ntrian++;    
 }
 
 void Vertex::voidForce()
@@ -98,6 +121,26 @@ int Vertex::setId(int idx)
 int Vertex::getId()
 {
     return id;
+}
+
+int Vertex::getNumNeighbors()
+{
+    return nneigh;
+}
+
+int Vertex::getNumVTriangles()
+{
+    return ntrian;
+}
+
+int Vertex::getNeighborId(int idx)
+{
+    return neighbors[idx];
+}
+
+double Vertex::getNeighborR0(int idx)
+{
+    return R0[idx];
 }
 
 double Vertex::setMass(double m)

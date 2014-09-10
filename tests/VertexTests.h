@@ -10,6 +10,8 @@ class VertexTests : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(VertexTests);
     CPPUNIT_TEST(testMethod);
     CPPUNIT_TEST(testConstructor);
+    CPPUNIT_TEST(testCopyConstructor);
+    CPPUNIT_TEST(testAddNeighbor);
     
     CPPUNIT_TEST_FAIL(testFailedMethod);
     
@@ -21,9 +23,12 @@ public:
     void setUp();
     void tearDown();
     void testConstructor();
+    void testCopyConstructor();
+    void testAddNeighbor();
 
 private:
-    Vertex * v1;
+    Vertex *v1, *v2, *v3, *v4, *v5, *v6;
+    Vector3D *vec1;
     void testMethod();
     void testFailedMethod();
 };

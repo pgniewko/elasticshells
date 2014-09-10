@@ -310,11 +310,12 @@ int main(int argc, char** argv)
     
     //cout << max(122,123) << endl;
     
-    //Vector3D vel(-.5,-.5,-.5);
+    Vector3D vel(-.5,-.5,-.5);
     //Vector3D vel(-.0,-.0,-.0);
+    //Vector3D shift(4,4,4);
     Vector3D shift(0,-3.65,0);
-    //simulator.addCellVel(vel, 0);
-    //simulator.addCellVel(-vel, 1);
+    simulator.addCellVel(-vel, 0);
+    simulator.addCellVel(vel, 1);
     simulator.moveCell(shift, 1);
     //simulator.calcForces();
     simulator.simulate(arguments.nsteps);
