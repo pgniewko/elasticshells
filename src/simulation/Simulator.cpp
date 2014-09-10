@@ -84,6 +84,11 @@ void Simulator::addCell(const Cell& newCell)
 
 void Simulator::addCell()
 {
+    addCell(1.0);
+}
+
+void Simulator::addCell(double r0)
+{
     
     try
     {
@@ -92,7 +97,7 @@ void Simulator::addCell()
                                     "New cell will not be added !");
         
         SimpleTriangulation sm(params.d);
-        list<Triangle> tris = sm.triangulate();
+        list<Triangle> tris = sm.triangulate(r0);
         Cell newCell(tris);
    
         newCell.setA(a);
@@ -101,6 +106,7 @@ void Simulator::addCell()
         newCell.setGamma(gamma);
         newCell.setVerletR(verlet_r);
         newCell.setCellId(numberofCells);
+        newCell.setInitR(r0);
         
         addCell(newCell);       
     } 
@@ -108,6 +114,37 @@ void Simulator::addCell()
     {
         cout << e.what() << endl;
         return;
+    }
+}
+
+void Simulator::initCells(int N, double r0)
+{
+    
+    double nx, ny, nz;
+    bool flag = true;
+    while(numberofCells < N)
+    {
+        flag = true; 
+        nx = uniform(-box.getX()+r0+Rc, box.getX()-r0-Rc);
+        ny = uniform(-box.getY()+r0+Rc, box.getY()-r0-Rc);
+        nz = uniform(-box.getZ()+r0+Rc, box.getZ()-r0-Rc);
+        Vector3D shift(nx, ny, nz);
+        for (int i = 0; i < numberofCells; i++)
+        {
+            Vector3D tmpcm = cells[i].getCm();
+            Vector3D delta = shift - tmpcm;
+            double rsum = cells[i].getInitR() + r0; 
+            if ( (delta.length() + EPSILON) < rsum)
+            {
+               flag = false; 
+            }
+        }
+        if (flag)
+        {
+            addCell(r0);
+            moveCell(shift, numberofCells-1);
+        }
+
     }
 }
 
@@ -273,30 +310,42 @@ void Simulator::simulate(int steps)
             os << cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z;
             os << "\n";
         }
-        lastCellIndex = cells[i].numberofVertices();
+        lastCellIndex += cells[i].numberofVertices();
     }
 
     for (int i = 0; i < steps; i++)
-    {
+    {   
+        if ( (i+1) % boxStep == 0)
+        {
+            box.resize();
+            cout << "i= " << i <<" " << box.getX() << " " << box.getY() << " " << box.getZ() << " " << endl;
+        }
+        
+        
+        integrate();
         if ( (i+1) % vlistStep == 0)
         {
             rebuildVerletLists();
         }
         
-        integrate();
-        os << getTotalVertices() << "\n";
-        lastCellIndex = 0;
-        for (int i = 0; i < numberofCells; i++)
+        if ( (i+1) % saveStep == 0)
         {
-            for (int j = 0; j < cells[i].numberofVertices(); j++)
+            
+            os << getTotalVertices() << "\n";
+            lastCellIndex = 0;
+            for (int i = 0; i < numberofCells; i++)
             {
-                index = cells[i].vertices[j].getId()+1 + + lastCellIndex;
-                os << "H" << index << " ";
-                os << cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z;
-                os << "\n";
+                for (int j = 0; j < cells[i].numberofVertices(); j++)
+                {
+                    index = cells[i].vertices[j].getId()+1 + + lastCellIndex;
+                    os << "H" << index << " ";
+                    os << cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z;
+                    os << "\n";
+                }
+                lastCellIndex += cells[i].numberofVertices();
             }
-            lastCellIndex = cells[i].numberofVertices();
-        } 
+        }
+        
     }
     
     os.close();
@@ -394,7 +443,7 @@ void Simulator::renderScript(bool boxFlag)
             }
             
         }
-        lastCellIndex = cells[i].numberofVertices();
+        lastCellIndex += cells[i].numberofVertices();
     }
     
     os << "cmd.do(\"show lines\")\n";
@@ -476,7 +525,7 @@ void Simulator::saveSurfaceScript()
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
             os << "cmd.do(\"select H "<< iidx << ", name H" << iidx << "\")\n";
         }
-        lastCellIndex = cells[i].numberofVertices();
+        lastCellIndex += cells[i].numberofVertices();
     }
     
     
@@ -493,7 +542,7 @@ void Simulator::saveSurfaceScript()
             os << "cmd.do(\"draw_plane \\\"face"<<faceCounter<<"\\\", H_"<< idxa << ", H_" << idxb << ", H_" << idxc<< ", (0.8, 0.8, 0.8) \")\n";
             faceCounter++;
         }
-        lastCellIndex = cells[i].numberofVertices();
+        lastCellIndex += cells[i].numberofVertices();
     }
     
 }

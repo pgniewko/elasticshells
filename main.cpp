@@ -12,7 +12,7 @@
 #include <math.h>      /* log, sqrt */
 
 #include "src/Timer.h"
-#include "src/random.h"
+//#include "src/random.h"
 #include "src/arguments.h"
 #include "src/geometry/Vector3D.h"
 #include "src/simulation/Simulator.h"
@@ -52,10 +52,10 @@ static struct argp_option options[] =
     {"depth",     501, "INT", 0, "SimpleTriangulation depth [default: 3]"},
     {"dt",        601, "NUM", 0, "Time step [default: 0.01]"},
     {"ttime",     602, "NUM", 0, "Total simulation time [default: 1.0]"},
-    {"log-step",  603, "INT", 0, "Log step interval [default: 1]"},
+    {"log-step",  603, "INT", 0, "Log step interval [default: 10]"},
     {"ns",        604, "INT", 0, "Number of simulation steps [default: 100]"},
-    {"save-step", 605, "INT", 0, "Save step interval [default: 1]"},
-    {"box-step",  606, "INT", 0, "Box manipulation step interval [default: 1]"},
+    {"save-step", 605, "INT", 0, "Save step interval [default: 10]"},
+    {"box-step",  606, "INT", 0, "Box manipulation step interval [default: 10]"},
     {"vlist-step",607, "INT", 0, "Verlet-list step interval [default: 100]"},
     {"int",       701, "STR", 0, "Integrator of equations of motion: "
                                  "Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], Velocity-Verlet[vv] [default: fe]"},
@@ -71,6 +71,9 @@ static struct argp_option options[] =
     {"bsy",       805, "NUM", 0, "Y Box size [default: 10.0]"},
     {"bsz",       806, "NUM", 0, "Z Box size [default: 10.0]"},
     {"verlet-r",  807, "NUM", 0, "Verlet radius [default: 2 times R_c]"},
+    {"bsdx",      808, "NUM", 0, "dx of Box size [default: 0.0]"},
+    {"bsdy",      809, "NUM", 0, "dy of Box size [default: 0.0]"},
+    {"bsdz",      810, "NUM", 0, "dz of Box size [default: 0.0]"},
     {0}
 };
 
@@ -95,9 +98,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->integrator_a = "vv";
             arguments->abort = 0;
             arguments->n_cells = 1;
-            arguments->log_step = 1;
-            arguments->save_step = 1;
-            arguments->box_step = 1;
+            arguments->log_step = 10;
+            arguments->save_step = 10;
+            arguments->box_step = 10;
             arguments->vlist_step = 100;
             arguments->nsteps = 100;
             arguments->r_cut = 1.0;
@@ -243,7 +246,19 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             
         case 807:
             arguments->verlet_r = arg ?  strtod (arg, NULL) : 2.0;
-            break;    
+            break;
+            
+        case 808:
+            arguments->bsdx = arg ?  strtod (arg, NULL) : 0.0;
+            break;
+            
+        case 809:
+            arguments->bsdy = arg ?  strtod (arg, NULL) : 0.0;
+            break;
+            
+        case 810:
+            arguments->bsdz = arg ?  strtod (arg, NULL) : 0.0;
+            break;       
 
         case OPT_ABORT:
             arguments->abort = 1;
@@ -272,7 +287,7 @@ Timer clocks[10];
 int main(int argc, char** argv)
 {   
     
-    /* Initialize MT19937 Pseudo-random-number generator. */
+//    /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
     init_by_array(init, length);
 
@@ -304,19 +319,20 @@ int main(int argc, char** argv)
     
 
     Simulator simulator(arguments);
-    simulator.addCell();
-    simulator.addCell();
+    simulator.initCells(10, 1.5);
+    //simulator.addCell();
+    //simulator.addCell(2.0);
     
     
     //cout << max(122,123) << endl;
     
-    Vector3D vel(-.5,-.5,-.5);
+    //Vector3D vel(-.5,-.5,-.5);
     //Vector3D vel(-.0,-.0,-.0);
     //Vector3D shift(4,4,4);
-    Vector3D shift(0,-3.65,0);
-    simulator.addCellVel(-vel, 0);
-    simulator.addCellVel(vel, 1);
-    simulator.moveCell(shift, 1);
+    //Vector3D shift(0,-3.65,0);
+    //simulator.addCellVel(-vel, 0);
+    //simulator.addCellVel(vel, 1);
+    //simulator.moveCell(shift, 1);
     //simulator.calcForces();
     simulator.simulate(arguments.nsteps);
     

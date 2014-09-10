@@ -31,6 +31,7 @@ public:
     int getNumNeighbors();
     int getNumVTriangles();
     int getNeighborId(int);
+    int getTriangleId(int);
     double getNeighborR0(int);
     
     Vector3D xyz;

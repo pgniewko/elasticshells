@@ -14,7 +14,7 @@ SimpleTriangulation::SimpleTriangulation(const SimpleTriangulation& orig) : dept
 
 SimpleTriangulation::~SimpleTriangulation() {}
 
-list<Triangle> SimpleTriangulation::triangulate()
+list<Triangle> SimpleTriangulation::triangulate(double r0)
 {
 //    if (depth < 0)
 //    {
@@ -32,7 +32,36 @@ list<Triangle> SimpleTriangulation::triangulate()
         }
     }
     
-    return tris;
+    for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
+    {
+        i->a.setLength(r0);
+        i->b.setLength(r0);
+        i->c.setLength(r0);
+    }
+    
+    return tris;    
+}
+
+list<Triangle> SimpleTriangulation::triangulate()
+{
+    return triangulate(1.0);
+//    if (depth < 0)
+//    {
+//        return NULL;
+//    if (depth == 0)
+//    {
+//       tris.push_back( Triangle(Vector3D(0, 0, 0),Vector3D(0, 0, 0), Vector3D(0, 0, 0)) );
+//    } 
+//    else
+//    {
+//        createCube();
+//        for (int i = 0; i < (depth - 1); i++)
+//        {
+//            subdivide();
+//        }
+//    }
+//    
+//    return tris;
 }
 
 void SimpleTriangulation::createCube()

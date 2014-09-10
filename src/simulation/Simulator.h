@@ -41,6 +41,10 @@ public:
     
     void addCell(const Cell&);
     void addCell();
+    void addCell(double);
+    
+    void initCells(int, double);
+    
     
     void calcForces();
     void move();

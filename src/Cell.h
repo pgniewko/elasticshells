@@ -51,6 +51,10 @@ public:
     void setGamma(double);
     void setCellId(int);
     void setVerletR(double);
+    void setInitR(double);
+    
+    double getInitR();
+    Vector3D getCm();
     
     void voidForces();
     
@@ -73,6 +77,7 @@ private:
     double dp;
     double gamma;
     double verletR;
+    double initR;
     
     
 

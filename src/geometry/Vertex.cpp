@@ -138,6 +138,11 @@ int Vertex::getNeighborId(int idx)
     return neighbors[idx];
 }
 
+int Vertex::getTriangleId(int idx)
+{
+    return vertextri[idx];
+}
+
 double Vertex::getNeighborR0(int idx)
 {
     return R0[idx];

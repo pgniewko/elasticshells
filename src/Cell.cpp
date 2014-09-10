@@ -535,3 +535,19 @@ void Cell::setVerletR(double vr)
 {
     verletR = vr;
 }
+
+void Cell::setInitR(double rinit)
+{
+    initR = rinit;
+}
+    
+double Cell::getInitR()
+{
+    return initR;
+}
+
+Vector3D Cell::getCm()
+{
+    calcCM();
+    return cm;
+}

@@ -8,6 +8,8 @@ VertexTests::~VertexTests() {}
 
 void VertexTests::setUp() 
 {
+    vec1 = new Vector3D(1, 2, 3);
+    
     v1 = new Vertex;
     v2 = new Vertex(0,0,1);
     v2->setMass(1.23);
@@ -22,7 +24,17 @@ void VertexTests::setUp()
     v4->addNeighbor(2, 0.44);
     v4->addNeighbor(5, 0.33);
     
-    vec1 = new Vector3D(1, 2, 3);
+    v5 = new Vertex(-11.0, 345.0, 666.0);
+    v5->setId(0);
+    v5->setMass(0.99);
+    v5->addTriangle(1);
+    v5->addTriangle(0);
+    v5->addTriangle(1);
+    v5->addTriangle(0);
+    v5->addTriangle(100);
+    v5->addTriangle(13);
+    v5->addTriangle(13);
+    
 }
 
 void VertexTests::tearDown() 
@@ -31,7 +43,7 @@ void VertexTests::tearDown()
     delete v2;
     delete v3;
     delete v4;
-    //delete v5;
+    delete v5;
     //delete v6;
     
     delete vec1;
@@ -109,4 +121,14 @@ void VertexTests::testAddNeighbor()
     CPPUNIT_ASSERT_EQUAL(1, v4->getNeighborId(1));
     CPPUNIT_ASSERT_EQUAL(2, v4->getNeighborId(2));
     CPPUNIT_ASSERT_EQUAL(5, v4->getNeighborId(3));
+}
+
+void VertexTests::testAddTriangle()
+{
+    CPPUNIT_ASSERT_EQUAL(4, v5->getNumVTriangles());
+    CPPUNIT_ASSERT_EQUAL(1, v5->getTriangleId(0));
+    CPPUNIT_ASSERT_EQUAL(0, v5->getTriangleId(1));
+    CPPUNIT_ASSERT_EQUAL(100, v5->getTriangleId(2));
+    CPPUNIT_ASSERT_EQUAL(13, v5->getTriangleId(3));
+    
 }

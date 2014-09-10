@@ -1,6 +1,8 @@
 #ifndef ENVIRONMENT_H
 #define	ENVIRONMENT_H
 
+#include "random.h"
+
 #define STRCMP(a,b) (!strcmp(a,b))
 
 #define MAX_CELLS 100
@@ -16,6 +18,7 @@ const double SQRT2   = 1.41421356237310;
 const double SQRT3   = 1.73205080756888;
 const double DELTA7  = 0.00000001000000;
 const double DELTA14 = 0.00000000000001;
+const double EPSILON = 0.05;
 
 
 #endif	/* ENVIRONMENT_H */
