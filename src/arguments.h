@@ -43,6 +43,9 @@ struct arguments
     double bsdx;
     double bsdy;
     double bsdz;
+    //double bsxe;
+    //double bsye;
+    //double bsze;
     bool pbc;
     bool draw_box;
 };

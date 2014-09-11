@@ -319,7 +319,7 @@ int main(int argc, char** argv)
     
 
     Simulator simulator(arguments);
-    simulator.initCells(10, 1.5);
+    simulator.initCells(arguments.n_cells, 1.5);
     //simulator.addCell();
     //simulator.addCell(2.0);
     

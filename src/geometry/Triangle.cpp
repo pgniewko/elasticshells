@@ -13,15 +13,25 @@ Triangle::~Triangle() {}
 
 double Triangle::area() const
 {
-    Vector3D AB = b - a;
-    Vector3D AC = c - a;
-    double angle = AB.angle(AC); 
-    double lab = AB.length();
-    double lac = AC.length();
-    double area = fabs( 0.5 * lab * lac * sin(angle) );
-    return area;
+    try
+    {
+        Vector3D AB = b - a;
+        Vector3D AC = c - a;
+        double angle = AB.angle(AC); 
+        double lab = AB.length();
+        double lac = AC.length();
+        double area = fabs( 0.5 * lab * lac * sin(angle) );
+        return area;
+    }
+    catch (DataException& e)
+    {
+//        cout << e.what() << endl;
+        return 0.0;
+    }
 }
 
-void Triangle::printTriangle()
-{
-}
+void Triangle::printTriangle() {}
+
+Vector3D Triangle::getVertexA() {return this->a;}
+Vector3D Triangle::getVertexB() {return this->b;}
+Vector3D Triangle::getVertexC() {return this->c;}

@@ -51,7 +51,7 @@ void VertexTests::tearDown()
 
 void VertexTests::testMethod() 
 {
-    
+    CPPUNIT_ASSERT(true);
 }
 
 void VertexTests::testFailedMethod() 
@@ -108,6 +108,26 @@ void VertexTests::testCopyConstructor()
     CPPUNIT_ASSERT_EQUAL(0, tmpv1.ntrian);
     CPPUNIT_ASSERT_EQUAL(0, tmpv1.nneigh);
     CPPUNIT_ASSERT_EQUAL(0, tmpv1.nbneigh);
+    
+    Vertex tmpv2(*v4);
+    CPPUNIT_ASSERT_EQUAL(18, tmpv2.getId());
+    CPPUNIT_ASSERT_EQUAL(4, tmpv2.getNumNeighbors());
+    CPPUNIT_ASSERT_EQUAL(0, tmpv2.getNumVTriangles());
+    CPPUNIT_ASSERT_EQUAL(0, tmpv2.getNeighborId(0));
+    CPPUNIT_ASSERT_EQUAL(1, tmpv2.getNeighborId(1));
+    CPPUNIT_ASSERT_EQUAL(2, tmpv2.getNeighborId(2));
+    CPPUNIT_ASSERT_EQUAL(5, tmpv2.getNeighborId(3));
+    CPPUNIT_ASSERT_EQUAL(0.76, tmpv2.getNeighborR0(0));
+    CPPUNIT_ASSERT_EQUAL(0.44, tmpv2.getNeighborR0(1));
+    CPPUNIT_ASSERT_EQUAL(0.44, tmpv2.getNeighborR0(2));
+    CPPUNIT_ASSERT_EQUAL(0.33, tmpv2.getNeighborR0(3));
+    
+    Vertex tmpv3(*v5);
+    CPPUNIT_ASSERT_EQUAL(4, tmpv3.getNumVTriangles());
+    CPPUNIT_ASSERT_EQUAL(1, tmpv3.getTriangleId(0));
+    CPPUNIT_ASSERT_EQUAL(0, tmpv3.getTriangleId(1));
+    CPPUNIT_ASSERT_EQUAL(100, tmpv3.getTriangleId(2));
+    CPPUNIT_ASSERT_EQUAL(13, tmpv3.getTriangleId(3));
 }
 
 
@@ -121,6 +141,11 @@ void VertexTests::testAddNeighbor()
     CPPUNIT_ASSERT_EQUAL(1, v4->getNeighborId(1));
     CPPUNIT_ASSERT_EQUAL(2, v4->getNeighborId(2));
     CPPUNIT_ASSERT_EQUAL(5, v4->getNeighborId(3));
+    
+    CPPUNIT_ASSERT_EQUAL(0.76, v4->getNeighborR0(0));
+    CPPUNIT_ASSERT_EQUAL(0.44, v4->getNeighborR0(1));
+    CPPUNIT_ASSERT_EQUAL(0.44, v4->getNeighborR0(2));
+    CPPUNIT_ASSERT_EQUAL(0.33, v4->getNeighborR0(3));
 }
 
 void VertexTests::testAddTriangle()
@@ -130,5 +155,4 @@ void VertexTests::testAddTriangle()
     CPPUNIT_ASSERT_EQUAL(0, v5->getTriangleId(1));
     CPPUNIT_ASSERT_EQUAL(100, v5->getTriangleId(2));
     CPPUNIT_ASSERT_EQUAL(13, v5->getTriangleId(3));
-    
 }

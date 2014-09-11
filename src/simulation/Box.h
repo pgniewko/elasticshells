@@ -25,9 +25,13 @@ public:
     void setDz(const double);
     double getDz();
     
-    void setXend(const double);
-    void setYend(const double);
-    void setZend(const double);
+    void setXend(double);
+    void setYend(double);
+    void setZend(double);
+    
+    double getXend();
+    double getYend();
+    double getZend();
     
     void resize();
     

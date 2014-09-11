@@ -14,6 +14,7 @@ public:
     VertexTriangle(const VertexTriangle& orig);
     virtual ~VertexTriangle();
     void setId(int);
+    int getId();
     double area(const Vertex[]);
     
     void printVertexTriangle();

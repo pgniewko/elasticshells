@@ -26,7 +26,7 @@ inline double uniform(double a, double b)
 inline double gaussian(double m, double s)
 {
     double v1, v2, w, y;
-    double x1, x2;
+    double x1;//, x2;
 
     do
     {
@@ -38,7 +38,7 @@ inline double gaussian(double m, double s)
 
     y = sqrt((-2.0 * log(w)) / w);
     x1 = v1 * y;
-    x2 = v2 * y;
+    //x2 = v2 * y;
 
     return (m + x1 * s);
 }

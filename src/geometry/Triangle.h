@@ -13,6 +13,11 @@ public:
     double area() const;
     void printTriangle();
     Vector3D a, b, c;
+    
+    Vector3D getVertexA();
+    Vector3D getVertexB();
+    Vector3D getVertexC();
+    
 };
 
 #endif	/* TRIANGLE_H */

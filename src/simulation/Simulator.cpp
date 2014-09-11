@@ -1,6 +1,6 @@
 #include "Simulator.h"
 
-Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), box(0,0,0), 
+Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), box(0, 0, 0), 
         logStep(params.log_step), saveStep(params.save_step), boxStep(params.box_step), vlistStep(params.vlist_step)
 {
     dt = params.dt;
@@ -26,6 +26,9 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), bo
     box.setDx(params.bsdx);
     box.setDy(params.bsdy);
     box.setDz(params.bsdz);
+    box.setXend(0.25 * params.bsx);
+    box.setYend(0.25 * params.bsy);
+    box.setZend(0.25 * params.bsz);
     
     try
     {
@@ -318,7 +321,8 @@ void Simulator::simulate(int steps)
         if ( (i+1) % boxStep == 0)
         {
             box.resize();
-            cout << "i= " << i <<" " << box.getX() << " " << box.getY() << " " << box.getZ() << " " << endl;
+            //cout << "i= " << i <<" " << box.getX() << " " << box.getY() << " " << box.getZ() << " ";
+            //cout << " xe= " << box.getXend() << " " << " ye= " << box.getYend() << " " << " ze= " << box.getZend() << endl;
         }
         
         

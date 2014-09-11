@@ -41,12 +41,6 @@ void Vertex::addNeighbor(int idx, double k0n)
             throw MaxSizeException("Maximum number of neighbors has been reached."
                                     "New neighbor will not be added !");
         
-        //if ( nneigh - 1 >  NEIGH_MAX)
-        //{
-        //    cerr << "To many neighbors: " << nneigh  << " my id: " << id << endl;
-        //    exit(123);
-        //}
-    
         for (int i = 0; i < nneigh; i++)
         {
             if (neighbors[i] == idx)  return;
@@ -79,11 +73,6 @@ void Vertex::addTriangle(int idx)
             throw MaxSizeException("Maximum number of triangles has been reached."
                                     "New triangle will not be added !");
         
-    //if ( nneigh - 1 >  TRIAN_MAX)
-   // {
-   //     cerr << "To many triangles: " << ntrian << " my id: " << id << endl;
-   //     exit(123);
-    //}
         for (int i = 0; i < ntrian; i++)
         {
             if (vertextri[i] == idx) return;
