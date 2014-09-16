@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2014, Dominik Gront,
+   Copyright (C) 2014, Dominik Gront
    All rights reserved.
 
    Redistribution and use in source and binary forms, with or without
