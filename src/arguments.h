@@ -34,7 +34,9 @@ struct arguments
     double k;
     double mass;
     double ttime;
-    double r_cut;
+    double r_cut;                  /* cellA-cellA */
+    double r_bc;                  /* cellA-cellB */
+//    double r_cut3;                  /* cell-box */
     double verlet_r;
     
     double bsx;

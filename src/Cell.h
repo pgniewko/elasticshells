@@ -52,6 +52,7 @@ public:
     void setVisc(double);
     void setMass(double);
     void setCellId(int);
+    void setRCellBox(double);
     
     void setVerletR(double);
     void setInitR(double);
@@ -77,6 +78,7 @@ private:
     int numberV;
     int numberT;
     double Rc;
+    double rCellBox;
     double a;
     double dp;
     double gamma;

@@ -518,6 +518,11 @@ void Cell::setRc(double rc)
     Rc = rc;
 }
 
+void Cell::setRCellBox(double r)
+{
+    rCellBox = r;
+}
+
 void Cell::setA(double A)
 {
     a = A;

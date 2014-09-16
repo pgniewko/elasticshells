@@ -106,6 +106,7 @@ void Simulator::addCell(double r0)
         newCell.setA(a);
         newCell.setDp(dp);
         newCell.setRc(Rc);
+        newCell.setRCellBox(params.r_bc);
         newCell.setGamma(gamma);
         newCell.setVerletR(verlet_r);
         newCell.setCellId(numberofCells);
@@ -127,18 +128,20 @@ void Simulator::initCells(int N, double r0)
     
     double nx, ny, nz;
     bool flag = true;
+    double rbc = params.r_bc;
+    double rsum;
     while(numberofCells < N)
     {
         flag = true; 
-        nx = uniform(-box.getX()+r0+Rc, box.getX()-r0-Rc);
-        ny = uniform(-box.getY()+r0+Rc, box.getY()-r0-Rc);
-        nz = uniform(-box.getZ()+r0+Rc, box.getZ()-r0-Rc);
+        nx = uniform(-box.getX() + r0 + rbc, box.getX() - r0 - rbc);
+        ny = uniform(-box.getY() + r0 + rbc, box.getY() - r0 - rbc);
+        nz = uniform(-box.getZ() + r0 + rbc, box.getZ() - r0 - rbc);
         Vector3D shift(nx, ny, nz);
         for (int i = 0; i < numberofCells; i++)
         {
             Vector3D tmpcm = cells[i].getCm();
             Vector3D delta = shift - tmpcm;
-            double rsum = cells[i].getInitR() + r0 + EPSILON; 
+            rsum = cells[i].getInitR() + r0 + Rc + EPSILON;
             if ( delta.length() < rsum)
             {
                flag = false; 
@@ -227,7 +230,6 @@ void Simulator::heunMethod()
         {
             m = cells[i].vertices[j].getMass();
             f = cells[i].vertices[j].getVisc();
-            
             mf = m*f;
             //cout << "m= "<< m << " f= "<< f << " mf= " << mf << endl;
             cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / mf;
@@ -266,7 +268,9 @@ void Simulator::midpointRungeKutta()
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].xyz += 0.5 * dt * cells[i].vertices[j].force / m;
+            f = cells[i].vertices[j].getVisc();
+            mf = m*f;
+            cells[i].vertices[j].xyz += 0.5 * dt * cells[i].vertices[j].force / mf;
         }
     }
     calcForces();
@@ -276,7 +280,9 @@ void Simulator::midpointRungeKutta()
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + dt * cells[i].vertices[j].force / m;
+            f = cells[i].vertices[j].getVisc();
+            mf = m*f;
+            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + dt * cells[i].vertices[j].force / mf;
         }
     }    
 }
@@ -338,7 +344,7 @@ void Simulator::simulate(int steps)
         if ( (i+1) % boxStep == 0)
         {
             box.resize();
-            //cout << "i= " << i <<" " << box.getX() << " " << box.getY() << " " << box.getZ() << " ";
+            cout << "i= " << i <<" " << box.getX() << " " << box.getY() << " " << box.getZ() << " " << endl;
             //cout << " xe= " << box.getXend() << " " << " ye= " << box.getYend() << " " << " ze= " << box.getZend() << endl;
         }
         
@@ -457,10 +463,22 @@ void Simulator::renderScript(bool boxFlag)
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
+            os << "cmd.do(\"select H "<< iidx << ", name H" << iidx << "\")\n";
+        }
+        lastCellIndex += cells[i].numberofVertices();
+    }
+    
+    lastCellIndex = 0;
+    for (int i = 0; i < numberofCells; i++)
+    {
+        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        {
+            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
             for (int k = 0; k < cells[i].vertices[j].nneigh; k++)
             {
                 jidx = cells[i].vertices[j].neighbors[k] + 1 + lastCellIndex;
-                os << "cmd.do(\"bond /cells///UNK`/H"<< iidx << ", /cells///UNK`/H" << jidx << "\")\n";
+                //os << "cmd.do(\"bond /cells///UNK`/H"<< iidx << ", /cells///UNK`/H" << jidx << "\")\n";
+                os << "cmd.do(\"bond H_"<< iidx << ", H_" << jidx << "\")\n";
             }
             
         }

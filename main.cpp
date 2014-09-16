@@ -74,6 +74,7 @@ static struct argp_option options[] =
     {"bsdx",      808, "NUM", 0, "dx of Box size [default: 0.0]"},
     {"bsdy",      809, "NUM", 0, "dy of Box size [default: 0.0]"},
     {"bsdz",      810, "NUM", 0, "dz of Box size [default: 0.0]"},
+    {"rbc",       811, "NUM", 0, "Radius cut-off for cell-box interactions [default: 0.5]"},
     {0}
 };
 
@@ -104,6 +105,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->vlist_step = 100;
             arguments->nsteps = 100;
             arguments->r_cut = 1.0;
+            arguments->r_bc = 0.5;
             arguments->verlet_r = 2.0;
             arguments->dt = 0.01;
             arguments->ttime = 1.0;
@@ -259,6 +261,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 810:
             arguments->bsdz = arg ?  strtod (arg, NULL) : 0.0;
             break;       
+            
+        case 811:
+            arguments->r_bc = arg ?  strtod (arg, NULL) : 0.5;
+            break;    
+            
 
         case OPT_ABORT:
             arguments->abort = 1;
