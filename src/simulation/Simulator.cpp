@@ -109,6 +109,8 @@ void Simulator::addCell(double r0)
         newCell.setGamma(gamma);
         newCell.setVerletR(verlet_r);
         newCell.setCellId(numberofCells);
+        newCell.setMass(params.mass);
+        newCell.setVisc(params.visc);
         newCell.setInitR(r0);
         
         addCell(newCell);       
@@ -136,14 +138,15 @@ void Simulator::initCells(int N, double r0)
         {
             Vector3D tmpcm = cells[i].getCm();
             Vector3D delta = shift - tmpcm;
-            double rsum = cells[i].getInitR() + r0; 
-            if ( (delta.length() + EPSILON) < rsum)
+            double rsum = cells[i].getInitR() + r0 + EPSILON; 
+            if ( delta.length() < rsum)
             {
                flag = false; 
             }
         }
         if (flag)
         {
+            //cout << "I'm adding cell" << endl;
             addCell(r0);
             moveCell(shift, numberofCells-1);
         }
@@ -189,11 +192,15 @@ void Simulator::integrateEuler()
 {
     calcForces();
     double m;
+    double f;
+    double mf;
     for (int i = 0; i < numberofCells; i++) {
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / m;
+            f = cells[i].vertices[j].getVisc();
+            mf = m*f;
+            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / mf;
         }
     
     }
@@ -203,6 +210,8 @@ void Simulator::heunMethod()
 {
     calcForces();
     double m;
+    double f;
+    double mf;
     
     for (int i = 0; i < numberofCells; i++) {
         for (int j = 0; j < cells[i].numberofVertices(); j++)
@@ -217,7 +226,11 @@ void Simulator::heunMethod()
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / m;
+            f = cells[i].vertices[j].getVisc();
+            
+            mf = m*f;
+            //cout << "m= "<< m << " f= "<< f << " mf= " << mf << endl;
+            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / mf;
         }
     }
     calcForces();
@@ -227,7 +240,9 @@ void Simulator::heunMethod()
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + 0.5 * dt * ( cells[i].vertices[j].tmp_force + cells[i].vertices[j].force) / m;
+            f = cells[i].vertices[j].getVisc();
+            mf = m*f;
+            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + 0.5 * dt * ( cells[i].vertices[j].tmp_force + cells[i].vertices[j].force) / mf;
         }
     }  
 }
@@ -236,6 +251,8 @@ void Simulator::midpointRungeKutta()
 {
     calcForces();
     double m;
+    double f;
+    double mf;
     
     for (int i = 0; i < numberofCells; i++) {
         for (int j = 0; j < cells[i].numberofVertices(); j++)

@@ -49,11 +49,15 @@ public:
     void setA(double);
     void setDp(double);
     void setGamma(double);
+    void setVisc(double);
+    void setMass(double);
     void setCellId(int);
+    
     void setVerletR(double);
     void setInitR(double);
     
     double getInitR();
+    double getVisc();
     Vector3D getCm();
     
     void voidForces();
@@ -78,6 +82,10 @@ private:
     double gamma;
     double verletR;
     double initR;
+    double visc0;
+    double mass0;
+    double visc0tot;
+    double mass0tot;
     
     
 

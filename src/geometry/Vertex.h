@@ -19,6 +19,9 @@ public:
     int getId();
     double setMass(double);
     double getMass();
+    double setVisc(double);
+    double getVisc();
+    
     void printVertex();
     
     void addNeighbor(int, double);
@@ -56,6 +59,7 @@ public:
 private:
     int id;
     double mass;
+    double visc;
 };
 
 #endif	/* VERTEX_H */

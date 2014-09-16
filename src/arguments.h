@@ -30,7 +30,7 @@ struct arguments
     double a;
     double dt;
     double dp;
-    double mu;
+    double visc;
     double k;
     double mass;
     double ttime;

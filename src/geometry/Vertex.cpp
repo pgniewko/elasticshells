@@ -10,7 +10,7 @@ Vertex::Vertex(Vector3D v) : xyz(v), nneigh(0), ntrian(0), nbneigh(0), id(-1), m
 Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(orig.velocity),
                                      tmp_xyz(orig.tmp_xyz), tmp_force(orig.tmp_force), tmp_velocity(orig.tmp_velocity),
                                      nneigh(orig.nneigh), ntrian(orig.ntrian), nbneigh(orig.nbneigh),
-                                     id(orig.id), mass( orig.mass )
+                                     id(orig.id), mass( orig.mass ), visc(orig.visc)
 {
     for (int i = 0; i < nneigh; i++)
     {
@@ -146,6 +146,17 @@ double Vertex::setMass(double m)
 double Vertex::getMass()
 {
     return mass;
+}
+
+double Vertex::setVisc(double v)
+{
+    visc = v;
+    return visc;
+}
+
+double Vertex::getVisc()
+{
+    return visc;
 }
 
 void Vertex::printVertex()

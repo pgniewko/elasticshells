@@ -62,9 +62,9 @@ static struct argp_option options[] =
 
     {0,             0, 0, 0, "System Options:", 5},
     {0,           'a', "NUM", 0, "Repulsion parameter between bodies [default: 1.0]"},
-    {"mass",      'm', "NUM", 0, "Mass of a particle [default: 1.0]"},
+    {"mass",      'm', "NUM", 0, "Mass of a particle [default: 100.0]"},
     {"gamma",     'k', "NUM", 0, "Spring constant [default: 1.0]"},
-    {"mu",        801, "NUM", 0, "Viscosity coefficient [default: 1.0]"},
+    {"mu",        801, "NUM", 0, "Viscosity coefficient [default: 100.0]"},
     {"dp",        802, "NUM", 0, "Osmotic pressure [default: 0.0]"},
     {"r-cut",     803, "NUM", 0, "Radius cut-off for pair interactions [default: 1.0]"},
     {"bsx",       804, "NUM", 0, "X Box size [default: 10.0]"},
@@ -116,8 +116,8 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->bsdz = 0.0;
             arguments->a = 1.0;
             arguments->d = 3;
-            arguments->mass = 1.0;
-            arguments->mu = 1.0;
+            arguments->mass = 100.0;
+            arguments->visc = 100.0;
             arguments->k = 1.0;
             arguments->L = 10.0;
             arguments->pbc = false;
@@ -221,7 +221,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
             
          case 801:
-            arguments->mu = arg ? strtod (arg, NULL) : 1.0;
+            arguments->visc = arg ? strtod (arg, NULL) : 1.0;
             break;  
             
         case 802:
@@ -335,6 +335,8 @@ int main(int argc, char** argv)
     //simulator.moveCell(shift, 1);
     //simulator.calcForces();
     simulator.simulate(arguments.nsteps);
+    //simulator.printCell(0);
+    
     
     //cout << "cell #1 mass = " << simulator.getCell(0).getMass() << endl;
     //cout << "cell #2 mass = " << simulator.getCell(1).getMass() << endl;

@@ -20,7 +20,9 @@ Cell::Cell(list<Triangle> tris) : cellId(-1), numberV(0), numberT(0)
 
 Cell::Cell(const Cell& orig) : cm(orig.cm), vertices(orig.vertices), triangles(orig.triangles),
                                cellId(orig.cellId), numberV(orig.numberV), numberT(orig.numberT),
-                               Rc(orig.Rc), a(orig.a), dp(orig.dp), gamma(orig.gamma), verletR(orig.verletR)
+                               Rc(orig.Rc), a(orig.a), dp(orig.dp), gamma(orig.gamma), verletR(orig.verletR),
+                               initR(orig.initR), visc0(orig.visc0), mass0(orig.mass0), 
+                               visc0tot(orig.visc0tot), mass0tot(orig.mass0tot)
 {}
 
 Cell::~Cell() {}
@@ -330,6 +332,7 @@ void Cell::calcForces(Box& box)
             wallYZ.y = vertices[i].xyz.y;
             wallYZ.z = vertices[i].xyz.z;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, Rc, a);
+            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, 0.15, a);
         }
 
         if (vertices[i].xyz.y != 0 )
@@ -339,6 +342,7 @@ void Cell::calcForces(Box& box)
             wallXZ.y = sgny * bsy;
             wallXZ.z = vertices[i].xyz.z;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, Rc, a);
+            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, 0.15, a);
         }
 
         if (vertices[i].xyz.z != 0 )
@@ -347,7 +351,8 @@ void Cell::calcForces(Box& box)
             wallXY.x = vertices[i].xyz.x;
             wallXY.y = vertices[i].xyz.y;
             wallXY.z = sgnz * bsz;
-            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a);
+            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a);
+            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, 0.05, a);
         }        
     }
 }
@@ -367,6 +372,8 @@ void Cell::printCell()
     cout << "Number of triangles = " << numberT << endl;
     cout << "SURFACE AREA = " << calcSurfaceArea() << endl;
     cout << "VOLUME = " << calcVolume() << endl;
+    cout << "MASS = " << getMass() << endl;
+    cout << "VISC= " << this->getVisc() << endl;
     
     for (int i = 0; i < numberV; i++)
     {
@@ -539,6 +546,39 @@ void Cell::setVerletR(double vr)
 void Cell::setInitR(double rinit)
 {
     initR = rinit;
+}
+
+void Cell::setVisc(double mu)
+{
+    visc0tot = mu;
+    visc0 = visc0tot / numberV;
+    //cout << "visc0tot= " << visc0tot;
+    //cout << " visc0 " << visc0 <<  endl;
+    
+    for (int i = 0; i < numberV; i++)
+    {
+        vertices[i].setVisc(visc0);
+    }
+}
+
+void Cell::setMass(double m)
+{
+    mass0tot = m;
+    mass0 = mass0tot / numberV;
+    for (int i = 0; i < numberV; i++)
+    {
+        vertices[i].setMass(mass0);
+    }
+}
+
+double Cell::getVisc()
+{
+    double v = 0;
+    for (int i = 0; i < numberV; i++)
+    {
+        v += vertices[i].getVisc();
+    }
+    return v;
 }
     
 double Cell::getInitR()
