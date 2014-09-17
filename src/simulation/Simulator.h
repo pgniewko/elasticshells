@@ -7,6 +7,7 @@
 #include <float.h>      /* DBL_MAX */
 #include <cstring>
 #include <vector>
+#include <stdio.h>      /* fprintf*/
 
 #include "Box.h"
 #include "Environment.h"

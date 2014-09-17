@@ -324,18 +324,43 @@ void Simulator::simulate(int steps)
     saveSurfaceScript();
     int lastCellIndex = 0;
     int index;
-    ofstream os;
-    os.open(trajfile);
-    os << getTotalVertices() << "\n";
+    //ofstream os;
+    //os.open(trajfile);
+    
+    //cout << "w nowej dupie" << endl;
+    char namesx[10] = {'A','B','C','D','E','F','G','H','I','J'};
+    
+    
+    FILE* os;
+    os = fopen(trajfile, "w");
+    
+    //os << getTotalVertices() << "\n";
+    int res1A;
+    int res1B;
+    //int res2A;
+    //int res2B;
+    fprintf(os, "%i\n", getTotalVertices());
+    //cout << "names[10] = " << namesx[9] << endl;
     for (int i = 0; i < numberofCells; i++)
     {
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
-            index = cells[i].vertices[j].getId()+1 + lastCellIndex;
-            os << "H" << index << " ";
-            os << cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z;
-            os << "\n";
+            index = cells[i].vertices[j].getId() + 1 + lastCellIndex;
+            //os << "H" << index << " ";
+            //os << cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z;
+            //os << "\n";
+            res1A = (int) index / 1000;
+            res1B = index % 1000;
+            //cout << "res1A=" << res1A << endl;
+            //cout << "res1B=" << res1B << endl;
+            //cout << " namesx[res1A]="<< namesx[res1A] << endl;
+            //cout << cells[i].vertices[j].xyz.x <<" "<< cells[i].vertices[j].xyz.y<<" "<<  cells[i].vertices[j].xyz.z << endl;
+            //cout << "kurwa1 " << endl;
+        //    fprintf(os, "H%i %10.5f%10.5f%10.5f\n", index, cells[i].vertices[j].xyz.x, cells[i].vertices[j].xyz.y, cells[i].vertices[j].xyz.z);
+            fprintf(os, "%c%i %10.5f %10.5f %10.5f \n", namesx[res1A], res1B, cells[i].vertices[j].xyz.x, cells[i].vertices[j].xyz.y, cells[i].vertices[j].xyz.z);
+            //cout << "kurwa" << endl;
         }
+        
         lastCellIndex += cells[i].numberofVertices();
     }
 
@@ -358,16 +383,22 @@ void Simulator::simulate(int steps)
         if ( (i+1) % saveStep == 0)
         {
             
-            os << getTotalVertices() << "\n";
+            //os << getTotalVertices() << "\n";
+            fprintf(os,"%i\n", getTotalVertices());
             lastCellIndex = 0;
             for (int i = 0; i < numberofCells; i++)
             {
                 for (int j = 0; j < cells[i].numberofVertices(); j++)
                 {
                     index = cells[i].vertices[j].getId()+1 + + lastCellIndex;
-                    os << "H" << index << " ";
-                    os << cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z;
-                    os << "\n";
+                    //os << "H" << index << " ";
+                    //os << cells[i].vertices[j].xyz.x << " " << cells[i].vertices[j].xyz.y << " " << cells[i].vertices[j].xyz.z;
+                    //os << "\n";
+                    res1A = (int) index / 1000;
+                    res1B = index % 1000;
+                    //fprintf(os, "H%i %10.5f%10.5f%10.5f\n", index, cells[i].vertices[j].xyz.x, cells[i].vertices[j].xyz.y, cells[i].vertices[j].xyz.z);
+                    fprintf(os, "%c%i %f %f %f\n", namesx[res1A],res1B, cells[i].vertices[j].xyz.x, cells[i].vertices[j].xyz.y, cells[i].vertices[j].xyz.z);
+       
                 }
                 lastCellIndex += cells[i].numberofVertices();
             }
@@ -375,7 +406,8 @@ void Simulator::simulate(int steps)
         
     }
     
-    os.close();
+    fclose(os);
+    //os.close();
 }
 
 void Simulator::setIntegrator(void (Simulator::*functoall)())
@@ -440,6 +472,7 @@ void Simulator::rebuildVerletLists()
 
 void Simulator::renderScript(bool boxFlag)
 {
+    //cout << "dupa" << endl;
     ofstream os;
     os.open(script);
     os << "from pymol.cgo import *\n";
@@ -449,21 +482,53 @@ void Simulator::renderScript(bool boxFlag)
         printBox(os);
     }
     os << "cmd.do(\"load " << trajfile << ", cells\")\n";
+    os << "cmd.do(\"select rawdata, all\")\n";
+    os << "cmd.do(\"unbond rawdata, rawdata\")\n";
     os << "cmd.do(\"hide all\")\n";
     os << "cmd.do(\"set sphere_color, tv_red\")\n";
     os << "cmd.do(\"set line_color, marine\")\n";
     os << "cmd.do(\"show spheres\")\n";
+    os << "cmd.do(\"alter elem a, vdw=0.1\")\n";
+    os << "cmd.do(\"alter elem b, vdw=0.1\")\n";
+    os << "cmd.do(\"alter elem c, vdw=0.1\")\n";
+    os << "cmd.do(\"alter elem d, vdw=0.1\")\n";
+    os << "cmd.do(\"alter elem e, vdw=0.1\")\n";
+    os << "cmd.do(\"alter elem f, vdw=0.1\")\n";
+    os << "cmd.do(\"alter elem g, vdw=0.1\")\n";
     os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
+    os << "cmd.do(\"alter elem i, vdw=0.1\")\n";
+    os << "cmd.do(\"alter elem j, vdw=0.1\")\n";
     os << "cmd.do(\"rebuild\")\n";
 
+    //cout << "dupa2" << endl;
+    char namesx[10] = {'A','B','C','D','E','F','G','H','I','J'};
+   // cout << namesx[0] << endl;
+    
+    
+    int res1A;
+    int res1B;
+    int res2A;
+    int res2B;
+    
     int iidx, jidx;
     int lastCellIndex = 0;
     for (int i = 0; i < numberofCells; i++)
     {
+        //cout << "dupa3" << endl;
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
+            //cout << "dupa4" << endl;
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
-            os << "cmd.do(\"select H "<< iidx << ", name H" << iidx << "\")\n";
+            //cout << "dupa5" << "iidx= " << iidx << endl;
+            res1A = (int) iidx / 1000;
+            //cout << "dupa6" << " res1A= " << res1A << endl;
+            res1B = iidx % 1000;
+            //cout << "dupa7" << " res1B= " << res1B << endl;
+           // cout << res1A << " " << res1B << endl;
+           // cout << "dupa 8" << namesx[0] << endl;
+            //os << "cmd.do(\"select H "<< iidx << ", name H" << iidx << "\")\n";
+            os << "cmd.do(\"select "<< namesx[res1A]<<" " << res1B << ", name "<< namesx[res1A] << res1B << "\")\n";
+            
         }
         lastCellIndex += cells[i].numberofVertices();
     }
@@ -477,8 +542,16 @@ void Simulator::renderScript(bool boxFlag)
             for (int k = 0; k < cells[i].vertices[j].nneigh; k++)
             {
                 jidx = cells[i].vertices[j].neighbors[k] + 1 + lastCellIndex;
-                //os << "cmd.do(\"bond /cells///UNK`/H"<< iidx << ", /cells///UNK`/H" << jidx << "\")\n";
-                os << "cmd.do(\"bond H_"<< iidx << ", H_" << jidx << "\")\n";
+                res1A = (int) iidx / 1000;
+                res1B = iidx % 1000;
+                res2A = (int) jidx / 1000;
+                res2B = jidx % 1000;
+                os << "cmd.do(\"bond "<< namesx[res1A] << "_"<< res1B << ", "<< namesx[res2A]<<"_" << res2B << "\")\n";
+
+                
+                
+                //jidx = cells[i].vertices[j].neighbors[k] + 1 + lastCellIndex;
+                //os << "cmd.do(\"bond H_"<< iidx << ", H_" << jidx << "\")\n";
             }
             
         }
@@ -499,6 +572,7 @@ void Simulator::renderScript(bool boxFlag)
         os << "cmd.load_cgo(obj, \"box\", 1)\n";
     }
     
+    //cout << "koniec dupy" << endl;
     os.close();
 }
 
@@ -555,22 +629,34 @@ void Simulator::saveSurfaceScript()
 
     os << "cmd.extend(\"draw_plane\", draw_plane)\n\n\n";
           
-    int iidx, jidx;
+    //int iidx;//, jidx;
+    //int lastCellIndex = 0;
+    //for (int i = 0; i < numberofCells; i++)
+    //{
+    //    for (int j = 0; j < cells[i].numberofVertices(); j++)
+    //    {
+    //        iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
+    //        os << "cmd.do(\"select H "<< iidx << ", name H" << iidx << "\")\n";
+    //    }
+    //    lastCellIndex += cells[i].numberofVertices();
+    //}
+    
+    
     int lastCellIndex = 0;
-    for (int i = 0; i < numberofCells; i++)
-    {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
-        {
-            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
-            os << "cmd.do(\"select H "<< iidx << ", name H" << iidx << "\")\n";
-        }
-        lastCellIndex += cells[i].numberofVertices();
-    }
-    
-    
-    lastCellIndex = 0;
     int faceCounter = 0;
     int idxa, idxb, idxc;
+    
+    int resA1;
+    int resA2;
+    int resB1;
+    int resB2;
+    int resC1;
+    int resC2;
+    char cA;
+    char cB;
+    char cC;
+    char namesx[10] = {'A','B','C','D','E','F','G','H','I','J'};
+    
     for (int i = 0; i < numberofCells; i++)
     {
         for (int j = 0; j < cells[i].numberofFaces(); j++)
@@ -578,7 +664,19 @@ void Simulator::saveSurfaceScript()
             idxa = cells[i].triangles[j].ia + 1 + lastCellIndex;
             idxb = cells[i].triangles[j].ib + 1 + lastCellIndex;
             idxc = cells[i].triangles[j].ic + 1 + lastCellIndex;
-            os << "cmd.do(\"draw_plane \\\"face"<<faceCounter<<"\\\", H_"<< idxa << ", H_" << idxb << ", H_" << idxc<< ", (0.8, 0.8, 0.8) \")\n";
+            
+            resA1 = (int) idxa / 1000;
+            resA2 = idxa % 1000;
+            resB1 = (int) idxb / 1000;
+            resB2 = idxb % 1000;
+            resC1 = (int) idxc / 1000;;
+            resC2 = idxc % 1000;
+            cA = namesx[resA1];
+            cB = namesx[resB1];
+            cC = namesx[resC1];
+            
+            //os << "cmd.do(\"draw_plane \\\"face"<<faceCounter<<"\\\", H_"<< idxa << ", H_" << idxb << ", H_" << idxc<< ", (0.8, 0.8, 0.8) \")\n";
+            os << "cmd.do(\"draw_plane \\\"face"<<faceCounter<<"\\\", "<< cA<<"_"<< resA2 << ", "<< cB<<"_" << resB2 << ", "<< cC<<"_" << resC2 << ", (0.8, 0.8, 0.8) \")\n";
             faceCounter++;
         }
         lastCellIndex += cells[i].numberofVertices();
