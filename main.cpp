@@ -327,8 +327,8 @@ int main(int argc, char** argv)
 
     Simulator simulator(arguments);
     simulator.initCells(arguments.n_cells, 1.5);
-    //simulator.addCell();
-    //simulator.addCell(2.0);
+    //simulator.addCell(1.5);
+    //simulator.addCell(1.5);
     
     
     //cout << max(122,123) << endl;
@@ -336,7 +336,7 @@ int main(int argc, char** argv)
     //Vector3D vel(-.5,-.5,-.5);
     //Vector3D vel(-.0,-.0,-.0);
     //Vector3D shift(4,4,4);
-    //Vector3D shift(0,-3.65,0);
+    //Vector3D shift(0,-3.4,0);
     //simulator.addCellVel(-vel, 0);
     //simulator.addCellVel(vel, 1);
     //simulator.moveCell(shift, 1);

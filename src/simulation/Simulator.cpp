@@ -26,9 +26,9 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0), bo
     box.setDx(params.bsdx);
     box.setDy(params.bsdy);
     box.setDz(params.bsdz);
-    box.setXend(0.25 * params.bsx);
-    box.setYend(0.25 * params.bsy);
-    box.setZend(0.25 * params.bsz);
+    box.setXend(0.5 * params.bsx);
+    box.setYend(0.5 * params.bsy);
+    box.setZend(0.5 * params.bsz);
     
     try
     {
