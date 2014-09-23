@@ -145,20 +145,6 @@ void Cell::voidVerletLsit()
     {
         vertices[i].nbneigh = 0;
     }
-    
-//    cout << "ALL VOIDED" << endl;
-//        cout << "my cellid="<<cellId << endl;
-//    for (int i = 0; i < numberV; i++ )
-//    {
-//        cout << " vert no= "<< i << " ";
-//        for (int j = 0; j < vertices[i].nbneigh; j++)
-            
-//        {
-//            cout << "("<<vertices[i].nbcellid[j] << ","<< vertices[i].nbvertices[j]<<  ") ";
-//       }
-//        cout <<endl;
-//    }
-//        cout << "<<<>>><<>><<>>" << endl;
 }
 
 void Cell::builtVerletList(const Cell& other_cell)
@@ -173,8 +159,7 @@ void Cell::builtVerletList(const Cell& other_cell)
                     
                 distance_jk = vertices[j].xyz - other_cell.vertices[k].xyz;
                 if (distance_jk.length() <= Rc * verletR)
-                {
-                    //if (k == 0 && other_cell.cellId == 0) cout << "akuku" << endl; 
+                { 
                     vertices[j].nbvertices[vertices[j].nbneigh] = k;
                     vertices[j].nbcellid[vertices[j].nbneigh] = other_cell.cellId;
                     vertices[j].nbneigh++;
@@ -184,16 +169,13 @@ void Cell::builtVerletList(const Cell& other_cell)
     }
     else
     {
-        //cout << "jestem tutaj" << endl;
         for (int j = 0; j < numberV; j++)
         {
-            //vertices[j].nbneigh++;
             for (int k = 0; k < numberV; k++)
             {
                 distance_jk = vertices[j].xyz - vertices[k].xyz;
                 if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= Rc * verletR)
                 {
-                    //cout << " vertices[j].nbneigh= "<< vertices[j].nbneigh << "k= " << k << " other_cell.cellId= "<<other_cell.cellId << " "<< distance_jk.length() << endl;
                     vertices[j].nbvertices[vertices[j].nbneigh] = k;
                     vertices[j].nbcellid[vertices[j].nbneigh] = other_cell.cellId;
                     vertices[j].nbneigh++;
@@ -201,18 +183,6 @@ void Cell::builtVerletList(const Cell& other_cell)
             }
         }
     }
-    
-    //cout << "my cellid="<<cellId << " other_cell_id" << other_cell.cellId <<endl;
-    //for (int i = 0; i < numberV; i++ )
-    //{
-    //    cout << " vert no= "<< i << " ";
-    //    for (int j = 0; j < vertices[i].nbneigh; j++)
-    //        
-    //    {
-    //        cout << "("<<vertices[i].nbcellid[j] << ","<< vertices[i].nbvertices[j]<<  ") ";
-    //    }
-    //    cout <<endl;
-    //}
 }
 
 void Cell::calcForces()
@@ -229,19 +199,6 @@ void Cell::calcForces()
             vertices[i].force += HookeanForce::calcForce(vertices[i].xyz, vertices[idxj].xyz, R0ij, gamma);
         }
     }
-    
-
-    //for (int i = 0; i < numberV; i++)
-    //{
-    //    for (int j = 0; j < numberV; j++)
-    //    {
-    //        if (i != j && ! vertices[i].isNeighbor(j))
-    //        {
-    //            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, vertices[j].xyz, Rc, a);
-    //        }
-    //    }
-    //}
-
     
     calcCM();
     int iva, ivb, ivc;
@@ -332,7 +289,7 @@ void Cell::calcForces(Box& box)
             wallYZ.y = vertices[i].xyz.y;
             wallYZ.z = vertices[i].xyz.z;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, Rc, a);
-            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, 0.15, a);
+            
         }
 
         if (vertices[i].xyz.y != 0 )
@@ -342,7 +299,7 @@ void Cell::calcForces(Box& box)
             wallXZ.y = sgny * bsy;
             wallXZ.z = vertices[i].xyz.z;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, Rc, a);
-            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, 0.15, a);
+            
         }
 
         if (vertices[i].xyz.z != 0 )
@@ -351,8 +308,7 @@ void Cell::calcForces(Box& box)
             wallXY.x = vertices[i].xyz.x;
             wallXY.y = vertices[i].xyz.y;
             wallXY.z = sgnz * bsz;
-            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a);
-            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, 0.05, a);
+            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a);
         }        
     }
 }
@@ -365,27 +321,27 @@ void Cell::voidForces()
     }
 }
 
-void Cell::printCell()
-{
-    cout << "Center of mass = " << cm << endl;
-    cout << "Number of vertices = " << numberV << endl;
-    cout << "Number of triangles = " << numberT << endl;
-    cout << "SURFACE AREA = " << calcSurfaceArea() << endl;
-    cout << "VOLUME = " << calcVolume() << endl;
-    cout << "MASS = " << getMass() << endl;
-    cout << "VISC= " << this->getVisc() << endl;
+//void Cell::printCell()
+//{
+//    cout << "Center of mass = " << cm << endl;
+//    cout << "Number of vertices = " << numberV << endl;
+//    cout << "Number of triangles = " << numberT << endl;
+//    cout << "SURFACE AREA = " << calcSurfaceArea() << endl;
+//    cout << "VOLUME = " << calcVolume() << endl;
+//    cout << "MASS = " << getMass() << endl;
+//    cout << "VISC= " << this->getVisc() << endl;
     
-    for (int i = 0; i < numberV; i++)
-    {
-        vertices[i].printVertex();
-    }
+//    for (int i = 0; i < numberV; i++)
+//    {
+//        vertices[i].printVertex();
+//    }
     
-    for (int i = 0; i < numberT; i++)
-    {
-        triangles[i].printVertexTriangle();
-    }
+//    for (int i = 0; i < numberT; i++)
+//    {
+//        triangles[i].printVertexTriangle();
+//    }
     
-}
+//}
 
 double Cell::calcSurfaceArea()
 {

@@ -40,8 +40,8 @@
    email: dgront @ gmail.com or dgront @ chem.uw.edu.pl (remove space)
 */
 
-#include <utils/Logger.h>
-#include <utils/LogManager.h>
+#include "utils/Logger.h"
+#include "utils/LogManager.h"
 
 namespace utils {
 

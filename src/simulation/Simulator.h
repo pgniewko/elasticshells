@@ -17,6 +17,8 @@
 #include "exceptions/DataException.h"
 #include "exceptions/NotImplementedException.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
+#include "utils/io/ScriptBuilder.h"
+#include "utils/io/XyzTraj.h"
 
 
 using namespace std;
@@ -45,6 +47,7 @@ public:
     void addCell(double);
     
     void initCells(int, double);
+    void initCells(int, double, double);
     
     
     void calcForces();
@@ -57,20 +60,20 @@ public:
     
     int getNumberOfCells() {return numberofCells;}
     
-    void saveCellsState();
-    void saveCellsState(const char*);
-    void renderScript(bool box=false);
-    void saveSurfaceScript();
+    //void saveCellsState();
+    //void saveCellsState(const char*);
+    //void renderScript(bool box=false);
+    //void saveSurfaceScript();
     
     void setBoxSize(double);
     
-    void printCell(int);
+    //void printCell(int);
     
     int getTotalVertices();
     
-    void printBox(ofstream&);
+    //void printBox(ofstream&);
     
-    Cell getCell(int);
+    //Cell getCell(int);
         
 private:
     
@@ -102,12 +105,16 @@ private:
     Box box;
     //int boxSize;
     
-    char* trajfile;
-    char* script;
-    char* surfaceScript;
+    //char* trajfile;
+    //char* script;
+    //char* surfaceScript;
     
     bool pbc;
     bool drawBox;
+    
+    ScriptBuilder sb;
+    XyzTraj traj;
+    
 };
 
 #endif	/* SIMULATOR_H */

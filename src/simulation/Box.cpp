@@ -13,14 +13,11 @@ Box::~Box() {}
 
 void Box::resize()
 {
-    //std::cout << "resized: " << " x= " << x << " y= "<< y << " z=" << z;
-    //std::cout << " xe= " << xe << " ye= "<< ye << " ze=" << ze << std::endl;
     if (x + dx >= xe) {x += dx;}
     
     if (y + dy >= ye) {y += dy;}
     
     if (z + dz >= ze) {z += dz;}
-    //std::cout << "resized: " << " x= " << x << " y= "<< y << " z=" << z << std::endl;
 }
 
 double Box::getVolume()

@@ -10,8 +10,8 @@ using namespace std;
 class Timer
 {
     public:
-        Timer() : t0(0), final(0) {}
-//    Timer(const Timer& orig);
+        Timer();
+        Timer(const Timer& orig);
         virtual ~Timer();
 
         void tic();

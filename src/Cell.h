@@ -33,7 +33,7 @@ public:
     void builtVerletList(const Cell&);
     void voidVerletLsit();
     
-    void printCell();
+    //void printCell();
     void calcForces();
     //void calcForces(const Cell&);
     void calcForcesVL(const Cell&);

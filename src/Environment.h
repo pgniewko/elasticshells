@@ -20,6 +20,7 @@ const double SQRT6   = 2.44948974278319;
 const double DELTA7  = 0.00000001000000;
 const double DELTA14 = 0.00000000000001;
 const double EPSILON = 0.05;
+const double P3ROOT2 = 1.25992104989487;
 
 
 #endif	/* ENVIRONMENT_H */

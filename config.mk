@@ -18,7 +18,7 @@ DEBUG    := -g
 INCLUDE  := -I$(CURDIR)/src
 LIB      := -L/usr/lib
 
-CXXFLAGS := -lm -Wall -O3 -fpermissive $(DEBUG) $(INCLUDE) -Wunused-but-set-variable
+CXXFLAGS := -lm -Wall -O3 -std=gnu++0x -fpermissive $(DEBUG) $(INCLUDE) -Wunused-but-set-variable
 LDFLAGS  := $(LIB)
 LDLIBS   := -lcppunit -ldl
 

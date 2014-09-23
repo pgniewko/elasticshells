@@ -293,6 +293,7 @@ Timer clocks[10];
 
 int main(int argc, char** argv)
 {   
+    print_time();
     
 //    /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
@@ -321,32 +322,14 @@ int main(int argc, char** argv)
     }
     
     clocks[0].tic();
-    print_time();
     
-    
-
     Simulator simulator(arguments);
-    simulator.initCells(arguments.n_cells, 1.5);
-    //simulator.addCell(1.5);
-    //simulator.addCell(1.5);
-    
-    
-    //cout << max(122,123) << endl;
-    
-    //Vector3D vel(-.5,-.5,-.5);
-    //Vector3D vel(-.0,-.0,-.0);
-    //Vector3D shift(4,4,4);
-    //Vector3D shift(0,-3.4,0);
-    //simulator.addCellVel(-vel, 0);
-    //simulator.addCellVel(vel, 1);
-    //simulator.moveCell(shift, 1);
-    //simulator.calcForces();
+    simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
     simulator.simulate(arguments.nsteps);
-    //simulator.printCell(0);
     
+    clocks[0].tic();
     
-    //cout << "cell #1 mass = " << simulator.getCell(0).getMass() << endl;
-    //cout << "cell #2 mass = " << simulator.getCell(1).getMass() << endl;
-    
+    print_time();
+
     return (EXIT_SUCCESS);
 }

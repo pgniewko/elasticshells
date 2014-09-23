@@ -1,14 +1,10 @@
 #include "Timer.h"
 
-//Timer::Timer()
-//{
-//    t0 = 0;
-//    final = 0;
-//}
+Timer::Timer() : t0(0), final(0) {}
 
-Timer::~Timer()
-{
-}
+Timer::Timer(const Timer& orig) : t0(orig.t0), final(orig.final) {}
+
+Timer::~Timer(){}
 
 void Timer::tic()
 {

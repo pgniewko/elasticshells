@@ -9,6 +9,7 @@ SOURCES      := main.cpp \
                 $(wildcard $(SRC)/simulation/*.cpp) \
 		$(wildcard $(SRC)/geometry/algorithms/*.cpp) \
 		$(wildcard $(SRC)/force/*.cpp) \
+		$(wildcard $(SRC)/utils/io/*.cpp) \
 
 HEADERS      := $(wildcard $(SRC)/*.h) \
 		$(wildcard $(SRC)/exceptions/*.h) \
@@ -16,6 +17,7 @@ HEADERS      := $(wildcard $(SRC)/*.h) \
 	        $(wildcard $(SRC)/simulation/*.h) \
 	        $(wildcard $(SRC)/geometry/algorithms/*.h) \
 		$(wildcard $(SRC)/force/*.h) \
+	        $(wildcard $(SRC)/utils/io/*.h) \
 
 TEST_SOURCES := $(wildcard $(TESTS)/*.cpp) \
                 $(wildcard $(SRC)/*.cpp) \
