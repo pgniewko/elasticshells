@@ -1,7 +1,8 @@
 #ifndef BOX_H
 #define	BOX_H
 
-#include <iostream> 
+#include <iostream>
+
 #include "Environment.h"
 
 class Box {

@@ -5,14 +5,11 @@ ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf) : names({'A','B','C',
     script = rs;
     surfaceScript = ss;
     trajfile = tf;
-    //names = {'A','B','C','D','E','F','G','H','I','J'};
 }
 
-ScriptBuilder::ScriptBuilder(const ScriptBuilder& orig) {
-}
+ScriptBuilder::ScriptBuilder(const ScriptBuilder& orig) {}
 
-ScriptBuilder::~ScriptBuilder() {
-}
+ScriptBuilder::~ScriptBuilder() {}
 
 void ScriptBuilder::setDrawBox(bool db)
 {
@@ -77,17 +74,17 @@ void ScriptBuilder::saveSurfaceScript(vector<Cell>& cells)
     int faceCounter = 0;
     int idxa, idxb, idxc;
     
-    int resA1;
-    int resA2;
-    int resB1;
-    int resB2;
-    int resC1;
-    int resC2;
+    int name1Ix;
+    int atom1Ix;
+    int name2Ix;
+    int atom2Ix;
+    int name3Ix;
+    int atom3Ix;
     char cA;
     char cB;
     char cC;
     
-    for (int i = 0; i < cells.size(); i++)
+    for (unsigned int i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].numberofFaces(); j++)
         {
@@ -95,18 +92,18 @@ void ScriptBuilder::saveSurfaceScript(vector<Cell>& cells)
             idxb = cells[i].triangles[j].ib + 1 + lastCellIndex;
             idxc = cells[i].triangles[j].ic + 1 + lastCellIndex;
             
-            resA1 = (int) idxa / 1000;
-            resA2 = idxa % 1000;
-            resB1 = (int) idxb / 1000;
-            resB2 = idxb % 1000;
-            resC1 = (int) idxc / 1000;;
-            resC2 = idxc % 1000;
-            cA = names[resA1];
-            cB = names[resB1];
-            cC = names[resC1];
+            name1Ix = (int) idxa / 1000;
+            atom1Ix = idxa % 1000;
+            name2Ix = (int) idxb / 1000;
+            atom2Ix = idxb % 1000;
+            name3Ix = (int) idxc / 1000;;
+            atom3Ix = idxc % 1000;
+            cA = names[name1Ix];
+            cB = names[name2Ix];
+            cC = names[name3Ix];
             
       
-            os << "cmd.do(\"draw_plane \\\"face"<<faceCounter<<"\\\", "<< cA<<"_"<< resA2 << ", "<< cB<<"_" << resB2 << ", "<< cC<<"_" << resC2 << ", (0.8, 0.8, 0.8) \")\n";
+            os << "cmd.do(\"draw_plane \\\"face"<<faceCounter<<"\\\", "<< cA<<"_"<< atom1Ix << ", "<< cB<<"_" << atom2Ix << ", "<< cC<<"_" << atom3Ix << ", (0.8, 0.8, 0.8) \")\n";
             faceCounter++;
         }
         lastCellIndex += cells[i].numberofVertices();
@@ -150,33 +147,30 @@ void ScriptBuilder::saveRenderScript(vector<Cell>& cells, Box& box, bool boxFlag
         printBox(os, box);
     }    
     
-    //cout << "dupa2" << endl;
     char namesx[10] = {'A','B','C','D','E','F','G','H','I','J'};
-   // cout << namesx[0] << endl;
     
-    
-    int res1A;
-    int res1B;
-    int res2A;
-    int res2B;
+    int name1Ix;
+    int atom1Ix;
+    int name2Ix;
+    int atom2Ix;
     
     int iidx, jidx;
     int lastCellIndex = 0;
-    for (int i = 0; i < cells.size(); i++)
+    for (unsigned int i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
-            res1A = (int) iidx / 1000;
-            res1B = iidx % 1000;
-            os << "cmd.do(\"select "<< namesx[res1A]<<" " << res1B << ", name "<< namesx[res1A] << res1B << "\")\n";
+            name1Ix = (int) iidx / 1000;
+            atom1Ix = iidx % 1000;
+            os << "cmd.do(\"select "<< namesx[name1Ix]<<" " << atom1Ix << ", name "<< namesx[name1Ix] << atom1Ix << "\")\n";
             
         }
         lastCellIndex += cells[i].numberofVertices();
     }
     
     lastCellIndex = 0;
-    for (int i = 0; i < cells.size(); i++)
+    for (unsigned int i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].numberofVertices(); j++)
         {
@@ -184,11 +178,11 @@ void ScriptBuilder::saveRenderScript(vector<Cell>& cells, Box& box, bool boxFlag
             for (int k = 0; k < cells[i].vertices[j].nneigh; k++)
             {
                 jidx = cells[i].vertices[j].neighbors[k] + 1 + lastCellIndex;
-                res1A = (int) iidx / 1000;
-                res1B = iidx % 1000;
-                res2A = (int) jidx / 1000;
-                res2B = jidx % 1000;
-                os << "cmd.do(\"bond "<< namesx[res1A] << "_"<< res1B << ", "<< namesx[res2A]<<"_" << res2B << "\")\n";
+                name1Ix = (int) iidx / 1000;
+                atom1Ix = iidx % 1000;
+                name2Ix = (int) jidx / 1000;
+                atom2Ix = jidx % 1000;
+                os << "cmd.do(\"bond "<< namesx[name1Ix] << "_"<< atom1Ix << ", "<< namesx[name2Ix]<<"_" << atom2Ix << "\")\n";
             }
             
         }

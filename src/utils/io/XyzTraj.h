@@ -3,10 +3,7 @@
 
 
 #include <fstream>
-#include <float.h>      /* DBL_MAX */
-#include <cstring>
 #include <vector>
-#include <stdio.h>      /* fprintf*/
 
 #include "Cell.h"
 #include "simulation/Box.h"
@@ -17,8 +14,10 @@ public:
     XyzTraj(const XyzTraj& orig);
     virtual ~XyzTraj();
     
-    void save(vector<Cell>&, int);
+    void open();
     void close();
+    void save(vector<Cell>&, int);
+    
 private:
     char* trajfile;
     FILE* os;

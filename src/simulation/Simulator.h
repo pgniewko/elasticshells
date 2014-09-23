@@ -1,8 +1,6 @@
 #ifndef SIMULATOR_H
 #define	SIMULATOR_H
 
-//#define MAX_CELLS 100
-
 #include <fstream>
 #include <float.h>      /* DBL_MAX */
 #include <cstring>
@@ -49,41 +47,25 @@ public:
     void initCells(int, double);
     void initCells(int, double, double);
     
-    
     void calcForces();
-    void move();
-    
-    arguments params;
     
     void moveCell(const Vector3D&, int);
     void addCellVel(const Vector3D&, int);
     
     int getNumberOfCells() {return numberofCells;}
-    
-    //void saveCellsState();
-    //void saveCellsState(const char*);
-    //void renderScript(bool box=false);
-    //void saveSurfaceScript();
-    
     void setBoxSize(double);
-    
-    //void printCell(int);
-    
     int getTotalVertices();
-    
-    //void printBox(ofstream&);
-    
-    //Cell getCell(int);
         
 private:
     
-    vector<Cell> cells;
     void (Simulator::*integrator)();
     void setIntegrator(void (Simulator::*functoall)());
     void diagnoseParams();
     void rebuildVerletLists();
-    int numberofCells;
     
+    vector<Cell> cells;
+    arguments params;
+    int numberofCells;
     double dt;
     double a;
     double dp;
@@ -95,7 +77,6 @@ private:
     double verlet_r;
     int nsteps;
     int d;
-    //double bs;
     
     int logStep;
     int saveStep;
@@ -103,12 +84,6 @@ private:
     int boxStep;
     
     Box box;
-    //int boxSize;
-    
-    //char* trajfile;
-    //char* script;
-    //char* surfaceScript;
-    
     bool pbc;
     bool drawBox;
     
