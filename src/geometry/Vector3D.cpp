@@ -18,7 +18,7 @@ double Vector3D::length2() const
     return x * x + y * y + z * z;
 }
 
-void Vector3D::setLength(double r) 
+void Vector3D::setLength(double r)
 {
     if (length() != 0)
     {
@@ -32,12 +32,14 @@ void Vector3D::setLength(double r)
 double Vector3D::angle(const Vector3D& v) const
 {
     if (this->length() == 0 || v.length() == 0)
+    {
         throw DataException("Zero length vector");
-        
+    }
+
     double d = *this * v;
     double l1 = length();
     double l2 = v.length();
-    double angle = acos(d / (l1*l2));
+    double angle = acos(d / (l1 * l2));
     return angle;
 }
 

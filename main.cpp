@@ -8,7 +8,7 @@
 #include <fstream>     /* ios, ofstream*/
 #include <stdio.h>     /* printf, fgets */
 #include <argp.h>      /* argp_parse */
-#include <stdlib.h>    /* atoi,  strtod */ 
+#include <stdlib.h>    /* atoi,  strtod */
 #include <math.h>      /* log, sqrt */
 
 #include "src/Timer.h"
@@ -56,9 +56,11 @@ static struct argp_option options[] =
     {"ns",        604, "INT", 0, "Number of simulation steps [default: 100]"},
     {"save-step", 605, "INT", 0, "Save step interval [default: 10]"},
     {"box-step",  606, "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"vlist-step",607, "INT", 0, "Verlet-list step interval [default: 100]"},
-    {"int",       701, "STR", 0, "Integrator of equations of motion: "
-                                 "Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], Velocity-Verlet[vv] [default: fe]"},
+    {"vlist-step", 607, "INT", 0, "Verlet-list step interval [default: 100]"},
+    {
+        "int",       701, "STR", 0, "Integrator of equations of motion: "
+        "Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], Velocity-Verlet[vv] [default: fe]"
+    },
 
     {0,             0, 0, 0, "System Options:", 5},
     {0,           'a', "NUM", 0, "Repulsion parameter between bodies [default: 1.0]"},
@@ -125,164 +127,124 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->pbc = false;
             arguments->draw_box = true;
             break;
-
         case 'q':
         case 's':
             arguments->silent = arg ? atoi (arg) : 1;
             arguments->verbose = 0;
             break;
-
         case 'v':
         case 'd':
             arguments->verbose = arg ? atoi (arg) : 1;
             arguments->silent = 0;
             break;
-
         case 'i':
             arguments->input_file = arg;
             break;
-
         case 'o':
             arguments->output_file = arg;
             break;
-
         case 't':
             arguments->traj_file = arg;
             break;
-
         case 'l':
             arguments->log_file = arg;
             break;
-
         case 'n':
             arguments->n_cells = arg ? atoi (arg) : 1;
             break;
-
         case 'a':
             arguments->a = arg ? strtod (arg, NULL) : 1.0;
             break;
-
         case 'm':
             arguments->mass = arg ? strtod (arg, NULL) : 1.0;
             break;
-            
         case 'k':
             arguments->k = arg ? strtod (arg, NULL) : 1.0;
             break;
-            
         case 011:
             arguments->surface_file = arg;
-            break;    
-
+            break;
         case 301:
             arguments->pbc = true;
             break;
-            
         case 302:
             arguments->draw_box = true;
-            break;    
-            
+            break;
         case 401:
             arguments->L = arg ? strtod (arg, NULL) : 10.0;
             break;
-            
         case 501:
             arguments->d = arg ? atoi (arg) : 3;
             break;
-
         case 601:
             arguments->dt = arg ? strtod (arg, NULL) : 0.001;
             break;
-            
         case 602:
             arguments->ttime = arg ? strtod (arg, NULL) : 1.0;
             break;
-
         case 603:
             arguments->log_step = arg ? atoi (arg) : 1;
             break;
-            
         case 604:
             arguments->nsteps = arg ? atoi (arg) : 100;
             break;
-            
         case 605:
             arguments->save_step = arg ? atoi (arg) : 1;
             break;
-            
         case 606:
             arguments->box_step = arg ? atoi (arg) : 1;
             break;
-            
         case 607:
             arguments->vlist_step = arg ? atoi (arg) : 100;
-            break;    
-            
+            break;
         case 701:
             arguments->integrator_a = arg;
             break;
-            
-         case 801:
+        case 801:
             arguments->visc = arg ? strtod (arg, NULL) : 1.0;
-            break;  
-            
+            break;
         case 802:
             arguments->dp = arg ? strtod (arg, NULL) : 0.0;
             break;
-            
         case 803:
             arguments->r_cut = arg ?  strtod (arg, NULL) : 1.0;
             break;
-           
         case 804:
             arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;
             break;
-            
         case 805:
             arguments->bsy = arg ?  strtod (arg, NULL) : 10.0;
             break;
-            
         case 806:
             arguments->bsz = arg ?  strtod (arg, NULL) : 10.0;
             break;
-            
         case 807:
             arguments->verlet_r = arg ?  strtod (arg, NULL) : 2.0;
             break;
-            
         case 808:
             arguments->bsdx = arg ?  strtod (arg, NULL) : 0.0;
             break;
-            
         case 809:
             arguments->bsdy = arg ?  strtod (arg, NULL) : 0.0;
             break;
-            
         case 810:
             arguments->bsdz = arg ?  strtod (arg, NULL) : 0.0;
-            break;       
-            
+            break;
         case 811:
             arguments->r_bc = arg ?  strtod (arg, NULL) : 0.5;
-            break;    
-            
-
+            break;
         case OPT_ABORT:
             arguments->abort = 1;
             break;
-
 //      case ARGP_KEY_NO_ARGS:
 //          argp_usage (state);
-
         case ARGP_KEY_ARG:
             arguments->strings = &state->argv[state->next];
             state->next = state->argc;
             break;
-
         default:
             return ARGP_ERR_UNKNOWN;
     }
-    
 
     return 0;
 }
@@ -292,17 +254,14 @@ static struct argp argp = { options, parse_opt, args_doc, doc };
 Timer clocks[10];
 
 int main(int argc, char** argv)
-{   
+{
     print_time();
-    
 //    /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
     init_by_array(init, length);
-
     /* Parse our arguments; every option seen by parse_opt will
        be reflected in arguments. */
     struct arguments arguments;
-
     argp_parse (&argp, argc, argv, 0, 0, &arguments);
 
     if (arguments.abort)
@@ -320,16 +279,12 @@ int main(int argc, char** argv)
                 arguments.verbose ? "yes" : "no",
                 arguments.silent ? "yes" : "no");
     }
-    
+
     clocks[0].tic();
-    
     Simulator simulator(arguments);
     simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
     simulator.simulate(arguments.nsteps);
-    
     clocks[0].tic();
-    
     print_time();
-
     return (EXIT_SUCCESS);
 }

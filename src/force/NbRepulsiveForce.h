@@ -4,15 +4,15 @@
 #include "Environment.h"
 #include "geometry/Vector3D.h"
 
-class NbRepulsiveForce 
+class NbRepulsiveForce
 {
-public:
-    NbRepulsiveForce();
-    NbRepulsiveForce(const NbRepulsiveForce& orig);
-    virtual ~NbRepulsiveForce();
-    static Vector3D calcForce(const Vector3D&, const Vector3D&, const double, const double);
+    public:
+        NbRepulsiveForce();
+        NbRepulsiveForce(const NbRepulsiveForce& orig);
+        virtual ~NbRepulsiveForce();
+        static Vector3D calcForce(const Vector3D&, const Vector3D&, const double, const double);
 
-private:
+    private:
 
 };
 

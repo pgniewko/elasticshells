@@ -5,12 +5,12 @@
 
 class HookeanForce
 {
-public:
-    HookeanForce();
-    HookeanForce(const HookeanForce& orig);
-    virtual ~HookeanForce();
-    
-    static Vector3D calcForce(const Vector3D&, const Vector3D&, const double, const double);
+    public:
+        HookeanForce();
+        HookeanForce(const HookeanForce& orig);
+        virtual ~HookeanForce();
+
+        static Vector3D calcForce(const Vector3D&, const Vector3D&, const double, const double);
 
 };
 #endif	/* HOOKEANFORCE_H */

@@ -32,11 +32,11 @@
 
    The source code is a part of BioShell library. Please cite BioShell as:
    1. D.Gront and A.Kolinski "Utility library for structural bioinformatics" Bioinformatics 2008 24(4):584-585
-   2. D.Gront and A.Kolinski "BioShell - a package of tools for structural biology computations" Bioinformatics 2006 22(5):621-622 
+   2. D.Gront and A.Kolinski "BioShell - a package of tools for structural biology computations" Bioinformatics 2006 22(5):621-622
 
 
    Any feedback is very welcome.
-   http://www.bioshell.pl/   
+   http://www.bioshell.pl/
    email: dgront @ gmail.com or dgront @ chem.uw.edu.pl (remove space)
 */
 
@@ -49,65 +49,73 @@
 #include <fstream>
 #include <map>
 
-namespace utils {
+namespace utils
+{
 
-enum class LogLevel {
-	CRITICAL = 0,
-	SEVERE = 1,
-	WARNING = 2,
-	FILE = 3,
-	INFO = 4,
-	FINE = 5,
-	FINER = 6,
-	FINEST = 7,
-};
+    enum class LogLevel
+    {
+        CRITICAL = 0,
+        SEVERE = 1,
+        WARNING = 2,
+        FILE = 3,
+        INFO = 4,
+        FINE = 5,
+        FINER = 6,
+        FINEST = 7,
+    };
 
-static const std::pair<LogLevel, std::string> pairs[] = { //
-		std::pair<LogLevel, std::string>(LogLevel::CRITICAL, "CRITICAL"), //
-		std::pair<LogLevel, std::string>(LogLevel::SEVERE, "SEVERE"), //
-		std::pair<LogLevel, std::string>(LogLevel::WARNING, "WARNING"), //
-		std::pair<LogLevel, std::string>(LogLevel::INFO, "INFO"), //
-		std::pair<LogLevel, std::string>(LogLevel::FINE, "FINE"), //
-		std::pair<LogLevel, std::string>(LogLevel::FINER, "FINER"), //
-		std::pair<LogLevel, std::string>(LogLevel::FINEST, "FINEST"), //
-		std::pair<LogLevel, std::string>(LogLevel::FILE, "FILE") //
-		};
+    static const std::pair<LogLevel, std::string> pairs[] =   //
+    {
+        std::pair<LogLevel, std::string>(LogLevel::CRITICAL, "CRITICAL"), //
+        std::pair<LogLevel, std::string>(LogLevel::SEVERE, "SEVERE"), //
+        std::pair<LogLevel, std::string>(LogLevel::WARNING, "WARNING"), //
+        std::pair<LogLevel, std::string>(LogLevel::INFO, "INFO"), //
+        std::pair<LogLevel, std::string>(LogLevel::FINE, "FINE"), //
+        std::pair<LogLevel, std::string>(LogLevel::FINER, "FINER"), //
+        std::pair<LogLevel, std::string>(LogLevel::FINEST, "FINEST"), //
+        std::pair<LogLevel, std::string>(LogLevel::FILE, "FILE") //
+    };
 
-static const std::map<LogLevel, std::string> log_level_names(pairs,
-		pairs + sizeof(pairs) / sizeof(pairs[0]));
+    static const std::map<LogLevel, std::string> log_level_names(pairs,
+            pairs + sizeof(pairs) / sizeof(pairs[0]));
 
-class Logger {
-public:
+    class Logger
+    {
+        public:
 
-	Logger(const std::string & module_name) :
-			module_name_(module_name) {
-	}
+            Logger(const std::string& module_name) :
+                module_name_(module_name)
+            {
+            }
 
-	inline const std::string & module_name() const { return module_name_; }
+            inline const std::string& module_name() const
+            {
+                return module_name_;
+            }
 
-	virtual ~Logger() {}
+            virtual ~Logger() {}
 
-	bool is_logable(LogLevel level) const;
+            bool is_logable(LogLevel level) const;
 
-	friend Logger &operator <<(Logger &logger, const LogLevel level);
+            friend Logger& operator <<(Logger& logger, const LogLevel level);
 
-	friend Logger &operator <<(Logger &logger, const char* message);
+            friend Logger& operator <<(Logger& logger, const char* message);
 
-	friend Logger &operator <<(Logger &logger, const std::string & message);
+            friend Logger& operator <<(Logger& logger, const std::string& message);
 
-	friend Logger &operator <<(Logger &logger, const double value);
+            friend Logger& operator <<(Logger& logger, const double value);
 
-	friend Logger &operator <<(Logger &logger, const int number);
+            friend Logger& operator <<(Logger& logger, const int number);
 
-	friend Logger &operator <<(Logger &logger, const size_t number);
+            friend Logger& operator <<(Logger& logger, const size_t number);
 
-	friend Logger &operator <<(Logger &logger, const unsigned long long number);
+            friend Logger& operator <<(Logger& logger, const unsigned long long number);
 
-private:
-	const std::string  module_name_;
-	std::ostream &sink = std::cerr;
-	LogLevel recent_level = LogLevel::INFO;
-};
+        private:
+            const std::string  module_name_;
+            std::ostream& sink = std::cerr;
+            LogLevel recent_level = LogLevel::INFO;
+    };
 
 }
 #endif /* UTILS_LOGGER_HH */

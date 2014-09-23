@@ -39,7 +39,6 @@ inline double gaussian(double m, double s)
     y = sqrt((-2.0 * log(w)) / w);
     x1 = v1 * y;
     //x2 = v2 * y;
-
     return (m + x1 * s);
 }
 

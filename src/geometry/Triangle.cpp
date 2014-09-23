@@ -1,6 +1,6 @@
 #include "Triangle.h"
 
-//Triangle::Triangle() 
+//Triangle::Triangle()
 //{
 //}
 
@@ -17,7 +17,7 @@ double Triangle::area() const
     {
         Vector3D AB = b - a;
         Vector3D AC = c - a;
-        double angle = AB.angle(AC); 
+        double angle = AB.angle(AC);
         double lab = AB.length();
         double lac = AC.length();
         double area = fabs( 0.5 * lab * lac * sin(angle) );
@@ -32,6 +32,15 @@ double Triangle::area() const
 
 void Triangle::printTriangle() {}
 
-Vector3D Triangle::getVertexA() {return this->a;}
-Vector3D Triangle::getVertexB() {return this->b;}
-Vector3D Triangle::getVertexC() {return this->c;}
+Vector3D Triangle::getVertexA()
+{
+    return this->a;
+}
+Vector3D Triangle::getVertexB()
+{
+    return this->b;
+}
+Vector3D Triangle::getVertexC()
+{
+    return this->c;
+}

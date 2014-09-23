@@ -4,7 +4,7 @@ Timer::Timer() : t0(0), final(0) {}
 
 Timer::Timer(const Timer& orig) : t0(orig.t0), final(orig.final) {}
 
-Timer::~Timer(){}
+Timer::~Timer() {}
 
 void Timer::tic()
 {

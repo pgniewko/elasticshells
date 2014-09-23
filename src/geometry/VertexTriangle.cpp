@@ -8,9 +8,15 @@ VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(ori
 
 VertexTriangle::~VertexTriangle() {}
 
-void VertexTriangle::setId(int idx) {myindex = idx;}
+void VertexTriangle::setId(int idx)
+{
+    myindex = idx;
+}
 
-int VertexTriangle::getId() {return myindex;}
+int VertexTriangle::getId()
+{
+    return myindex;
+}
 
 void VertexTriangle::printVertexTriangle()
 {
@@ -20,7 +26,6 @@ void VertexTriangle::printVertexTriangle()
 
 double VertexTriangle::area(const Vertex vs[])
 {
-
     if (ia != -1 && ib != -1 && ic != -1)
     {
         Triangle t(vs[ia].xyz, vs[ib].xyz, vs[ic].xyz);
@@ -29,5 +34,5 @@ double VertexTriangle::area(const Vertex vs[])
     else
     {
         return 0.0;
-    }    
+    }
 }

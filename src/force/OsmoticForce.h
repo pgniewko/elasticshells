@@ -6,12 +6,12 @@
 
 class OsmoticForce
 {
-public:
-    OsmoticForce();
-    OsmoticForce(const OsmoticForce& orig);
-    virtual ~OsmoticForce();
-    static Vector3D calcForce(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&, const double);
-private:
+    public:
+        OsmoticForce();
+        OsmoticForce(const OsmoticForce& orig);
+        virtual ~OsmoticForce();
+        static Vector3D calcForce(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&, const double);
+    private:
 
 };
 

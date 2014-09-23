@@ -14,8 +14,8 @@ struct arguments
     char* output_file;            /* file arg to ‘--output’ */
     char* traj_file;              /* file arg to ‘--traj’ */
     char* log_file;               /* file arg to ‘--log’ */
-    char* surface_file;           
-    
+    char* surface_file;
+
     char* integrator_a;
 
     int d;
@@ -38,7 +38,7 @@ struct arguments
     double r_bc;                  /* cellA-cellB */
 //    double r_cut3;                  /* cell-box */
     double verlet_r;
-    
+
     double bsx;
     double bsy;
     double bsz;

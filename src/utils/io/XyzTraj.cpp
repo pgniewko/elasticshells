@@ -1,6 +1,6 @@
 #include "XyzTraj.h"
 
-XyzTraj::XyzTraj(char* tf) : names({'A','B','C','D','E','F','G','H','I','J'})
+XyzTraj::XyzTraj(char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'})
 {
     trajfile = tf;
 }
@@ -15,8 +15,8 @@ void XyzTraj::save(vector<Cell>& cells, int totV)
     int atomIx;
     int lastCellIndex = 0;
     int index;
-    
     fprintf(os, "%i\n", totV);
+
     for (unsigned int i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].numberofVertices(); j++)
@@ -26,7 +26,7 @@ void XyzTraj::save(vector<Cell>& cells, int totV)
             atomIx = index % 1000;
             fprintf(os, "%c%i %10.5f %10.5f %10.5f \n", names[nameIx], atomIx, cells[i].vertices[j].xyz.x, cells[i].vertices[j].xyz.y, cells[i].vertices[j].xyz.z);
         }
-        
+
         lastCellIndex += cells[i].numberofVertices();
     }
 }

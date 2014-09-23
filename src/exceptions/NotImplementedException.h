@@ -7,8 +7,8 @@ using namespace std;
 
 class NotImplementedException : public std::runtime_error
 {
-public:
-  NotImplementedException(const string& what_arg) : runtime_error( what_arg ) {}
+    public:
+        NotImplementedException(const string& what_arg) : runtime_error( what_arg ) {}
 };
 
 #endif	/* NOTIMPLEMENTEDEXCEPTION_H */

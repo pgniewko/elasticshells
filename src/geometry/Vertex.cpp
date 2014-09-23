@@ -8,21 +8,21 @@ Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), nneigh(0), ntrian(0
 Vertex::Vertex(Vector3D v) : xyz(v), nneigh(0), ntrian(0), nbneigh(0), id(-1), mass(1.0) {}
 
 Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(orig.velocity),
-                                     tmp_xyz(orig.tmp_xyz), tmp_force(orig.tmp_force), tmp_velocity(orig.tmp_velocity),
-                                     nneigh(orig.nneigh), ntrian(orig.ntrian), nbneigh(orig.nbneigh),
-                                     id(orig.id), mass( orig.mass ), visc(orig.visc)
+    tmp_xyz(orig.tmp_xyz), tmp_force(orig.tmp_force), tmp_velocity(orig.tmp_velocity),
+    nneigh(orig.nneigh), ntrian(orig.ntrian), nbneigh(orig.nbneigh),
+    id(orig.id), mass( orig.mass ), visc(orig.visc)
 {
     for (int i = 0; i < nneigh; i++)
     {
         neighbors[i] = orig.neighbors[i];
         R0[i] = orig.R0[i];
     }
-    
+
     for (int i = 0; i < ntrian; i++)
     {
         vertextri[i] = orig.vertextri[i];
     }
-    
+
     for (int i = 0; i < nbneigh; i++)
     {
         nbvertices[i] = orig.nbvertices[i];
@@ -34,17 +34,20 @@ Vertex::~Vertex() {}
 
 void Vertex::addNeighbor(int idx, double k0n)
 {
- 
     try
     {
         if (getNumNeighbors() >= MAX_CELLS)
             throw MaxSizeException("Maximum number of neighbors has been reached."
-                                    "New neighbor will not be added !");
-        
+                                   "New neighbor will not be added !");
+
         for (int i = 0; i < nneigh; i++)
         {
-            if (neighbors[i] == idx)  return;
+            if (neighbors[i] == idx)
+            {
+                return;
+            }
         }
+
         neighbors[nneigh] = idx;
         R0[nneigh] = k0n;
         nneigh++;
@@ -60,8 +63,12 @@ bool Vertex::isNeighbor(int vidx)
 {
     for (int i = 0; i < nneigh; i++)
     {
-        if (neighbors[i] == vidx) return true;
+        if (neighbors[i] == vidx)
+        {
+            return true;
+        }
     }
+
     return false;
 }
 
@@ -71,14 +78,18 @@ void Vertex::addTriangle(int idx)
     {
         if (getNumNeighbors() >= TRIAN_MAX)
             throw MaxSizeException("Maximum number of triangles has been reached."
-                                    "New triangle will not be added !");
-        
+                                   "New triangle will not be added !");
+
         for (int i = 0; i < ntrian; i++)
         {
-            if (vertextri[i] == idx) return;
+            if (vertextri[i] == idx)
+            {
+                return;
+            }
         }
+
         vertextri[ntrian] = idx;
-        ntrian++;    
+        ntrian++;
     }
     catch (MaxSizeException& e)
     {
@@ -161,19 +172,22 @@ double Vertex::getVisc()
 
 void Vertex::printVertex()
 {
-    cout << "myid=" << id << " "; 
+    cout << "myid=" << id << " ";
     cout << "nneigh= " << nneigh << " ntrian=" << ntrian << " ";
     cout << " x=" << xyz.x << " y=" << xyz.y << " z=" << xyz.z << " : ";
     cout << " x=" << force.x << " y=" << force.y << " z=" << force.z << " : ";
+
     for (int i = 0; i < nneigh; i++)
     {
         cout << neighbors[i] << " " ;
     }
+
     cout << " : ";
-    
+
     for (int i = 0; i < ntrian; i++)
     {
         cout << vertextri[i] << " " ;
-    }   
-    cout <<endl;
+    }
+
+    cout << endl;
 }

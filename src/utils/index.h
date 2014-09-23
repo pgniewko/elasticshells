@@ -32,22 +32,23 @@
 
    The source code is a part of BioShell library. Please cite BioShell as:
    1. D.Gront and A.Kolinski "Utility library for structural bioinformatics" Bioinformatics 2008 24(4):584-585
-   2. D.Gront and A.Kolinski "BioShell - a package of tools for structural biology computations" Bioinformatics 2006 22(5):621-622 
+   2. D.Gront and A.Kolinski "BioShell - a package of tools for structural biology computations" Bioinformatics 2006 22(5):621-622
 
 
    Any feedback is very welcome.
-   http://www.bioshell.pl/   
+   http://www.bioshell.pl/
    email: dgront @ gmail.com or dgront @ chem.uw.edu.pl (remove space)
 */
 
 #ifndef INDEX_H
 #define INDEX_H
 
-namespace core {
+namespace core
+{
 
-typedef unsigned short int index2; ///< two bytes long unsigned integer
+    typedef unsigned short int index2; ///< two bytes long unsigned integer
 
-typedef unsigned int index4; ///< four bytes long unsigned integer
+    typedef unsigned int index4; ///< four bytes long unsigned integer
 } // ~core
 
 #endif

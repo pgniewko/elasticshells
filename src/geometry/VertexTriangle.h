@@ -5,22 +5,23 @@
 #include "Vertex.h"
 #include "Triangle.h"
 
-class Vertex; 
+class Vertex;
 
-class VertexTriangle {
-public:
-    VertexTriangle();
-    VertexTriangle(int, int, int);
-    VertexTriangle(const VertexTriangle& orig);
-    virtual ~VertexTriangle();
-    void setId(int);
-    int getId();
-    double area(const Vertex[]);
-    
-    void printVertexTriangle();
-    
-    int ia, ib, ic;
-    int myindex;
+class VertexTriangle
+{
+    public:
+        VertexTriangle();
+        VertexTriangle(int, int, int);
+        VertexTriangle(const VertexTriangle& orig);
+        virtual ~VertexTriangle();
+        void setId(int);
+        int getId();
+        double area(const Vertex[]);
+
+        void printVertexTriangle();
+
+        int ia, ib, ic;
+        int myindex;
 };
 
 #endif	/* VERTEXTRIANGLE_H */

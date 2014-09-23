@@ -150,18 +150,15 @@ unsigned long genrand_int32(void)
 
         y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
         mt[N - 1] = mt[M - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
-
         mti = 0;
     }
 
     y = mt[mti++];
-
     /* Tempering */
     y ^= (y >> 11);
     y ^= (y << 7) & 0x9d2c5680UL;
     y ^= (y << 15) & 0xefc60000UL;
     y ^= (y >> 18);
-
     return y;
 }
 

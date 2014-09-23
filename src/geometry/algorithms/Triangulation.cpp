@@ -9,10 +9,10 @@ Triangulation::~Triangulation() {}
 void Triangulation::saveTriangulatedSurface(const char* filename, bool wrap)
 {
     ofstream os(filename);
-    
     int index = 1;
-    os << 3*(int)tris.size() << "\n" ;
-    for(list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i) // go through all triangles
+    os << 3 * (int)tris.size() << "\n" ;
+
+    for (list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i) // go through all triangles
     {
         if (wrap)
         {
@@ -20,9 +20,9 @@ void Triangulation::saveTriangulatedSurface(const char* filename, bool wrap)
         }
         else
         {
-           os << "H" << index++ << " "<< i->a.x << " " << i->a.y << " " << i->a.z << "\n";
-           os << "H" << index++ << " "<< i->b.x << " " << i->b.y << " " << i->b.z << "\n";
-           os << "H" << index++ << " "<< i->c.x << " " << i->c.y << " " << i->c.z << "\n";
+            os << "H" << index++ << " " << i->a.x << " " << i->a.y << " " << i->a.z << "\n";
+            os << "H" << index++ << " " << i->b.x << " " << i->b.y << " " << i->b.z << "\n";
+            os << "H" << index++ << " " << i->c.x << " " << i->c.y << " " << i->c.z << "\n";
         }
     }
 
@@ -32,7 +32,6 @@ void Triangulation::saveTriangulatedSurface(const char* filename, bool wrap)
 void Triangulation::saveRenderingScript(const char* filename, const char* cellsfile)
 {
     ofstream os(filename);
-    
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
     os << "cmd.do(\"load " << cellsfile << ", cells\")\n";
@@ -42,19 +41,17 @@ void Triangulation::saveRenderingScript(const char* filename, const char* cellsf
     os << "cmd.do(\"show spheres\")\n";
     os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
     os << "cmd.do(\"rebuild\")\n";
-
-
     int index = 1;
-    for(std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
+
+    for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
-        os << "cmd.do(\"bond /cells///UNK`/H"<< index+0 << ", /cells///UNK`/H" << index+1 << "\")\n";
-        os << "cmd.do(\"bond /cells///UNK`/H"<< index+1 << ", /cells///UNK`/H" << index+2 << "\")\n";
-        os << "cmd.do(\"bond /cells///UNK`/H"<< index+2 << ", /cells///UNK`/H" << index+0 << "\")\n";
+        os << "cmd.do(\"bond /cells///UNK`/H" << index + 0 << ", /cells///UNK`/H" << index + 1 << "\")\n";
+        os << "cmd.do(\"bond /cells///UNK`/H" << index + 1 << ", /cells///UNK`/H" << index + 2 << "\")\n";
+        os << "cmd.do(\"bond /cells///UNK`/H" << index + 2 << ", /cells///UNK`/H" << index + 0 << "\")\n";
         index = index + 3;
     }
-    
+
     os << "cmd.do(\"show lines\")\n";
     os << "cmd.do(\"bg white\")\n";
-
     os.close();
 }

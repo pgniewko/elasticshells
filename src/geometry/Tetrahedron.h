@@ -4,16 +4,17 @@
 #include "Environment.h"
 #include "Vector3D.h"
 
-class Tetrahedron {
-public:
+class Tetrahedron
+{
+    public:
 //    Tetrahedron();
-    Tetrahedron(Vector3D, Vector3D, Vector3D, Vector3D);
-    Tetrahedron(const Tetrahedron& orig);
-    virtual ~Tetrahedron();
-    double volume() const;
-    double volumeSgn() const;
-    Vector3D a, b, c, d;
-private:
+        Tetrahedron(Vector3D, Vector3D, Vector3D, Vector3D);
+        Tetrahedron(const Tetrahedron& orig);
+        virtual ~Tetrahedron();
+        double volume() const;
+        double volumeSgn() const;
+        Vector3D a, b, c, d;
+    private:
 
 };
 
