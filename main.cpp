@@ -282,7 +282,8 @@ int main(int argc, char** argv)
 
     clocks[0].tic();
     Simulator simulator(arguments);
-    simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
+    //simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
+    simulator.initCells(arguments.n_cells, 1.5);
     simulator.simulate(arguments.nsteps);
     clocks[0].tic();
     print_time();

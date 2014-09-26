@@ -37,12 +37,12 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     catch (NotImplementedException& e)
     {
         cout <<  e.what() << endl;
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     catch (DataException& e)
     {
         cout << e.what() << endl;
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -192,7 +192,14 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % saveStep == 0)
         {
-            traj.save(cells, getTotalVertices());
+            if (true) 
+            {
+                traj.save(cells, getTotalVertices());
+            }
+            else 
+            {
+                traj.save(cells, getTotalVertices(), params.bsx / box.getX(), params.bsy / box.getY(), params.bsz / box.getZ());
+            }
         }
     }
 
@@ -326,7 +333,6 @@ void Simulator::heunMethod()
             m = cells[i].vertices[j].getMass();
             f = cells[i].vertices[j].getVisc();
             mf = m * f;
-            //cout << "m= "<< m << " f= "<< f << " mf= " << mf << endl;
             cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / mf;
         }
     }

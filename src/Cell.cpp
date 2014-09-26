@@ -219,18 +219,6 @@ void Cell::calcForces()
     }
 }
 
-//void Cell::calcForces(const Cell& other_cell)
-//{
-//    for (int i = 0; i < numberV; i++)
-//    {
-//        for (int j = 0; j < other_cell.numberV; j++)
-//        {
-//            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[j].xyz, Rc, a);
-//        }
-//    }
-//
-//}
-
 void Cell::calcForcesVL(const Cell& other_cell)
 {
     int ocellid = other_cell.cellId;
@@ -238,35 +226,16 @@ void Cell::calcForcesVL(const Cell& other_cell)
 
     for (int i = 0; i < numberV; i++)
     {
-        //cout << "vertices["<<i<<"]"<<".nbneigh=" << vertices[i].nbneigh << endl;
         for (int j = 0; j < vertices[i].nbneigh; j++)
         {
             if (vertices[i].nbcellid[j] == ocellid)
             {
                 vertid = vertices[i].nbvertices[j];
                 vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[vertid].xyz, Rc, a);
-                //cout << "i= " << i << " vertid= " << vertid << " myid = " << cellId << " ocellid= " << ocellid << endl;
-                //cout <<  NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[vertid].xyz, Rc, a) << endl;
             }
         }
     }
 }
-
-//void Cell::calcForces(const vector<Cell>& cells)
-//{
-//    int cellid = -1;
-//    int vertid = -1;
-//    for (int i = 0; i < numberV; i++)
-//    {
-//        for (int j = 0; j < vertices[i].nbneigh; j++)
-//        {
-//            cellid = vertices[i].nbcellid[j];
-//            vertid = vertices[i].nbvertices[j];
-//            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, cells[cellid].vertices[vertid].xyz, Rc, a);
-//        }
-//
-//    }
-//}
 
 void Cell::calcForces(Box& box)
 {
@@ -285,6 +254,7 @@ void Cell::calcForces(Box& box)
             wallYZ.y = vertices[i].xyz.y;
             wallYZ.z = vertices[i].xyz.z;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, Rc, a);
+            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, rCellBox, a);
         }
 
         if (vertices[i].xyz.y != 0 )
@@ -294,6 +264,7 @@ void Cell::calcForces(Box& box)
             wallXZ.y = sgny * bsy;
             wallXZ.z = vertices[i].xyz.z;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, Rc, a);
+            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, rCellBox, a);
         }
 
         if (vertices[i].xyz.z != 0 )
@@ -303,6 +274,7 @@ void Cell::calcForces(Box& box)
             wallXY.y = vertices[i].xyz.y;
             wallXY.z = sgnz * bsz;
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a);
+            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, rCellBox, a);
         }
     }
 }
@@ -314,28 +286,6 @@ void Cell::voidForces()
         vertices[i].voidForce();
     }
 }
-
-//void Cell::printCell()
-//{
-//    cout << "Center of mass = " << cm << endl;
-//    cout << "Number of vertices = " << numberV << endl;
-//    cout << "Number of triangles = " << numberT << endl;
-//    cout << "SURFACE AREA = " << calcSurfaceArea() << endl;
-//    cout << "VOLUME = " << calcVolume() << endl;
-//    cout << "MASS = " << getMass() << endl;
-//    cout << "VISC= " << this->getVisc() << endl;
-
-//    for (int i = 0; i < numberV; i++)
-//    {
-//        vertices[i].printVertex();
-//    }
-
-//    for (int i = 0; i < numberT; i++)
-//    {
-//        triangles[i].printVertexTriangle();
-//    }
-
-//}
 
 double Cell::calcSurfaceArea()
 {
@@ -395,6 +345,40 @@ void Cell::calcCM()
     cm = tmp;
 }
 
+void Cell::setVisc(double mu)
+{
+    visc0tot = mu;
+    visc0 = visc0tot / numberV;
+
+    for (int i = 0; i < numberV; i++)
+    {
+        vertices[i].setVisc(visc0);
+    }
+}
+
+void Cell::setMass(double m)
+{
+    mass0tot = m;
+    mass0 = mass0tot / numberV;
+
+    for (int i = 0; i < numberV; i++)
+    {
+        vertices[i].setMass(mass0);
+    }
+}
+
+double Cell::getVisc()
+{
+    double v = 0;
+
+    for (int i = 0; i < numberV; i++)
+    {
+        v += vertices[i].getVisc();
+    }
+
+    return v;
+}
+
 void Cell::addVelocity(const Vector3D& nv)
 {
     for (int i = 0; i < numberV; i++)
@@ -420,52 +404,6 @@ int Cell::numberofVertices()
 {
     return numberV;
 }
-
-
-//void Cell::saveTriangulatedSurface(const char* filename)
-//{
-//    int index;
-//    ofstream os(filename);
-//    os << numberV << "\n" ;
-//    for (int i = 0; i < numberV; i++)
-//    {
-//        index = (vertices[i].getId()+1) ;
-//        os << "H" << index << " "<< vertices[i].xyz.x << " " << vertices[i].xyz.y << " " << vertices[i].xyz.z << "\n";
-//    }
-//    os.close();
-//}
-
-//void Cell::saveRenderingScript(const char* filename, const char* cellsfile)
-//{
-//    ofstream os(filename);
-//    os << "from pymol.cgo import *\n";
-//    os << "from pymol import cmd \n\n";
-//    os << "cmd.do(\"load " << cellsfile << ", cells\")\n";
-//    os << "cmd.do(\"hide all\")\n";
-//    os << "cmd.do(\"set sphere_color, tv_red\")\n";
-//    os << "cmd.do(\"set line_color, marine\")\n";
-//    os << "cmd.do(\"show spheres\")\n";
-//    os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
-//    os << "cmd.do(\"rebuild\")\n";
-
-//show spheres;alter elem h, vdw=0.1;rebuild
-//    int iidx, jidx;
-
-//    for (int i = 0; i < numberV; i++)
-//    {
-//        iidx = (vertices[i].getId()+1);
-//        for (int j = 0; j < vertices[i].nneigh; j++)
-//        {
-//            jidx = (vertices[i].neighbors[j]+1);
-//            os << "cmd.do(\"bond /cells///UNK`/H"<< iidx << ", /cells///UNK`/H" << jidx << "\")\n";
-//        }
-//    }
-
-//    os << "cmd.do(\"show lines\")\n";
-//    os << "cmd.do(\"bg white\")\n";
-//    os.close();
-//}
-
 
 void Cell::setRc(double rc)
 {
@@ -505,42 +443,6 @@ void Cell::setVerletR(double vr)
 void Cell::setInitR(double rinit)
 {
     initR = rinit;
-}
-
-void Cell::setVisc(double mu)
-{
-    visc0tot = mu;
-    visc0 = visc0tot / numberV;
-    //cout << "visc0tot= " << visc0tot;
-    //cout << " visc0 " << visc0 <<  endl;
-
-    for (int i = 0; i < numberV; i++)
-    {
-        vertices[i].setVisc(visc0);
-    }
-}
-
-void Cell::setMass(double m)
-{
-    mass0tot = m;
-    mass0 = mass0tot / numberV;
-
-    for (int i = 0; i < numberV; i++)
-    {
-        vertices[i].setMass(mass0);
-    }
-}
-
-double Cell::getVisc()
-{
-    double v = 0;
-
-    for (int i = 0; i < numberV; i++)
-    {
-        v += vertices[i].getVisc();
-    }
-
-    return v;
 }
 
 double Cell::getInitR()

@@ -18,6 +18,7 @@ class XyzTraj
         void open();
         void close();
         void save(vector<Cell>&, int);
+        void save(vector<Cell>&, int, double, double, double);
 
     private:
         char* trajfile;

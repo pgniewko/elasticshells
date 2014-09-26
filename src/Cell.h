@@ -34,17 +34,11 @@ class Cell
         void builtVerletList(const Cell&);
         void voidVerletLsit();
 
-        //void printCell();
         void calcForces();
-        //void calcForces(const Cell&);
         void calcForcesVL(const Cell&);
-        //void calcForces(const vector<Cell>&);
         void calcForces(Box&);
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
-
-//    void saveTriangulatedSurface(const char*);
-//    void saveRenderingScript(const char*, const char*);
 
         void setRc(double);
         void setA(double);
@@ -89,9 +83,6 @@ class Cell
         double mass0;
         double visc0tot;
         double mass0tot;
-
-
-
 };
 
 #endif	/* CELL_H */

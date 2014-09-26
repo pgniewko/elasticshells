@@ -6,6 +6,7 @@
 #include <cstring>
 #include <vector>
 #include <stdio.h>      /* fprintf*/
+#include <stdlib.h>    /* atoi,  strtod */
 
 #include "Box.h"
 #include "Environment.h"
