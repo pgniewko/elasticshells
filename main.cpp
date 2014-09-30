@@ -277,7 +277,7 @@ int main(int argc, char** argv)
     
     if (arguments.abort)
     {
-        biofilm_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT* \n";
+        biofilm_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT*\n";
         exit(1);
     }
         

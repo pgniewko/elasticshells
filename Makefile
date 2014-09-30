@@ -28,6 +28,8 @@ TEST_SOURCES := $(wildcard $(TESTS)/*.cpp) \
                 $(wildcard $(SRC)/simulation/*.cpp) \
 		$(wildcard $(SRC)/geometry/algorithms/*.cpp) \
 		$(wildcard $(SRC)/force/*.cpp) \
+	        $(wildcard $(SRC)/utils/io/*.cpp) \
+	        $(wildcard $(SRC)/utils/*.cpp)
 
 
 OBJECTS      := $(SOURCES:.cpp=.o)
