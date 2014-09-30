@@ -29,7 +29,7 @@ inline void print_time()
     struct tm* timeinfo;
     time ( &rawtime );
     timeinfo = localtime ( &rawtime );
-    cout << endl << asctime(timeinfo) << endl;
+    cerr << endl << asctime(timeinfo) << endl;
 }
 
 #endif

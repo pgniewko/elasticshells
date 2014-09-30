@@ -11,13 +11,18 @@
 #include <stdlib.h>    /* atoi,  strtod */
 #include <math.h>      /* log, sqrt */
 
+#include "Environment.h"
 #include "src/Timer.h"
-//#include "src/random.h"
 #include "src/arguments.h"
 #include "src/geometry/Vector3D.h"
 #include "src/simulation/Simulator.h"
 
+#include "utils/Logger.h"
+#include "src/utils/LogManager.h"
+
 using namespace std;
+
+utils::Logger biofilm_logs("biofilm");
 
 const char* argp_program_version = "biofilm 0.1.0";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
@@ -256,7 +261,7 @@ Timer clocks[10];
 int main(int argc, char** argv)
 {
     print_time();
-//    /* Initialize MT19937 Pseudo-random-number generator. */
+    /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
     init_by_array(init, length);
     /* Parse our arguments; every option seen by parse_opt will
@@ -264,28 +269,27 @@ int main(int argc, char** argv)
     struct arguments arguments;
     argp_parse (&argp, argc, argv, 0, 0, &arguments);
 
+    if (arguments.verbose && !arguments.silent)
+        utils::LogManager::set_level("INFO");
+    
+    else if (arguments.silent)
+        utils::LogManager::set_level("SEVERE");
+    
     if (arguments.abort)
     {
-        printf("PROGRAM FORCED TO >ABORT< \n");
-        exit(123);
+        biofilm_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT* \n";
+        exit(1);
     }
-
-    if (arguments.verbose && !arguments.silent)
-    {
-        printf ("OUTPUT_FILE = %s\n"
-                "VERBOSE = %s\n"
-                "SILENT = %s\n",
-                arguments.output_file,
-                arguments.verbose ? "yes" : "no",
-                arguments.silent ? "yes" : "no");
-    }
+        
+    biofilm_logs << utils::LogLevel::INFO << "OUTPUT_FILE = " << arguments.output_file << "\n";
 
     clocks[0].tic();
     Simulator simulator(arguments);
     //simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
     simulator.initCells(arguments.n_cells, 1.5);
     simulator.simulate(arguments.nsteps);
-    clocks[0].tic();
-    print_time();
+    clocks[0].toc();
+    
+    biofilm_logs << utils::LogLevel::INFO << "EXECUTION TIME = " << clocks[0].time() << "\n";
     return (EXIT_SUCCESS);
 }

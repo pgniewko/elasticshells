@@ -69,11 +69,11 @@ namespace utils
         std::pair<LogLevel, std::string>(LogLevel::CRITICAL, "CRITICAL"), //
         std::pair<LogLevel, std::string>(LogLevel::SEVERE, "SEVERE"), //
         std::pair<LogLevel, std::string>(LogLevel::WARNING, "WARNING"), //
+        std::pair<LogLevel, std::string>(LogLevel::FILE, "FILE"), //
         std::pair<LogLevel, std::string>(LogLevel::INFO, "INFO"), //
         std::pair<LogLevel, std::string>(LogLevel::FINE, "FINE"), //
         std::pair<LogLevel, std::string>(LogLevel::FINER, "FINER"), //
-        std::pair<LogLevel, std::string>(LogLevel::FINEST, "FINEST"), //
-        std::pair<LogLevel, std::string>(LogLevel::FILE, "FILE") //
+        std::pair<LogLevel, std::string>(LogLevel::FINEST, "FINEST") //
     };
 
     static const std::map<LogLevel, std::string> log_level_names(pairs,
@@ -84,7 +84,7 @@ namespace utils
         public:
 
             Logger(const std::string& module_name) :
-                module_name_(module_name)
+                module_name_(module_name), sink(std::cerr), recent_level(LogLevel::INFO)
             {
             }
 
@@ -113,8 +113,8 @@ namespace utils
 
         private:
             const std::string  module_name_;
-            std::ostream& sink = std::cerr;
-            LogLevel recent_level = LogLevel::INFO;
+            std::ostream& sink;// = std::cerr;
+            LogLevel recent_level;// = LogLevel::INFO;
     };
 
 }

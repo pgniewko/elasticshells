@@ -134,19 +134,19 @@ namespace utils
 
         private:
             static const LogManager manager;
-            std::ostream& sink = std::cerr;
+            std::ostream& sink; // = std::cerr;
             static LogLevel log_level;
             static utils::Logger logger;
             static std::unordered_set<std::string> muted;
 
-            LogManager()
+            LogManager() : sink(std::cerr)
             {
             }
 
             LogManager(LogManager const&);
             void operator=(LogManager const&);
 
-            friend Logger;
+            friend class Logger;
 
             friend Logger& operator <<(Logger& logger, const LogLevel level);
 
