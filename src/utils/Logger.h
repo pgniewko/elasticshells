@@ -84,9 +84,7 @@ namespace utils
         public:
 
             Logger(const std::string& module_name) :
-                module_name_(module_name), sink(std::cerr), recent_level(LogLevel::INFO)
-            {
-            }
+                module_name_(module_name), sink(std::cerr), recent_level(LogLevel::INFO) {}
 
             inline const std::string& module_name() const
             {

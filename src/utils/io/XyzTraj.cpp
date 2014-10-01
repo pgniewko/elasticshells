@@ -29,7 +29,7 @@ void XyzTraj::save(vector<Cell>& cells, int totV, double sx, double sy, double s
             index = cells[i].vertices[j].getId() + 1 + lastCellIndex;
             nameIx = (int) index / 1000;
             atomIx = index % 1000;
-            fprintf(os, "%c%i %10.5f %10.5f %10.5f \n", names[nameIx], atomIx, sx*cells[i].vertices[j].xyz.x, sy*cells[i].vertices[j].xyz.y, sz*cells[i].vertices[j].xyz.z);
+            fprintf(os, "%c%i %10.5f %10.5f %10.5f \n", names[nameIx], atomIx, sx * cells[i].vertices[j].xyz.x, sy * cells[i].vertices[j].xyz.y, sz * cells[i].vertices[j].xyz.z);
         }
 
         lastCellIndex += cells[i].numberofVertices();

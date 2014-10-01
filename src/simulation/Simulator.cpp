@@ -2,14 +2,13 @@
 
 Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     logStep(0), saveStep(0), vlistStep(0), boxStep(0), box(0, 0, 0),
-    sb(params.output_file, params.surface_file, params.traj_file), traj(params.traj_file)
+    sb(params.render_file, params.surface_file, params.traj_file), traj(params.traj_file),
+    simulator_logs("simulator")
 {
     dt = params.dt;
     a = params.a;
     d = params.d;
     dp = params.dp;
-    drawBox = params.draw_box;
-    pbc = params.pbc;
     gamma = params.k;
     Rc = params.r_cut;
     verlet_r = params.verlet_r;
@@ -29,6 +28,8 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     box.setXend(0.5 * params.bsx);
     box.setYend(0.5 * params.bsy);
     box.setZend(0.5 * params.bsz);
+    drawBox = params.draw_box;
+    pbc = params.pbc;
 
     try
     {
@@ -36,17 +37,17 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     }
     catch (NotImplementedException& e)
     {
-        cout <<  e.what() << endl;
+        simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(EXIT_FAILURE);
     }
     catch (DataException& e)
     {
-        cout << e.what() << endl;
+        simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(EXIT_FAILURE);
     }
 }
 
-Simulator::Simulator(const Simulator& orig) : box(orig.box), sb(orig.sb), traj(orig.traj) {}
+Simulator::Simulator(const Simulator& orig) : box(orig.box), sb(orig.sb), traj(orig.traj), simulator_logs(orig.simulator_logs) {}
 
 Simulator::~Simulator() {}
 
@@ -59,13 +60,34 @@ void Simulator::diagnoseParams()
 
     if (d > 9)
         throw DataException("DataException:\n"
-                            "Depth of a triangulation to large ! "
-                            "For machine's safety Simulator is going to terminate !");
+                            "Depth of a triangulation too large ! "
+                            "For machine's safety Simulator is about to terminate !");
 
     if (pbc)
         throw NotImplementedException("NotImplementedException:\n"
-                                      "Periodic boundary conditions are  not implemented yet."
+                                      "Periodic boundary conditions(PBC) are  not implemented yet."
                                       "Simulator is about to terminate !");
+
+    simulator_logs << utils::LogLevel::INFO << "BOX_STEP="  << boxStep << "\n";
+    simulator_logs << utils::LogLevel::INFO << "SAVE_STEP=" << saveStep << "\n";
+    simulator_logs << utils::LogLevel::INFO << "LOG_STEP="  << logStep << "\n";
+    simulator_logs << utils::LogLevel::INFO << "VERLET_STEP="  << vlistStep << "\n";
+    simulator_logs << utils::LogLevel::FINE << "DT="  << dt << "\n";
+    simulator_logs << utils::LogLevel::FINE << "DEPTH="  << d << "\n";
+    simulator_logs << utils::LogLevel::FINE << "DP="  << dp << "\n";
+    simulator_logs << utils::LogLevel::FINE << "GAMMA="  << gamma << "\n";
+    simulator_logs << utils::LogLevel::FINE << "A="  << a << "\n";
+    simulator_logs << utils::LogLevel::FINE << "R:CELL_CELL="  << Rc << "\n";
+    simulator_logs << utils::LogLevel::FINE << "R:CELL_BOX="  << params.r_bc << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getY() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.DX="  << box.getDx() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.DX="  << box.getDy() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.DZ="  << box.getDz() << "\n";
+    simulator_logs << utils::LogLevel::FINEST << "BOX.XE=" << box.getXend() << "\n";
+    simulator_logs << utils::LogLevel::FINEST << "BOX.YE=" << box.getXend() << "\n";
+    simulator_logs << utils::LogLevel::FINEST << "BOX.ZE=" << box.getXend() << "\n";
 }
 
 void Simulator::addCell(const Cell& newCell)
@@ -81,7 +103,7 @@ void Simulator::addCell(const Cell& newCell)
     }
     catch (MaxSizeException& e)
     {
-        cout << e.what() << endl;
+        simulator_logs << utils::LogLevel::WARNING << e.what() << "\n";
         return;
     }
 }
@@ -116,7 +138,7 @@ void Simulator::addCell(double r0)
     }
     catch (MaxSizeException& e)
     {
-        cout << e.what() << endl;
+        simulator_logs << utils::LogLevel::WARNING << e.what() << "\n";
         return;
     }
 }
@@ -192,11 +214,11 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % saveStep == 0)
         {
-            if (true) 
+            if (true)
             {
                 traj.save(cells, getTotalVertices());
             }
-            else 
+            else
             {
                 traj.save(cells, getTotalVertices(), params.bsx / box.getX(), params.bsy / box.getY(), params.bsz / box.getZ());
             }

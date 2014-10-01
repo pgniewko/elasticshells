@@ -1,20 +1,16 @@
 #ifndef VECTOR3D_H
 #define	VECTOR3D_H
-//#pragma once
 
 #include <iostream>
 #include <fstream>
 #include <math.h>
+
 #include "Environment.h"
 #include "exceptions/DataException.h"
-
-using namespace std;
 
 class Vector3D
 {
     public:
-//        typedef double DataType;
-
         Vector3D();
         Vector3D(double ix, double iy, double iz);
         Vector3D(const Vector3D& orig);
@@ -30,7 +26,6 @@ class Vector3D
         double angle(const Vector3D&) const;
         void setLength(double);
         double x, y, z;
-
 };
 
 template <class InputStreamT>

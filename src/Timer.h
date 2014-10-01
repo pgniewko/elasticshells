@@ -5,7 +5,6 @@
 #include <iostream>
 
 #include "Environment.h"
-using namespace std;
 
 class Timer
 {
@@ -29,7 +28,7 @@ inline void print_time()
     struct tm* timeinfo;
     time ( &rawtime );
     timeinfo = localtime ( &rawtime );
-    cerr << endl << asctime(timeinfo) << endl;
+    std::cerr << std::endl << asctime(timeinfo) << std::endl;
 }
 
 #endif

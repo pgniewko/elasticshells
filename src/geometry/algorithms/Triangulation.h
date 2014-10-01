@@ -6,9 +6,6 @@
 
 #include "Environment.h"
 #include "geometry/Triangle.h"
-//#include "../Triangle.h"
-
-using namespace std;
 
 class Triangulation
 {

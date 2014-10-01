@@ -18,9 +18,7 @@
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "utils/io/ScriptBuilder.h"
 #include "utils/io/XyzTraj.h"
-
-
-using namespace std;
+#include "utils/Logger.h"
 
 #define STRCMP(a,b) (!strcmp(a,b))
 
@@ -94,6 +92,8 @@ class Simulator
 
         ScriptBuilder sb;
         XyzTraj traj;
+
+        utils::Logger simulator_logs;
 
 };
 

@@ -54,7 +54,7 @@ void Vertex::addNeighbor(int idx, double k0n)
     }
     catch (MaxSizeException& e)
     {
-        cout << e.what() << endl;
+        std::cout << e.what() << std::endl;
         return;
     }
 }
@@ -93,7 +93,7 @@ void Vertex::addTriangle(int idx)
     }
     catch (MaxSizeException& e)
     {
-        cout << e.what() << endl;
+        std::cout << e.what() << std::endl;
         return;
     }
 }
@@ -172,22 +172,22 @@ double Vertex::getVisc()
 
 void Vertex::printVertex()
 {
-    cout << "myid=" << id << " ";
-    cout << "nneigh= " << nneigh << " ntrian=" << ntrian << " ";
-    cout << " x=" << xyz.x << " y=" << xyz.y << " z=" << xyz.z << " : ";
-    cout << " x=" << force.x << " y=" << force.y << " z=" << force.z << " : ";
+    std::cout << "myid=" << id << " ";
+    std::cout << "nneigh= " << nneigh << " ntrian=" << ntrian << " ";
+    std::cout << " x=" << xyz.x << " y=" << xyz.y << " z=" << xyz.z << " : ";
+    std::cout << " x=" << force.x << " y=" << force.y << " z=" << force.z << " : ";
 
     for (int i = 0; i < nneigh; i++)
     {
-        cout << neighbors[i] << " " ;
+        std::cout << neighbors[i] << " " ;
     }
 
-    cout << " : ";
+    std::cout << " : ";
 
     for (int i = 0; i < ntrian; i++)
     {
         cout << vertextri[i] << " " ;
     }
 
-    cout << endl;
+    std::cout << endl;
 }

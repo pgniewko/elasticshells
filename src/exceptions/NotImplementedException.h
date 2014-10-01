@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <exception>
-using namespace std;
 
 class NotImplementedException : public std::runtime_error
 {

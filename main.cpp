@@ -20,8 +20,6 @@
 #include "utils/Logger.h"
 #include "src/utils/LogManager.h"
 
-using namespace std;
-
 utils::Logger biofilm_logs("biofilm");
 
 const char* argp_program_version = "biofilm 0.1.0";
@@ -43,19 +41,18 @@ static struct argp_option options[] =
     {"quiet",    'q', "INT", OPTION_ARG_OPTIONAL, "Don't produce any output [default: 1]" },
     {"silent",   's', 0, OPTION_ALIAS},
     {"input",    'i', "FILE",  0, "Input from FILE [default: ...]" },
-    {"output",   'o', "FILE",  0, "Output to FILE instead of standard output [default: ... ]" },
+    {"render",   'r', "FILE",  0, "Output to FILE instead of standard output [default: ... ]" },
     {"surf",     011, "FILE",  0, "Output to SURFACE-FILE instead of standard output [default: ... ]" },
-    {"log",      'l', "FILE",  0, "Print log to FILE instead of standard output [default: ... ]" },
+    {"out",      'o', "FILE",  0, "Print log to FILE instead of standard output [default: ... ]" },
     {"xyz",      't', "FILE",  0, "Print trajectory to FILE [default: ... ]" },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0, 0, 0, 0, "Simulation Options:", 3},
     {"number",    'n', "INT", 0, "Init number of particles. Not in work when positions read from the file [default: 1]"},
-    {"pbc",       301, 0, 0, "Use periodic boundary conditions [default: false]"},
-    {"dbox",      302, 0, 0, "Draw [default: true]"},
-    {"size",      401, "NUM", 0, "Box size [default: 10.0]"},
+    {"pbc",       301, 0, 0, "Use periodic boundary conditions - activate when present"},
+    {"ndbox",     302, 0, 0, "No simulation box - deactivate when present"},
     {"depth",     501, "INT", 0, "SimpleTriangulation depth [default: 3]"},
-    {"dt",        601, "NUM", 0, "Time step [default: 0.01]"},
+    {"dt",        601, "NUM", 0, "Time step [default: 0.001]"},
     {"ttime",     602, "NUM", 0, "Total simulation time [default: 1.0]"},
     {"log-step",  603, "INT", 0, "Log step interval [default: 10]"},
     {"ns",        604, "INT", 0, "Number of simulation steps [default: 100]"},
@@ -68,16 +65,16 @@ static struct argp_option options[] =
     },
 
     {0,             0, 0, 0, "System Options:", 5},
-    {0,           'a', "NUM", 0, "Repulsion parameter between bodies [default: 1.0]"},
-    {"mass",      'm', "NUM", 0, "Mass of a particle [default: 100.0]"},
-    {"gamma",     'k', "NUM", 0, "Spring constant [default: 1.0]"},
+    {0,           'a', "NUM", 0, "LJ12-6 repulsion scaling parameter[default: 1.0]"},
+    {"mass",      'm', "NUM", 0, "Total mass of a cell [default: 100.0]"},
+    {"gamma",     'k', "NUM", 0, "Spring constant between vertices[default: 1.0]"},
     {"mu",        801, "NUM", 0, "Viscosity coefficient [default: 100.0]"},
     {"dp",        802, "NUM", 0, "Osmotic pressure [default: 0.0]"},
-    {"r-cut",     803, "NUM", 0, "Radius cut-off for pair interactions [default: 1.0]"},
+    {"r-cut",     803, "NUM", 0, "Radius cut-off for pair interactions [default: 0.5]"},
     {"bsx",       804, "NUM", 0, "X Box size [default: 10.0]"},
     {"bsy",       805, "NUM", 0, "Y Box size [default: 10.0]"},
     {"bsz",       806, "NUM", 0, "Z Box size [default: 10.0]"},
-    {"verlet-r",  807, "NUM", 0, "Verlet radius [default: 2 times R_c]"},
+    {"verlet-r",  807, "NUM", 0, "Verlet radius time R_c [default: 2]"},
     {"bsdx",      808, "NUM", 0, "dx of Box size [default: 0.0]"},
     {"bsdy",      809, "NUM", 0, "dy of Box size [default: 0.0]"},
     {"bsdz",      810, "NUM", 0, "dz of Box size [default: 0.0]"},
@@ -98,37 +95,39 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             /* Default values. */
             arguments->silent = 0;
             arguments->verbose = 1;
-            arguments->output_file = "./data/render.py";
-            arguments->surface_file = "./data/surf.py";
-            arguments->input_file = "./data/cells.in";
-            arguments->traj_file = "./data/traj.xyz";
-            arguments->log_file = "./data/biofilm.log";
-            arguments->integrator_a = "vv";
+            arguments->debug = 0;
             arguments->abort = 0;
-            arguments->n_cells = 1;
+            arguments->render_file = "./data/render.py";
+            arguments->traj_file = "./data/traj.xyz";
+            arguments->output_file = "./data/biofilm.out";
+            arguments->surface_file = "./data/surf.py";
+            arguments->integrator_a = "vv";
+            arguments->d = 3;
             arguments->log_step = 10;
             arguments->save_step = 10;
             arguments->box_step = 10;
             arguments->vlist_step = 100;
+            arguments->n_cells = 1;
             arguments->nsteps = 100;
-            arguments->r_cut = 1.0;
+            arguments->a = 1.0;
+            arguments->dt = 0.01;
+            arguments->dp = 0.0;
+            arguments->visc = 100.0;
+            arguments->k = 1.0;
+            arguments->mass = 100.0;
+            arguments->ttime = 1.0;
+            arguments->r_cut = 0.5;
             arguments->r_bc = 0.5;
             arguments->verlet_r = 2.0;
-            arguments->dt = 0.01;
-            arguments->ttime = 1.0;
-            arguments->dp = 0.0;
             arguments->bsx = 10.0;
             arguments->bsy = 10.0;
             arguments->bsz = 10.0;
             arguments->bsdx = 0.0;
             arguments->bsdy = 0.0;
             arguments->bsdz = 0.0;
-            arguments->a = 1.0;
-            arguments->d = 3;
-            arguments->mass = 100.0;
-            arguments->visc = 100.0;
-            arguments->k = 1.0;
-            arguments->L = 10.0;
+            arguments->bsxe = 10.0;
+            arguments->bsye = 10.0;
+            arguments->bsze = 10.0;
             arguments->pbc = false;
             arguments->draw_box = true;
             break;
@@ -138,21 +137,21 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->verbose = 0;
             break;
         case 'v':
-        case 'd':
             arguments->verbose = arg ? atoi (arg) : 1;
             arguments->silent = 0;
             break;
-        case 'i':
-            arguments->input_file = arg;
+        case 'd':
+            arguments->debug = arg ? atoi (arg) : 1;
+            arguments->silent = 0;
             break;
-        case 'o':
-            arguments->output_file = arg;
+        case 'r':
+            arguments->render_file = arg;
             break;
         case 't':
             arguments->traj_file = arg;
             break;
-        case 'l':
-            arguments->log_file = arg;
+        case 'o':
+            arguments->output_file = arg;
             break;
         case 'n':
             arguments->n_cells = arg ? atoi (arg) : 1;
@@ -173,10 +172,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->pbc = true;
             break;
         case 302:
-            arguments->draw_box = true;
-            break;
-        case 401:
-            arguments->L = arg ? strtod (arg, NULL) : 10.0;
+            arguments->draw_box = false;
             break;
         case 501:
             arguments->d = arg ? atoi (arg) : 3;
@@ -188,16 +184,16 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ttime = arg ? strtod (arg, NULL) : 1.0;
             break;
         case 603:
-            arguments->log_step = arg ? atoi (arg) : 1;
+            arguments->log_step = arg ? atoi (arg) : 10;
             break;
         case 604:
             arguments->nsteps = arg ? atoi (arg) : 100;
             break;
         case 605:
-            arguments->save_step = arg ? atoi (arg) : 1;
+            arguments->save_step = arg ? atoi (arg) : 10;
             break;
         case 606:
-            arguments->box_step = arg ? atoi (arg) : 1;
+            arguments->box_step = arg ? atoi (arg) : 10;
             break;
         case 607:
             arguments->vlist_step = arg ? atoi (arg) : 100;
@@ -206,13 +202,13 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->integrator_a = arg;
             break;
         case 801:
-            arguments->visc = arg ? strtod (arg, NULL) : 1.0;
+            arguments->visc = arg ? strtod (arg, NULL) : 100.0;
             break;
         case 802:
             arguments->dp = arg ? strtod (arg, NULL) : 0.0;
             break;
         case 803:
-            arguments->r_cut = arg ?  strtod (arg, NULL) : 1.0;
+            arguments->r_cut = arg ?  strtod (arg, NULL) : 0.5;
             break;
         case 804:
             arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;
@@ -269,27 +265,35 @@ int main(int argc, char** argv)
     struct arguments arguments;
     argp_parse (&argp, argc, argv, 0, 0, &arguments);
 
-    if (arguments.verbose && !arguments.silent)
+    if (arguments.debug && !arguments.silent)
+    {
+        utils::LogManager::set_level("FINEST");
+    }
+    else if (arguments.verbose && !arguments.silent)
+    {
         utils::LogManager::set_level("INFO");
-    
+    }
     else if (arguments.silent)
+    {
         utils::LogManager::set_level("SEVERE");
-    
+    }
+
     if (arguments.abort)
     {
         biofilm_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT*\n";
         exit(1);
     }
-        
-    biofilm_logs << utils::LogLevel::INFO << "OUTPUT_FILE = " << arguments.output_file << "\n";
 
+    biofilm_logs << utils::LogLevel::FILE << "RENDER_FILE = " << arguments.render_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = " << arguments.traj_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = " << arguments.output_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
     clocks[0].tic();
     Simulator simulator(arguments);
     //simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
     simulator.initCells(arguments.n_cells, 1.5);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
-    
     biofilm_logs << utils::LogLevel::INFO << "EXECUTION TIME = " << clocks[0].time() << "\n";
     return (EXIT_SUCCESS);
 }

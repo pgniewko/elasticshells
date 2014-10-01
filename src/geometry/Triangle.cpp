@@ -1,8 +1,6 @@
 #include "Triangle.h"
 
-//Triangle::Triangle()
-//{
-//}
+//Triangle::Triangle() {}
 
 Triangle::Triangle(Vector3D m, Vector3D n, Vector3D o) : a(m), b(n), c(o) {}
 
@@ -25,7 +23,6 @@ double Triangle::area() const
     }
     catch (DataException& e)
     {
-//        cout << e.what() << endl;
         return 0.0;
     }
 }

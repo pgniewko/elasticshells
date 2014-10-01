@@ -20,8 +20,8 @@ int VertexTriangle::getId()
 
 void VertexTriangle::printVertexTriangle()
 {
-    cout << "my id=" << myindex << " ";
-    cout << " ia =" << ia << " ib =" << ib << " ic =" << ic << endl;
+    std::cout << "my id=" << myindex << " ";
+    std::cout << " ia =" << ia << " ib =" << ib << " ic =" << ic << std::endl;
 }
 
 double VertexTriangle::area(const Vertex vs[])

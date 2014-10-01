@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <exception>
-using namespace std;
 
 class MaxSizeException : public std::runtime_error
 {

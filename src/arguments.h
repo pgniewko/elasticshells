@@ -1,19 +1,17 @@
 #ifndef ARGUMENTS_H
 #define	ARGUMENTS_H
 
-//#include <string>
-using namespace std;
+//using namespace std;
 
 struct arguments
 {
     char** strings;               /* [string...] */
 
-    int silent, verbose, abort;   /* ‘-s’, ‘-v’, ‘--abort’ */
+    int silent, verbose, debug, abort;   /* '-s', '-v', '-d','--abort' */
 
-    char* input_file;             /* file arg to ‘--input’ */
-    char* output_file;            /* file arg to ‘--output’ */
+    char* render_file;            /* file arg to ‘--output’ */
     char* traj_file;              /* file arg to ‘--traj’ */
-    char* log_file;               /* file arg to ‘--log’ */
+    char* output_file;            /* file arg to ‘--log’ */
     char* surface_file;
 
     char* integrator_a;
@@ -26,7 +24,6 @@ struct arguments
     int n_cells;
     int nsteps;
 
-    double L;
     double a;
     double dt;
     double dp;
@@ -44,9 +41,9 @@ struct arguments
     double bsdx;
     double bsdy;
     double bsdz;
-    //double bsxe;
-    //double bsye;
-    //double bsze;
+    double bsxe;
+    double bsye;
+    double bsze;
     bool pbc;
     bool draw_box;
 };

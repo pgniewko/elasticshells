@@ -253,8 +253,7 @@ void Cell::calcForces(Box& box)
             wallYZ.x = sgnx * bsx;
             wallYZ.y = vertices[i].xyz.y;
             wallYZ.z = vertices[i].xyz.z;
-            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, Rc, a);
-            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, rCellBox, a);
+            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, rCellBox, a);
         }
 
         if (vertices[i].xyz.y != 0 )
@@ -263,8 +262,7 @@ void Cell::calcForces(Box& box)
             wallXZ.x = vertices[i].xyz.x;
             wallXZ.y = sgny * bsy;
             wallXZ.z = vertices[i].xyz.z;
-            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, Rc, a);
-            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, rCellBox, a);
+            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, rCellBox, a);
         }
 
         if (vertices[i].xyz.z != 0 )
@@ -273,8 +271,7 @@ void Cell::calcForces(Box& box)
             wallXY.x = vertices[i].xyz.x;
             wallXY.y = vertices[i].xyz.y;
             wallXY.z = sgnz * bsz;
-            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, Rc, a);
-            //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, rCellBox, a);
+            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, rCellBox, a);
         }
     }
 }

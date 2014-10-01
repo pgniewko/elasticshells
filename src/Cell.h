@@ -16,8 +16,6 @@
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
 
-using namespace std;
-
 class Cell
 {
     public:

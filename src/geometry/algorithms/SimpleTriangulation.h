@@ -6,8 +6,6 @@
 #include "Environment.h"
 #include "Triangulation.h"
 
-using namespace std;
-
 class SimpleTriangulation : public Triangulation
 {
     public:
