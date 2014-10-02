@@ -1,8 +1,8 @@
 #include "Simulator.h"
 
 Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
-    logStep(0), saveStep(0), vlistStep(0), boxStep(0), box(0, 0, 0),
-    sb(params.render_file, params.surface_file, params.traj_file), traj(params.traj_file),
+    logStep(1), saveStep(1), vlistStep(1), boxStep(1), box(0, 0, 0),
+    sb(params.render_file, params.surface_file, params.traj_file), traj(params.traj_file), logsim(params.output_file),
     simulator_logs("simulator")
 {
     dt = params.dt;
@@ -47,7 +47,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     }
 }
 
-Simulator::Simulator(const Simulator& orig) : box(orig.box), sb(orig.sb), traj(orig.traj), simulator_logs(orig.simulator_logs) {}
+Simulator::Simulator(const Simulator& orig) : box(orig.box), sb(orig.sb), traj(orig.traj), simulator_logs(orig.simulator_logs), logsim(orig.logsim) {}
 
 Simulator::~Simulator() {}
 
@@ -198,34 +198,48 @@ void Simulator::simulate(int steps)
     traj.open();
     traj.save(cells, getTotalVertices());
 
-    for (int i = 0; i < steps; i++)
+    logsim.open();
+    logsim.dumpState(box, cells, 1, getTotalVertices());
+    
+    for (int i = 0; i <= steps; i++)
     {
-        if ( (i + 1) % boxStep == 0)
-        {
-            box.resize();
-        }
-
-        integrate();
-
         if ( (i + 1) % vlistStep == 0)
         {
             rebuildVerletLists();
         }
+        
+        integrate();
 
         if ( (i + 1) % saveStep == 0)
         {
-            if (true)
+            if (false)
             {
-                traj.save(cells, getTotalVertices());
+               traj.save(cells, getTotalVertices());
             }
             else
             {
                 traj.save(cells, getTotalVertices(), params.bsx / box.getX(), params.bsy / box.getY(), params.bsz / box.getZ());
             }
         }
+        
+        if ( (i+1) % logStep == 0 )
+        {
+            logsim.dumpState(box, cells, (i+1), getTotalVertices());
+        }
+        
+        if ( (i + 1) % boxStep == 0)
+        {
+            box.resize();
+        }
+        
+        if ( i % (steps / 10) == 0.0 )
+        {
+            simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
+        }
     }
 
     traj.close();
+    logsim.close();
 }
 
 void Simulator::rebuildVerletLists()

@@ -20,7 +20,7 @@ Cell::Cell(list<Triangle> tris) : cellId(-1), numberV(0), numberT(0)
 
 Cell::Cell(const Cell& orig) : cm(orig.cm), vertices(orig.vertices), triangles(orig.triangles),
     cellId(orig.cellId), numberV(orig.numberV), numberT(orig.numberT),
-    Rc(orig.Rc), a(orig.a), dp(orig.dp), gamma(orig.gamma), verletR(orig.verletR),
+    Rc(orig.Rc), rCellBox(orig.rCellBox), a(orig.a), dp(orig.dp), gamma(orig.gamma), verletR(orig.verletR),
     initR(orig.initR), visc0(orig.visc0), mass0(orig.mass0),
     visc0tot(orig.visc0tot), mass0tot(orig.mass0tot)
 {}
@@ -274,6 +274,48 @@ void Cell::calcForces(Box& box)
             vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, rCellBox, a);
         }
     }
+}
+
+double Cell::calcBoxForces(Box& box)
+{
+    Vector3D wallYZ, wallXZ, wallXY;
+    double sgnx, sgny, sgnz;
+    double bsx = box.getX();
+    double bsy = box.getY();
+    double bsz = box.getZ();
+
+    Vector3D totForce(0,0,0);
+    
+    for (int i = 0; i < numberV; i++)
+    {
+        if (vertices[i].xyz.x != 0 )
+        {
+            sgnx = vertices[i].xyz.x / fabs(vertices[i].xyz.x);
+            wallYZ.x = sgnx * bsx;
+            wallYZ.y = vertices[i].xyz.y;
+            wallYZ.z = vertices[i].xyz.z;
+            totForce += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, rCellBox, a);
+        }
+
+        if (vertices[i].xyz.y != 0 )
+        {
+            sgny = vertices[i].xyz.y / fabs(vertices[i].xyz.y);
+            wallXZ.x = vertices[i].xyz.x;
+            wallXZ.y = sgny * bsy;
+            wallXZ.z = vertices[i].xyz.z;
+            totForce += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, rCellBox, a);
+        }
+
+        if (vertices[i].xyz.z != 0 )
+        {
+            sgnz = vertices[i].xyz.z / fabs(vertices[i].xyz.z);
+            wallXY.x = vertices[i].xyz.x;
+            wallXY.y = vertices[i].xyz.y;
+            wallXY.z = sgnz * bsz;
+            totForce += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, rCellBox, a);
+        }
+    }
+    return totForce.length();
 }
 
 void Cell::voidForces()

@@ -290,8 +290,8 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
     clocks[0].tic();
     Simulator simulator(arguments);
-    //simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
-    simulator.initCells(arguments.n_cells, 1.5);
+    simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
+    //simulator.initCells(arguments.n_cells, 1.5);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
     biofilm_logs << utils::LogLevel::INFO << "EXECUTION TIME = " << clocks[0].time() << "\n";

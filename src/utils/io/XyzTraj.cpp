@@ -9,6 +9,16 @@ XyzTraj::XyzTraj(const XyzTraj& orig) : trajfile(orig.trajfile) {}
 
 XyzTraj::~XyzTraj() {}
 
+void XyzTraj::open()
+{
+    os = fopen(trajfile, "w");
+}
+
+void XyzTraj::close()
+{
+    fclose(os);
+}
+
 void XyzTraj::save(vector<Cell>& cells, int totV)
 {
     save(cells, totV, 1.0, 1.0, 1.0);
@@ -34,14 +44,4 @@ void XyzTraj::save(vector<Cell>& cells, int totV, double sx, double sy, double s
 
         lastCellIndex += cells[i].numberofVertices();
     }
-}
-
-void XyzTraj::open()
-{
-    os = fopen(trajfile, "w");
-}
-
-void XyzTraj::close()
-{
-    fclose(os);
 }

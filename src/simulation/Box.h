@@ -38,6 +38,7 @@ class Box
         void resize();
 
         double getVolume();
+        double getArea();
 
     private:
         double x;

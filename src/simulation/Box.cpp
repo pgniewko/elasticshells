@@ -34,6 +34,11 @@ double Box::getVolume()
     return 2.0 * x * 2.0 * y * 2.0 * z;
 }
 
+double Box::getArea()
+{
+    return 2*(4*x*y  + 4*x*z + 4*y*z);
+}
+
 void Box::setX(const double newx)
 {
     x = newx;

@@ -35,6 +35,8 @@ class Cell
         void calcForces();
         void calcForcesVL(const Cell&);
         void calcForces(Box&);
+        double calcBoxForces(Box&); // TODO: refactor it!
+        
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
 
