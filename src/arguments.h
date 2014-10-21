@@ -46,6 +46,7 @@ struct arguments
     double bsze;
     bool pbc;
     bool draw_box;
+    bool osmFlag;
 };
 
 #endif	/* ARGUMENTS_H */
