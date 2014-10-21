@@ -39,6 +39,9 @@ class Box
 
         double getVolume();
         double getArea();
+        
+        void setPbc(bool);
+        bool pbc;
 
     private:
         double x;

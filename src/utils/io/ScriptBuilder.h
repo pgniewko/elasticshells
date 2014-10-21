@@ -21,7 +21,7 @@ class ScriptBuilder
         void setDrawBox(bool);
     private:
 
-        char names[10];
+        //char names[10];
         char* script;
         char* surfaceScript;
         char* trajfile;
