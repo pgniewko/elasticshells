@@ -8,6 +8,7 @@
 #include "simulation/Box.h"
 #include "utils/observables/SurfacePressure.h"
 #include "utils/observables/VolumeFraction.h"
+#include "utils/observables/VolumePressure.h"
 
 class LogSimulation {
 public:
