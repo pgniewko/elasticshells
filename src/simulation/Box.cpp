@@ -1,14 +1,13 @@
 #include "Box.h"
 
 Box::Box(double bsx, double bsy, double bsz) : x(bsx), y(bsy), z(bsz),
-    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), dx(0), dy(0), dz(0), pbc(false) {}
+    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), dx(0), dy(0), dz(0) {}
 
 Box::Box(double bsx, double bsy, double bsz, double dbs) : x(bsx), y(bsy), z(bsz),
-    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), dx(dbs), dy(dbs), dz(dbs), pbc(false) {}
+    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), dx(dbs), dy(dbs), dz(dbs) {}
 
 Box::Box(const Box& orig) : x(orig.x), y(orig.y), z(orig.z),
-    xe(orig.xe), ye(orig.ye), ze(orig.ze), dx(orig.dx), dy(orig.dy), dz(orig.dz),
-    pbc(orig.pbc) {}
+    xe(orig.xe), ye(orig.ye), ze(orig.ze), dx(orig.dx), dy(orig.dy), dz(orig.dz) {}
 
 Box::~Box() {}
 
@@ -116,7 +115,3 @@ double Box::getZend()
     return ze;
 }
 
-void Box::setPbc(bool pbcf)
-{
-    pbc = pbcf;
-}

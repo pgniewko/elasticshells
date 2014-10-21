@@ -6,38 +6,10 @@ OsmoticForce::OsmoticForce(const OsmoticForce& orig) {}
 
 OsmoticForce::~OsmoticForce() {}
 
-Vector3D OsmoticForce::calcForce(const Vector3D& va, const Vector3D& vb, const Vector3D& vc, const Vector3D& vd, double nRT, double vol, const double dp)
+Vector3D OsmoticForce::calcForce(const Vector3D& va, const Vector3D& vb, const Vector3D& vc, const Vector3D& vd, const double dp)
 {
     Vector3D BD = vb - vd;
     Vector3D CD = vc - vd;
-    //Vector3D f = -dp * cross(BD, CD) / 6;
-    Vector3D f = -cross(BD, CD) / 6;
-    
-    if (volumeFlag)
-    {
-        f *= ( nRT / (vol - epsilon) );
-    } 
-    else
-    {
-        f *= dp;
-    }
-    
+    Vector3D f = -dp * cross(BD, CD) / 6;
     return f;
 }
-void OsmoticForce::setVolumeFlag(bool flag)
-{
-    volumeFlag = flag;
-}
-
-void OsmoticForce::setEpsilon(double eps)
-{
-    epsilon = eps;
-}
-
-double OsmoticForce::getEpsilon()
-{
-    return epsilon;
-}
-
-double OsmoticForce::epsilon = 0.0;
-bool OsmoticForce::volumeFlag = false;

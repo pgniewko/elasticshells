@@ -1,15 +1,15 @@
 #include "Vertex.h"
 
-Vertex::Vertex() : xyz(0, 0, 0), nneigh(0), ntrian(0), nbneigh(0), domainIdx(-1), id(-1), mass(1.0) {}
+Vertex::Vertex() : xyz(0, 0, 0), nneigh(0), ntrian(0), nbneigh(0), id(-1), mass(1.0) {}
 
-Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), nneigh(0), ntrian(0), nbneigh(0), domainIdx(-1), id(-1), mass(1.0)
+Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), nneigh(0), ntrian(0), nbneigh(0), id(-1), mass(1.0)
 {}
 
-Vertex::Vertex(Vector3D v) : xyz(v), nneigh(0), ntrian(0), nbneigh(0), domainIdx(-1), id(-1), mass(1.0) {}
+Vertex::Vertex(Vector3D v) : xyz(v), nneigh(0), ntrian(0), nbneigh(0), id(-1), mass(1.0) {}
 
 Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(orig.velocity),
     tmp_xyz(orig.tmp_xyz), tmp_force(orig.tmp_force), tmp_velocity(orig.tmp_velocity),
-    nneigh(orig.nneigh), ntrian(orig.ntrian), nbneigh(orig.nbneigh), domainIdx(orig.domainIdx),
+    nneigh(orig.nneigh), ntrian(orig.ntrian), nbneigh(orig.nbneigh),
     id(orig.id), mass( orig.mass ), visc(orig.visc)
 {
     for (int i = 0; i < nneigh; i++)

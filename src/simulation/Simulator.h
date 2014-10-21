@@ -20,8 +20,6 @@
 #include "utils/io/XyzTraj.h"
 #include "utils/io/LogSimulation.h"
 #include "utils/Logger.h"
-#include "force/OsmoticForce.h"
-#include "simulation/DomainList.h"
 
 #define STRCMP(a,b) (!strcmp(a,b))
 
@@ -68,8 +66,6 @@ class Simulator
         void setIntegrator(void (Simulator::*functoall)());
         void diagnoseParams();
         void rebuildVerletLists();
-        void rebuildDomainsList();
-        double getMaxScale();
 
         vector<Cell> cells;
         arguments params;
@@ -92,18 +88,15 @@ class Simulator
         int boxStep;
 
         Box box;
-        //bool pbc;
+        bool pbc;
         bool drawBox;
 
         ScriptBuilder sb;
         XyzTraj traj;
         LogSimulation logsim;
-        
-        
 
         utils::Logger simulator_logs;
-        
-        DomainList domains;
+
 };
 
 #endif	/* SIMULATOR_H */

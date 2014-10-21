@@ -1,7 +1,6 @@
 #include "XyzTraj.h"
 
-//XyzTraj::XyzTraj(char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'} )
-XyzTraj::XyzTraj(char* tf)
+XyzTraj::XyzTraj(char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'} )
 {
     trajfile = tf;
 }

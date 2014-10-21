@@ -1,7 +1,6 @@
 #include "ScriptBuilder.h"
 
-//ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'})
-ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf) 
+ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'})
 {
     script = rs;
     surfaceScript = ss;

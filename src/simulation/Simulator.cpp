@@ -25,18 +25,12 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     box.setDx(params.bsdx);
     box.setDy(params.bsdy);
     box.setDz(params.bsdz);
-    box.setXend(params.bsxe);
-    box.setYend(params.bsye);
-    box.setZend(params.bsze);
+    box.setXend(0.5 * params.bsx);
+    box.setYend(0.5 * params.bsy);
+    box.setZend(0.5 * params.bsz);
     drawBox = params.draw_box;
-    box.setPbc(params.pbc);
-    //pbc = params.pbc;
+    pbc = params.pbc;
 
-    double maxscale = getMaxScale();
-    std::cout << "maxscale= " << maxscale << std::endl;
-    domains.setupDomainsList(maxscale, box);
-    OsmoticForce::setVolumeFlag(params.osmFlag);
-    
     try
     {
         diagnoseParams();
@@ -51,11 +45,9 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
         simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(EXIT_FAILURE);
     }
-    
-    std::cout << "constructor done" << std::endl;
 }
 
-Simulator::Simulator(const Simulator& orig) : box(orig.box), sb(orig.sb), traj(orig.traj), simulator_logs(orig.simulator_logs), logsim(orig.logsim){}
+Simulator::Simulator(const Simulator& orig) : box(orig.box), sb(orig.sb), traj(orig.traj), simulator_logs(orig.simulator_logs), logsim(orig.logsim) {}
 
 Simulator::~Simulator() {}
 
@@ -71,10 +63,10 @@ void Simulator::diagnoseParams()
                             "Depth of a triangulation too large ! "
                             "For machine's safety Simulator is about to terminate !");
 
-    //if (pbc)
-    //    throw NotImplementedException("NotImplementedException:\n"
-    //                                  "Periodic boundary conditions(PBC) are  not implemented yet."
-    //                                  "Simulator is about to terminate !");
+    if (pbc)
+        throw NotImplementedException("NotImplementedException:\n"
+                                      "Periodic boundary conditions(PBC) are  not implemented yet."
+                                      "Simulator is about to terminate !");
 
     simulator_logs << utils::LogLevel::INFO << "BOX_STEP="  << boxStep << "\n";
     simulator_logs << utils::LogLevel::INFO << "SAVE_STEP=" << saveStep << "\n";
@@ -94,8 +86,8 @@ void Simulator::diagnoseParams()
     simulator_logs << utils::LogLevel::FINER << "BOX.DX="  << box.getDy() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.DZ="  << box.getDz() << "\n";
     simulator_logs << utils::LogLevel::FINEST << "BOX.XE=" << box.getXend() << "\n";
-    simulator_logs << utils::LogLevel::FINEST << "BOX.YE=" << box.getYend() << "\n";
-    simulator_logs << utils::LogLevel::FINEST << "BOX.ZE=" << box.getZend() << "\n";
+    simulator_logs << utils::LogLevel::FINEST << "BOX.YE=" << box.getXend() << "\n";
+    simulator_logs << utils::LogLevel::FINEST << "BOX.ZE=" << box.getXend() << "\n";
 }
 
 void Simulator::addCell(const Cell& newCell)
@@ -106,21 +98,14 @@ void Simulator::addCell(const Cell& newCell)
             throw MaxSizeException("Maximum number of cells reached."
                                    "New cell will not be added !");
 
-        //std::cout << "gate 17" << std::endl;
         cells.push_back(newCell);
-        //std::cout << "gate 18" << std::endl;
         numberofCells++;
-        //std::cout << "gate 19" << std::endl;
-        //std::cout << "numberofcells=" << numberofCells<< std::endl;
-        //std::cout << "CM=" << cells[0].cm << std::endl;
     }
     catch (MaxSizeException& e)
     {
-        //std::cout << "co jest?" << std::endl;
         simulator_logs << utils::LogLevel::WARNING << e.what() << "\n";
         return;
     }
-    //std::cout << "done here" << std::endl;
 }
 
 void Simulator::addCell()
@@ -136,46 +121,26 @@ void Simulator::addCell(double r0)
             throw MaxSizeException("Maximum number of cells reached."
                                    "New cell will not be added !");
 
-        //std::cout << "gate 1" << std::endl;
         SimpleTriangulation sm(params.d);
-        //std::cout << "gate 2" << std::endl;
         list<Triangle> tris = sm.triangulate(r0);
-        //std::cout << "gate 3" << std::endl;
         Cell newCell(tris);
-        //std::cout << "gate 4" << std::endl;
         newCell.setA(a);
-        //std::cout << "gate 5" << std::endl;
         newCell.setDp(dp);
-        //std::cout << "gate 6" << std::endl;
         newCell.setRc(Rc);
-        //std::cout << "gate 7" << std::endl;
         newCell.setRCellBox(params.r_bc);
-        //std::cout << "gate 8" << std::endl;
         newCell.setGamma(gamma);
-        //std::cout << "gate 9" << std::endl;
         newCell.setVerletR(verlet_r);
-        //std::cout << "gate 10" << std::endl;
         newCell.setCellId(numberofCells);
-        //std::cout << "gate 11" << std::endl;
         newCell.setMass(params.mass);
-        //std::cout << "gate 12" << std::endl;
         newCell.setVisc(params.visc);
-        //std::cout << "gate 13" << std::endl;
         newCell.setInitR(r0);
-        //std::cout << "gate 14" << std::endl; 
-        newCell.setNRT(params.dp);
-        //std::cout << "gate 15" << std::endl;
         addCell(newCell);
-        //std::cout << "gate 16" << std::endl;
-        //std::cout << cells[0].cm << std::endl;
     }
     catch (MaxSizeException& e)
     {
-        //std::cout << "???" <<std::endl;
         simulator_logs << utils::LogLevel::WARNING << e.what() << "\n";
         return;
     }
-    //std::cout << "Cell added" << std::endl;
 }
 
 void Simulator::initCells(int N, double r0)
@@ -185,14 +150,12 @@ void Simulator::initCells(int N, double r0)
 
 void Simulator::initCells(int N, double ra, double rb)
 {
-    //std::cout << "init cells" << std::endl;
     double nx, ny, nz;
     bool flag = true;
     double rbc = params.r_bc;
     double rsum;
     double r0;
 
-    //std::cout << "number of cells =" << numberofCells<< std::endl;
     while (numberofCells < N)
     {
         r0 = uniform(ra, rb);
@@ -201,10 +164,9 @@ void Simulator::initCells(int N, double ra, double rb)
         ny = uniform(-box.getY() + r0 + rbc, box.getY() - r0 - rbc);
         nz = uniform(-box.getZ() + r0 + rbc, box.getZ() - r0 - rbc);
         Vector3D shift(nx, ny, nz);
-        //std::cout << "r0 =" << r0 << std::endl;
+
         for (int i = 0; i < numberofCells; i++)
         {
-            //std::cout << " uhu" << std::endl;
             Vector3D tmpcm = cells[i].getCm();
             Vector3D delta = shift - tmpcm;
             rsum = cells[i].getInitR() + r0 + Rc + EPSILON;
@@ -217,13 +179,10 @@ void Simulator::initCells(int N, double ra, double rb)
 
         if (flag)
         {
-            //std::cout << "I'm adding cell " << std::endl;
             addCell(r0);
-            //std::cout << "kuku " << std::endl;
             moveCell(shift, numberofCells - 1);
         }
     }
-    //std::cout << "end init cells" << std::endl;
 }
 
 void Simulator::simulate()
@@ -234,8 +193,6 @@ void Simulator::simulate()
 void Simulator::simulate(int steps)
 {
     rebuildVerletLists();
-    std::cout << " doing syms" << std::endl;
-    rebuildDomainsList();
     sb.saveRenderScript(cells, box, drawBox);
     sb.saveSurfaceScript(cells);
     traj.open();
@@ -244,7 +201,6 @@ void Simulator::simulate(int steps)
     logsim.open();
     logsim.dumpState(box, cells, 1, getTotalVertices());
     
-    std::cout << "starting to loop" << std::endl;
     for (int i = 0; i <= steps; i++)
     {
         if ( (i + 1) % vlistStep == 0)
@@ -274,7 +230,6 @@ void Simulator::simulate(int steps)
         if ( (i + 1) % boxStep == 0)
         {
             box.resize();
-            domains.setBoxDim(box);
         }
         
         if ( i % (steps / 10) == 0.0 )
@@ -283,7 +238,6 @@ void Simulator::simulate(int steps)
         }
     }
 
-    
     traj.close();
     logsim.close();
 }
@@ -299,24 +253,9 @@ void Simulator::rebuildVerletLists()
     {
         for (int j = 0; j < numberofCells; j ++)
         {
-            cells[i].builtVerletList(cells[j], box);
+            cells[i].builtVerletList(cells[j]);
         }
     }
-}
-
-void Simulator::rebuildDomainsList()
-{
-    domains.voidDomains();
-    
-    for (int i = 0; i < numberofCells; i++)
-    {
-        domains.assignCell(cells[i]);
-    }
-    
-    //for (int i = 0; i < domains.getNumberOfNeigh(0); i++)
-    //{
-    //    std::cout << "[0,i]=" << domains.getDomainNeighbor(0, i) << std::endl;
-    //}
 }
 
 void Simulator::calcForces()
@@ -333,6 +272,12 @@ void Simulator::calcForces()
         cells[i].calcForces();
     }
 
+    // CALCULATE FORCES BETWEEN CELLS AND BOX
+    for (int i = 0 ; i < numberofCells; i++)
+    {
+        cells[i].calcForces(box);
+    }
+
     // CALCULATE INTER-CELLULAR FORCES
     for (int i = 0; i < numberofCells; i++)
     {
@@ -340,18 +285,9 @@ void Simulator::calcForces()
         {
             //if (i != j)
             //{
-            //cells[i].calcForces(cells[j], box);
-            cells[i].calcForcesVL(cells[j], box);
+            //cells[i].calcForces(cells[j]);
+            cells[i].calcForcesVL(cells[j]);
             //}
-        }
-    }    
-    
-    // CALCULATE FORCES BETWEEN CELLS AND BOX
-    if (!box.pbc) 
-    {
-        for (int i = 0 ; i < numberofCells; i++)
-        {
-            cells[i].calcForces(box);
         }
     }
 }
@@ -549,12 +485,4 @@ int Simulator::getTotalVertices()
     }
 
     return totalnumber;
-}
-
-double Simulator::getMaxScale()
-{
-    double maxscale = 0.0;
-    maxscale = std::max(params.r_bc, params.r_cut);
-    
-    return maxscale;
 }

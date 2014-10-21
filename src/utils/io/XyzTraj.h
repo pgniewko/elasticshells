@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "Cell.h"
-#include "Environment.h"
 #include "simulation/Box.h"
 
 class XyzTraj
@@ -24,7 +23,7 @@ class XyzTraj
     private:
         char* trajfile;
         FILE* os;
-        //char names[10];
+        char names[10];
 };
 
 #endif	/* XYZTRAJ_H */

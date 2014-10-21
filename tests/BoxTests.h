@@ -14,7 +14,6 @@ class BoxTests : public CPPUNIT_NS::TestFixture
         CPPUNIT_TEST(testConstructor);
         CPPUNIT_TEST(testCopyConstructor);
         CPPUNIT_TEST(testGetVolume);
-        CPPUNIT_TEST(testGetArea);
         CPPUNIT_TEST(testResizing);
 
         CPPUNIT_TEST_FAIL(testFailedMethod);
@@ -30,7 +29,6 @@ class BoxTests : public CPPUNIT_NS::TestFixture
         void testConstructor();
         void testCopyConstructor();
         void testGetVolume();
-        void testGetArea();
         void testResizing();
 
     private:

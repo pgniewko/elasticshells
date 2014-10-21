@@ -51,7 +51,6 @@ static struct argp_option options[] =
     {"number",    'n', "INT", 0, "Init number of particles. Not in work when positions read from the file [default: 1]"},
     {"pbc",       301, 0, 0, "Use periodic boundary conditions - activate when present"},
     {"ndbox",     302, 0, 0, "No simulation box - deactivate when present"},
-    {"osm",       303, 0, 0, "Volume dependent osmotic pressure [default:  false]"},
     {"depth",     501, "INT", 0, "SimpleTriangulation depth [default: 3]"},
     {"dt",        601, "NUM", 0, "Time step [default: 0.001]"},
     {"ttime",     602, "NUM", 0, "Total simulation time [default: 1.0]"},
@@ -60,7 +59,8 @@ static struct argp_option options[] =
     {"save-step", 605, "INT", 0, "Save step interval [default: 10]"},
     {"box-step",  606, "INT", 0, "Box manipulation step interval [default: 10]"},
     {"vlist-step", 607, "INT", 0, "Verlet-list step interval [default: 100]"},
-    {"int",       701, "STR", 0, "Integrator of equations of motion: "
+    {
+        "int",       701, "STR", 0, "Integrator of equations of motion: "
         "Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], Velocity-Verlet[vv] [default: fe]"
     },
 
@@ -78,9 +78,6 @@ static struct argp_option options[] =
     {"bsdx",      808, "NUM", 0, "dx of Box size [default: 0.0]"},
     {"bsdy",      809, "NUM", 0, "dy of Box size [default: 0.0]"},
     {"bsdz",      810, "NUM", 0, "dz of Box size [default: 0.0]"},
-    {"bsxe",      812, "NUM", 0, "X end of Box size [default: 0.0]"},
-    {"bsye",      813, "NUM", 0, "Y end of Box size [default: 0.0]"},
-    {"bsze",      814, "NUM", 0, "Z end of Box size [default: 0.0]"},
     {"rbc",       811, "NUM", 0, "Radius cut-off for cell-box interactions [default: 0.5]"},
     {0}
 };
@@ -133,7 +130,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->bsze = 10.0;
             arguments->pbc = false;
             arguments->draw_box = true;
-            arguments->osmFlag = false;
             break;
         case 'q':
         case 's':
@@ -177,9 +173,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 302:
             arguments->draw_box = false;
-            break;
-        case 303:
-            arguments->osmFlag = true;
             break;
         case 501:
             arguments->d = arg ? atoi (arg) : 3;
@@ -238,15 +231,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 810:
             arguments->bsdz = arg ?  strtod (arg, NULL) : 0.0;
             break;
-        case 812:
-            arguments->bsxe = arg ?  strtod (arg, NULL) : 10.0;
-            break;
-        case 813:
-            arguments->bsye = arg ?  strtod (arg, NULL) : 10.0;
-            break;
-        case 814:
-            arguments->bsze = arg ?  strtod (arg, NULL) : 10.0;
-            break;    
         case 811:
             arguments->r_bc = arg ?  strtod (arg, NULL) : 0.5;
             break;
