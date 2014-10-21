@@ -31,7 +31,8 @@ TEST_SOURCES := $(wildcard $(TESTS)/*.cpp) \
 		$(wildcard $(SRC)/geometry/algorithms/*.cpp) \
 		$(wildcard $(SRC)/force/*.cpp) \
 	        $(wildcard $(SRC)/utils/io/*.cpp) \
-	        $(wildcard $(SRC)/utils/*.cpp)
+	        $(wildcard $(SRC)/utils/*.cpp) \
+	        $(wildcard $(SRC)/utils/observables/*.cpp)
 
 
 OBJECTS      := $(SOURCES:.cpp=.o)
