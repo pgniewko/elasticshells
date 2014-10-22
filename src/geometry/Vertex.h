@@ -55,6 +55,8 @@ class Vertex
         int nneigh;
         int ntrian;
         int nbneigh;
+        
+        int domainIdx;
 
     private:
         int id;
