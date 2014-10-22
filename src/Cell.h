@@ -15,6 +15,7 @@
 #include "geometry/VertexTriangle.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
+#include "simulation/DomainList.h"
 
 class Cell
 {
@@ -29,13 +30,17 @@ class Cell
         void calcCM();
         int numberofFaces() ;
         int numberofVertices();
-        void builtVerletList(const Cell&);
+        void builtVerletList(const Cell&, Box&);
         void voidVerletLsit();
+        
+        void builtNbList(vector<Cell>&, DomainList&, Box&);
 
         void calcForces();
-        void calcForcesVL(const Cell&);
+        void calcForces(const Cell&, Box&);
+        void calcForcesVL(const Cell&, Box&);
         void calcForces(Box&);
         double calcBoxForces(Box&); // TODO: refactor it!
+        void calcStressTensor(Box&, double*); //TODO: refacoting !
         
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
@@ -48,6 +53,7 @@ class Cell
         void setMass(double);
         void setCellId(int);
         void setRCellBox(double);
+        void setNRT(double);
 
         void setVerletR(double);
         void setInitR(double);
@@ -57,6 +63,7 @@ class Cell
         Vector3D getCm();
 
         void voidForces();
+        void getDistance(Vector3D& djk, const Vector3D& vj, const Vector3D& vk, Box&);
 
         Vector3D cm;
         Vertex vertices[MAX_V];
@@ -83,6 +90,8 @@ class Cell
         double mass0;
         double visc0tot;
         double mass0tot;
+        
+        double nRT;
 };
 
 #endif	/* CELL_H */
