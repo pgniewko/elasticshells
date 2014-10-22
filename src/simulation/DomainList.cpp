@@ -39,7 +39,6 @@ void DomainList::initDomains()
                       for (int o = -1; o <= 1; o++)
                         for (int p = -1; p <= 1; p++)
                         {
-                            //neighix = getDomainIndex(i+v[l], j+v[o], k+v[p]);
                             neighix = getDomainIndex(i + l, j + o, k + p);
                             if (neighix != -1)
                             {
@@ -77,18 +76,6 @@ int DomainList::getDomainIndex(int i, int j, int k)
     return (i + j * m + k * m * m);
 }
 
-//void DomainList::assignCell(Cell& cell)
-//{
-//    
-//    int cellid = cell.cellId;
-//    //std::cout << "Assiging cell id=" << cellid << std::endl;
-//    for (int i = 0; i < cell.numberofVertices(); i++)
-//    {
-//        assignVertex(cell.vertices[i], cellid);
-//    }
-//    //std::cout << "Assiging done" << std::endl;
-//}
-
 void DomainList::assignVertex(Vertex& vertex, int cellid)
 {
     int index = getDomainIndex(vertex);
@@ -123,10 +110,6 @@ void DomainList::setBoxDim(Box& box)
         x_max = box.getX();
         y_max = box.getY();
         z_max = box.getZ();
-        
-        //lx = 2 * box.getX();
-        //ly = 2 * box.getY();
-        //lz = 2 * box.getZ();
     } 
     else
     {
@@ -158,13 +141,10 @@ void DomainList::setBoxDim(Box& box)
     dx = lx / m;
     dy = ly / m;
     dz = lz / m;
-    
-    //std::cout << "M=" << m << " number of domains=" << N << std::endl;
 }
 
 void DomainList::voidDomains()
 {
-    //std::cout << "czyscimy dupe" << std::endl;
     for (int i = 0; i < N; i++)
     {
         domains[i].voidParticlesInDomain();

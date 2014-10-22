@@ -15,11 +15,9 @@ class DomainList
         DomainList(const DomainList& orig);
         virtual ~DomainList();
         
-        //void setPbc(bool);
         void setupDomainsList(double, Box&);
         int getDomainIndex(int, int, int);
         void initDomains();
-        //void assignCell(Cell&);
         void assignVertex(Vertex&, int);
         void voidDomains();
         
@@ -36,8 +34,6 @@ class DomainList
         int getCellIdx(int, int);
         int getNumOfParticles(int);
         
-        
-        
     private:
         int m;
         int N;
@@ -52,8 +48,6 @@ class DomainList
         Domain domains[MAX_M * MAX_M * MAX_M];
 
 };
-
-
 
 #endif	/* DOMAINLIST_H */
 

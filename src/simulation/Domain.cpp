@@ -1,8 +1,8 @@
 #include "Domain.h"
 
-Domain::Domain() : myid(-1), numofVert(0), numofNeighDom(0) {}
+Domain::Domain() : myid(-1), numofNeighDom(0), numofVert(0) {}
 
-Domain::Domain(const Domain& orig) : myid(orig.myid), numofVert(orig.numofVert), numofNeighDom(orig.numofNeighDom) 
+Domain::Domain(const Domain& orig) : myid(orig.myid),  numofNeighDom(orig.numofNeighDom), numofVert(orig.numofVert)
 {
     for (int i = 0; i < numofVert; i++)
     {
@@ -27,8 +27,8 @@ void Domain::addVertex(int vid, int cellid)
     }
     else
     {
-        std::cout << "dupa jasia" << std::endl;
         exit(1);
+        // exception
     } 
 }
 
@@ -41,7 +41,6 @@ void Domain::addNeighDomain(int domId)
     }
     else
     {
-        std::cout << "dupa zosi" << std::endl;
         exit(1);
         // exception
     }

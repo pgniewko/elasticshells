@@ -194,7 +194,6 @@ void Cell::builtNbList(vector<Cell>& cells, DomainList& domains, Box& box)
     int vertIdx, cellIdx;
     for (int i = 0; i < numberV; i++)
     {
-        //std::cout << "i=" << i << std::endl;
         domainIdx = vertices[i].domainIdx;
         domainIdx = domains.getDomainIndex(vertices[i]);
         if (vertices[i].domainIdx != domains.getDomainIndex(vertices[i])) 
@@ -202,19 +201,14 @@ void Cell::builtNbList(vector<Cell>& cells, DomainList& domains, Box& box)
             std::cout << "ERROR !! vertices[i].domainIdx != domains.getDomainIndex(vertices[i])";
             exit(1);
         }
-        //std::cout << "i=" << i << " domainIdx=" << domainIdx << " (x,y,z)= " << vertices[i].xyz << std::endl;
-        //std::cout << "PBC="<< box.pbc<< " domains.getNumberOfNeigh(domainIdx)="<<domains.getNumberOfNeigh(domainIdx) << std::endl;
         for (int j = 0; j < domains.getNumberOfNeigh(domainIdx); j++)
         {
             domainn = domains.getDomainNeighbor(domainIdx, j);
-            //std::cout << " domainn=" << domainn << " numof part in negh=" << domains.getNumOfParticles(domainn);
-            //std::cout << " total num of particels=" << domains.numberofAssignedParticles() << std::endl;
             for (int k = 0; k < domains.getNumOfParticles(domainn); k++)
             {
                 vertIdx = domains.getVertexIdx(domainn, k);
                 cellIdx = domains.getCellIdx(domainn, k);
                 
-                //std::cout << "vertIdx=" << vertIdx << " cellIdx = " << cellIdx << std::endl;
                 if (this->cellId != cellIdx)
                 {
                     getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].xyz, vertices[i].xyz, box);
@@ -224,29 +218,21 @@ void Cell::builtNbList(vector<Cell>& cells, DomainList& domains, Box& box)
                         vertices[i].nbvertices[vertices[i].nbneigh] = vertIdx;
                         vertices[i].nbcellid[vertices[i].nbneigh] = cellIdx; //cells[i].cellId;
                         vertices[i].nbneigh++;
-                        
-                        //std::cout << "*vid=" << i << " vertIdx=" << vertIdx << " cellIdx=" << cellIdx;
-                        //std::cout << " vertices[i].nbneigh=" << vertices[i].nbneigh << std::endl;
-                        //std::cout << "vertIdx=" << vertIdx << "cellIdx=" << cellIdx << std::endl;
                     }
                 }
                 else
                 {
                     getDistance(distance_ik, vertices[vertIdx].xyz, vertices[i].xyz, box);
-                    //std::cout << "distance_ik.length()=" << distance_ik.length() << std::endl;
                     
-                    if (i != vertIdx && !vertices[i].isNeighbor(k) && distance_ik.length() <= Rc)
+                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= Rc)
                     {
                         vertices[i].nbvertices[vertices[i].nbneigh] = vertIdx;
-                        vertices[i].nbcellid[vertices[i].nbneigh] = cellIdx; //cells[i].cellId;
+                        vertices[i].nbcellid[vertices[i].nbneigh] = cellIdx;
                         vertices[i].nbneigh++;
-                        //std::cout << "ADDING NEIGH vid=" << i << " vertIdx=" << vertIdx << " cellIdx=" << cellIdx;
-                        //std::cout << " vertices[i].nbneigh=" << vertices[i].nbneigh << std::endl;
                     }
                 }
                 
             }
-            
         }
     }
 }

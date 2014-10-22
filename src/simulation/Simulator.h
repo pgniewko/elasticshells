@@ -92,7 +92,6 @@ class Simulator
         int boxStep;
 
         Box box;
-        //bool pbc;
         bool drawBox;
         int nbhandler;
 

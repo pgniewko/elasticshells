@@ -31,7 +31,6 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     drawBox = params.draw_box;
     box.setPbc(params.pbc);
     nbhandler = params.nbFlag;
-    //pbc = params.pbc;
 
     double maxscale = getMaxScale();
     domains.setupDomainsList(maxscale, box);
@@ -307,11 +306,6 @@ void Simulator::rebuildDomainsList()
     {
         cells[i].builtNbList(cells, domains, box);
     }
-    
-    //for (int i = 0; i < domains.getNumberOfNeigh(0); i++)
-    //{
-    //    std::cout << "[0,i]=" << domains.getDomainNeighbor(0, i) << std::endl;
-    //}
 }
 
 void Simulator::calcForces()
@@ -346,7 +340,6 @@ void Simulator::calcForces()
             }
             else if (nbhandler == 2)
             {
-                //std::cout << "calc forces in 2" << std::endl;
                 cells[i].calcForcesVL(cells[j], box);
             }
             else 
