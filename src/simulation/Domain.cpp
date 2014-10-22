@@ -13,7 +13,6 @@ Domain::Domain(const Domain& orig) : myid(orig.myid), numofVert(orig.numofVert),
     {
         neighDomains[i] = orig.neighDomains[i];
     }
-    //std::cout << "copying domain" << std::endl;
 }
 
 Domain::~Domain() {}
@@ -25,12 +24,12 @@ void Domain::addVertex(int vid, int cellid)
         vertIds[numofVert] = vid;
         cellsIds[numofVert] = cellid;
         numofVert++;
-        //std::cout << "domain id= " << myid << " numofVert=" << numofVert <<  std::endl;
     }
     else
     {
-        // exception
-    }
+        std::cout << "dupa jasia" << std::endl;
+        exit(1);
+    } 
 }
 
 void Domain::addNeighDomain(int domId)
@@ -42,6 +41,8 @@ void Domain::addNeighDomain(int domId)
     }
     else
     {
+        std::cout << "dupa zosi" << std::endl;
+        exit(1);
         // exception
     }
 }

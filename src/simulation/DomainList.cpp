@@ -3,15 +3,10 @@
 DomainList::DomainList() : m(1), N(1), pbc(false), m_assigned(false), init_domains(false),
         x_min(0), y_min(0), z_min(0), x_max(0), y_max(0), z_max(0),
         dx(0), dy(0), dz(0), rc_max(0)
-{
-//    std::cout << "DL constructor" <<std::endl; 
-//    rc_max = rcMax;
-//    setBoxDim(box);
-//    initDomains();
-}
+{}
 
 DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.pbc), init_domains(orig.init_domains),
-        m_assigned(orig.m_assigned), x_min(0), y_min(0), z_min(0), x_max(0), y_max(0), z_max(0) {}
+        m_assigned(orig.m_assigned), x_min(0), y_min(0), z_min(0), x_max(0), y_max(0), z_max(0), dx(0), dy(0), dz(0), rc_max(0) {}
 
 DomainList::~DomainList() {}
 
@@ -22,10 +17,6 @@ void DomainList::setupDomainsList(double rcMax, Box& box)
     initDomains();
     pbc = box.pbc;
 }
-//void DomainList::setPbc(double rcMax, Box& box)
-//{
-//    pbc = flag;
-//}
 
 void DomainList::initDomains()
 {
@@ -100,8 +91,7 @@ int DomainList::getDomainIndex(int i, int j, int k)
 
 void DomainList::assignVertex(Vertex& vertex, int cellid)
 {
-    int index = getDomainIndex(vertex); 
-    //cout << "cellid=" << cellid << " vertex id=" << vertex.getId() << " d index=" << index << std::endl; 
+    int index = getDomainIndex(vertex);
     domains[index].addVertex(vertex.getId(), cellid);
     vertex.domainIdx = index;
 }
@@ -117,7 +107,7 @@ int DomainList::getDomainIndex(Vertex& vertex)
     xix = floor(delx / dx);
     yix = floor(dely / dy);
     zix = floor(delz / dz);
-    return getDomainIndex(xix, yix, zix);;
+    return getDomainIndex(xix, yix, zix);
 }
 
 void DomainList::setBoxDim(Box& box)
@@ -160,29 +150,25 @@ void DomainList::setBoxDim(Box& box)
         Lmax = std::max(lx, ly);
         Lmax = std::max(lz, Lmax);
         m = ceil( Lmax / (2 * rc_max) );
-        //std::cout << "M tmp=" << m <<std::endl;
         m = std::min(m, MAX_M);
         N = m * m * m;
         m_assigned = true;
     }
     
-    //std::cout << "M=" << m <<std::endl;
-    
     dx = lx / m;
     dy = ly / m;
     dz = lz / m;
     
-    //std::cout << "dx= " << dx << " dy=" << dy << " dz=" << dz << std::endl;
+    //std::cout << "M=" << m << " number of domains=" << N << std::endl;
 }
 
 void DomainList::voidDomains()
 {
-    //std::cout << "voiding domains " << std::endl;
+    //std::cout << "czyscimy dupe" << std::endl;
     for (int i = 0; i < N; i++)
     {
         domains[i].voidParticlesInDomain();
     }
-    //std::cout << "voiding done " << std::endl;
 }
 int DomainList::getNumberOfNeigh(int dix)
 {
