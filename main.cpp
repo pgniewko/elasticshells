@@ -67,6 +67,7 @@ static struct argp_option options[] =
     {0,           'a', "NUM", 0, "LJ12-6 repulsion scaling parameter[default: 1.0]"},
     {"mass",      'm', "NUM", 0, "Total mass of a cell [default: 100.0]"},
     {"gamma",     'k', "NUM", 0, "Spring constant between vertices[default: 1.0]"},
+    {"ecw",       799, "NUM", 0, "Effective spring constant for cell-wall repulsion [default: 200.0]"},
     {"mu",        801, "NUM", 0, "Viscosity coefficient [default: 100.0]"},
     {"dp",        802, "NUM", 0, "Osmotic pressure [default: 0.0]"},
     {"r-cut",     803, "NUM", 0, "Radius cut-off for pair interactions [default: 0.5]"},
@@ -130,6 +131,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->bsxe = 10.0;
             arguments->bsye = 10.0;
             arguments->bsze = 10.0;
+            arguments->ecw = 200.0;
             arguments->pbc = false;
             arguments->draw_box = true;
             arguments->osmFlag = false;
@@ -210,6 +212,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 702:
             arguments->nbFlag = arg ? atoi (arg) : 0;
+            break;
+        case 799:
+            arguments->ecw = arg ? strtod (arg, NULL) : 200.0;
             break;    
         case 801:
             arguments->visc = arg ? strtod (arg, NULL) : 100.0;

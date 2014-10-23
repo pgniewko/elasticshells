@@ -6,7 +6,7 @@ BoxCellRepulsion::BoxCellRepulsion(const BoxCellRepulsion& orig) {}
 
 BoxCellRepulsion::~BoxCellRepulsion() {}
 
-Vector3D BoxCellRepulsion::calcForce(Vector3D dij, double E, double R)
+Vector3D BoxCellRepulsion::calcForce(Vector3D& dij, double E, double R)
 {
     double eps = R - dij.length();
     if (eps > 0)

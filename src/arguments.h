@@ -44,6 +44,7 @@ struct arguments
     double bsxe;
     double bsye;
     double bsze;
+    double ecw;
     bool pbc;
     bool draw_box;
     bool osmFlag;
