@@ -41,7 +41,9 @@ class Box
         double getArea();
         
         void setPbc(bool);
+        void setEcw(double);
         bool pbc;
+        double ecw;
 
     private:
         double x;

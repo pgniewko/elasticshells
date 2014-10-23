@@ -8,6 +8,7 @@
 #include "force/HookeanForce.h"
 #include "force/OsmoticForce.h"
 #include "force/NbRepulsiveForce.h"
+#include "force/BoxCellRepulsion.h"
 #include "geometry/Vector3D.h"
 #include "geometry/Tetrahedron.h"
 #include "geometry/Triangle.h"
@@ -39,8 +40,8 @@ class Cell
         void calcForces(const Cell&, Box&);
         void calcForcesVL(const Cell&, Box&);
         void calcForces(Box&);
-        double calcBoxForces(Box&); // TODO: refactor it!
-        void calcStressTensor(Box&, double*); //TODO: refacoting !
+        //double calcBoxForces(Box&); // TODO: refactor it!
+        //void calcStressTensor(Box&, double*); //TODO: refacoting !
         
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
@@ -61,6 +62,10 @@ class Cell
         double getInitR();
         double getVisc();
         Vector3D getCm();
+        double getRcb();
+        
+        Vector3D getVertexXYZ(int);
+        Vector3D getVertexForce(int);
 
         void voidForces();
         void getDistance(Vector3D& djk, const Vector3D& vj, const Vector3D& vk, Box&);

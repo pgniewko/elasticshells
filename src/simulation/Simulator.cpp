@@ -30,6 +30,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     box.setZend(params.bsze);
     drawBox = params.draw_box;
     box.setPbc(params.pbc);
+    box.setEcw(params.ecw);
     nbhandler = params.nbFlag;
 
     double maxscale = getMaxScale();
@@ -214,7 +215,7 @@ void Simulator::simulate(int steps)
     traj.save(cells, getTotalVertices());
 
     logsim.open();
-    logsim.dumpState(box, cells, 1, getTotalVertices());
+    logsim.dumpState(box, cells, 1, getTotalVertices(), nbhandler);
     
     
     for (int i = 0; i <= steps; i++)
@@ -247,7 +248,7 @@ void Simulator::simulate(int steps)
         
         if ( (i+1) % logStep == 0)
         {
-            logsim.dumpState(box, cells, (i+1), getTotalVertices());
+            logsim.dumpState(box, cells, (i+1), getTotalVertices(), nbhandler);
         }
         
         if ( (i + 1) % boxStep == 0)

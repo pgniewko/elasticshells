@@ -1,14 +1,14 @@
 #include "Box.h"
 
 Box::Box(double bsx, double bsy, double bsz) : x(bsx), y(bsy), z(bsz),
-    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), dx(0), dy(0), dz(0), pbc(false) {}
+    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), dx(0), dy(0), dz(0), pbc(false), ecw(0.0) {}
 
 Box::Box(double bsx, double bsy, double bsz, double dbs) : x(bsx), y(bsy), z(bsz),
-    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), dx(dbs), dy(dbs), dz(dbs), pbc(false) {}
+    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), dx(dbs), dy(dbs), dz(dbs), pbc(false), ecw(0.0) {}
 
 Box::Box(const Box& orig) : x(orig.x), y(orig.y), z(orig.z),
     xe(orig.xe), ye(orig.ye), ze(orig.ze), dx(orig.dx), dy(orig.dy), dz(orig.dz),
-    pbc(orig.pbc) {}
+    pbc(orig.pbc), ecw(orig.ecw) {}
 
 Box::~Box() {}
 
@@ -44,22 +44,27 @@ void Box::setX(const double newx)
 {
     x = newx;
 }
+
 double Box::getX()
 {
     return x;
 }
+
 void Box::setY(const double newy)
 {
     y = newy;
 }
+
 double Box::getY()
 {
     return y;
 }
+
 void Box::setZ(const double newz)
 {
     z = newz;
 }
+
 double Box::getZ()
 {
     return z;
@@ -69,22 +74,27 @@ void Box::setDx(const double newdx)
 {
     dx = newdx;
 }
+
 double Box::getDx()
 {
     return dx;
 }
+
 void Box::setDy(const double newdy)
 {
     dy = newdy;
 }
+
 double Box::getDy()
 {
     return dy;
 }
+
 void Box::setDz(const double newdz)
 {
     dz = newdz;
 }
+
 double Box::getDz()
 {
     return dz;
@@ -94,10 +104,12 @@ void Box::setXend(const double xend)
 {
     xe = xend;
 }
+
 void Box::setYend(const double yend)
 {
     ye = yend;
 }
+
 void Box::setZend(const double zend)
 {
     ze = zend;
@@ -111,6 +123,7 @@ double Box::getYend()
 {
     return ye;
 }
+
 double Box::getZend()
 {
     return ze;
@@ -119,4 +132,9 @@ double Box::getZend()
 void Box::setPbc(bool pbcf)
 {
     pbc = pbcf;
+}
+
+void Box::setEcw(double e)
+{
+    ecw = e;
 }

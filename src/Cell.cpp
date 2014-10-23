@@ -152,7 +152,6 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
         {
             for (int k = 0; k < other_cell.numberV; k++ )
             {
-                //distance_jk = vertices[j].xyz - other_cell.vertices[k].xyz;
                 getDistance(distance_jk,  other_cell.vertices[k].xyz, vertices[j].xyz, box);
 
                 if (distance_jk.length() <= Rc * verletR)
@@ -170,7 +169,6 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
         {
             for (int k = 0; k < numberV; k++)
             {
-                //distance_jk = vertices[j].xyz - vertices[k].xyz;
                 getDistance(distance_jk, vertices[k].xyz, vertices[j].xyz, box);
                 
                 if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= Rc * verletR)
@@ -311,18 +309,13 @@ void Cell::calcForcesVL(const Cell& other_cell, Box& box)
 
     for (int i = 0; i < numberV; i++)
     {
-        //std::cout << "im calc VL forces" ;
-        //std::cout << "vertices["<< i<<"].nbneigh=" <<vertices[i].nbneigh << std::endl;
         for (int j = 0; j < vertices[i].nbneigh; j++)
         {
             if (vertices[i].nbcellid[j] == ocellid)
             {
                 vertid = vertices[i].nbvertices[j];
-                //dji = other_cell.vertices[vertid].xyz - vertices[i].xyz;
                 getDistance(dji, vertices[i].xyz, other_cell.vertices[vertid].xyz, box);
                 vertices[i].force += NbRepulsiveForce::calcForce(dji, Rc, a);
-                //std::cout << "dji.lenght() " << dji.length() <<"NbRepulsiveForce::calcForce(dji, Rc, a)=" << NbRepulsiveForce::calcForce(dji, Rc, a) << std::endl;
-                //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[vertid].xyz, Rc, a);
             }
         }
     }
@@ -331,11 +324,14 @@ void Cell::calcForcesVL(const Cell& other_cell, Box& box)
 void Cell::calcForces(Box& box)
 {
     Vector3D wallYZ, wallXZ, wallXY;
+    Vector3D dji;
     double sgnx, sgny, sgnz;
     double bsx = box.getX();
     double bsy = box.getY();
     double bsz = box.getZ();
 
+    double E = box.ecw;
+    
     for (int i = 0; i < numberV; i++)
     {
         if (vertices[i].xyz.x != 0)
@@ -344,7 +340,8 @@ void Cell::calcForces(Box& box)
             wallYZ.x = sgnx * bsx;
             wallYZ.y = vertices[i].xyz.y;
             wallYZ.z = vertices[i].xyz.z;
-            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, rCellBox, a);
+            getDistance(dji, wallYZ, vertices[i].xyz, box);
+            vertices[i].force += BoxCellRepulsion::calcForce(dji, E, rCellBox);
         }
 
         if (vertices[i].xyz.y != 0)
@@ -353,7 +350,8 @@ void Cell::calcForces(Box& box)
             wallXZ.x = vertices[i].xyz.x;
             wallXZ.y = sgny * bsy;
             wallXZ.z = vertices[i].xyz.z;
-            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, rCellBox, a);
+            getDistance(dji, wallXZ, vertices[i].xyz, box);
+            vertices[i].force += BoxCellRepulsion::calcForce(dji, E, rCellBox);
         }
 
         if (vertices[i].xyz.z != 0)
@@ -362,108 +360,109 @@ void Cell::calcForces(Box& box)
             wallXY.x = vertices[i].xyz.x;
             wallXY.y = vertices[i].xyz.y;
             wallXY.z = sgnz * bsz;
-            vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, rCellBox, a);
+            getDistance(dji, wallXY, vertices[i].xyz, box);
+            vertices[i].force += BoxCellRepulsion::calcForce(dji, E, rCellBox);
         }
     }
 }
 
-double Cell::calcBoxForces(Box& box)
-{
-    Vector3D wallYZ, wallXZ, wallXY;
-    double sgnx, sgny, sgnz;
-    double bsx = box.getX();
-    double bsy = box.getY();
-    double bsz = box.getZ();
+//double Cell::cal\cBoxForces(Box& box)
+//{
+//    Vector3D wallYZ, wallXZ, wallXY;
+//    double sgnx, sgny, sgnz;
+//    double bsx = box.getX();
+//    double bsy = box.getY();
+//    double bsz = box.getZ();
 
-    Vector3D totForceX(0,0,0);
-    Vector3D totForceY(0,0,0);
-    Vector3D totForceZ(0,0,0);
+//    Vector3D totForceX(0,0,0);
+//    Vector3D totForceY(0,0,0);
+//    Vector3D totForceZ(0,0,0);
     
-    double totForceMgn = 0.0;
+//    double totForceMgn = 0.0;
     
-    for (int i = 0; i < numberV; i++)
-    {
-        if (vertices[i].xyz.x != 0 )
-        {
-            sgnx = vertices[i].xyz.x / fabs(vertices[i].xyz.x);
-            wallYZ.x = sgnx * bsx;
-            wallYZ.y = vertices[i].xyz.y;
-            wallYZ.z = vertices[i].xyz.z;
-            totForceX = NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, rCellBox, a);
-            totForceMgn += totForceX.length();
-        }
+//    for (int i = 0; i < numberV; i++)
+//    {
+//        if (vertices[i].xyz.x != 0 )
+//        {
+//            sgnx = vertices[i].xyz.x / fabs(vertices[i].xyz.x);
+//            wallYZ.x = sgnx * bsx;
+//            wallYZ.y = vertices[i].xyz.y;
+//            wallYZ.z = vertices[i].xyz.z;
+//            totForceX = NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, rCellBox, a);
+//            totForceMgn += totForceX.length();
+//        }
 
-        if (vertices[i].xyz.y != 0 )
-        {
-            sgny = vertices[i].xyz.y / fabs(vertices[i].xyz.y);
-            wallXZ.x = vertices[i].xyz.x;
-            wallXZ.y = sgny * bsy;
-            wallXZ.z = vertices[i].xyz.z;
-            totForceY = NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, rCellBox, a);
-            totForceMgn += totForceY.length();
-        }
+//        if (vertices[i].xyz.y != 0 )
+//        {
+//            sgny = vertices[i].xyz.y / fabs(vertices[i].xyz.y);
+//            wallXZ.x = vertices[i].xyz.x;
+//            wallXZ.y = sgny * bsy;
+//            wallXZ.z = vertices[i].xyz.z;
+//            totForceY = NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, rCellBox, a);
+//            totForceMgn += totForceY.length();
+//        }
 
-        if (vertices[i].xyz.z != 0 )
-        {
-            sgnz = vertices[i].xyz.z / fabs(vertices[i].xyz.z);
-            wallXY.x = vertices[i].xyz.x;
-            wallXY.y = vertices[i].xyz.y;
-            wallXY.z = sgnz * bsz;
-            totForceZ = NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, rCellBox, a);
-            totForceMgn += totForceZ.length();
-        }
-    }
-    return totForceMgn;
-}
+//        if (vertices[i].xyz.z != 0 )
+//        {
+//            sgnz = vertices[i].xyz.z / fabs(vertices[i].xyz.z);
+//            wallXY.x = vertices[i].xyz.x;
+//            wallXY.y = vertices[i].xyz.y;
+//            wallXY.z = sgnz * bsz;
+//            totForceZ = NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, rCellBox, a);
+//            totForceMgn += totForceZ.length();
+//        }
+//    }
+//    return totForceMgn;
+//}
 
-void Cell::calcStressTensor(Box& box, double* sab)
-{
-    Vector3D wallYZ, wallXZ, wallXY;
-    double sgnx, sgny, sgnz;
-    double bsx = box.getX();
-    double bsy = box.getY();
-    double bsz = box.getZ();
+//void Cell::calcStressTensor(Box& box, double* sab)
+//{
+//    Vector3D wallYZ, wallXZ, wallXY;
+//    double sgnx, sgny, sgnz;
+//    double bsx = box.getX();
+//    double bsy = box.getY();
+//    double bsz = box.getZ();
     
-    Vector3D boxForce(0,0,0);
+//    Vector3D boxForce(0,0,0);
     
-    for (int i = 0; i < numberV; i++)
-    {
-        boxForce = Vector3D(0,0,0);
-        if (vertices[i].xyz.x != 0 )
-        {
-            sgnx = vertices[i].xyz.x / fabs(vertices[i].xyz.x);
-            wallYZ.x = sgnx * bsx;
-            wallYZ.y = vertices[i].xyz.y;
-            wallYZ.z = vertices[i].xyz.z;
-            boxForce += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, rCellBox, a);
-        }
+//    for (int i = 0; i < numberV; i++)
+//    {
+//        boxForce = Vector3D(0,0,0);
+//        if (vertices[i].xyz.x != 0 )
+//        {
+//            sgnx = vertices[i].xyz.x / fabs(vertices[i].xyz.x);
+//            wallYZ.x = sgnx * bsx;
+//            wallYZ.y = vertices[i].xyz.y;
+//            wallYZ.z = vertices[i].xyz.z;
+//            boxForce += NbRepulsiveForce::calcForce(vertices[i].xyz, wallYZ, rCellBox, a);
+//        }
 
-        if (vertices[i].xyz.y != 0 )
-        {
-            sgny = vertices[i].xyz.y / fabs(vertices[i].xyz.y);
-            wallXZ.x = vertices[i].xyz.x;
-            wallXZ.y = sgny * bsy;
-            wallXZ.z = vertices[i].xyz.z;
-            boxForce += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, rCellBox, a);
-        }
+//        if (vertices[i].xyz.y != 0 )
+//        {
+//            sgny = vertices[i].xyz.y / fabs(vertices[i].xyz.y);
+//            wallXZ.x = vertices[i].xyz.x;
+//            wallXZ.y = sgny * bsy;
+//            wallXZ.z = vertices[i].xyz.z;
+//            boxForce += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXZ, rCellBox, a);
+//        }
 
-        if (vertices[i].xyz.z != 0 )
-        {
-            sgnz = vertices[i].xyz.z / fabs(vertices[i].xyz.z);
-            wallXY.x = vertices[i].xyz.x;
-            wallXY.y = vertices[i].xyz.y;
-            wallXY.z = sgnz * bsz;
-            boxForce += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, rCellBox, a);
-        }
+//        if (vertices[i].xyz.z != 0 )
+//        {
+//            sgnz = vertices[i].xyz.z / fabs(vertices[i].xyz.z);
+//            wallXY.x = vertices[i].xyz.x;
+//            wallXY.y = vertices[i].xyz.y;
+//            wallXY.z = sgnz * bsz;
+//            boxForce += NbRepulsiveForce::calcForce(vertices[i].xyz, wallXY, rCellBox, a);
+//        }
         
-        sab[0] += -vertices[i].xyz.x  * (vertices[i].force - boxForce).x;
-        sab[1] += -vertices[i].xyz.y  * (vertices[i].force - boxForce).y;
-        sab[2] += -vertices[i].xyz.z  * (vertices[i].force - boxForce).z;
-        sab[3] += -vertices[i].xyz.x  * (vertices[i].force - boxForce).y;
-        sab[4] += -vertices[i].xyz.x  * (vertices[i].force - boxForce).z;
-        sab[5] += -vertices[i].xyz.y  * (vertices[i].force - boxForce).z;
-    }
-}
+//        sab[0] += -vertices[i].xyz.x  * (vertices[i].force - boxForce).x;
+//        sab[1] += -vertices[i].xyz.y  * (vertices[i].force - boxForce).y;
+//        sab[2] += -vertices[i].xyz.z  * (vertices[i].force - boxForce).z;
+//        sab[3] += -vertices[i].xyz.x  * (vertices[i].force - boxForce).y;
+//        sab[4] += -vertices[i].xyz.x  * (vertices[i].force - boxForce).z;
+//        sab[5] += -vertices[i].xyz.y  * (vertices[i].force - boxForce).z;
+//    }
+//}
 
 void Cell::voidForces()
 {
@@ -646,16 +645,31 @@ Vector3D Cell::getCm()
     return cm;
 }
 
+double Cell::getRcb()
+{
+    return rCellBox;
+}
+
+Vector3D Cell::getVertexXYZ(int idx)
+{
+    return vertices[idx].xyz;
+}
+
+Vector3D Cell::getVertexForce(int idx)
+{
+    return vertices[idx].force;
+}
+
 void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, Box& box)
 {
-    double x, y, z;
     dkj = vk - vj;
-    double bsx = 2 * box.getX();
-    double bsy = 2 * box.getY();
-    double bsz = 2 * box.getZ();
     
     if (box.pbc)
     {
+        double x, y, z;
+        double bsx = 2 * box.getX();
+        double bsy = 2 * box.getY();
+        double bsz = 2 * box.getZ();
         x = round(dkj.x / bsx) *  bsx;
         y = round(dkj.y / bsy) *  bsy;
         z = round(dkj.z / bsz) *  bsz;
