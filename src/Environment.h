@@ -24,6 +24,7 @@ const double DELTA7  = 0.00000001000000;
 const double DELTA14 = 0.00000000000001;
 const double EPSILON = 0.25;
 const double P3ROOT2 = 1.25992104989487;
+const double D4_3    = 1.33333333333333;
 
 const char names[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
                         'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
