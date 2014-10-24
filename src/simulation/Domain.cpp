@@ -19,28 +19,49 @@ Domain::~Domain() {}
 
 void Domain::addVertex(int vid, int cellid)
 {
-    if (numofVert < MAX_IN_DOMAIN)
-    {
+    try {
+        
+    
+        if (numofVert >= MAX_IN_DOMAIN)
+            throw MaxSizeException("Trying to add more vertices than it's allowed."
+                                   "New vertex will not be added!"
+                                   "This may significantly affect the simulation accuracy.");
+        
+        //if (numofVert < MAX_IN_DOMAIN)
+        //{
         vertIds[numofVert] = vid;
         cellsIds[numofVert] = cellid;
         numofVert++;
+        //}
     }
-    else
+    catch (MaxSizeException& e)
     {
-        exit(1);
-        // exception
-    } 
+        std::cout << e.what() << std::endl;
+        return;
+    }
+    //else
+    //{
+    //    exit(1);
+    //    // exception
+    //} 
 }
 
 void Domain::addNeighDomain(int domId)
 {
-    if (numofNeighDom < 27)
-    {
+    try {
+        if (numofVert >= MAX_IN_DOMAIN)
+            throw MaxSizeException("Trying to add more domain neighbors than it's possible."
+                                   "New neighbor will not be added!"
+                                   "The code will be terminated due the bug!");
+    //if (numofNeighDom < 27)
+    //{
         neighDomains[numofNeighDom] = domId;
         numofNeighDom++;
-    }
-    else
+    //}
+    } 
+    catch (MaxSizeException& e)
     {
+        
         exit(1);
         // exception
     }

@@ -1,7 +1,9 @@
 #ifndef DOMAIN_H
 #define	DOMAIN_H
 
+
 #include "Environment.h"
+#include "exceptions/MaxSizeException.h"
 
 class Domain {
 public:
