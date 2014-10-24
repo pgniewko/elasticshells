@@ -12,7 +12,7 @@ public:
     SurfacePressure(const SurfacePressure& orig);
     virtual ~SurfacePressure();
     
-    static double calcPressure(Box&, vector<Cell>&);
+    static double calcPressure(Box&, std::vector<Cell>&);
 private:
 
 };

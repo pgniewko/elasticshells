@@ -13,8 +13,8 @@ class SimpleTriangulation : public Triangulation
         SimpleTriangulation(int);
         SimpleTriangulation(const SimpleTriangulation& orig);
         virtual ~SimpleTriangulation();
-        list<Triangle> triangulate();
-        list<Triangle> triangulate(double);
+        std::list<Triangle> triangulate();
+        std::list<Triangle> triangulate(double);
     private:
         void createCube();
         void subdivide();

@@ -96,6 +96,17 @@ void BoxTests::testGetVolume()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(box7->getVolume(), 960.0, DELTA14);
 }
 
+void BoxTests::testGetArea()
+{
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(box1->getArea(), 0.0, DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(box2->getArea(), 600, DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(box3->getArea(), 2400.0, DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(box4->getArea(), 856.0, DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(box5->getArea(), 384.0, DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(box6->getArea(), 592.0, DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(box7->getArea(), 592.0, DELTA14);
+}
+
 void BoxTests::testResizing()
 {
     for (int i = 0; i < 10; i++)

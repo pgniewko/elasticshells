@@ -8,11 +8,11 @@ Triangulation::~Triangulation() {}
 
 void Triangulation::saveTriangulatedSurface(const char* filename, bool wrap)
 {
-    ofstream os(filename);
+    std::ofstream os(filename);
     int index = 1;
     os << 3 * (int)tris.size() << "\n" ;
 
-    for (list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i) // go through all triangles
+    for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i) // go through all triangles
     {
         if (wrap)
         {
@@ -31,7 +31,7 @@ void Triangulation::saveTriangulatedSurface(const char* filename, bool wrap)
 
 void Triangulation::saveRenderingScript(const char* filename, const char* cellsfile)
 {
-    ofstream os(filename);
+    std::ofstream os(filename);
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
     os << "cmd.do(\"load " << cellsfile << ", cells\")\n";

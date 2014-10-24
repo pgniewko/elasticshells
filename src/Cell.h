@@ -8,6 +8,7 @@
 #include "force/HookeanForce.h"
 #include "force/OsmoticForce.h"
 #include "force/NbRepulsiveForce.h"
+#include "force/BoxCellRepulsion.h"
 #include "geometry/Vector3D.h"
 #include "geometry/Tetrahedron.h"
 #include "geometry/Triangle.h"
@@ -15,12 +16,13 @@
 #include "geometry/VertexTriangle.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
+#include "simulation/DomainList.h"
 
 class Cell
 {
     public:
         Cell(int);
-        Cell(list<Triangle>);
+        Cell(std::list<Triangle>);
         Cell(const Cell& orig);
         virtual ~Cell();
         double calcSurfaceArea();
@@ -29,13 +31,17 @@ class Cell
         void calcCM();
         int numberofFaces() ;
         int numberofVertices();
-        void builtVerletList(const Cell&);
+        void builtVerletList(const Cell&, Box&);
         void voidVerletLsit();
+        
+        void builtNbList(std::vector<Cell>&, DomainList&, Box&);
 
         void calcForces();
-        void calcForcesVL(const Cell&);
+        void calcForces(const Cell&, Box&);
+        void calcForcesVL(const Cell&, Box&);
         void calcForces(Box&);
-        double calcBoxForces(Box&); // TODO: refactor it!
+        //double calcBoxForces(Box&); // TODO: refactor it!
+        //void calcStressTensor(Box&, double*); //TODO: refacoting !
         
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
@@ -48,6 +54,7 @@ class Cell
         void setMass(double);
         void setCellId(int);
         void setRCellBox(double);
+        void setNRT(double);
 
         void setVerletR(double);
         void setInitR(double);
@@ -55,8 +62,13 @@ class Cell
         double getInitR();
         double getVisc();
         Vector3D getCm();
+        double getRcb();
+        
+        Vector3D getVertexXYZ(int);
+        Vector3D getVertexForce(int);
 
         void voidForces();
+        void getDistance(Vector3D& djk, const Vector3D& vj, const Vector3D& vk, Box&);
 
         Vector3D cm;
         Vertex vertices[MAX_V];
@@ -65,10 +77,10 @@ class Cell
         int cellId;
 
     private:
-        bool isUnique(list<Vector3D>&, const Vector3D&);
+        bool isUnique(std::list<Vector3D>&, const Vector3D&);
         int getVertex(const Vector3D);
-        void constructVertices(list<Triangle>);
-        void constructVTriangles(list<Triangle>);
+        void constructVertices(std::list<Triangle>);
+        void constructVTriangles(std::list<Triangle>);
         void constructTopology();
         int numberV;
         int numberT;
@@ -83,6 +95,8 @@ class Cell
         double mass0;
         double visc0tot;
         double mass0tot;
+        
+        double nRT;
 };
 
 #endif	/* CELL_H */

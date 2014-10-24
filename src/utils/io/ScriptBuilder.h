@@ -14,14 +14,14 @@ class ScriptBuilder
         ScriptBuilder(const ScriptBuilder& orig);
         virtual ~ScriptBuilder();
 
-        void printBox(ofstream&, Box&);
-        void saveRenderScript(vector<Cell>&, Box&, bool box = false);
-        void saveSurfaceScript(vector<Cell>&);
+        void printBox(std::ofstream&, Box&);
+        void saveRenderScript(std::vector<Cell>&, Box&, bool box = false);
+        void saveSurfaceScript(std::vector<Cell>&);
 
         void setDrawBox(bool);
     private:
 
-        char names[10];
+        //char names[10];
         char* script;
         char* surfaceScript;
         char* trajfile;

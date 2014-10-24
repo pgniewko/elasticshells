@@ -6,7 +6,7 @@ VolumeFraction::VolumeFraction(const VolumeFraction& orig) {}
 
 VolumeFraction::~VolumeFraction() {}
 
-double VolumeFraction::caclVolumeFraction(Box& box, vector<Cell>& cells)
+double VolumeFraction::caclVolumeFraction(Box& box, std::vector<Cell>& cells)
 {
     double boxVolume = box.getVolume();
     double cellsVolume = 0.0;
@@ -19,3 +19,14 @@ double VolumeFraction::caclVolumeFraction(Box& box, vector<Cell>& cells)
     return volumeFraction;
 }
 
+double VolumeFraction::caclCellsVolume(std::vector<Cell>& cells)
+{
+
+    double cellsVolume = 0.0;
+    int numofcells = cells.size();
+    for (int i = 0; i < numofcells; i++)
+    {
+        cellsVolume += cells[i].calcVolume();
+    }
+    return cellsVolume;
+}

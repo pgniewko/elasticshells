@@ -8,6 +8,7 @@
 #include "simulation/Box.h"
 #include "utils/observables/SurfacePressure.h"
 #include "utils/observables/VolumeFraction.h"
+#include "utils/observables/VolumePressure.h"
 
 class LogSimulation {
 public:
@@ -17,7 +18,7 @@ public:
     
     void open();
     void close();
-    void dumpState(Box&, vector<Cell>&, int, int);
+    void dumpState(Box&, std::vector<Cell>&, int, int, int);
     
 private:
     char* logfile;

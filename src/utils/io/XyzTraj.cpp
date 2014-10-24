@@ -1,6 +1,7 @@
 #include "XyzTraj.h"
 
-XyzTraj::XyzTraj(char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'} )
+//XyzTraj::XyzTraj(char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'} )
+XyzTraj::XyzTraj(char* tf)
 {
     trajfile = tf;
 }
@@ -19,12 +20,12 @@ void XyzTraj::close()
     fclose(os);
 }
 
-void XyzTraj::save(vector<Cell>& cells, int totV)
+void XyzTraj::save(std::vector<Cell>& cells, int totV)
 {
     save(cells, totV, 1.0, 1.0, 1.0);
 }
 
-void XyzTraj::save(vector<Cell>& cells, int totV, double sx, double sy, double sz)
+void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, double sz)
 {
     int nameIx;
     int atomIx;

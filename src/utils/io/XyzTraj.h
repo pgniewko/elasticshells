@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Cell.h"
+#include "Environment.h"
 #include "simulation/Box.h"
 
 class XyzTraj
@@ -17,13 +18,13 @@ class XyzTraj
 
         void open();
         void close();
-        void save(vector<Cell>&, int);
-        void save(vector<Cell>&, int, double, double, double);
+        void save(std::vector<Cell>&, int);
+        void save(std::vector<Cell>&, int, double, double, double);
 
     private:
         char* trajfile;
         FILE* os;
-        char names[10];
+        //char names[10];
 };
 
 #endif	/* XYZTRAJ_H */

@@ -1,6 +1,7 @@
 #include "ScriptBuilder.h"
 
-ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'})
+//ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'})
+ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf) 
 {
     script = rs;
     surfaceScript = ss;
@@ -17,7 +18,7 @@ void ScriptBuilder::setDrawBox(bool db)
 }
 
 
-void ScriptBuilder::saveSurfaceScript(vector<Cell>& cells)
+void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
 {
     std::ofstream os;
     os.open(surfaceScript);
@@ -96,9 +97,9 @@ void ScriptBuilder::saveSurfaceScript(vector<Cell>& cells)
 }
 
 
-void ScriptBuilder::saveRenderScript(vector<Cell>& cells, Box& box, bool boxFlag)
+void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool boxFlag)
 {
-    ofstream os;
+    std::ofstream os;
     os.open(script);
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
@@ -189,7 +190,7 @@ void ScriptBuilder::saveRenderScript(vector<Cell>& cells, Box& box, bool boxFlag
 }
 
 
-void ScriptBuilder::printBox(ofstream& os,  Box& box)
+void ScriptBuilder::printBox(std::ofstream& os,  Box& box)
 {
     os << "class Box(object):\n";
     os << "  def __init__ (self, x, y, z, linewidth, color):\n";

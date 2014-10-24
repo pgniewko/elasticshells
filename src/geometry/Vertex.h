@@ -1,7 +1,7 @@
 #ifndef VERTEX_H
 #define	VERTEX_H
 
-#include <stdlib.h>
+//#include <stdlib.h>
 
 #include "Environment.h"
 #include "Vector3D.h"
@@ -55,6 +55,8 @@ class Vertex
         int nneigh;
         int ntrian;
         int nbneigh;
+        
+        int domainIdx;
 
     private:
         int id;
