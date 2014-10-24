@@ -1,5 +1,7 @@
 #include "Domain.h"
 
+utils::Logger domain_logs("domain");
+
 Domain::Domain() : myid(-1), numofNeighDom(0), numofVert(0) {}
 
 Domain::Domain(const Domain& orig) : myid(orig.myid),  numofNeighDom(orig.numofNeighDom), numofVert(orig.numofVert)
@@ -24,26 +26,18 @@ void Domain::addVertex(int vid, int cellid)
     
         if (numofVert >= MAX_IN_DOMAIN)
             throw MaxSizeException("Trying to add more vertices than it's allowed."
-                                   "New vertex will not be added!"
-                                   "This may significantly affect the simulation accuracy.");
+                                   "New vertex will not be added !"
+                                   "This may significantly affect the simulation accuracy !");
         
-        //if (numofVert < MAX_IN_DOMAIN)
-        //{
         vertIds[numofVert] = vid;
         cellsIds[numofVert] = cellid;
         numofVert++;
-        //}
     }
     catch (MaxSizeException& e)
     {
-        std::cout << e.what() << std::endl;
+        domain_logs << utils::LogLevel::WARNING << e.what() << "\n";
         return;
     }
-    //else
-    //{
-    //    exit(1);
-    //    // exception
-    //} 
 }
 
 void Domain::addNeighDomain(int domId)
@@ -52,18 +46,15 @@ void Domain::addNeighDomain(int domId)
         if (numofVert >= MAX_IN_DOMAIN)
             throw MaxSizeException("Trying to add more domain neighbors than it's possible."
                                    "New neighbor will not be added!"
-                                   "The code will be terminated due the bug!");
-    //if (numofNeighDom < 27)
-    //{
+                                   "The code will be terminated due the bug !");
+        
         neighDomains[numofNeighDom] = domId;
         numofNeighDom++;
-    //}
     } 
     catch (MaxSizeException& e)
     {
-        
+        domain_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(1);
-        // exception
     }
 }
 void Domain::voidParticlesInDomain()

@@ -1,9 +1,10 @@
 #include "DomainList.h"
 
+utils::Logger domainlist_logs("domainlist");
+
 DomainList::DomainList() : m(1), N(1), pbc(false), m_assigned(false), init_domains(false),
         x_min(0), y_min(0), z_min(0), x_max(0), y_max(0), z_max(0),
-        dx(0), dy(0), dz(0), rc_max(0)
-{}
+        dx(0), dy(0), dz(0), rc_max(0)  {}
 
 DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.pbc), init_domains(orig.init_domains),
         m_assigned(orig.m_assigned), x_min(0), y_min(0), z_min(0), x_max(0), y_max(0), z_max(0), dx(0), dy(0), dz(0), rc_max(0) {}
@@ -49,6 +50,7 @@ void DomainList::initDomains()
             }
         }
         init_domains = true;
+        domainlist_logs << utils::LogLevel::FINEST << "Linked domains list has been initialized." << "\n";
     }
     
 }

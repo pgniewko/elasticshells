@@ -5,6 +5,9 @@
 #include "Environment.h"
 #include "exceptions/MaxSizeException.h"
 
+//#include "utils/Logger.h"
+//#include "src/utils/LogManager.h"
+
 class Domain {
 public:
     Domain();

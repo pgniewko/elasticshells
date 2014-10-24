@@ -8,6 +8,9 @@
 #include "simulation/Box.h"
 #include "simulation/Domain.h"
 
+//#include "utils/Logger.h"
+//#include "src/utils/LogManager.h"
+
 class DomainList 
 {
     public:
