@@ -19,7 +19,7 @@ void LogSimulation::close()
     fclose(os);
 }
 
-void LogSimulation::dumpState(Box& box, vector<Cell>& cells, int simstep, int numV, int nbhandler)
+void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, int simstep, int numV, int nbhandler)
 {
     
     //double pressure = SurfacePressure::calcPressure(box, cells);

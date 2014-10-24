@@ -6,7 +6,7 @@ SurfacePressure::SurfacePressure(const SurfacePressure& orig) {}
 
 SurfacePressure::~SurfacePressure() {}
 
-double SurfacePressure::calcPressure(Box& box, vector<Cell>& cells)
+double SurfacePressure::calcPressure(Box& box, std::vector<Cell>& cells)
 {
     double ecs = box.ecw;
     double rcb;

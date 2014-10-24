@@ -14,7 +14,7 @@ SimpleTriangulation::SimpleTriangulation(const SimpleTriangulation& orig) : dept
 
 SimpleTriangulation::~SimpleTriangulation() {}
 
-list<Triangle> SimpleTriangulation::triangulate(double r0)
+std::list<Triangle> SimpleTriangulation::triangulate(double r0)
 {
 //    if (depth < 0)
 //    {
@@ -43,7 +43,7 @@ list<Triangle> SimpleTriangulation::triangulate(double r0)
     return tris;
 }
 
-list<Triangle> SimpleTriangulation::triangulate()
+std::list<Triangle> SimpleTriangulation::triangulate()
 {
     return triangulate(1.0);
 }

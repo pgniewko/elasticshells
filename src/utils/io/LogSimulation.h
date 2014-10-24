@@ -18,7 +18,7 @@ public:
     
     void open();
     void close();
-    void dumpState(Box&, vector<Cell>&, int, int, int);
+    void dumpState(Box&, std::vector<Cell>&, int, int, int);
     
 private:
     char* logfile;

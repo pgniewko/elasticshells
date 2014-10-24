@@ -22,7 +22,7 @@ class Cell
 {
     public:
         Cell(int);
-        Cell(list<Triangle>);
+        Cell(std::list<Triangle>);
         Cell(const Cell& orig);
         virtual ~Cell();
         double calcSurfaceArea();
@@ -34,7 +34,7 @@ class Cell
         void builtVerletList(const Cell&, Box&);
         void voidVerletLsit();
         
-        void builtNbList(vector<Cell>&, DomainList&, Box&);
+        void builtNbList(std::vector<Cell>&, DomainList&, Box&);
 
         void calcForces();
         void calcForces(const Cell&, Box&);
@@ -77,10 +77,10 @@ class Cell
         int cellId;
 
     private:
-        bool isUnique(list<Vector3D>&, const Vector3D&);
+        bool isUnique(std::list<Vector3D>&, const Vector3D&);
         int getVertex(const Vector3D);
-        void constructVertices(list<Triangle>);
-        void constructVTriangles(list<Triangle>);
+        void constructVertices(std::list<Triangle>);
+        void constructVTriangles(std::list<Triangle>);
         void constructTopology();
         int numberV;
         int numberT;

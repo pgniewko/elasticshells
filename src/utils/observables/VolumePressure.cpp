@@ -6,7 +6,7 @@ VolumePressure::VolumePressure(const VolumePressure& orig) {}
 
 VolumePressure::~VolumePressure() {}
 
-double VolumePressure::calcPressure(Box& box, vector<Cell>& cells, int nbhandler)
+double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbhandler)
 {
     int numberofCells = cells.size();
     double V = box.getVolume();

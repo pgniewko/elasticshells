@@ -125,11 +125,12 @@ void Simulator::addCell(double r0)
     try
     {
         if (cells.size() == MAX_CELLS)
-            throw MaxSizeException("Maximum number of cells reached."
-                                   "New cell will not be added !");
+            throw MaxSizeException("Maximum number of cells reached.\n"
+                                   "New cell will not be added !\n"
+                                   "Program is going to TERMINANTE!");
 
         SimpleTriangulation sm(params.d);
-        list<Triangle> tris = sm.triangulate(r0);
+        std::list<Triangle> tris = sm.triangulate(r0);
         Cell newCell(tris);
         newCell.setA(a);
         newCell.setDp(dp);
@@ -147,7 +148,8 @@ void Simulator::addCell(double r0)
     catch (MaxSizeException& e)
     {
         simulator_logs << utils::LogLevel::WARNING << e.what() << "\n";
-        return;
+        exit(1);
+        //return;
     }
 }
 

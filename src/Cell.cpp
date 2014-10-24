@@ -3,13 +3,13 @@
 Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), nRT(0)
 {
     SimpleTriangulation sm(depth);
-    list<Triangle> tris = sm.triangulate();
+    std::list<Triangle> tris = sm.triangulate();
     constructVertices(tris);
     constructVTriangles(tris);
     constructTopology();
 }
 
-Cell::Cell(list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), nRT(0)
+Cell::Cell(std::list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), nRT(0)
 {
     constructVertices(tris);
     constructVTriangles(tris);
@@ -25,9 +25,9 @@ Cell::Cell(const Cell& orig) : cm(orig.cm), vertices(orig.vertices), triangles(o
 
 Cell::~Cell() {}
 
-void Cell::constructVertices(list<Triangle> tris)
+void Cell::constructVertices(std::list<Triangle> tris)
 {
-    list<Vector3D> vectors;
+    std::list<Vector3D> vectors;
     double xtmp, ytmp, ztmp;
 
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
@@ -67,7 +67,7 @@ void Cell::constructVertices(list<Triangle> tris)
     }
 }
 
-bool Cell::isUnique(list<Vector3D>& vlist, const Vector3D& v)
+bool Cell::isUnique(std::list<Vector3D>& vlist, const Vector3D& v)
 {
     for (std::list<Vector3D>::iterator i = vlist.begin(); i != vlist.end(); ++i)
     {
@@ -80,7 +80,7 @@ bool Cell::isUnique(list<Vector3D>& vlist, const Vector3D& v)
     return true;
 }
 
-void Cell::constructVTriangles(list<Triangle> tris)
+void Cell::constructVTriangles(std::list<Triangle> tris)
 {
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
@@ -182,7 +182,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
     }
 }
 
-void Cell::builtNbList(vector<Cell>& cells, DomainList& domains, Box& box)
+void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
 {
     int domainIdx;
     int domainn;

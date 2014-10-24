@@ -186,8 +186,8 @@ void Vertex::printVertex()
 
     for (int i = 0; i < ntrian; i++)
     {
-        cout << vertextri[i] << " " ;
+        std::cout << vertextri[i] << " " ;
     }
 
-    std::cout << endl;
+    std::cout << std::endl;
 }

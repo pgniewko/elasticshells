@@ -71,7 +71,7 @@ class Simulator
         void rebuildDomainsList();
         double getMaxScale();
 
-        vector<Cell> cells;
+        std::vector<Cell> cells;
         arguments params;
         int numberofCells;
         double dt;

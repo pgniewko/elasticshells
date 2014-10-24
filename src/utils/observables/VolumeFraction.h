@@ -11,8 +11,8 @@ public:
     VolumeFraction();
     VolumeFraction(const VolumeFraction& orig);
     virtual ~VolumeFraction();
-    static double caclVolumeFraction(Box&, vector<Cell>&);
-    static double caclCellsVolume(vector<Cell>&);
+    static double caclVolumeFraction(Box&, std::vector<Cell>&);
+    static double caclCellsVolume(std::vector<Cell>&);
 private:
 
 };

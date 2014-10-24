@@ -20,12 +20,12 @@ void XyzTraj::close()
     fclose(os);
 }
 
-void XyzTraj::save(vector<Cell>& cells, int totV)
+void XyzTraj::save(std::vector<Cell>& cells, int totV)
 {
     save(cells, totV, 1.0, 1.0, 1.0);
 }
 
-void XyzTraj::save(vector<Cell>& cells, int totV, double sx, double sy, double sz)
+void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, double sz)
 {
     int nameIx;
     int atomIx;

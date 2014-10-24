@@ -12,7 +12,7 @@ public:
     VolumePressure(const VolumePressure& orig);
     virtual ~VolumePressure();
     
-    static double calcPressure(Box&, vector<Cell>&, int nbhandler);
+    static double calcPressure(Box&, std::vector<Cell>&, int nbhandler);
 private:
 
 };
