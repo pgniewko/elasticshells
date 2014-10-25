@@ -5,6 +5,7 @@
 #include "utils/Logger.h"
 
 #define STRCMP(a,b) (!strcmp(a,b))
+#define SIGN(a) (a >= 0 ? 1 : -1)
 
 #define MAX_CELLS 100
 #define MAX_V 200

@@ -282,19 +282,15 @@ void Cell::calcForces(const Cell& other_cell, Box& box)
         {
             if (cellId != ocellid)
             {
-                //dji = vertices[j].xyz - other_cell.vertices[i].xyz;
-                getDistance(dji, vertices[j].xyz, other_cell.vertices[j].xyz, box);
+                getDistance(dji, vertices[i].xyz, other_cell.vertices[j].xyz, box);
                 vertices[i].force += NbRepulsiveForce::calcForce(dji, Rc, a);
-                //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[j].xyz, Rc, a);
             }
             else
             {
                 if (i != j && !vertices[i].isNeighbor(j))
                 {
-                    //dji = vertices[j].xyz - other_cell.vertices[i].xyz;
                     getDistance(dji, vertices[i].xyz, other_cell.vertices[j].xyz, box);
                     vertices[i].force += NbRepulsiveForce::calcForce(dji, Rc, a);
-                    //vertices[i].force += NbRepulsiveForce::calcForce(vertices[i].xyz, other_cell.vertices[j].xyz, Rc, a);
                 }
             }
         }
@@ -334,35 +330,39 @@ void Cell::calcForces(Box& box)
     
     for (int i = 0; i < numberV; i++)
     {
-        if (vertices[i].xyz.x != 0)
-        {
-            sgnx = vertices[i].xyz.x / fabs(vertices[i].xyz.x);
+        //std::cout << "x=" << vertices[i].xyz.x << " sign x=" << SIGN(vertices[i].xyz.x) << std::endl;
+        //std::cout << "y=" << vertices[i].xyz.y << " sign y=" << SIGN(vertices[i].xyz.y) << std::endl;
+        //std::cout << "z=" << vertices[i].xyz.z << " sign z=" << SIGN(vertices[i].xyz.z) << std::endl;
+        //if (vertices[i].xyz.x != 0)
+        //{
+            //ilx = (lx ? 1.0 / lx : 0.0);
+            sgnx = SIGN(vertices[i].xyz.x);//vertices[i].xyz.x / fabs(vertices[i].xyz.x);
             wallYZ.x = sgnx * bsx;
             wallYZ.y = vertices[i].xyz.y;
             wallYZ.z = vertices[i].xyz.z;
             getDistance(dji, wallYZ, vertices[i].xyz, box);
             vertices[i].force += BoxCellRepulsion::calcForce(dji, E, rCellBox);
-        }
+        //}
 
-        if (vertices[i].xyz.y != 0)
-        {
-            sgny = vertices[i].xyz.y / fabs(vertices[i].xyz.y);
+        //if (vertices[i].xyz.y != 0)
+        //{
+            sgny = SIGN(vertices[i].xyz.y); //vertices[i].xyz.y / fabs(vertices[i].xyz.y);
             wallXZ.x = vertices[i].xyz.x;
             wallXZ.y = sgny * bsy;
             wallXZ.z = vertices[i].xyz.z;
             getDistance(dji, wallXZ, vertices[i].xyz, box);
             vertices[i].force += BoxCellRepulsion::calcForce(dji, E, rCellBox);
-        }
+        //}
 
-        if (vertices[i].xyz.z != 0)
-        {
-            sgnz = vertices[i].xyz.z / fabs(vertices[i].xyz.z);
+        //if (vertices[i].xyz.z != 0)
+        //{
+            sgnz = SIGN(vertices[i].xyz.z); //vertices[i].xyz.z / fabs(vertices[i].xyz.z);
             wallXY.x = vertices[i].xyz.x;
             wallXY.y = vertices[i].xyz.y;
             wallXY.z = sgnz * bsz;
             getDistance(dji, wallXY, vertices[i].xyz, box);
             vertices[i].force += BoxCellRepulsion::calcForce(dji, E, rCellBox);
-        }
+        //}
     }
 }
 
