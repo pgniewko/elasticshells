@@ -28,14 +28,14 @@ class Vector3D
         double x, y, z;
 };
 
-template <class InputStreamT>
+template <typename InputStreamT>
 inline InputStreamT& operator>>(InputStreamT& s, Vector3D& v)
 {
     s >> v.x >> v.y >> v.z;
     return s;
 }
 
-template <class OutputStreamT>
+template <typename OutputStreamT>
 inline OutputStreamT& operator<<(OutputStreamT& s, const Vector3D& v)
 {
     s <<  v.x << ' ' << v.y << ' ' << v.z << ' ';
