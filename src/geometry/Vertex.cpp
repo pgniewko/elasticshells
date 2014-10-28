@@ -1,32 +1,34 @@
 #include "Vertex.h"
 
-Vertex::Vertex() : xyz(0, 0, 0), nneigh(0), ntrian(0), nbneigh(0), domainIdx(-1), id(-1), mass(1.0) {}
+Vertex::Vertex() : xyz(0, 0, 0), numBonded(0), numTris(0), numNbNeighs(0), 
+        domainIdx(-1), myid(-1), mass(1.0) {}
 
-Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), nneigh(0), ntrian(0), nbneigh(0), domainIdx(-1), id(-1), mass(1.0)
-{}
+Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), numBonded(0), numTris(0), 
+        numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0) {}
 
-Vertex::Vertex(Vector3D v) : xyz(v), nneigh(0), ntrian(0), nbneigh(0), domainIdx(-1), id(-1), mass(1.0) {}
+Vertex::Vertex(Vector3D v) : xyz(v), numBonded(0), numTris(0), 
+        numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0) {}
 
 Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(orig.velocity),
     tmp_xyz(orig.tmp_xyz), tmp_force(orig.tmp_force), tmp_velocity(orig.tmp_velocity),
-    nneigh(orig.nneigh), ntrian(orig.ntrian), nbneigh(orig.nbneigh), domainIdx(orig.domainIdx),
-    id(orig.id), mass( orig.mass ), visc(orig.visc)
+    numBonded(orig.numBonded), numTris(orig.numTris), numNbNeighs(orig.numNbNeighs), domainIdx(orig.domainIdx),
+    myid(orig.myid), mass( orig.mass ), visc(orig.visc)
 {
-    for (int i = 0; i < nneigh; i++)
+    for (int i = 0; i < numBonded; i++)
     {
-        neighbors[i] = orig.neighbors[i];
-        R0[i] = orig.R0[i];
+        bondedVerts[i] = orig.bondedVerts[i];
+        r0[i] = orig.r0[i];
     }
 
-    for (int i = 0; i < ntrian; i++)
+    for (int i = 0; i < numTris; i++)
     {
-        vertextri[i] = orig.vertextri[i];
+        bondedTris[i] = orig.bondedTris[i];
     }
 
-    for (int i = 0; i < nbneigh; i++)
+    for (int i = 0; i < numNbNeighs; i++)
     {
-        nbvertices[i] = orig.nbvertices[i];
-        nbcellid[i] = orig.nbcellid[i];
+        nbVerts[i] = orig.nbVerts[i];
+        nbCellsIdx[i] = orig.nbCellsIdx[i];
     }
 }
 
@@ -36,66 +38,84 @@ void Vertex::addNeighbor(int idx, double k0n)
 {
     try
     {
-        if (getNumNeighbors() >= MAX_CELLS)
-            throw MaxSizeException("Maximum number of neighbors has been reached."
-                                   "New neighbor will not be added !");
+        if (getNumNeighs() >= NEIGH_MAX)
+            throw MaxSizeException("Maximum number of neighbors has been reached.\n"
+                                   "New neighbor will not be added !\n");
 
-        for (int i = 0; i < nneigh; i++)
+        if (idx < 0)
+            throw RunTimeError("Trying to add a vertex with a negative index.\n"
+                    "Runtime data is incomplete. Simulation will be terminated. \n"); 
+                
+        for (int i = 0; i < numBonded; i++)
         {
-            if (neighbors[i] == idx)
+            if (bondedVerts[i] == idx)
             {
                 return;
             }
         }
 
-        neighbors[nneigh] = idx;
-        R0[nneigh] = k0n;
-        nneigh++;
+        bondedVerts[numBonded] = idx;
+        r0[numBonded] = k0n;
+        numBonded++;
     }
     catch (MaxSizeException& e)
     {
         std::cout << e.what() << std::endl;
         return;
     }
-}
-
-bool Vertex::isNeighbor(int vidx)
-{
-    for (int i = 0; i < nneigh; i++)
+    catch (RunTimeError& e)
     {
-        if (neighbors[i] == vidx)
-        {
-            return true;
-        }
+        std::cout << e.what() << std::endl;
+        exit(1);
     }
-
-    return false;
 }
 
 void Vertex::addTriangle(int idx)
 {
     try
     {
-        if (getNumNeighbors() >= TRIAN_MAX)
+        if (getNumNeighs() >= TRIAN_MAX)
             throw MaxSizeException("Maximum number of triangles has been reached."
                                    "New triangle will not be added !");
 
-        for (int i = 0; i < ntrian; i++)
+        if (idx < 0)
+            throw RunTimeError("Trying to add a triangle with a negative index.\n"
+                    "Runtime data is incomplete. Simulation will be terminated. \n");        
+        
+        for (int i = 0; i < numTris; i++)
         {
-            if (vertextri[i] == idx)
+            if (bondedTris[i] == idx)
             {
                 return;
             }
         }
 
-        vertextri[ntrian] = idx;
-        ntrian++;
+        bondedTris[numTris] = idx;
+        numTris++;
     }
     catch (MaxSizeException& e)
     {
         std::cout << e.what() << std::endl;
         return;
     }
+    catch (RunTimeError& e)
+    {
+        std::cout << e.what() << std::endl;
+        exit(1);
+    }
+}
+
+bool Vertex::isNeighbor(int vidx)
+{
+    for (int i = 0; i < numBonded; i++)
+    {
+        if (bondedVerts[i] == vidx)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void Vertex::voidForce()
@@ -114,38 +134,38 @@ void Vertex::voidVelocity()
 
 int Vertex::setId(int idx)
 {
-    id = idx;
-    return id;
+    myid = idx;
+    return myid;
 }
 
 int Vertex::getId()
 {
-    return id;
+    return myid;
 }
 
-int Vertex::getNumNeighbors()
+int Vertex::getNumNeighs()
 {
-    return nneigh;
+    return numBonded;
 }
 
-int Vertex::getNumVTriangles()
+int Vertex::getNumTris()
 {
-    return ntrian;
+    return numTris;
 }
 
 int Vertex::getNeighborId(int idx)
 {
-    return neighbors[idx];
+    return bondedVerts[idx];
 }
 
 int Vertex::getTriangleId(int idx)
 {
-    return vertextri[idx];
+    return bondedTris[idx];
 }
 
 double Vertex::getNeighborR0(int idx)
 {
-    return R0[idx];
+    return r0[idx];
 }
 
 double Vertex::setMass(double m)
@@ -172,21 +192,21 @@ double Vertex::getVisc()
 
 void Vertex::printVertex()
 {
-    std::cout << "myid=" << id << " ";
-    std::cout << "nneigh= " << nneigh << " ntrian=" << ntrian << " ";
+    std::cout << "myid=" << myid << " ";
+    std::cout << "nneigh= " << numBonded << " ntrian=" << numTris << " ";
     std::cout << " x=" << xyz.x << " y=" << xyz.y << " z=" << xyz.z << " : ";
     std::cout << " x=" << force.x << " y=" << force.y << " z=" << force.z << " : ";
 
-    for (int i = 0; i < nneigh; i++)
+    for (int i = 0; i < numBonded; i++)
     {
-        std::cout << neighbors[i] << " " ;
+        std::cout << bondedVerts[i] << " " ;
     }
 
     std::cout << " : ";
 
-    for (int i = 0; i < ntrian; i++)
+    for (int i = 0; i < numTris; i++)
     {
-        std::cout << vertextri[i] << " " ;
+        std::cout << bondedTris[i] << " " ;
     }
 
     std::cout << std::endl;

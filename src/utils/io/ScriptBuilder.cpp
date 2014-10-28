@@ -72,7 +72,7 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberofFaces(); j++)
+        for (int j = 0; j < cells[i].numberOfTris(); j++)
         {
             idxa = cells[i].triangles[j].ia + 1 + lastCellIndex;
             idxb = cells[i].triangles[j].ib + 1 + lastCellIndex;
@@ -90,7 +90,7 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
             faceCounter++;
         }
 
-        lastCellIndex += cells[i].numberofVertices();
+        lastCellIndex += cells[i].numberOfVerts();
     }
 
     os.close();
@@ -141,7 +141,7 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
             name1Ix = (int) iidx / 1000;
@@ -149,20 +149,20 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
             os << "cmd.do(\"select " << namesx[name1Ix] << " " << atom1Ix << ", name " << namesx[name1Ix] << atom1Ix << "\")\n";
         }
 
-        lastCellIndex += cells[i].numberofVertices();
+        lastCellIndex += cells[i].numberOfVerts();
     }
 
     lastCellIndex = 0;
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
 
-            for (int k = 0; k < cells[i].vertices[j].nneigh; k++)
+            for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
             {
-                jidx = cells[i].vertices[j].neighbors[k] + 1 + lastCellIndex;
+                jidx = cells[i].vertices[j].bondedVerts[k] + 1 + lastCellIndex;
                 name1Ix = (int) iidx / 1000;
                 atom1Ix = iidx % 1000;
                 name2Ix = (int) jidx / 1000;
@@ -171,7 +171,7 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
             }
         }
 
-        lastCellIndex += cells[i].numberofVertices();
+        lastCellIndex += cells[i].numberOfVerts();
     }
 
     os << "cmd.do(\"show lines\")\n";

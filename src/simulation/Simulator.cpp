@@ -1,9 +1,14 @@
 #include "Simulator.h"
 
 Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
-    logStep(1), saveStep(1), vlistStep(1), boxStep(1), box(0, 0, 0), nbhandler(0),
-    sb(params.render_file, params.surface_file, params.traj_file), traj(params.traj_file), logsim(params.output_file),
-    simulator_logs("simulator")
+        dt(0), a(0), dp(0), gamma(0), R0(0), Rc(0), ttotal(0), initcellmass(0),
+        verlet_r(0), nsteps(0), d(0),
+        logStep(1), saveStep(1), vlistStep(1), boxStep(1), 
+        box(0, 0, 0), drawBox(false), nbhandler(0),
+        sb(params.render_file, params.surface_file, params.traj_file), 
+        traj(params.traj_file), 
+        logsim(params.output_file),
+        simulator_logs("simulator")
 {
     dt = params.dt;
     a = params.a;
@@ -54,7 +59,16 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     
 }
 
-Simulator::Simulator(const Simulator& orig) : box(orig.box), sb(orig.sb), traj(orig.traj), nbhandler(orig.nbhandler), simulator_logs(orig.simulator_logs), logsim(orig.logsim){}
+Simulator::Simulator(const Simulator& orig) : params(orig.params), numberofCells(orig.numberofCells),
+        dt(orig.dt), a(orig.a), dp(orig.dp), gamma(orig.gamma), R0(orig.R0), 
+        Rc(orig.Rc), ttotal(orig.ttotal), initcellmass(orig.initcellmass),
+        verlet_r(orig.verlet_r), nsteps(orig.nsteps), d(orig.d),
+        logStep(orig.logStep), saveStep(orig.saveStep), vlistStep(orig.vlistStep), boxStep(orig.boxStep), 
+        box(orig.box), drawBox(false), nbhandler(orig.nbhandler),
+        sb(orig.sb), traj(orig.traj), logsim(orig.logsim), simulator_logs(orig.simulator_logs)
+{
+    // exception disallowed behavior
+}
 
 Simulator::~Simulator() {}
 
@@ -70,11 +84,7 @@ void Simulator::diagnoseParams()
                             "Depth of a triangulation too large ! "
                             "For machine's safety Simulator is about to terminate !");
 
-    //if (pbc)
-    //    throw NotImplementedException("NotImplementedException:\n"
-    //                                  "Periodic boundary conditions(PBC) are  not implemented yet."
-    //                                  "Simulator is about to terminate !");
-
+    
     simulator_logs << utils::LogLevel::INFO << "BOX_STEP="  << boxStep << "\n";
     simulator_logs << utils::LogLevel::INFO << "SAVE_STEP=" << saveStep << "\n";
     simulator_logs << utils::LogLevel::INFO << "LOG_STEP="  << logStep << "\n";
@@ -86,15 +96,16 @@ void Simulator::diagnoseParams()
     simulator_logs << utils::LogLevel::FINE << "A="  << a << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_CELL="  << Rc << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_BOX="  << params.r_bc << "\n";
+    simulator_logs << utils::LogLevel::FINE << "BOX.PBC=" << box.pbc << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getY() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.DX="  << box.getDx() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.DX="  << box.getDy() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.DZ="  << box.getDz() << "\n";
-    simulator_logs << utils::LogLevel::FINEST << "BOX.XE=" << box.getXend() << "\n";
-    simulator_logs << utils::LogLevel::FINEST << "BOX.YE=" << box.getYend() << "\n";
-    simulator_logs << utils::LogLevel::FINEST << "BOX.ZE=" << box.getZend() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDx() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDy() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.DZ=" << box.getDz() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.XE=" << box.getXend() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.YE=" << box.getYend() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZend() << "\n";
 }
 
 void Simulator::addCell(const Cell& newCell)
@@ -149,7 +160,6 @@ void Simulator::addCell(double r0)
     {
         simulator_logs << utils::LogLevel::WARNING << e.what() << "\n";
         exit(1);
-        //return;
     }
 }
 
@@ -270,6 +280,54 @@ void Simulator::simulate(int steps)
     logsim.close();
 }
 
+void Simulator::calcForces()
+{
+    // RESET FORCES
+    for (int i = 0 ; i < numberofCells; i++)
+    {
+        cells[i].voidForces();
+    }
+
+    // CALCULATE INTRA-CELLULAR FORCES
+    for (int i = 0 ; i < numberofCells; i++)
+    {
+        cells[i].calcBondedForces();
+    }
+
+    // CALCULATE INTER-CELLULAR FORCES
+    for (int i = 0; i < numberofCells; i++)
+    {
+        for (int j = 0; j < numberofCells; j++)
+        {
+            if (nbhandler == 0)
+            {
+                cells[i].calcNbForcesON2(cells[j], box);
+            }
+            else if (nbhandler == 1)
+            {
+                cells[i].calcNbForcesVL(cells[j], box);
+            }
+            else if (nbhandler == 2)
+            {
+                cells[i].calcNbForcesVL(cells[j], box);
+            }
+            else 
+            {
+                cells[i].calcNbForcesON2(cells[j], box);
+            }
+        }
+    }    
+    
+    // CALCULATE FORCES BETWEEN CELLS AND BOX
+    if (!box.pbc) 
+    {
+        for (int i = 0 ; i < numberofCells; i++)
+        {
+            cells[i].calcBoxForces(box);
+        }
+    }
+}
+
 void Simulator::rebuildVerletLists()
 {
     for (int i = 0; i < numberofCells; i++)
@@ -293,7 +351,7 @@ void Simulator::rebuildDomainsList()
     
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
              domains.assignVertex(cells[i].vertices[j], i);
         }
@@ -308,58 +366,6 @@ void Simulator::rebuildDomainsList()
     for (int i = 0; i < numberofCells; i++)
     {
         cells[i].builtNbList(cells, domains, box);
-    }
-}
-
-void Simulator::calcForces()
-{
-    // RESET FORCES
-    for (int i = 0 ; i < numberofCells; i++)
-    {
-        cells[i].voidForces();
-    }
-
-    // CALCULATE INTRA-CELLULAR FORCES
-    for (int i = 0 ; i < numberofCells; i++)
-    {
-        cells[i].calcForces();
-    }
-
-    // CALCULATE INTER-CELLULAR FORCES
-    for (int i = 0; i < numberofCells; i++)
-    {
-        for (int j = 0; j < numberofCells; j++)
-        {
-            //if (i != j)
-            //{
-            //cells[i].calcForces(cells[j], box);
-            if (nbhandler == 0)
-            {
-                cells[i].calcForces(cells[j], box);
-            }
-            else if (nbhandler == 1)
-            {
-                cells[i].calcForcesVL(cells[j], box);
-            }
-            else if (nbhandler == 2)
-            {
-                cells[i].calcForcesVL(cells[j], box);
-            }
-            else 
-            {
-                cells[i].calcForces(cells[j], box);
-            }
-            //}
-        }
-    }    
-    
-    // CALCULATE FORCES BETWEEN CELLS AND BOX
-    if (!box.pbc) 
-    {
-        for (int i = 0 ; i < numberofCells; i++)
-        {
-            cells[i].calcForces(box);
-        }
     }
 }
 
@@ -406,7 +412,7 @@ void Simulator::integrateEuler()
 
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             m = cells[i].vertices[j].getMass();
             f = cells[i].vertices[j].getVisc();
@@ -425,7 +431,7 @@ void Simulator::heunMethod()
 
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             cells[i].vertices[j].tmp_xyz = cells[i].vertices[j].xyz;
             cells[i].vertices[j].tmp_force = cells[i].vertices[j].force;
@@ -435,7 +441,7 @@ void Simulator::heunMethod()
     //move the whole time-step and calculate  forces
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             m = cells[i].vertices[j].getMass();
             f = cells[i].vertices[j].getVisc();
@@ -449,7 +455,7 @@ void Simulator::heunMethod()
     // Move the whole time-step upon the forces acting in the half-time-step
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             m = cells[i].vertices[j].getMass();
             f = cells[i].vertices[j].getVisc();
@@ -468,7 +474,7 @@ void Simulator::midpointRungeKutta()
 
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             cells[i].vertices[j].tmp_xyz = cells[i].vertices[j].xyz;
         }
@@ -477,7 +483,7 @@ void Simulator::midpointRungeKutta()
     //move half time-step and calculate  forces
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             m = cells[i].vertices[j].getMass();
             f = cells[i].vertices[j].getVisc();
@@ -491,7 +497,7 @@ void Simulator::midpointRungeKutta()
     // Move the whole time-step upon the forces acting in the half-time-step
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             m = cells[i].vertices[j].getMass();
             f = cells[i].vertices[j].getVisc();
@@ -508,7 +514,7 @@ void Simulator::integrateVv()
 
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             m = cells[i].vertices[j].getMass();
             cells[i].vertices[j].xyz += dt * cells[i].vertices[j].velocity; // x(t+1)_a = x(t) + v(t)*dt
@@ -521,7 +527,7 @@ void Simulator::integrateVv()
 
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             m = cells[i].vertices[j].getMass();
             cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
@@ -546,13 +552,18 @@ void Simulator::setBoxSize(const double bs)
     box.setZ(bs);
 }
 
+int Simulator::getNumberOfCells()
+{
+    return numberofCells;
+}
+
 int Simulator::getTotalVertices()
 {
     int totalnumber = 0;
 
     for (int i = 0; i < numberofCells; i++)
     {
-        totalnumber += cells[i].numberofVertices();
+        totalnumber += cells[i].numberOfVerts();
     }
 
     return totalnumber;

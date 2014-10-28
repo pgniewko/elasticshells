@@ -314,8 +314,12 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
     clocks[0].tic();
     Simulator simulator(arguments);
-    //simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
-    simulator.initCells(arguments.n_cells, 1.5);
+    simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
+    //simulator.initCells(arguments.n_cells, 1.5);
+    //simulator.addCell(1.5);
+    //simulator.addCell(1.5);
+    //Vector3D shift(-3.1, 0.0, 0.0);
+    //simulator.moveCell(shift, 1);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
     biofilm_logs << utils::LogLevel::INFO << "EXECUTION TIME = " << clocks[0].time() << "\n";

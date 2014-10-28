@@ -73,9 +73,9 @@ void VertexTests::testConstructor()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, v2->velocity.z, DELTA14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.23, v2->getMass(), DELTA14);
     CPPUNIT_ASSERT_EQUAL(-1, v2->getId());
-    CPPUNIT_ASSERT_EQUAL(0, v2->ntrian);
-    CPPUNIT_ASSERT_EQUAL(0, v2->nneigh);
-    CPPUNIT_ASSERT_EQUAL(0, v2->nbneigh);
+    CPPUNIT_ASSERT_EQUAL(0, v2->numTris);
+    CPPUNIT_ASSERT_EQUAL(0, v2->numBonded);
+    CPPUNIT_ASSERT_EQUAL(0, v2->numNbNeighs);
     Vertex tmpv1(*vec1);
     CPPUNIT_ASSERT_EQUAL(-1, tmpv1.getId());
     tmpv1.setId(1);
@@ -98,13 +98,13 @@ void VertexTests::testCopyConstructor()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpv1.velocity.z, DELTA14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpv1.getMass(), DELTA14);
     CPPUNIT_ASSERT_EQUAL(-1, tmpv1.getId());
-    CPPUNIT_ASSERT_EQUAL(0, tmpv1.ntrian);
-    CPPUNIT_ASSERT_EQUAL(0, tmpv1.nneigh);
-    CPPUNIT_ASSERT_EQUAL(0, tmpv1.nbneigh);
+    CPPUNIT_ASSERT_EQUAL(0, tmpv1.numTris);
+    CPPUNIT_ASSERT_EQUAL(0, tmpv1.numBonded);
+    CPPUNIT_ASSERT_EQUAL(0, tmpv1.numNbNeighs);
     Vertex tmpv2(*v4);
     CPPUNIT_ASSERT_EQUAL(18, tmpv2.getId());
-    CPPUNIT_ASSERT_EQUAL(4, tmpv2.getNumNeighbors());
-    CPPUNIT_ASSERT_EQUAL(0, tmpv2.getNumVTriangles());
+    CPPUNIT_ASSERT_EQUAL(4, tmpv2.getNumNeighs());
+    CPPUNIT_ASSERT_EQUAL(0, tmpv2.getNumTris());
     CPPUNIT_ASSERT_EQUAL(0, tmpv2.getNeighborId(0));
     CPPUNIT_ASSERT_EQUAL(1, tmpv2.getNeighborId(1));
     CPPUNIT_ASSERT_EQUAL(2, tmpv2.getNeighborId(2));
@@ -114,7 +114,7 @@ void VertexTests::testCopyConstructor()
     CPPUNIT_ASSERT_EQUAL(0.44, tmpv2.getNeighborR0(2));
     CPPUNIT_ASSERT_EQUAL(0.33, tmpv2.getNeighborR0(3));
     Vertex tmpv3(*v5);
-    CPPUNIT_ASSERT_EQUAL(4, tmpv3.getNumVTriangles());
+    CPPUNIT_ASSERT_EQUAL(4, tmpv3.getNumTris());
     CPPUNIT_ASSERT_EQUAL(1, tmpv3.getTriangleId(0));
     CPPUNIT_ASSERT_EQUAL(0, tmpv3.getTriangleId(1));
     CPPUNIT_ASSERT_EQUAL(100, tmpv3.getTriangleId(2));
@@ -125,8 +125,8 @@ void VertexTests::testCopyConstructor()
 void VertexTests::testAddNeighbor()
 {
     CPPUNIT_ASSERT_EQUAL(18, v4->getId());
-    CPPUNIT_ASSERT_EQUAL(4, v4->getNumNeighbors());
-    CPPUNIT_ASSERT_EQUAL(0, v4->getNumVTriangles());
+    CPPUNIT_ASSERT_EQUAL(4, v4->getNumNeighs());
+    CPPUNIT_ASSERT_EQUAL(0, v4->getNumTris());
     CPPUNIT_ASSERT_EQUAL(0, v4->getNeighborId(0));
     CPPUNIT_ASSERT_EQUAL(1, v4->getNeighborId(1));
     CPPUNIT_ASSERT_EQUAL(2, v4->getNeighborId(2));
@@ -139,7 +139,7 @@ void VertexTests::testAddNeighbor()
 
 void VertexTests::testAddTriangle()
 {
-    CPPUNIT_ASSERT_EQUAL(4, v5->getNumVTriangles());
+    CPPUNIT_ASSERT_EQUAL(4, v5->getNumTris());
     CPPUNIT_ASSERT_EQUAL(1, v5->getTriangleId(0));
     CPPUNIT_ASSERT_EQUAL(0, v5->getTriangleId(1));
     CPPUNIT_ASSERT_EQUAL(100, v5->getTriangleId(2));

@@ -2,18 +2,18 @@
 
 utils::Logger domain_logs("domain");
 
-Domain::Domain() : myid(-1), numofNeighDom(0), numofVert(0) {}
+Domain::Domain() : myid(-1), numberOfNeighs(0), numberOfVerts(0) {}
 
-Domain::Domain(const Domain& orig) : myid(orig.myid),  numofNeighDom(orig.numofNeighDom), numofVert(orig.numofVert)
+Domain::Domain(const Domain& orig) : myid(orig.myid),  numberOfNeighs(orig.numberOfNeighs), numberOfVerts(orig.numberOfVerts)
 {
-    for (int i = 0; i < numofVert; i++)
+    for (int i = 0; i < numberOfVerts; i++)
     {
         vertIds[i] = orig.vertIds[i];
         cellsIds[i] = orig.cellsIds[i];
     }
-    for (int i = 0; i < numofNeighDom; i++)
+    for (int i = 0; i < numberOfNeighs; i++)
     {
-        neighDomains[i] = orig.neighDomains[i];
+        neighborDomainIdx[i] = orig.neighborDomainIdx[i];
     }
 }
 
@@ -22,16 +22,14 @@ Domain::~Domain() {}
 void Domain::addVertex(int vid, int cellid)
 {
     try {
-        
-    
-        if (numofVert >= MAX_IN_DOMAIN)
+        if (numberOfVerts >= MAX_IN_DOMAIN)
             throw MaxSizeException("Trying to add more vertices than it's allowed."
                                    "New vertex will not be added !"
                                    "This may significantly affect the simulation accuracy !");
         
-        vertIds[numofVert] = vid;
-        cellsIds[numofVert] = cellid;
-        numofVert++;
+        vertIds[numberOfVerts] = vid;
+        cellsIds[numberOfVerts] = cellid;
+        numberOfVerts++;
     }
     catch (MaxSizeException& e)
     {
@@ -43,13 +41,13 @@ void Domain::addVertex(int vid, int cellid)
 void Domain::addNeighDomain(int domId)
 {
     try {
-        if (numofVert >= MAX_IN_DOMAIN)
+        if (numberOfVerts >= MAX_IN_DOMAIN)
             throw MaxSizeException("Trying to add more domain neighbors than it's possible."
                                    "New neighbor will not be added!"
                                    "The code will be terminated due the bug !");
         
-        neighDomains[numofNeighDom] = domId;
-        numofNeighDom++;
+        neighborDomainIdx[numberOfNeighs] = domId;
+        numberOfNeighs++;
     } 
     catch (MaxSizeException& e)
     {
@@ -59,7 +57,5 @@ void Domain::addNeighDomain(int domId)
 }
 void Domain::voidParticlesInDomain()
 {
-    numofVert = 0;
+    numberOfVerts = 0;
 }
-
-

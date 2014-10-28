@@ -8,9 +8,6 @@
 #include "simulation/Box.h"
 #include "simulation/Domain.h"
 
-//#include "utils/Logger.h"
-//#include "src/utils/LogManager.h"
-
 class DomainList 
 {
     public:
@@ -18,14 +15,12 @@ class DomainList
         DomainList(const DomainList& orig);
         virtual ~DomainList();
         
+        void initDomains();
         void setupDomainsList(double, Box&);
         int getDomainIndex(int, int, int);
-        void initDomains();
-        void assignVertex(Vertex&, int);
         void voidDomains();
-        
+        void assignVertex(Vertex&, int);
         int getDomainIndex(Vertex&);
-        
         void setBoxDim(Box&);
         
         int numberofAssignedParticles();
@@ -53,4 +48,3 @@ class DomainList
 };
 
 #endif	/* DOMAINLIST_H */
-

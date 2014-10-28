@@ -30,7 +30,7 @@ double SurfacePressure::calcPressure(Box& box, std::vector<Cell>& cells)
     for (int i = 0; i < numOfCells; i++)
     {
         rcb = cells[i].getRcb();
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             vertXYZ = cells[i].getVertexXYZ(j);
             

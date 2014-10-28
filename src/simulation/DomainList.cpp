@@ -3,11 +3,15 @@
 utils::Logger domainlist_logs("domainlist");
 
 DomainList::DomainList() : m(1), N(1), pbc(false), m_assigned(false), init_domains(false),
-        x_min(0), y_min(0), z_min(0), x_max(0), y_max(0), z_max(0),
-        dx(0), dy(0), dz(0), rc_max(0)  {}
+        x_min(0), y_min(0), z_min(0), 
+        x_max(0), y_max(0), z_max(0),
+        dx(0), dy(0), dz(0), rc_max(0){}
 
-DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.pbc), init_domains(orig.init_domains),
-        m_assigned(orig.m_assigned), x_min(0), y_min(0), z_min(0), x_max(0), y_max(0), z_max(0), dx(0), dy(0), dz(0), rc_max(0) {}
+DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.pbc), 
+        m_assigned(orig.m_assigned), init_domains(orig.init_domains), 
+        x_min(0), y_min(0), z_min(0), 
+        x_max(0), y_max(0), z_max(0), 
+        dx(0), dy(0), dz(0), rc_max(0){}
 
 DomainList::~DomainList() {}
 
@@ -154,12 +158,12 @@ void DomainList::voidDomains()
 }
 int DomainList::getNumberOfNeigh(int dix)
 {
-    return domains[dix].numofNeighDom;
+    return domains[dix].numberOfNeighs;
 }
 
 int DomainList::getDomainNeighbor(int dix, int nix)
 {
-    return domains[dix].neighDomains[nix];
+    return domains[dix].neighborDomainIdx[nix];
 }
 
 int DomainList::getVertexIdx(int dix, int xpart)
@@ -174,7 +178,7 @@ int DomainList::getCellIdx(int dix, int xpart)
 
 int DomainList::getNumOfParticles(int dix)
 {
-    return domains[dix].numofVert;
+    return domains[dix].numberOfVerts;
 }
 
 int DomainList::numberofAssignedParticles()
@@ -182,7 +186,7 @@ int DomainList::numberofAssignedParticles()
     int sum = 0;
     for (int i = 0; i < N; i++)
     {
-        sum += domains[i].numofVert;
+        sum += domains[i].numberOfVerts;
     }
     return sum;
 }

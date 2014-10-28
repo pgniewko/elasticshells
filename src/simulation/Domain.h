@@ -5,9 +5,6 @@
 #include "Environment.h"
 #include "exceptions/MaxSizeException.h"
 
-//#include "utils/Logger.h"
-//#include "src/utils/LogManager.h"
-
 class Domain {
 public:
     Domain();
@@ -19,17 +16,13 @@ public:
     void voidParticlesInDomain();
     int vertIds[MAX_IN_DOMAIN];
     int cellsIds[MAX_IN_DOMAIN];
-    int neighDomains[27];
+    int neighborDomainIdx[27];
     
     int myid;
-    int numofNeighDom;
-    int numofVert;
+    int numberOfNeighs;
+    int numberOfVerts;
     
-private:
-
-    //double lx, ly, lz;
-    //double x0, y0, z0;
+//private:
 };
 
 #endif	/* DOMAIN_H */
-

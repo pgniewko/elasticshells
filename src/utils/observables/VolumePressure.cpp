@@ -23,7 +23,7 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
         // CALCULATE INTRA-CELLULAR FORCES
         for (int i = 0 ; i < numberofCells; i++)
         {
-            cells[i].calcForces();
+            cells[i].calcBondedForces();
         }
 
         // CALCULATE INTER-CELLULAR FORCES
@@ -33,19 +33,19 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
             {
                 if (nbhandler == 0)
                 {
-                    cells[i].calcForces(cells[j], box);
+                    cells[i].calcNbForcesON2(cells[j], box);
                 }
                 else if (nbhandler == 1)
                 {
-                    cells[i].calcForcesVL(cells[j], box);
+                    cells[i].calcNbForcesVL(cells[j], box);
                 }
                 else if (nbhandler == 2)
                 {
-                    cells[i].calcForcesVL(cells[j], box);
+                    cells[i].calcNbForcesVL(cells[j], box);
                 }
                 else 
                 {
-                    cells[i].calcForces(cells[j], box);
+                    cells[i].calcNbForcesON2(cells[j], box);
                 }
             }
         }
@@ -56,7 +56,7 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
     
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberofVertices(); j++)
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             vertXYZ = cells[i].getVertexXYZ(j);
             vertForce = cells[i].getVertexForce(j);

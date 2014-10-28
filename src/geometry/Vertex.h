@@ -1,11 +1,10 @@
 #ifndef VERTEX_H
 #define	VERTEX_H
 
-//#include <stdlib.h>
-
 #include "Environment.h"
 #include "Vector3D.h"
 #include "exceptions/MaxSizeException.h"
+#include "exceptions/RunTimeError.h"
 
 class Vertex
 {
@@ -31,8 +30,8 @@ class Vertex
         void voidForce();
         void voidVelocity();
 
-        int getNumNeighbors();
-        int getNumVTriangles();
+        int getNumNeighs();
+        int getNumTris();
         int getNeighborId(int);
         int getTriangleId(int);
         double getNeighborR0(int);
@@ -41,25 +40,25 @@ class Vertex
         Vector3D force;
         Vector3D velocity;
 
-        Vector3D tmp_xyz;
-        Vector3D tmp_force;
-        Vector3D tmp_velocity;
+        Vector3D tmp_xyz;           // make it private
+        Vector3D tmp_force;         // make it private
+        Vector3D tmp_velocity;      // make it private
 
-        int neighbors[NEIGH_MAX];
-        int vertextri[TRIAN_MAX];
-        double R0[NEIGH_MAX];
+        int bondedVerts[NEIGH_MAX];
+        int bondedTris[TRIAN_MAX];
+        double r0[NEIGH_MAX];
 
-        int nbvertices[NBNEI_MAX];
-        int nbcellid[NBNEI_MAX];
+        int nbVerts[NBNEI_MAX];
+        int nbCellsIdx[NBNEI_MAX];
 
-        int nneigh;
-        int ntrian;
-        int nbneigh;
+        int numBonded;
+        int numTris;
+        int numNbNeighs;
         
-        int domainIdx;
+        int domainIdx;              // make it private
 
     private:
-        int id;
+        int myid;
         double mass;
         double visc;
 };

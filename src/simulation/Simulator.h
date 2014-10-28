@@ -55,10 +55,7 @@ class Simulator
         void moveCell(const Vector3D&, int);
         void addCellVel(const Vector3D&, int);
 
-        int getNumberOfCells()
-        {
-            return numberofCells;
-        }
+        int getNumberOfCells();
         void setBoxSize(double);
         int getTotalVertices();
 
@@ -98,9 +95,6 @@ class Simulator
         ScriptBuilder sb;
         XyzTraj traj;
         LogSimulation logsim;
-        
-        
-
         utils::Logger simulator_logs;
         
         DomainList domains;
