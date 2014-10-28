@@ -19,6 +19,8 @@ VS=10
 VR=3.0
 RCUT=0.6
 
+cp ../../bin/biofilm ./bin/
+
 # VERLET-LIST
 ./bin/biofilm -n $N --int=hm --depth 5 --ns $NS --dt 0.001 --dp 10.0 -k 50 -a 5 \
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
