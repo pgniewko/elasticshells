@@ -29,19 +29,19 @@ class Cell
         double calcVolume();
         double getMass();
         void calcCM();
-        int numberofFaces() ;
-        int numberofVertices();
-        void builtVerletList(const Cell&, Box&);
-        void voidVerletLsit();
-        
-        void builtNbList(std::vector<Cell>&, DomainList&, Box&);
+        int numberOfTris() ;
+        int numberOfVerts();
 
-        void calcForces();
-        void calcForces(const Cell&, Box&);
-        void calcForcesVL(const Cell&, Box&);
-        void calcForces(Box&);
-        //double calcBoxForces(Box&); // TODO: refactor it!
-        //void calcStressTensor(Box&, double*); //TODO: refacoting !
+        void calcBondedForces();
+        void calcHarmonicForces();
+        void calcOsmoticForces();
+        void calcNbForcesON2(const Cell&, Box&);
+        void calcNbForcesVL(const Cell&, Box&);
+        void calcBoxForces(Box&);
+        
+        void voidVerletLsit();
+        void builtVerletList(const Cell&, Box&);
+        void builtNbList(std::vector<Cell>&, DomainList&, Box&);
         
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
@@ -68,7 +68,7 @@ class Cell
         Vector3D getVertexForce(int);
 
         void voidForces();
-        void getDistance(Vector3D& djk, const Vector3D& vj, const Vector3D& vk, Box&);
+        void getDistance(Vector3D&, const Vector3D&, const Vector3D&, Box&);
 
         Vector3D cm;
         Vertex vertices[MAX_V];
