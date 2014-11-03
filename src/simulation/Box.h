@@ -38,7 +38,9 @@ class Box
         void resize();
 
         double getVolume();
+        double getVolume(double);
         double getArea();
+        double getArea(double);
         
         void setPbc(bool);
         void setEcw(double);

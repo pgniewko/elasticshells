@@ -37,12 +37,23 @@ void Box::resize()
 
 double Box::getVolume()
 {
-    return 2.0 * x * 2.0 * y * 2.0 * z;
+    return getVolume(0.0);
+    //return 2.0 * x * 2.0 * y * 2.0 * z;
+}
+
+double Box::getVolume(double rbc)
+{
+    return 2.0 * (x-rbc) * 2.0 * (y-rbc) * 2.0 * (z-rbc);
 }
 
 double Box::getArea()
 {
-    return 2*(4*x*y  + 4*x*z + 4*y*z);
+    return getArea(0.0);
+}
+
+double Box::getArea(double rbc)
+{
+    return 2*(4*(x-rbc)*(y-rbc) + 4*(x-rbc)*(z-rbc) + 4*(y-rbc)*(z-rbc));
 }
 
 void Box::setX(const double newx)
