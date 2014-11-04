@@ -10,6 +10,22 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
         logsim(params.output_file),
         simulator_logs("simulator")
 {
+    
+    try
+    {
+        diagnoseParams(args);
+    }
+    catch (NotImplementedException& e)
+    {
+        simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
+        exit(EXIT_FAILURE);
+    }
+    catch (DataException& e)
+    {
+        simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
+        exit(EXIT_FAILURE);
+    }
+    
     dt = params.dt;
     a = params.a;
     d = params.d;
@@ -35,6 +51,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     box.setZend(params.bsze);
     drawBox = params.draw_box;
     box.setPbc(params.pbc);
+    //std::cout << "box.pbc=" << box.pbc << std::endl;
     box.setEcw(params.ecw);
     nbhandler = params.nbFlag;
 
@@ -42,21 +59,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     domains.setupDomainsList(maxscale, box);
     OsmoticForce::setVolumeFlag(params.osmFlag);
     
-    try
-    {
-        diagnoseParams();
-    }
-    catch (NotImplementedException& e)
-    {
-        simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
-        exit(EXIT_FAILURE);
-    }
-    catch (DataException& e)
-    {
-        simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
-        exit(EXIT_FAILURE);
-    }
-    
+    logParams();
 }
 
 Simulator::Simulator(const Simulator& orig) : params(orig.params), numberofCells(orig.numberofCells),
@@ -72,31 +75,43 @@ Simulator::Simulator(const Simulator& orig) : params(orig.params), numberofCells
 
 Simulator::~Simulator() {}
 
-void Simulator::diagnoseParams()
+void Simulator::diagnoseParams(arguments args)
 {
-    if (d == 0)
+    if (args.d == 0)
         throw NotImplementedException("NotImplementedException:\n"
                                       "Single point representation is not implemented yet. "
                                       "Simulator is about to terminate !");
 
-    if (d > 9)
+    if (args.d > 9)
         throw DataException("DataException:\n"
                             "Depth of a triangulation too large ! "
                             "For machine's safety Simulator is about to terminate !");
+    
+    if (args.d < 0)
+        throw DataException("Depth of a triangulation cannot be negative\n!"
+                            "Simulation will terminate with exit(1)!\n");
+}
 
+void Simulator::logParams()
+{
     
     simulator_logs << utils::LogLevel::INFO << "BOX_STEP="  << boxStep << "\n";
     simulator_logs << utils::LogLevel::INFO << "SAVE_STEP=" << saveStep << "\n";
     simulator_logs << utils::LogLevel::INFO << "LOG_STEP="  << logStep << "\n";
     simulator_logs << utils::LogLevel::INFO << "VERLET_STEP="  << vlistStep << "\n";
-    simulator_logs << utils::LogLevel::FINE << "DT="  << dt << "\n";
+    
+    simulator_logs << utils::LogLevel::FINE << "TIME STEP(DT)="  << dt << "\n";
     simulator_logs << utils::LogLevel::FINE << "DEPTH="  << d << "\n";
     simulator_logs << utils::LogLevel::FINE << "DP="  << dp << "\n";
     simulator_logs << utils::LogLevel::FINE << "GAMMA="  << gamma << "\n";
     simulator_logs << utils::LogLevel::FINE << "A="  << a << "\n";
+    simulator_logs << utils::LogLevel::FINE << "E* CELL-BOX="  << box.ecw << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_CELL="  << Rc << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_BOX="  << params.r_bc << "\n";
-    simulator_logs << utils::LogLevel::FINE << "BOX.PBC=" << box.pbc << "\n";
+    simulator_logs << utils::LogLevel::FINE << "BOX.PBC="<<(box.pbc ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::FINE << "BOX.BOX_DRAW=" << (drawBox ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::FINE << "OSMOTIC_FLAG=" << (params.osmFlag ? "true" : "false") << "\n";
+    
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getY() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
@@ -572,7 +587,8 @@ int Simulator::getTotalVertices()
 double Simulator::getMaxScale()
 {
     double maxscale = 0.0;
-    maxscale = std::max(params.r_bc, params.r_cut);
-    
+    maxscale = std::max(params.r_bc, Rc);
+    //std::cout << "maxscale=" << maxscale << std::endl;
+    //exit(1);
     return maxscale;
 }

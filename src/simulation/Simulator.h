@@ -63,7 +63,8 @@ class Simulator
 
         void (Simulator::*integrator)();
         void setIntegrator(void (Simulator::*functoall)());
-        void diagnoseParams();
+        void diagnoseParams(arguments);
+        void logParams();
         void rebuildVerletLists();
         void rebuildDomainsList();
         double getMaxScale();
