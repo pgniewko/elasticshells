@@ -3,8 +3,9 @@
 
 #include <vector>
 
-#include "simulation/Box.h"
 #include "Cell.h"
+#include "geometry/Vector3D.h"
+#include "simulation/Box.h"
 
 class VolumePressure {
 public:
@@ -14,6 +15,7 @@ public:
     
     static double calcPressure(Box&, std::vector<Cell>&, int nbhandler);
 private:
+    static Vector3D getImage(Box&, Vector3D&);
 
 };
 
