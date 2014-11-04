@@ -1,8 +1,8 @@
 #include "Cell.h"
 
 Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), Rc(0),
-        rCellBox(0), a(0), dp(0), gamma(0), verletR(0), initR(0), visc0(0), 
-        mass0(0), visc0tot(0), mass0tot(0), nRT(0)
+        rCellBox(0), a(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0), 
+        vertexMass(0), totalVisc(0), totalMass(0), nRT(0)
 {
     SimpleTriangulation sm(depth);
     std::list<Triangle> tris = sm.triangulate();
@@ -12,8 +12,8 @@ Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), Rc(0),
 }
 
 Cell::Cell(std::list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), Rc(0),
-        rCellBox(0), a(0), dp(0), gamma(0), verletR(0), initR(0), visc0(0), 
-        mass0(0), visc0tot(0), mass0tot(0),  nRT(0)
+        rCellBox(0), a(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0), 
+        vertexMass(0), totalVisc(0), totalMass(0),  nRT(0)
 {
     constructVertices(tris);
     constructVTriangles(tris);
@@ -23,8 +23,8 @@ Cell::Cell(std::list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), Rc(0)
 Cell::Cell(const Cell& orig) : cm(orig.cm), vertices(orig.vertices), triangles(orig.triangles),
     cellId(orig.cellId), numberV(orig.numberV), numberT(orig.numberT),
     Rc(orig.Rc), rCellBox(orig.rCellBox), a(orig.a), dp(orig.dp), gamma(orig.gamma), verletR(orig.verletR),
-    initR(orig.initR), visc0(orig.visc0), mass0(orig.mass0),
-    visc0tot(orig.visc0tot), mass0tot(orig.mass0tot), nRT(orig.nRT)
+    initR(orig.initR), vertexVisc(orig.vertexVisc), vertexMass(orig.vertexMass),
+    totalVisc(orig.totalVisc), totalMass(orig.totalMass), nRT(orig.nRT)
 {}
 
 Cell::~Cell() {}
@@ -428,38 +428,16 @@ void Cell::calcCM()
     cm = tmp;
 }
 
-double Cell::getMass()
-{
-    double totalMass = 0.0;
-
-    for (int i = 0; i < numberV; i++)
-    {
-        totalMass += vertices[i].getMass();
-    }
-
-    return totalMass;
-}
-
 void Cell::setVisc(double mu)
 {
-    visc0tot = mu;
-    visc0 = visc0tot / numberV;
+
+    vertexVisc = mu / numberV;
 
     for (int i = 0; i < numberV; i++)
     {
-        vertices[i].setVisc(visc0);
+        vertices[i].setVisc(vertexVisc);
     }
-}
-
-void Cell::setMass(double m)
-{
-    mass0tot = m;
-    mass0 = mass0tot / numberV;
-
-    for (int i = 0; i < numberV; i++)
-    {
-        vertices[i].setMass(mass0);
-    }
+    totalVisc = getVisc();
 }
 
 double Cell::getVisc()
@@ -472,6 +450,29 @@ double Cell::getVisc()
     }
 
     return v;
+}
+
+double Cell::getMass()
+{
+    double totalMass = 0.0;
+
+    for (int i = 0; i < numberV; i++)
+    {
+        totalMass += vertices[i].getMass();
+    }
+
+    return totalMass;
+}
+
+void Cell::setMass(double totm)
+{
+    vertexMass = totm / numberV;
+
+    for (int i = 0; i < numberV; i++)
+    {
+        vertices[i].setMass(vertexMass);
+    }
+    totalMass = getMass();
 }
 
 void Cell::addVelocity(const Vector3D& nv)

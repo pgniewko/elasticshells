@@ -65,7 +65,7 @@ static struct argp_option options[] =
 
     {0,             0, 0, 0, "System Options:", 5},
     {0,           'a', "NUM", 0, "LJ12-6 repulsion scaling parameter[default: 1.0]"},
-    {"mass",      'm', "NUM", 0, "Total mass of a cell [default: 100.0]"},
+    {"mass",      'm', "NUM", 0, "Total mass of a cell [default: 60.0]"},
     {"gamma",     'k', "NUM", 0, "Spring constant between vertices[default: 1.0]"},
     {"ecw",       799, "NUM", 0, "Effective spring constant for cell-wall repulsion [default: 200.0]"},
     {"mu",        801, "NUM", 0, "Viscosity coefficient [default: 100.0]"},
@@ -117,7 +117,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->dp = 0.0;
             arguments->visc = 100.0;
             arguments->k = 1.0;
-            arguments->mass = 100.0;
+            arguments->mass = 60.0;
             arguments->ttime = 1.0;
             arguments->r_cut = 0.5;
             arguments->r_bc = 0.5;

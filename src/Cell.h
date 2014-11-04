@@ -91,10 +91,10 @@ class Cell
         double gamma;
         double verletR;
         double initR;
-        double visc0;
-        double mass0;
-        double visc0tot;
-        double mass0tot;
+        double vertexVisc;
+        double vertexMass;
+        double totalVisc;
+        double totalMass;
         
         double nRT;
 };

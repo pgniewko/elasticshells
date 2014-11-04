@@ -51,7 +51,6 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     box.setZend(params.bsze);
     drawBox = params.draw_box;
     box.setPbc(params.pbc);
-    //std::cout << "box.pbc=" << box.pbc << std::endl;
     box.setEcw(params.ecw);
     nbhandler = params.nbFlag;
 
@@ -150,7 +149,7 @@ void Simulator::addCell(double r0)
 {
     try
     {
-        if (cells.size() == MAX_CELLS)
+        if (cells.size() >= MAX_CELLS)
             throw MaxSizeException("Maximum number of cells reached.\n"
                                    "New cell will not be added !\n"
                                    "Program is going to TERMINANTE!");
@@ -421,18 +420,14 @@ void Simulator::integrate()
 void Simulator::integrateEuler()
 {
     calcForces();
-    double m;
-    double f;
-    double mf;
+    double visc;
 
     for (int i = 0; i < numberofCells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
-            m = cells[i].vertices[j].getMass();
-            f = cells[i].vertices[j].getVisc();
-            mf = m * f;
-            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / mf;
+            visc = cells[i].vertices[j].getVisc();
+            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / visc;
         }
     }
 }
@@ -440,9 +435,7 @@ void Simulator::integrateEuler()
 void Simulator::heunMethod()
 {
     calcForces();
-    double m;
-    double f;
-    double mf;
+    double visc;
 
     for (int i = 0; i < numberofCells; i++)
     {
@@ -458,10 +451,8 @@ void Simulator::heunMethod()
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
-            m = cells[i].vertices[j].getMass();
-            f = cells[i].vertices[j].getVisc();
-            mf = m * f;
-            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / mf;
+            visc = cells[i].vertices[j].getVisc();
+            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / visc;
         }
     }
 
@@ -472,10 +463,8 @@ void Simulator::heunMethod()
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
-            m = cells[i].vertices[j].getMass();
-            f = cells[i].vertices[j].getVisc();
-            mf = m * f;
-            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + 0.5 * dt * ( cells[i].vertices[j].tmp_force + cells[i].vertices[j].force) / mf;
+            visc = cells[i].vertices[j].getVisc();
+            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + 0.5 * dt * ( cells[i].vertices[j].tmp_force + cells[i].vertices[j].force) / visc;
         }
     }
 }
@@ -483,9 +472,7 @@ void Simulator::heunMethod()
 void Simulator::midpointRungeKutta()
 {
     calcForces();
-    double m;
-    double f;
-    double mf;
+    double visc;
 
     for (int i = 0; i < numberofCells; i++)
     {
@@ -500,10 +487,8 @@ void Simulator::midpointRungeKutta()
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
-            m = cells[i].vertices[j].getMass();
-            f = cells[i].vertices[j].getVisc();
-            mf = m * f;
-            cells[i].vertices[j].xyz += 0.5 * dt * cells[i].vertices[j].force / mf;
+            visc = cells[i].vertices[j].getVisc();
+            cells[i].vertices[j].xyz += 0.5 * dt * cells[i].vertices[j].force / visc;
         }
     }
 
@@ -514,10 +499,8 @@ void Simulator::midpointRungeKutta()
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
-            m = cells[i].vertices[j].getMass();
-            f = cells[i].vertices[j].getVisc();
-            mf = m * f;
-            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + dt * cells[i].vertices[j].force / mf;
+            visc = cells[i].vertices[j].getVisc();
+            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + dt * cells[i].vertices[j].force / visc;
         }
     }
 }
@@ -588,7 +571,5 @@ double Simulator::getMaxScale()
 {
     double maxscale = 0.0;
     maxscale = std::max(params.r_bc, Rc);
-    //std::cout << "maxscale=" << maxscale << std::endl;
-    //exit(1);
     return maxscale;
 }
