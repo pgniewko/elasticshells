@@ -198,11 +198,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
     {
         domainIdx = vertices[i].domainIdx;
         domainIdx = domains.getDomainIndex(vertices[i]);
-        if (vertices[i].domainIdx != domains.getDomainIndex(vertices[i])) 
-        {
-            std::cout << "ERROR !! vertices[i].domainIdx != domains.getDomainIndex(vertices[i])";
-            exit(1);
-        }
+        
         for (int j = 0; j < domains.getNumberOfNeigh(domainIdx); j++)
         {
             domainn = domains.getDomainNeighbor(domainIdx, j);
@@ -238,6 +234,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
         }
     }
 }
+
 void Cell::calcBondedForces()
 {
     calcHarmonicForces();
@@ -286,7 +283,7 @@ void Cell::calcOsmoticForces()
 void Cell::calcNbForcesON2(const Cell& other_cell, Box& box)
 {
     int ocellid = other_cell.cellId;
-    Vector3D dji;
+    Vector3D dij;
 
     for (int i = 0; i < numberV; i++)
     {
@@ -294,15 +291,21 @@ void Cell::calcNbForcesON2(const Cell& other_cell, Box& box)
         {
             if (cellId != ocellid)
             {
-                getDistance(dji, vertices[i].xyz, other_cell.vertices[j].xyz, box);
-                vertices[i].force += NbRepulsiveForce::calcForce(dji, Rc, a);
+                //getDistance(dji, vertices[i].xyz, other_cell.vertices[j].xyz, box);
+                //vertices[i].force += NbRepulsiveForce::calcForce(dji, Rc, a);
+                
+                getDistance(dij, other_cell.vertices[j].xyz, vertices[i].xyz, box);
+                vertices[i].force += HertzianRepulsion::calcForce(dij, Rc, a);
             }
             else
             {
                 if (i != j && !vertices[i].isNeighbor(j))
                 {
-                    getDistance(dji, vertices[i].xyz, other_cell.vertices[j].xyz, box);
-                    vertices[i].force += NbRepulsiveForce::calcForce(dji, Rc, a);
+                    //getDistance(dji, vertices[i].xyz, other_cell.vertices[j].xyz, box);
+                    //vertices[i].force += NbRepulsiveForce::calcForce(dji, Rc, a);
+                    
+                    getDistance(dij, other_cell.vertices[j].xyz, vertices[i].xyz, box);
+                    vertices[i].force += HertzianRepulsion::calcForce(dij, Rc, a);
                 }
             }
         }
@@ -322,8 +325,11 @@ void Cell::calcNbForcesVL(const Cell& other_cell, Box& box)
             if (vertices[i].nbCellsIdx[j] == ocellid)
             {
                 vertid = vertices[i].nbVerts[j];
-                getDistance(dji, vertices[i].xyz, other_cell.vertices[vertid].xyz, box);
-                vertices[i].force += NbRepulsiveForce::calcForce(dji, Rc, a);
+                //getDistance(dji, vertices[i].xyz, other_cell.vertices[vertid].xyz, box);
+                //vertices[i].force += NbRepulsiveForce::calcForce(dji, Rc, a);
+                
+                getDistance(dji, other_cell.vertices[vertid].xyz, vertices[i].xyz, box);
+                vertices[i].force += HertzianRepulsion::calcForce(dji, Rc, a);
             }
         }
     }
@@ -332,7 +338,7 @@ void Cell::calcNbForcesVL(const Cell& other_cell, Box& box)
 void Cell::calcBoxForces(Box& box)
 {
     Vector3D wallYZ, wallXZ, wallXY;
-    Vector3D dji;
+    Vector3D dij;
     double sgnx, sgny, sgnz;
     double bsx = box.getX();
     double bsy = box.getY();
@@ -346,22 +352,25 @@ void Cell::calcBoxForces(Box& box)
         wallYZ.x = sgnx * bsx;
         wallYZ.y = vertices[i].xyz.y;
         wallYZ.z = vertices[i].xyz.z;
-        getDistance(dji, wallYZ, vertices[i].xyz, box);
-        vertices[i].force += BoxCellRepulsion::calcForce(dji, E, rCellBox);
+        dij = vertices[i].xyz - wallYZ;
+        //getDistance(dij, wallYZ, vertices[i].xyz, box);
+        vertices[i].force += HertzianRepulsion::calcForce(dij, rCellBox, E);
 
         sgny = SIGN(vertices[i].xyz.y);
         wallXZ.x = vertices[i].xyz.x;
         wallXZ.y = sgny * bsy;
         wallXZ.z = vertices[i].xyz.z;
-        getDistance(dji, wallXZ, vertices[i].xyz, box);
-        vertices[i].force += BoxCellRepulsion::calcForce(dji, E, rCellBox);
+        //getDistance(dij, wallXZ, vertices[i].xyz, box);
+        dij = vertices[i].xyz - wallXZ;
+        vertices[i].force += HertzianRepulsion::calcForce(dij, rCellBox, E);
 
         sgnz = SIGN(vertices[i].xyz.z);
         wallXY.x = vertices[i].xyz.x;
         wallXY.y = vertices[i].xyz.y;
         wallXY.z = sgnz * bsz;
-        getDistance(dji, wallXY, vertices[i].xyz, box);
-        vertices[i].force += BoxCellRepulsion::calcForce(dji, E, rCellBox);
+        //getDistance(dij, wallXY, vertices[i].xyz, box);
+        dij = vertices[i].xyz - wallXY;
+        vertices[i].force += HertzianRepulsion::calcForce(dij, rCellBox, E);
     }
 }
 
@@ -390,6 +399,7 @@ double Cell::calcVolume()
     double volume = 0.0;
     int va, vb, vc;
 
+    calcCM();
     for (int i = 0; i < numberT; i++)
     {
         va = triangles[i].ia;
@@ -399,18 +409,6 @@ double Cell::calcVolume()
         volume += tetr.volume();
     }
     return volume;
-}
-
-double Cell::getMass()
-{
-    double totalMass = 0.0;
-
-    for (int i = 0; i < numberV; i++)
-    {
-        totalMass += vertices[i].getMass();
-    }
-
-    return totalMass;
 }
 
 void Cell::calcCM()
@@ -428,6 +426,18 @@ void Cell::calcCM()
 
     tmp /= M;
     cm = tmp;
+}
+
+double Cell::getMass()
+{
+    double totalMass = 0.0;
+
+    for (int i = 0; i < numberV; i++)
+    {
+        totalMass += vertices[i].getMass();
+    }
+
+    return totalMass;
 }
 
 void Cell::setVisc(double mu)
@@ -502,7 +512,7 @@ void Cell::setRCellBox(double r)
 
 void Cell::setA(double A)
 {
-    a = A;
+    a = A / SQRT2;
 }
 
 void Cell::setDp(double dP)
@@ -546,7 +556,7 @@ Vector3D Cell::getCm()
     return cm;
 }
 
-double Cell::getRcb()
+double Cell::getRbc()
 {
     return rCellBox;
 }

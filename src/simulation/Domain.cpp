@@ -23,9 +23,9 @@ void Domain::addVertex(int vid, int cellid)
 {
     try {
         if (numberOfVerts >= MAX_IN_DOMAIN)
-            throw MaxSizeException("Trying to add more vertices than it's allowed."
-                                   "New vertex will not be added !"
-                                   "This may significantly affect the simulation accuracy !");
+            throw MaxSizeException("Trying to add more vertices than it's allowed.\n"
+                                   "New vertex will not be added !\n"
+                                   "This may significantly affect the simulation accuracy !\n");
         
         vertIds[numberOfVerts] = vid;
         cellsIds[numberOfVerts] = cellid;

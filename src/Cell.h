@@ -8,7 +8,7 @@
 #include "force/HookeanForce.h"
 #include "force/OsmoticForce.h"
 #include "force/NbRepulsiveForce.h"
-#include "force/BoxCellRepulsion.h"
+#include "force/HertzianRepulsion.h"
 #include "geometry/Vector3D.h"
 #include "geometry/Tetrahedron.h"
 #include "geometry/Triangle.h"
@@ -62,7 +62,7 @@ class Cell
         double getInitR();
         double getVisc();
         Vector3D getCm();
-        double getRcb();
+        double getRbc();
         
         Vector3D getVertexXYZ(int);
         Vector3D getVertexForce(int);
