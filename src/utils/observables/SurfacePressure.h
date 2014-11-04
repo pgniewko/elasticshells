@@ -3,8 +3,9 @@
 
 #include <vector>
 
-#include "simulation/Box.h"
 #include "Cell.h"
+#include "simulation/Box.h"
+#include "force/HertzianRepulsion.h"
 
 class SurfacePressure {
 public:
