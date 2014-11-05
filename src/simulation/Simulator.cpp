@@ -4,7 +4,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
         dt(0), a(0), dp(0), gamma(0), R0(0), Rc(0), ttotal(0), initcellmass(0),
         verlet_r(0), nsteps(0), d(0),
         logStep(1), saveStep(1), vlistStep(1), boxStep(1), 
-        box(0, 0, 0), drawBox(false), nbhandler(0),
+        box(0, 0, 0), nbhandler(0),
         sb(params.render_file, params.surface_file, params.traj_file), 
         traj(params.traj_file), 
         logsim(params.output_file),
@@ -49,7 +49,7 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
     box.setXend(params.bsxe);
     box.setYend(params.bsye);
     box.setZend(params.bsze);
-    drawBox = params.draw_box;
+   
     box.setPbc(params.pbc);
     box.setEcw(params.ecw);
     nbhandler = params.nbFlag;
@@ -66,7 +66,7 @@ Simulator::Simulator(const Simulator& orig) : params(orig.params), numberofCells
         Rc(orig.Rc), ttotal(orig.ttotal), initcellmass(orig.initcellmass),
         verlet_r(orig.verlet_r), nsteps(orig.nsteps), d(orig.d),
         logStep(orig.logStep), saveStep(orig.saveStep), vlistStep(orig.vlistStep), boxStep(orig.boxStep), 
-        box(orig.box), drawBox(false), nbhandler(orig.nbhandler),
+        box(orig.box), nbhandler(orig.nbhandler),
         sb(orig.sb), traj(orig.traj), logsim(orig.logsim), simulator_logs(orig.simulator_logs)
 {
     // exception disallowed behavior
@@ -108,7 +108,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE << "R:CELL_CELL="  << Rc << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_BOX="  << params.r_bc << "\n";
     simulator_logs << utils::LogLevel::FINE << "BOX.PBC="<<(box.pbc ? "true" : "false") << "\n";
-    simulator_logs << utils::LogLevel::FINE << "BOX.BOX_DRAW=" << (drawBox ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::FINE << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINE << "OSMOTIC_FLAG=" << (params.osmFlag ? "true" : "false") << "\n";
     
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
@@ -154,7 +154,7 @@ void Simulator::addCell(double r0)
                                    "New cell will not be added !\n"
                                    "Program is going to TERMINANTE!");
 
-        SimpleTriangulation sm(params.d);
+        SimpleTriangulation sm(d);
         std::list<Triangle> tris = sm.triangulate(r0);
         Cell newCell(tris);
         newCell.setA(a);
@@ -167,7 +167,7 @@ void Simulator::addCell(double r0)
         newCell.setMass(params.mass);
         newCell.setVisc(params.visc);
         newCell.setInitR(r0);
-        newCell.setNRT(params.dp);
+        newCell.setNRT(dp);
         addCell(newCell);
     }
     catch (MaxSizeException& e)
@@ -235,7 +235,7 @@ void Simulator::simulate(int steps)
         rebuildDomainsList();
     }
     
-    sb.saveRenderScript(cells, box, drawBox);
+    sb.saveRenderScript(cells, box, params.draw_box);
     sb.saveSurfaceScript(cells);
     traj.open();
     traj.save(cells, getTotalVertices());

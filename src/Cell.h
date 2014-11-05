@@ -64,8 +64,8 @@ class Cell
         Vector3D getCm();
         double getRbc();
         
-        Vector3D getVertexXYZ(int);
-        Vector3D getVertexForce(int);
+        Vector3D& getVertexXYZ(int);
+        Vector3D& getVertexForce(int);
 
         void voidForces();
         void getDistance(Vector3D&, const Vector3D&, const Vector3D&, Box&);

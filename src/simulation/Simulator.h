@@ -90,7 +90,7 @@ class Simulator
         int boxStep;
 
         Box box;
-        bool drawBox;
+        //bool drawBox;
         int nbhandler;
 
         ScriptBuilder sb;

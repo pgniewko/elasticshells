@@ -562,12 +562,12 @@ double Cell::getRbc()
     return rCellBox;
 }
 
-Vector3D Cell::getVertexXYZ(int idx)
+Vector3D& Cell::getVertexXYZ(int idx)
 {
     return vertices[idx].xyz;
 }
 
-Vector3D Cell::getVertexForce(int idx)
+Vector3D& Cell::getVertexForce(int idx)
 {
     return vertices[idx].force;
 }

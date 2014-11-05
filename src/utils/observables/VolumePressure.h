@@ -15,7 +15,7 @@ public:
     
     static double calcPressure(Box&, std::vector<Cell>&, int nbhandler);
 private:
-    static Vector3D getImage(Box&, Vector3D&);
+    static Vector3D getImage(Box&, const Vector3D&);
 
 };
 
