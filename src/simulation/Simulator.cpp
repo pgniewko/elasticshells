@@ -30,7 +30,7 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     params.a = args.a;
     params.dt = args.dt;
     params.dp = args.dp;
-    params.visc = args.visc
+    params.visc = args.visc;
     params.k = args.k;
     params.mass = args.mass;
     params.ttime = args.ttime;
@@ -62,7 +62,8 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     logParams();
 }
 
-Simulator::Simulator(const Simulator& orig) : params(orig.params), numberofCells(orig.numberofCells),
+Simulator::Simulator(const Simulator& orig) : numberofCells(orig.numberofCells), 
+        params(orig.params), 
         box(orig.box), sb(orig.sb), traj(orig.traj), 
         logsim(orig.logsim), simulator_logs(orig.simulator_logs)
 {
@@ -99,7 +100,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE << "TIME STEP(DT)="  << params.dt << "\n";
     simulator_logs << utils::LogLevel::FINE << "DEPTH="  << params.d << "\n";
     simulator_logs << utils::LogLevel::FINE << "DP="  << params.dp << "\n";
-    simulator_logs << utils::LogLevel::FINE << "GAMMA="  << gamma << "\n";
+    simulator_logs << utils::LogLevel::FINE << "GAMMA="  << params.k << "\n";
     simulator_logs << utils::LogLevel::FINE << "A="  << params.a << "\n";
     simulator_logs << utils::LogLevel::FINE << "E* CELL-BOX="  << box.ecw << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_CELL="  << params.r_cut << "\n";
@@ -159,7 +160,7 @@ void Simulator::addCell(double r0)
         newCell.setDp(params.dp);
         newCell.setRc(params.r_cut);
         newCell.setRCellBox(params.r_bc);
-        newCell.setGamma(gamma);
+        newCell.setGamma(params.k);
         newCell.setVerletR(params.verlet_r);
         newCell.setCellId(numberofCells);
         newCell.setMass(params.mass);

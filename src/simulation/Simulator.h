@@ -90,9 +90,10 @@ class Simulator
         void rebuildDomainsList();
         double getMaxScale();
 
-        std::vector<Cell> cells;
-        params_t params;
         int numberofCells;
+        params_t params;
+        
+        std::vector<Cell> cells;
         Box box;
 
         ScriptBuilder sb;
