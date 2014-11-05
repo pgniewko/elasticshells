@@ -49,6 +49,9 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     box.setDx(args.bsdx);
     box.setDy(args.bsdy);
     box.setDz(args.bsdz);
+    box.setXstart(args.bsx);
+    box.setYstart(args.bsy);
+    box.setZstart(args.bsz);
     box.setXend(args.bsxe);
     box.setYend(args.bsye);
     box.setZend(args.bsze);

@@ -121,6 +121,21 @@ double Box::getDz()
     return dz;
 }
 
+void Box::setXstart(const double xst)
+{
+    xs = xst;
+}
+
+void Box::setYstart(const double yst)
+{
+    ys = yst;
+}
+
+void Box::setZstart(const double zst)
+{
+    zs = zst;
+}
+
 void Box::setXend(const double xend)
 {
     xe = xend;

@@ -27,6 +27,9 @@ class Box
         void setDz(const double);
         double getDz();
 
+        void setXstart(double);
+        void setYstart(double);
+        void setZstart(double);
         void setXend(double);
         void setYend(double);
         void setZend(double);
