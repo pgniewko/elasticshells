@@ -31,6 +31,9 @@ class Box
         void setYend(double);
         void setZend(double);
 
+        double getXstart();
+        double getYstart();
+        double getZstart();
         double getXend();
         double getYend();
         double getZend();
@@ -51,6 +54,9 @@ class Box
         double x;
         double y;
         double z;
+        double xs;
+        double ys;
+        double zs;
         double xe;
         double ye;
         double ze;

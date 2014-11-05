@@ -1,19 +1,25 @@
 #include "Box.h"
 
 Box::Box(double bsx, double bsy, double bsz) : pbc(false), ecw(0.0), 
-        x(bsx), y(bsy), z(bsz),
+        x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
         xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), 
-        dx(0), dy(0), dz(0){}
+        dx(0), dy(0), dz(0)
+{
+}
 
 Box::Box(double bsx, double bsy, double bsz, double dbs) : pbc(false), ecw(0.0), 
-        x(bsx), y(bsy), z(bsz),
+        x(bsx), y(bsy), z(bsz), z(bsz), xs(bsx), ys(bsy), zs(bsz),
         xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), 
-        dx(dbs), dy(dbs), dz(dbs){}
+        dx(dbs), dy(dbs), dz(dbs)
+{
+}
 
 Box::Box(const Box& orig) : pbc(orig.pbc), ecw(orig.ecw),
-        x(orig.x), y(orig.y), z(orig.z),
+        x(orig.x), y(orig.y), z(orig.z), xs(orig.xs), ys(orig.ys), zs(orig.zs),
         xe(orig.xe), ye(orig.ye), ze(orig.ze), 
-        dx(orig.dx), dy(orig.dy), dz(orig.dz){}
+        dx(orig.dx), dy(orig.dy), dz(orig.dz)
+{
+}
 
 Box::~Box() {}
 
@@ -38,7 +44,6 @@ void Box::resize()
 double Box::getVolume()
 {
     return getVolume(0.0);
-    //return 2.0 * x * 2.0 * y * 2.0 * z;
 }
 
 double Box::getVolume(double rbc)
@@ -129,6 +134,20 @@ void Box::setYend(const double yend)
 void Box::setZend(const double zend)
 {
     ze = zend;
+}
+
+double Box::getXstart()
+{
+    return xs;
+}
+double Box::getYstart()
+{
+    return ys;
+}
+
+double Box::getZstart()
+{
+    return zs;
 }
 
 double Box::getXend()

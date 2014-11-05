@@ -39,5 +39,10 @@ double OsmoticForce::getEpsilon()
     return epsilon;
 }
 
+const bool OsmoticForce::getFlag()
+{
+    return volumeFlag;
+}
+
 double OsmoticForce::epsilon = 0.0;
 bool OsmoticForce::volumeFlag = false;

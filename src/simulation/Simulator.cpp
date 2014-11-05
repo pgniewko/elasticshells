@@ -1,14 +1,8 @@
 #include "Simulator.h"
 
-Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
-        dt(0), a(0), dp(0), gamma(0), R0(0), Rc(0), ttotal(0), initcellmass(0),
-        verlet_r(0), nsteps(0), d(0),
-        logStep(1), saveStep(1), vlistStep(1), boxStep(1), 
-        box(0, 0, 0), nbhandler(0),
-        sb(params.render_file, params.surface_file, params.traj_file), 
-        traj(params.traj_file), 
-        logsim(params.output_file),
-        simulator_logs("simulator")
+Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0), 
+        sb(args.render_file, args.surface_file, args.traj_file), 
+        traj(args.traj_file), logsim(args.output_file), simulator_logs("simulator")
 {
     
     try
@@ -26,48 +20,51 @@ Simulator::Simulator(const arguments& args) : params(args), numberofCells(0),
         exit(EXIT_FAILURE);
     }
     
-    dt = params.dt;
-    a = params.a;
-    d = params.d;
-    dp = params.dp;
-    gamma = params.k;
-    Rc = params.r_cut;
-    verlet_r = params.verlet_r;
-    ttotal = params.ttime;
-    nsteps = (int) ttotal / dt;
-    setIntegrator(params.integrator_a);
-    logStep = params.log_step;
-    saveStep = params.save_step;
-    boxStep = params.box_step;
-    vlistStep = params.vlist_step;
-    box.setX(params.bsx);
-    box.setY(params.bsy);
-    box.setZ(params.bsz);
-    box.setDx(params.bsdx);
-    box.setDy(params.bsdy);
-    box.setDz(params.bsdz);
-    box.setXend(params.bsxe);
-    box.setYend(params.bsye);
-    box.setZend(params.bsze);
-   
-    box.setPbc(params.pbc);
-    box.setEcw(params.ecw);
-    nbhandler = params.nbFlag;
+    params.log_step = args.log_step;
+    params.save_step = args.save_step;
+    params.box_step = args.box_step;
+    params.vlist_step = args.vlist_step;
+    params.d = args.d;
+    params.nbhandler = args.nbFlag;
+    
+    params.a = args.a;
+    params.dt = args.dt;
+    params.dp = args.dp;
+    params.visc = args.visc
+    params.k = args.k;
+    params.mass = args.mass;
+    params.ttime = args.ttime;
+    params.r_cut = args.r_cut;
+    params.r_bc = args.r_bc;
+    params.verlet_r = params.verlet_r;
+    params.draw_box = args.draw_box;
+    params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
+    
 
-    double maxscale = getMaxScale();
-    domains.setupDomainsList(maxscale, box);
-    OsmoticForce::setVolumeFlag(params.osmFlag);
+    setIntegrator(args.integrator_a);
+
+    box.setX(args.bsx);
+    box.setY(args.bsy);
+    box.setZ(args.bsz);
+    box.setDx(args.bsdx);
+    box.setDy(args.bsdy);
+    box.setDz(args.bsdz);
+    box.setXend(args.bsxe);
+    box.setYend(args.bsye);
+    box.setZend(args.bsze);
+   
+    box.setPbc(args.pbc);
+    box.setEcw(args.ecw);
+    
+    domains.setupDomainsList(getMaxScale(), box);
+    OsmoticForce::setVolumeFlag(args.osmFlag);
     
     logParams();
 }
 
 Simulator::Simulator(const Simulator& orig) : params(orig.params), numberofCells(orig.numberofCells),
-        dt(orig.dt), a(orig.a), dp(orig.dp), gamma(orig.gamma), R0(orig.R0), 
-        Rc(orig.Rc), ttotal(orig.ttotal), initcellmass(orig.initcellmass),
-        verlet_r(orig.verlet_r), nsteps(orig.nsteps), d(orig.d),
-        logStep(orig.logStep), saveStep(orig.saveStep), vlistStep(orig.vlistStep), boxStep(orig.boxStep), 
-        box(orig.box), nbhandler(orig.nbhandler),
-        sb(orig.sb), traj(orig.traj), logsim(orig.logsim), simulator_logs(orig.simulator_logs)
+        box(orig.box), sb(orig.sb), traj(orig.traj), 
+        logsim(orig.logsim), simulator_logs(orig.simulator_logs)
 {
     // exception disallowed behavior
 }
@@ -94,23 +91,24 @@ void Simulator::diagnoseParams(arguments args)
 void Simulator::logParams()
 {
     
-    simulator_logs << utils::LogLevel::INFO << "BOX_STEP="  << boxStep << "\n";
-    simulator_logs << utils::LogLevel::INFO << "SAVE_STEP=" << saveStep << "\n";
-    simulator_logs << utils::LogLevel::INFO << "LOG_STEP="  << logStep << "\n";
-    simulator_logs << utils::LogLevel::INFO << "VERLET_STEP="  << vlistStep << "\n";
+    simulator_logs << utils::LogLevel::INFO << "BOX_STEP="  << params.box_step << "\n";
+    simulator_logs << utils::LogLevel::INFO << "SAVE_STEP=" << params.save_step << "\n";
+    simulator_logs << utils::LogLevel::INFO << "LOG_STEP="  << params.log_step << "\n";
+    simulator_logs << utils::LogLevel::INFO << "VERLET_STEP="  << params.vlist_step << "\n";
     
-    simulator_logs << utils::LogLevel::FINE << "TIME STEP(DT)="  << dt << "\n";
-    simulator_logs << utils::LogLevel::FINE << "DEPTH="  << d << "\n";
-    simulator_logs << utils::LogLevel::FINE << "DP="  << dp << "\n";
+    simulator_logs << utils::LogLevel::FINE << "TIME STEP(DT)="  << params.dt << "\n";
+    simulator_logs << utils::LogLevel::FINE << "DEPTH="  << params.d << "\n";
+    simulator_logs << utils::LogLevel::FINE << "DP="  << params.dp << "\n";
     simulator_logs << utils::LogLevel::FINE << "GAMMA="  << gamma << "\n";
-    simulator_logs << utils::LogLevel::FINE << "A="  << a << "\n";
+    simulator_logs << utils::LogLevel::FINE << "A="  << params.a << "\n";
     simulator_logs << utils::LogLevel::FINE << "E* CELL-BOX="  << box.ecw << "\n";
-    simulator_logs << utils::LogLevel::FINE << "R:CELL_CELL="  << Rc << "\n";
+    simulator_logs << utils::LogLevel::FINE << "R:CELL_CELL="  << params.r_cut << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_BOX="  << params.r_bc << "\n";
     simulator_logs << utils::LogLevel::FINE << "BOX.PBC="<<(box.pbc ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINE << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
-    simulator_logs << utils::LogLevel::FINE << "OSMOTIC_FLAG=" << (params.osmFlag ? "true" : "false") << "\n";
     
+    simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::FINER << "MAX_SCALE=" << domains.getMaxScale() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getY() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
@@ -154,25 +152,25 @@ void Simulator::addCell(double r0)
                                    "New cell will not be added !\n"
                                    "Program is going to TERMINANTE!");
 
-        SimpleTriangulation sm(d);
+        SimpleTriangulation sm(params.d);
         std::list<Triangle> tris = sm.triangulate(r0);
         Cell newCell(tris);
-        newCell.setA(a);
-        newCell.setDp(dp);
-        newCell.setRc(Rc);
+        newCell.setA(params.a);
+        newCell.setDp(params.dp);
+        newCell.setRc(params.r_cut);
         newCell.setRCellBox(params.r_bc);
         newCell.setGamma(gamma);
-        newCell.setVerletR(verlet_r);
+        newCell.setVerletR(params.verlet_r);
         newCell.setCellId(numberofCells);
         newCell.setMass(params.mass);
         newCell.setVisc(params.visc);
         newCell.setInitR(r0);
-        newCell.setNRT(dp);
+        newCell.setNRT(params.dp);
         addCell(newCell);
     }
     catch (MaxSizeException& e)
     {
-        simulator_logs << utils::LogLevel::WARNING << e.what() << "\n";
+        simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(1);
     }
 }
@@ -187,6 +185,7 @@ void Simulator::initCells(int N, double ra, double rb)
     double nx, ny, nz;
     bool flag = true;
     double rbc = params.r_bc;
+    double rc = params.r_cut;
     double rsum;
     double r0;
 
@@ -203,7 +202,7 @@ void Simulator::initCells(int N, double ra, double rb)
         {
             Vector3D tmpcm = cells[i].getCm();
             Vector3D delta = shift - tmpcm;
-            rsum = cells[i].getInitR() + r0 + Rc + EPSILON;
+            rsum = cells[i].getInitR() + r0 + rc + EPSILON;
 
             if ( delta.length() < rsum)
             {
@@ -221,16 +220,16 @@ void Simulator::initCells(int N, double ra, double rb)
 
 void Simulator::simulate()
 {
-    simulate(nsteps);
+    simulate(params.nsteps);
 }
 
 void Simulator::simulate(int steps)
 {
-    if (nbhandler == 1)
+    if (params.nbhandler == 1)
     {
         rebuildVerletLists();
     }
-    else if (nbhandler == 2)
+    else if (params.nbhandler == 2)
     {
         rebuildDomainsList();
     }
@@ -241,26 +240,26 @@ void Simulator::simulate(int steps)
     traj.save(cells, getTotalVertices());
 
     logsim.open();
-    logsim.dumpState(box, cells, 1, getTotalVertices(), nbhandler);
+    logsim.dumpState(box, cells, 1, getTotalVertices(), params.nbhandler);
     
     
     for (int i = 0; i <= steps; i++)
     {
-        if (nbhandler == 1)
+        if (params.nbhandler == 1)
         {
-            if ( (i + 1) % vlistStep == 0)
+            if ( (i + 1) % params.vlist_step == 0)
             {
                 rebuildVerletLists();
             }
         }
-        else if (nbhandler == 2)
+        else if (params.nbhandler == 2)
         {
             rebuildDomainsList();
         }
         
         integrate();
 
-        if ( (i + 1) % saveStep == 0)
+        if ( (i + 1) % params.save_step == 0)
         {
             if (false)
             {
@@ -268,16 +267,17 @@ void Simulator::simulate(int steps)
             }
             else
             {
-                traj.save(cells, getTotalVertices(), params.bsx / box.getX(), params.bsy / box.getY(), params.bsz / box.getZ());
+                traj.save(cells, getTotalVertices(), box.getXstart() / box.getX(), 
+                        box.getYstart() / box.getY(), box.getZstart() / box.getZ());
             }
         }
         
-        if ( (i+1) % logStep == 0)
+        if ( (i+1) % params.log_step == 0)
         {
-            logsim.dumpState(box, cells, (i+1), getTotalVertices(), nbhandler);
+            logsim.dumpState(box, cells, (i+1), getTotalVertices(), params.nbhandler);
         }
         
-        if ( (i + 1) % boxStep == 0)
+        if ( (i + 1) % params.box_step == 0)
         {
             box.resize();
             domains.setBoxDim(box);
@@ -313,15 +313,15 @@ void Simulator::calcForces()
     {
         for (int j = 0; j < numberofCells; j++)
         {
-            if (nbhandler == 0)
+            if (params.nbhandler == 0)
             {
                 cells[i].calcNbForcesON2(cells[j], box);
             }
-            else if (nbhandler == 1)
+            else if (params.nbhandler == 1)
             {
                 cells[i].calcNbForcesVL(cells[j], box);
             }
-            else if (nbhandler == 2)
+            else if (params.nbhandler == 2)
             {
                 cells[i].calcNbForcesVL(cells[j], box);
             }
@@ -421,6 +421,7 @@ void Simulator::integrateEuler()
 {
     calcForces();
     double visc;
+    double dt = params.dt;
 
     for (int i = 0; i < numberofCells; i++)
     {
@@ -436,6 +437,7 @@ void Simulator::heunMethod()
 {
     calcForces();
     double visc;
+    double dt = params.dt;
 
     for (int i = 0; i < numberofCells; i++)
     {
@@ -473,6 +475,7 @@ void Simulator::midpointRungeKutta()
 {
     calcForces();
     double visc;
+    double dt = params.dt;
 
     for (int i = 0; i < numberofCells; i++)
     {
@@ -509,6 +512,7 @@ void Simulator::integrateVv()
 {
     calcForces();
     double m;
+    double dt = params.dt;
 
     for (int i = 0; i < numberofCells; i++)
     {
@@ -570,6 +574,6 @@ int Simulator::getTotalVertices()
 double Simulator::getMaxScale()
 {
     double maxscale = 0.0;
-    maxscale = std::max(params.r_bc, Rc);
+    maxscale = std::max(params.r_bc, params.r_cut);
     return maxscale;
 }

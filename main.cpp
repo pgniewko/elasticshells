@@ -56,7 +56,7 @@ static struct argp_option options[] =
     {"dt",        601, "NUM", 0, "Time step [default: 0.001]"},
     {"ttime",     602, "NUM", 0, "Total simulation time [default: 1.0]"},
     {"log-step",  603, "INT", 0, "Log step interval [default: 10]"},
-    {"ns",        604, "INT", 0, "Number of simulation steps [default: 100]"},
+    {"ns",        604, "INT", 0, "Number of simulation steps [default: 0]"},
     {"save-step", 605, "INT", 0, "Save step interval [default: 10]"},
     {"box-step",  606, "INT", 0, "Box manipulation step interval [default: 10]"},
     {"vlist-step",607, "INT", 0, "Verlet-list step interval [default: 100]"},
@@ -111,7 +111,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->box_step = 10;
             arguments->vlist_step = 100;
             arguments->n_cells = 1;
-            arguments->nsteps = 100;
+            arguments->nsteps = 0;
             arguments->a = 1.0;
             arguments->dt = 0.01;
             arguments->dp = 0.0;

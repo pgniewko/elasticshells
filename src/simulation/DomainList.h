@@ -28,6 +28,7 @@ class DomainList
         int getNumberOfNeigh(int);
         int getDomainNeighbor(int, int);
         
+        double getMaxScale();
         int getVertexIdx(int, int);
         int getCellIdx(int, int);
         int getNumOfParticles(int);

@@ -190,3 +190,8 @@ int DomainList::numberofAssignedParticles()
     }
     return sum;
 }
+
+double DomainList::getMaxScale()
+{
+    return rc_max;
+}

@@ -23,7 +23,28 @@
 #include "force/OsmoticForce.h"
 #include "simulation/DomainList.h"
 
-#define STRCMP(a,b) (!strcmp(a,b))
+struct params_t
+{
+    int log_step;
+    int save_step;
+    int box_step;
+    int vlist_step;
+    int nsteps;
+    int d;
+    int nbhandler;
+    
+    double a;
+    double dt;
+    double dp;
+    double visc;
+    double k;
+    double mass;
+    double ttime;
+    double r_cut;
+    double r_bc;
+    double verlet_r;
+    bool draw_box;
+};
 
 class Simulator
 {
@@ -70,28 +91,9 @@ class Simulator
         double getMaxScale();
 
         std::vector<Cell> cells;
-        arguments params;
+        params_t params;
         int numberofCells;
-        double dt;
-        double a;
-        double dp;
-        double gamma;
-        double R0;
-        double Rc;
-        double ttotal;
-        double initcellmass;
-        double verlet_r;
-        int nsteps;
-        int d;
-
-        int logStep;
-        int saveStep;
-        int vlistStep;
-        int boxStep;
-
         Box box;
-        //bool drawBox;
-        int nbhandler;
 
         ScriptBuilder sb;
         XyzTraj traj;
