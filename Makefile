@@ -1,38 +1,18 @@
 include config.mk
 
-PROGRAM      := $(BIN)/biofilm
+TARGET       := $(BIN)/biofilm
 TEST_RUNNER  := $(TESTS)/testsrunner
 
-SOURCES      := main.cpp \
-                $(wildcard $(SRC)/*.cpp) \
-                $(wildcard $(SRC)/geometry/*.cpp) \
-                $(wildcard $(SRC)/simulation/*.cpp) \
-		$(wildcard $(SRC)/geometry/algorithms/*.cpp) \
-		$(wildcard $(SRC)/force/*.cpp) \
-		$(wildcard $(SRC)/utils/io/*.cpp) \
-	        $(wildcard $(SRC)/utils/*.cpp) \
-		$(wildcard $(SRC)/utils/observables/*.cpp)
 
-HEADERS      := $(wildcard $(SRC)/*.h) \
-		$(wildcard $(SRC)/exceptions/*.h) \
-	        $(wildcard $(SRC)/geometry/*.h) \
-	        $(wildcard $(SRC)/simulation/*.h) \
-	        $(wildcard $(SRC)/geometry/algorithms/*.h) \
-		$(wildcard $(SRC)/force/*.h) \
-	        $(wildcard $(SRC)/utils/io/*.h) \
-	        $(wildcard $(SRC)/utils/*.h) \
-		$(wildcard $(SRC)/utils/observables/*.h)
+SOURCES	     := main.cpp \
+		$(shell find $(SRC) -type f -name "*.cpp")
 
-TEST_SOURCES := $(wildcard $(TESTS)/*.cpp) \
-                $(wildcard $(SRC)/*.cpp) \
-		$(wildcard $(SRC)/exceptions/*.cpp) \
-                $(wildcard $(SRC)/geometry/*.cpp) \
-                $(wildcard $(SRC)/simulation/*.cpp) \
-		$(wildcard $(SRC)/geometry/algorithms/*.cpp) \
-		$(wildcard $(SRC)/force/*.cpp) \
-	        $(wildcard $(SRC)/utils/io/*.cpp) \
-	        $(wildcard $(SRC)/utils/*.cpp) \
-	        $(wildcard $(SRC)/utils/observables/*.cpp)
+
+HEADERS	     := $(shell find $(SRC) -type f -name "*.h")
+
+
+TEST_SOURCES := $(shell find $(TESTS) -type f -name "*.cpp") \
+		$(shell find $(SRC)   -type f -name "*.cpp")
 
 
 OBJECTS      := $(SOURCES:.cpp=.o)
@@ -41,7 +21,8 @@ OBJECTS      := $(SOURCES:.cpp=.o)
 TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
 #Linking commands:
-$(PROGRAM): $(OBJECTS)
+$(TARGET): $(OBJECTS)
+	@echo Linking...
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
 
 $(TEST_RUNNER): $(TEST_OBJECTS) 
@@ -57,19 +38,20 @@ $(TESTS)/%.o: $(TESTS)/%.cpp $(TESTS)/%.h
 %.o: %.cpp %.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-
+	
 # Tell make that these are phony targets
-.PHONY: build clean test
+.PHONY: build install clean tests indent
 
 
-build: $(PROGRAM)
+build: $(TARGET)
 	@echo Build done.
 
 install:
 	@echo You must be root to install.
 	
 clean:
-	rm -f $(PROGRAM) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS)
+	@echo Cleaning...
+	rm -f $(TARGET) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS)
 	@echo Clean done.
 	
 tests: $(TEST_RUNNER)
@@ -80,4 +62,3 @@ indent:
 	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.cpp"
 	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.h"
 	@./astyle-clean.sh
-	
