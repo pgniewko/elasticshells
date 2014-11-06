@@ -19,6 +19,10 @@ Related programs
 Contents
 ========
 
+To check the number of lines of code run:
+    $ find . -name "*.cpp" -exec wc {} \; | awk 'BEGIN{SUM=0} {SUM += $1} END{print SUM}'
+    $ find . -name "*.h"   -exec wc {} \; | awk 'BEGIN{SUM=0} {SUM += $1} END{print SUM}'
+
 
 Usage
 =====
@@ -26,7 +30,7 @@ Usage
 
 Copyright Notice
 ================
-Copyright (C) 2014 -,  Pawel Gniewek   
+Copyright (C) 2014 -,  Pawel Gniewek
 All rights reserved.
 License: BSD
 

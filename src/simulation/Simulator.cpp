@@ -1,10 +1,9 @@
 #include "Simulator.h"
 
-Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0), 
-        sb(args.render_file, args.surface_file, args.traj_file), 
-        traj(args.traj_file), logsim(args.output_file), simulator_logs("simulator")
+Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
+    sb(args.render_file, args.surface_file, args.traj_file),
+    traj(args.traj_file), logsim(args.output_file), simulator_logs("simulator")
 {
-    
     try
     {
         diagnoseParams(args);
@@ -19,14 +18,13 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
         simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(EXIT_FAILURE);
     }
-    
+
     params.log_step = args.log_step;
     params.save_step = args.save_step;
     params.box_step = args.box_step;
     params.vlist_step = args.vlist_step;
     params.d = args.d;
     params.nbhandler = args.nbFlag;
-    
     params.ecc = args.ecc;
     params.dt = args.dt;
     params.dp = args.dp;
@@ -39,10 +37,7 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     params.verlet_r = params.verlet_r;
     params.draw_box = args.draw_box;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
-    
-
     setIntegrator(args.integrator_a);
-
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
@@ -55,20 +50,17 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     box.setXend(args.bsxe);
     box.setYend(args.bsye);
     box.setZend(args.bsze);
-   
     box.setPbc(args.pbc);
     box.setEcw(args.ecw);
-    
     domains.setupDomainsList(getMaxScale(), box);
     OsmoticForce::setVolumeFlag(args.osmFlag);
-    
     logParams();
 }
 
-Simulator::Simulator(const Simulator& orig) : numberofCells(orig.numberofCells), 
-        params(orig.params), 
-        box(orig.box), sb(orig.sb), traj(orig.traj), 
-        logsim(orig.logsim), simulator_logs(orig.simulator_logs)
+Simulator::Simulator(const Simulator& orig) : numberofCells(orig.numberofCells),
+    params(orig.params),
+    box(orig.box), sb(orig.sb), traj(orig.traj),
+    logsim(orig.logsim), simulator_logs(orig.simulator_logs)
 {
     // exception disallowed behavior
 }
@@ -86,27 +78,23 @@ void Simulator::diagnoseParams(arguments args)
         throw DataException("DataException:\n"
                             "Depth of a triangulation too large ! "
                             "For machine's safety Simulator is about to terminate !");
-    
+
     if (args.d < 0)
         throw DataException("Depth of a triangulation cannot be negative\n!"
                             "Simulation will terminate with exit(1)!\n");
-    
-    
+
     if (args.ecw < 0)
         throw DataException("Effective cell-box Young's modulus cannot be negative\n!"
                             "Simulation will terminate with exit(1)!\n");
-    
-    
+
     if (args.ecc < 0)
         throw DataException("Effective cell-cell Young's modulus cannot be negative\n!"
                             "Simulation will terminate with exit(1)!\n");
-    
-    
+
     if (args.dt <= 0)
         throw DataException("Time step must be positive number ! \n!"
                             "Simulation will terminate with exit(1)!\n");
-    
-    
+
     if (args.k <= 0)
         throw DataException("Spring constant for bonded vertices must be positive! \n!"
                             "Simulation will terminate with exit(1)!\n");
@@ -114,12 +102,10 @@ void Simulator::diagnoseParams(arguments args)
 
 void Simulator::logParams()
 {
-    
     simulator_logs << utils::LogLevel::INFO << "BOX_STEP="  << params.box_step << "\n";
     simulator_logs << utils::LogLevel::INFO << "SAVE_STEP=" << params.save_step << "\n";
     simulator_logs << utils::LogLevel::INFO << "LOG_STEP="  << params.log_step << "\n";
     simulator_logs << utils::LogLevel::INFO << "VERLET_STEP="  << params.vlist_step << "\n";
-    
     simulator_logs << utils::LogLevel::FINE << "TIME STEP(DT)="  << params.dt << "\n";
     simulator_logs << utils::LogLevel::FINE << "DEPTH="  << params.d << "\n";
     simulator_logs << utils::LogLevel::FINE << "DP="  << params.dp << "\n";
@@ -128,9 +114,8 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE << "E* CELL_BOX="  << box.ecw << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_CELL="  << params.r_cut << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_BOX="  << params.r_bc << "\n";
-    simulator_logs << utils::LogLevel::FINE << "BOX.PBC="<<(box.pbc ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::FINE << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINE << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
-    
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "MAX_SCALE=" << domains.getMaxScale() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
@@ -257,16 +242,14 @@ void Simulator::simulate(int steps)
     {
         rebuildDomainsList();
     }
-    
+
     sb.saveRenderScript(cells, box, params.draw_box);
     sb.saveSurfaceScript(cells);
     traj.open();
     traj.save(cells, getTotalVertices());
-
     logsim.open();
     logsim.dumpState(box, cells, 1, getTotalVertices(), params.nbhandler);
-    
-    
+
     for (int i = 0; i <= steps; i++)
     {
         if (params.nbhandler == 1)
@@ -280,40 +263,39 @@ void Simulator::simulate(int steps)
         {
             rebuildDomainsList();
         }
-        
+
         integrate();
 
         if ( (i + 1) % params.save_step == 0)
         {
             if (false)
             {
-               traj.save(cells, getTotalVertices());
+                traj.save(cells, getTotalVertices());
             }
             else
             {
-                traj.save(cells, getTotalVertices(), box.getXstart() / box.getX(), 
-                        box.getYstart() / box.getY(), box.getZstart() / box.getZ());
+                traj.save(cells, getTotalVertices(), box.getXstart() / box.getX(),
+                          box.getYstart() / box.getY(), box.getZstart() / box.getZ());
             }
         }
-        
-        if ( (i+1) % params.log_step == 0)
+
+        if ( (i + 1) % params.log_step == 0)
         {
-            logsim.dumpState(box, cells, (i+1), getTotalVertices(), params.nbhandler);
+            logsim.dumpState(box, cells, (i + 1), getTotalVertices(), params.nbhandler);
         }
-        
+
         if ( (i + 1) % params.box_step == 0)
         {
             box.resize();
             domains.setBoxDim(box);
         }
-        
+
         if ( i % (steps / 10) == 0.0 )
         {
             simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
         }
     }
 
-    
     traj.close();
     logsim.close();
 }
@@ -349,15 +331,15 @@ void Simulator::calcForces()
             {
                 cells[i].calcNbForcesVL(cells[j], box);
             }
-            else 
+            else
             {
                 cells[i].calcNbForcesON2(cells[j], box);
             }
         }
-    }    
-    
+    }
+
     // CALCULATE FORCES BETWEEN CELLS AND BOX
-    if (!box.pbc) 
+    if (!box.pbc)
     {
         for (int i = 0 ; i < numberofCells; i++)
         {
@@ -384,23 +366,21 @@ void Simulator::rebuildVerletLists()
 
 void Simulator::rebuildDomainsList()
 {
-    
     domains.voidDomains();
-    
+
     for (int i = 0; i < numberofCells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
-             domains.assignVertex(cells[i].vertices[j], i);
+            domains.assignVertex(cells[i].vertices[j], i);
         }
-       
     }
-    
+
     for (int i = 0; i < numberofCells; i++)
     {
         cells[i].voidVerletLsit();
     }
-    
+
     for (int i = 0; i < numberofCells; i++)
     {
         cells[i].builtNbList(cells, domains, box);

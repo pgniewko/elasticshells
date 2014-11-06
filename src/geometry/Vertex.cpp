@@ -1,13 +1,13 @@
 #include "Vertex.h"
 
-Vertex::Vertex() : xyz(0, 0, 0), numBonded(0), numTris(0), numNbNeighs(0), 
-        domainIdx(-1), myid(-1), mass(1.0) {}
+Vertex::Vertex() : xyz(0, 0, 0), numBonded(0), numTris(0), numNbNeighs(0),
+    domainIdx(-1), myid(-1), mass(1.0) {}
 
-Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), numBonded(0), numTris(0), 
-        numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0) {}
+Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), numBonded(0), numTris(0),
+    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0) {}
 
-Vertex::Vertex(Vector3D v) : xyz(v), numBonded(0), numTris(0), 
-        numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0) {}
+Vertex::Vertex(Vector3D v) : xyz(v), numBonded(0), numTris(0),
+    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0) {}
 
 Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(orig.velocity),
     tmp_xyz(orig.tmp_xyz), tmp_force(orig.tmp_force), tmp_velocity(orig.tmp_velocity),
@@ -44,8 +44,8 @@ void Vertex::addNeighbor(int idx, double k0n)
 
         if (idx < 0)
             throw RunTimeError("Trying to add a vertex with a negative index.\n"
-                    "Runtime data is incomplete. Simulation will be terminated. \n"); 
-                
+                               "Runtime data is incomplete. Simulation will be terminated. \n");
+
         for (int i = 0; i < numBonded; i++)
         {
             if (bondedVerts[i] == idx)
@@ -80,8 +80,8 @@ void Vertex::addTriangle(int idx)
 
         if (idx < 0)
             throw RunTimeError("Trying to add a triangle with a negative index.\n"
-                    "Runtime data is incomplete. Simulation will be terminated. \n");        
-        
+                               "Runtime data is incomplete. Simulation will be terminated. \n");
+
         for (int i = 0; i < numTris; i++)
         {
             if (bondedTris[i] == idx)

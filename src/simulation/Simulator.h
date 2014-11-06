@@ -32,7 +32,7 @@ struct params_t
     int nsteps;
     int d;
     int nbhandler;
-    
+
     double ecc;
     double dt;
     double dp;
@@ -92,7 +92,7 @@ class Simulator
 
         int numberofCells;
         params_t params;
-        
+
         std::vector<Cell> cells;
         Box box;
 
@@ -100,7 +100,7 @@ class Simulator
         XyzTraj traj;
         LogSimulation logsim;
         utils::Logger simulator_logs;
-        
+
         DomainList domains;
 };
 

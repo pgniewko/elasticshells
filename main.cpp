@@ -59,7 +59,7 @@ static struct argp_option options[] =
     {"ns",        604, "INT", 0, "Number of simulation steps [default: 0]"},
     {"save-step", 605, "INT", 0, "Save step interval [default: 10]"},
     {"box-step",  606, "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"vlist-step",607, "INT", 0, "Verlet-list step interval [default: 100]"},
+    {"vlist-step", 607, "INT", 0, "Verlet-list step interval [default: 100]"},
     {"int",       701, "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], Velocity-Verlet[vv] [default: fe]"},
     {"nb",        702, "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Verlet-list[1], Linked-domains [2][default: 0]"},
 
@@ -215,7 +215,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 799:
             arguments->ecw = arg ? strtod (arg, NULL) : 200.0;
-            break;    
+            break;
         case 801:
             arguments->visc = arg ? strtod (arg, NULL) : 100.0;
             break;
@@ -254,7 +254,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 814:
             arguments->bsze = arg ?  strtod (arg, NULL) : 10.0;
-            break;    
+            break;
         case 811:
             arguments->r_bc = arg ?  strtod (arg, NULL) : 0.5;
             break;

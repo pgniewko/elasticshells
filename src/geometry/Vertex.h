@@ -54,7 +54,7 @@ class Vertex
         int numBonded;
         int numTris;
         int numNbNeighs;
-        
+
         int domainIdx;              // make it private
 
     private:

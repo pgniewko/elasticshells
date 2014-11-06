@@ -37,11 +37,11 @@ class Cell
         void calcNbForcesON2(const Cell&, Box&);
         void calcNbForcesVL(const Cell&, Box&);
         void calcBoxForces(Box&);
-        
+
         void voidVerletLsit();
         void builtVerletList(const Cell&, Box&);
         void builtNbList(std::vector<Cell>&, DomainList&, Box&);
-        
+
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
 
@@ -62,7 +62,7 @@ class Cell
         double getVisc();
         Vector3D getCm();
         double getRbc();
-        
+
         Vector3D& getVertexXYZ(int);
         Vector3D& getVertexForce(int);
 
@@ -94,7 +94,7 @@ class Cell
         double vertexMass;
         double totalVisc;
         double totalMass;
-        
+
         double nRT;
 };
 

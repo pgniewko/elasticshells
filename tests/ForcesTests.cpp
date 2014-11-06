@@ -2,24 +2,28 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ForcesTests);
 
-ForcesTests::ForcesTests() {
+ForcesTests::ForcesTests()
+{
 }
 
-ForcesTests::~ForcesTests() {
+ForcesTests::~ForcesTests()
+{
 }
 
-void ForcesTests::setUp() {
-
+void ForcesTests::setUp()
+{
 }
 
-void ForcesTests::tearDown() {
-
+void ForcesTests::tearDown()
+{
 }
 
-void ForcesTests::testMethod() {
+void ForcesTests::testMethod()
+{
     CPPUNIT_ASSERT(true);
 }
 
-void ForcesTests::testFailedMethod() {
+void ForcesTests::testFailedMethod()
+{
     CPPUNIT_ASSERT(false);
 }

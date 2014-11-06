@@ -1,6 +1,6 @@
 #include "LogSimulation.h"
 
-LogSimulation::LogSimulation(char* lf) 
+LogSimulation::LogSimulation(char* lf)
 {
     logfile = lf;
 }
@@ -21,7 +21,6 @@ void LogSimulation::close()
 
 void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, int simstep, int numV, int nbhandler)
 {
-    
     double pressure = SurfacePressure::calcPressure(box, cells);
     double volumeFrac = VolumeFraction::caclVolumeFraction(box, cells);
     double cellsVolume = VolumeFraction::caclCellsVolume(cells);

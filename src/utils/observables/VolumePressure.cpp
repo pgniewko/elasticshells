@@ -8,12 +8,11 @@ VolumePressure::~VolumePressure() {}
 
 double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbhandler)
 {
-    
     int numberofCells = cells.size();
     double V;// = box.getVolume();
     double sab[] = {0, 0, 0, 0, 0, 0};
     double maxRbc = 0.0;
-    
+
     // RESET FORCES
     for (int i = 0 ; i < numberofCells; i++)
     {
@@ -39,22 +38,22 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
             else if (nbhandler == 1)
             {
                 cells[i].calcNbForcesVL(cells[j], box);
-            }   
+            }
             else if (nbhandler == 2)
             {
                 cells[i].calcNbForcesVL(cells[j], box);
             }
-            else 
+            else
             {
                 cells[i].calcNbForcesON2(cells[j], box);
             }
         }
     }
-    
+
     //Vector3D vertXYZ;
     Vector3D VertXYZimg;
     Vector3D vertForce;
-    
+
     for (int i = 0; i < numberofCells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
@@ -62,7 +61,6 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
             //vertXYZ = cells[i].getVertexXYZ(j);
             VertXYZimg = getImage(box, cells[i].getVertexXYZ(j) );
             vertForce = cells[i].getVertexForce(j);
-            
             sab[0] += -VertXYZimg.x  * vertForce.x;
             sab[1] += -VertXYZimg.y  * vertForce.y;
             sab[2] += -VertXYZimg.z  * vertForce.z;
@@ -70,16 +68,14 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
             sab[4] += -VertXYZimg.x  * vertForce.z;
             sab[5] += -VertXYZimg.y  * vertForce.z;
         }
-    
     }
-    
 
     // RESET FORCES
     for (int i = 0 ; i < numberofCells; i++)
     {
         cells[i].voidForces();
     }
-    
+
     //V = box.getVolume(maxRbc);
     V = box.getVolume();
     double pressure = -(sab[0] + sab[1] + sab[2]);
@@ -91,14 +87,15 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
 Vector3D VolumePressure::getImage(Box& box, const Vector3D& vec)
 {
     Vector3D image(vec);
+
     if (!box.pbc)
+    {
         return image;
-    
-    
+    }
+
     double bsx = 2 * box.getX();
     double bsy = 2 * box.getY();
     double bsz = 2 * box.getZ();
-    
     image.x -= bsx * rint( image.x / bsx );
     image.y -= bsy * rint( image.y / bsy );
     image.z -= bsz * rint( image.z / bsz );

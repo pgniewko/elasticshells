@@ -6,14 +6,15 @@
 #include "simulation/Box.h"
 #include "Cell.h"
 
-class VolumeFraction {
-public:
-    VolumeFraction();
-    VolumeFraction(const VolumeFraction& orig);
-    virtual ~VolumeFraction();
-    static double caclVolumeFraction(Box&, std::vector<Cell>&);
-    static double caclCellsVolume(std::vector<Cell>&);
-private:
+class VolumeFraction
+{
+    public:
+        VolumeFraction();
+        VolumeFraction(const VolumeFraction& orig);
+        virtual ~VolumeFraction();
+        static double caclVolumeFraction(Box&, std::vector<Cell>&);
+        static double caclCellsVolume(std::vector<Cell>&);
+    private:
 
 };
 

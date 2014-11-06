@@ -1,23 +1,23 @@
 #include "Box.h"
 
-Box::Box(double bsx, double bsy, double bsz) : pbc(false), ecw(0.0), 
-        x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
-        xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), 
-        dx(0), dy(0), dz(0)
+Box::Box(double bsx, double bsy, double bsz) : pbc(false), ecw(0.0),
+    x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
+    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz),
+    dx(0), dy(0), dz(0)
 {
 }
 
-Box::Box(double bsx, double bsy, double bsz, double dbs) : pbc(false), ecw(0.0), 
-        x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
-        xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz), 
-        dx(dbs), dy(dbs), dz(dbs)
+Box::Box(double bsx, double bsy, double bsz, double dbs) : pbc(false), ecw(0.0),
+    x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
+    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz),
+    dx(dbs), dy(dbs), dz(dbs)
 {
 }
 
 Box::Box(const Box& orig) : pbc(orig.pbc), ecw(orig.ecw),
-        x(orig.x), y(orig.y), z(orig.z), xs(orig.xs), ys(orig.ys), zs(orig.zs),
-        xe(orig.xe), ye(orig.ye), ze(orig.ze), 
-        dx(orig.dx), dy(orig.dy), dz(orig.dz)
+    x(orig.x), y(orig.y), z(orig.z), xs(orig.xs), ys(orig.ys), zs(orig.zs),
+    xe(orig.xe), ye(orig.ye), ze(orig.ze),
+    dx(orig.dx), dy(orig.dy), dz(orig.dz)
 {
 }
 
@@ -48,7 +48,7 @@ double Box::getVolume()
 
 double Box::getVolume(double rbc)
 {
-    return 2.0 * (x-rbc) * 2.0 * (y-rbc) * 2.0 * (z-rbc);
+    return 2.0 * (x - rbc) * 2.0 * (y - rbc) * 2.0 * (z - rbc);
 }
 
 double Box::getArea()
@@ -58,7 +58,7 @@ double Box::getArea()
 
 double Box::getArea(double rbc)
 {
-    return 2*(4*(x-rbc)*(y-rbc) + 4*(x-rbc)*(z-rbc) + 4*(y-rbc)*(z-rbc));
+    return 2 * (4 * (x - rbc) * (y - rbc) + 4 * (x - rbc) * (z - rbc) + 4 * (y - rbc) * (z - rbc));
 }
 
 void Box::setX(const double newx)

@@ -11,16 +11,16 @@ Vector3D OsmoticForce::calcForce(const Vector3D& va, const Vector3D& vb, const V
     Vector3D BD = vb - vd;
     Vector3D CD = vc - vd;
     Vector3D f = cross(BD, CD) / 6;
-    
+
     if (volumeFlag)
     {
         f *= ( nRT / (vol - epsilon) );
-    } 
+    }
     else
     {
         f *= dp;
     }
-    
+
     Tetrahedron tetra(va, vb, vc, vd);
     return tetra.volumeSgn() * f;
 }

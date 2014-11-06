@@ -10,19 +10,20 @@
 #include "utils/observables/VolumeFraction.h"
 #include "utils/observables/VolumePressure.h"
 
-class LogSimulation {
-public:
-    LogSimulation(char*);
-    LogSimulation(const LogSimulation& orig);
-    virtual ~LogSimulation();
-    
-    void open();
-    void close();
-    void dumpState(Box&, std::vector<Cell>&, int, int, int);
-    
-private:
-    char* logfile;
-    FILE* os;
+class LogSimulation
+{
+    public:
+        LogSimulation(char*);
+        LogSimulation(const LogSimulation& orig);
+        virtual ~LogSimulation();
+
+        void open();
+        void close();
+        void dumpState(Box&, std::vector<Cell>&, int, int, int);
+
+    private:
+        char* logfile;
+        FILE* os;
 
 };
 

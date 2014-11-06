@@ -6,14 +6,15 @@
 #include "Environment.h"
 #include "geometry/Vector3D.h"
 
-class HertzianRepulsion {
-public:
-    HertzianRepulsion();
-    HertzianRepulsion(const HertzianRepulsion& orig);
-    virtual ~HertzianRepulsion();
-    
-    static Vector3D calcForce(Vector3D&, double, double);
-private:
+class HertzianRepulsion
+{
+    public:
+        HertzianRepulsion();
+        HertzianRepulsion(const HertzianRepulsion& orig);
+        virtual ~HertzianRepulsion();
+
+        static Vector3D calcForce(Vector3D&, double, double);
+    private:
 
 };
 

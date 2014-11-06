@@ -7,14 +7,15 @@
 #include "simulation/Box.h"
 #include "force/HertzianRepulsion.h"
 
-class SurfacePressure {
-public:
-    SurfacePressure();
-    SurfacePressure(const SurfacePressure& orig);
-    virtual ~SurfacePressure();
-    
-    static double calcPressure(Box&, std::vector<Cell>&);
-private:
+class SurfacePressure
+{
+    public:
+        SurfacePressure();
+        SurfacePressure(const SurfacePressure& orig);
+        virtual ~SurfacePressure();
+
+        static double calcPressure(Box&, std::vector<Cell>&);
+    private:
 
 };
 

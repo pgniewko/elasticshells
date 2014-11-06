@@ -29,7 +29,8 @@ const double P3ROOT2 = 1.25992104989487;
 const double D4_3    = 1.33333333333333;
 
 const char names[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+                        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+                       };
 
 #endif	/* ENVIRONMENT_H */
 

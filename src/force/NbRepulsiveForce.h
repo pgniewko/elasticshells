@@ -10,7 +10,7 @@ class NbRepulsiveForce
         NbRepulsiveForce();
         NbRepulsiveForce(const NbRepulsiveForce& orig);
         virtual ~NbRepulsiveForce();
-        
+
         static Vector3D calcForce(const Vector3D&, const double, const double);
         static Vector3D calcForce(const Vector3D&, const Vector3D&, const double, const double);
 

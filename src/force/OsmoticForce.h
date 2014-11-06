@@ -16,8 +16,8 @@ class OsmoticForce
         static void setEpsilon(double);
         static double getEpsilon();
         static const bool getFlag();
-        
-        
+
+
     private:
         static double epsilon;
         static bool volumeFlag;

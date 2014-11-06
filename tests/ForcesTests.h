@@ -12,25 +12,25 @@
 #include "geometry/Vertex.h"
 #include "geometry/Tetrahedron.h"
 
-class ForcesTests : public CPPUNIT_NS::TestFixture 
+class ForcesTests : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE(ForcesTests);
-    
-    CPPUNIT_TEST(testMethod);
+        CPPUNIT_TEST_SUITE(ForcesTests);
 
-    CPPUNIT_TEST_FAIL(testFailedMethod);
+        CPPUNIT_TEST(testMethod);
 
-    CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_FAIL(testFailedMethod);
 
-public:
-    ForcesTests();
-    virtual ~ForcesTests();
-    void setUp();
-    void tearDown();
+        CPPUNIT_TEST_SUITE_END();
 
-private:
-    void testMethod();
-    void testFailedMethod();
+    public:
+        ForcesTests();
+        virtual ~ForcesTests();
+        void setUp();
+        void tearDown();
+
+    private:
+        void testMethod();
+        void testFailedMethod();
 };
 
 #endif	/* FORCESTESTS_H */

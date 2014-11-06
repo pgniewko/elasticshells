@@ -3,15 +3,15 @@
 utils::Logger domainlist_logs("domainlist");
 
 DomainList::DomainList() : m(1), N(1), pbc(false), m_assigned(false), init_domains(false),
-        x_min(0), y_min(0), z_min(0), 
-        x_max(0), y_max(0), z_max(0),
-        dx(0), dy(0), dz(0), rc_max(0){}
+    x_min(0), y_min(0), z_min(0),
+    x_max(0), y_max(0), z_max(0),
+    dx(0), dy(0), dz(0), rc_max(0) {}
 
-DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.pbc), 
-        m_assigned(orig.m_assigned), init_domains(orig.init_domains), 
-        x_min(0), y_min(0), z_min(0), 
-        x_max(0), y_max(0), z_max(0), 
-        dx(0), dy(0), dz(0), rc_max(0){}
+DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.pbc),
+    m_assigned(orig.m_assigned), init_domains(orig.init_domains),
+    x_min(0), y_min(0), z_min(0),
+    x_max(0), y_max(0), z_max(0),
+    dx(0), dy(0), dz(0), rc_max(0) {}
 
 DomainList::~DomainList() {}
 
@@ -29,6 +29,7 @@ void DomainList::initDomains()
     {
         int index;
         int neighix;
+
         for (int k = 0; k < m; k++)
         {
             for (int j = 0; j < m; j++)
@@ -38,47 +39,84 @@ void DomainList::initDomains()
                     // ASSIGN INDEX
                     index = getDomainIndex(i, j, k);
                     domains[index].myid = index;
-                
+
                     // EVERY DOMAIN IS ALSO ITS OWN NEIGHBOR
                     for (int l = -1; l <= 1; l++)
-                      for (int o = -1; o <= 1; o++)
-                        for (int p = -1; p <= 1; p++)
-                        {
-                            neighix = getDomainIndex(i + l, j + o, k + p);
-                            if (neighix != -1)
+                        for (int o = -1; o <= 1; o++)
+                            for (int p = -1; p <= 1; p++)
                             {
-                                domains[index].addNeighDomain(neighix);
+                                neighix = getDomainIndex(i + l, j + o, k + p);
+
+                                if (neighix != -1)
+                                {
+                                    domains[index].addNeighDomain(neighix);
+                                }
                             }
-                      }
                 }
             }
         }
+
         init_domains = true;
         domainlist_logs << utils::LogLevel::FINEST << "Linked domains list has been initialized." << "\n";
     }
-    
 }
 
 int DomainList::getDomainIndex(int i, int j, int k)
 {
-    if (i < 0 && !pbc) {return -1;}
-    else if (i  >= m  && !pbc) {return -1;}
-    
-    if (j < 0 && !pbc) {return -1;}
-    else if (j  >= m  && !pbc) {return -1;}
-    
-    if (k < 0 && !pbc) {return -1;}
-    else if (k  >= m  && !pbc) {return -1;}
-    
-    if (i < 0 && pbc) {i += m;}
-    else if (i  >= m  && pbc) {i -= m;}
-    
-    if (j < 0 && pbc) {j += m;}
-    else if (j  >= m  && pbc) {j -= m;}
-    
-    if (k < 0 && pbc) {k += m;}
-    else if (k  >= m  && pbc) {k -= m;}
-    
+    if (i < 0 && !pbc)
+    {
+        return -1;
+    }
+    else if (i  >= m  && !pbc)
+    {
+        return -1;
+    }
+
+    if (j < 0 && !pbc)
+    {
+        return -1;
+    }
+    else if (j  >= m  && !pbc)
+    {
+        return -1;
+    }
+
+    if (k < 0 && !pbc)
+    {
+        return -1;
+    }
+    else if (k  >= m  && !pbc)
+    {
+        return -1;
+    }
+
+    if (i < 0 && pbc)
+    {
+        i += m;
+    }
+    else if (i  >= m  && pbc)
+    {
+        i -= m;
+    }
+
+    if (j < 0 && pbc)
+    {
+        j += m;
+    }
+    else if (j  >= m  && pbc)
+    {
+        j -= m;
+    }
+
+    if (k < 0 && pbc)
+    {
+        k += m;
+    }
+    else if (k  >= m  && pbc)
+    {
+        k -= m;
+    }
+
     return (i + j * m + k * m * m);
 }
 
@@ -92,11 +130,9 @@ void DomainList::assignVertex(Vertex& vertex, int cellid)
 int DomainList::getDomainIndex(Vertex& vertex)
 {
     int xix, yix, zix;
-    
     double delx = vertex.xyz.x - x_min;
     double dely = vertex.xyz.y - y_min;
     double delz = vertex.xyz.z - z_min;
-    
     xix = floor(delx / dx);
     yix = floor(dely / dy);
     zix = floor(delz / dz);
@@ -107,22 +143,21 @@ void DomainList::setBoxDim(Box& box)
 {
     double lx, ly, lz;
     pbc = box.pbc;
+
     if (pbc)
-    {    
+    {
         x_min = -box.getX();
         y_min = -box.getY();
         z_min = -box.getZ();
-        
         x_max = box.getX();
         y_max = box.getY();
         z_max = box.getZ();
-    } 
+    }
     else
     {
         x_min = -(box.getX() + rc_max);
         y_min = -(box.getY() + rc_max);
         z_min = -(box.getZ() + rc_max);
-        
         x_max = box.getX() + rc_max;
         y_max = box.getY() + rc_max;
         z_max = box.getZ() + rc_max;
@@ -132,7 +167,6 @@ void DomainList::setBoxDim(Box& box)
     ly = y_max - y_min;
     lz = z_max - z_min;
 
-    
     if (!m_assigned)
     {
         double Lmax;
@@ -143,7 +177,7 @@ void DomainList::setBoxDim(Box& box)
         N = m * m * m;
         m_assigned = true;
     }
-    
+
     dx = lx / m;
     dy = ly / m;
     dz = lz / m;
@@ -184,10 +218,12 @@ int DomainList::getNumOfParticles(int dix)
 int DomainList::numberofAssignedParticles()
 {
     int sum = 0;
+
     for (int i = 0; i < N; i++)
     {
         sum += domains[i].numberOfVerts;
     }
+
     return sum;
 }
 

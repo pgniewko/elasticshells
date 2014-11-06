@@ -1,8 +1,8 @@
 #include "Cell.h"
 
 Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), Rc(0),
-        rCellBox(0), a(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0), 
-        vertexMass(0), totalVisc(0), totalMass(0), nRT(0)
+    rCellBox(0), a(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0),
+    vertexMass(0), totalVisc(0), totalMass(0), nRT(0)
 {
     SimpleTriangulation sm(depth);
     std::list<Triangle> tris = sm.triangulate();
@@ -12,8 +12,8 @@ Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), Rc(0),
 }
 
 Cell::Cell(std::list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), Rc(0),
-        rCellBox(0), a(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0), 
-        vertexMass(0), totalVisc(0), totalMass(0),  nRT(0)
+    rCellBox(0), a(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0),
+    vertexMass(0), totalVisc(0), totalMass(0),  nRT(0)
 {
     constructVertices(tris);
     constructVTriangles(tris);
@@ -174,7 +174,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
             for (int k = 0; k < numberV; k++)
             {
                 getDistance(distance_jk, vertices[k].xyz, vertices[j].xyz, box);
-                
+
                 if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= Rc * verletR)
                 {
                     vertices[j].nbVerts[vertices[j].numNbNeighs] = k;
@@ -190,23 +190,23 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
 {
     int domainIdx;
     int domainn;
-    
     Vector3D distance_ik;
-    
     int vertIdx, cellIdx;
+
     for (int i = 0; i < numberV; i++)
     {
         domainIdx = vertices[i].domainIdx;
         domainIdx = domains.getDomainIndex(vertices[i]);
-        
+
         for (int j = 0; j < domains.getNumberOfNeigh(domainIdx); j++)
         {
             domainn = domains.getDomainNeighbor(domainIdx, j);
+
             for (int k = 0; k < domains.getNumOfParticles(domainn); k++)
             {
                 vertIdx = domains.getVertexIdx(domainn, k);
                 cellIdx = domains.getCellIdx(domainn, k);
-                
+
                 if (this->cellId != cellIdx)
                 {
                     getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].xyz, vertices[i].xyz, box);
@@ -221,7 +221,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
                 else
                 {
                     getDistance(distance_ik, vertices[vertIdx].xyz, vertices[i].xyz, box);
-                    
+
                     if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= Rc)
                     {
                         vertices[i].nbVerts[vertices[i].numNbNeighs] = vertIdx;
@@ -229,7 +229,6 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
                         vertices[i].numNbNeighs++;
                     }
                 }
-                
             }
         }
     }
@@ -254,7 +253,7 @@ void Cell::calcHarmonicForces()
             idxj = vertices[i].bondedVerts[j];
             vertices[i].force += HookeanForce::calcForce(vertices[i].xyz, vertices[idxj].xyz, R0ij, gamma);
         }
-    }    
+    }
 }
 
 void Cell::calcOsmoticForces()
@@ -290,7 +289,7 @@ void Cell::calcNbForcesON2(const Cell& other_cell, Box& box)
         for (int j = 0; j < other_cell.numberV; j++)
         {
             if (cellId != ocellid)
-            {  
+            {
                 getDistance(dij, other_cell.vertices[j].xyz, vertices[i].xyz, box);
                 vertices[i].force += HertzianRepulsion::calcForce(dij, Rc, a);
             }
@@ -334,9 +333,8 @@ void Cell::calcBoxForces(Box& box)
     double bsx = box.getX();
     double bsy = box.getY();
     double bsz = box.getZ();
-
     double E = box.ecw;
-    
+
     for (int i = 0; i < numberV; i++)
     {
         sgnx = SIGN(vertices[i].xyz.x);
@@ -345,14 +343,12 @@ void Cell::calcBoxForces(Box& box)
         wallYZ.z = vertices[i].xyz.z;
         dij = vertices[i].xyz - wallYZ;
         vertices[i].force += HertzianRepulsion::calcForce(dij, rCellBox, E);
-
         sgny = SIGN(vertices[i].xyz.y);
         wallXZ.x = vertices[i].xyz.x;
         wallXZ.y = sgny * bsy;
         wallXZ.z = vertices[i].xyz.z;
         dij = vertices[i].xyz - wallXZ;
         vertices[i].force += HertzianRepulsion::calcForce(dij, rCellBox, E);
-
         sgnz = SIGN(vertices[i].xyz.z);
         wallXY.x = vertices[i].xyz.x;
         wallXY.y = vertices[i].xyz.y;
@@ -386,8 +382,8 @@ double Cell::calcVolume()
 {
     double volume = 0.0;
     int va, vb, vc;
-
     calcCM();
+
     for (int i = 0; i < numberT; i++)
     {
         va = triangles[i].ia;
@@ -396,6 +392,7 @@ double Cell::calcVolume()
         Tetrahedron tetr(vertices[va].xyz, vertices[vb].xyz, vertices[vc].xyz, cm);
         volume += tetr.volume();
     }
+
     return volume;
 }
 
@@ -418,13 +415,13 @@ void Cell::calcCM()
 
 void Cell::setVisc(double mu)
 {
-
     vertexVisc = mu / numberV;
 
     for (int i = 0; i < numberV; i++)
     {
         vertices[i].setVisc(vertexVisc);
     }
+
     totalVisc = getVisc();
 }
 
@@ -460,6 +457,7 @@ void Cell::setMass(double totm)
     {
         vertices[i].setMass(vertexMass);
     }
+
     totalMass = getMass();
 }
 
@@ -563,7 +561,7 @@ Vector3D& Cell::getVertexForce(int idx)
 void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, Box& box)
 {
     dkj = vk - vj;
-    
+
     if (box.pbc)
     {
         double x, y, z;

@@ -11,6 +11,7 @@ Domain::Domain(const Domain& orig) : myid(orig.myid),  numberOfNeighs(orig.numbe
         vertIds[i] = orig.vertIds[i];
         cellsIds[i] = orig.cellsIds[i];
     }
+
     for (int i = 0; i < numberOfNeighs; i++)
     {
         neighborDomainIdx[i] = orig.neighborDomainIdx[i];
@@ -21,12 +22,13 @@ Domain::~Domain() {}
 
 void Domain::addVertex(int vid, int cellid)
 {
-    try {
+    try
+    {
         if (numberOfVerts >= MAX_IN_DOMAIN)
             throw MaxSizeException("Trying to add more vertices than it's allowed.\n"
                                    "New vertex will not be added !\n"
                                    "This may significantly affect the simulation accuracy !\n");
-        
+
         vertIds[numberOfVerts] = vid;
         cellsIds[numberOfVerts] = cellid;
         numberOfVerts++;
@@ -40,15 +42,16 @@ void Domain::addVertex(int vid, int cellid)
 
 void Domain::addNeighDomain(int domId)
 {
-    try {
+    try
+    {
         if (numberOfVerts >= MAX_IN_DOMAIN)
             throw MaxSizeException("Trying to add more domain neighbors than it's possible."
                                    "New neighbor will not be added!"
                                    "The code will be terminated due the bug !");
-        
+
         neighborDomainIdx[numberOfNeighs] = domId;
         numberOfNeighs++;
-    } 
+    }
     catch (MaxSizeException& e)
     {
         domain_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
