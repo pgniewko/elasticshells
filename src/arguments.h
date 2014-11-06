@@ -24,7 +24,7 @@ struct arguments
     int n_cells;
     int nsteps;
 
-    double a;
+    double ecc;
     double dt;
     double dp;
     double visc;

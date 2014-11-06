@@ -3,6 +3,7 @@
 
 #include "Environment.h"
 #include "geometry/Vector3D.h"
+#include "geometry/Tetrahedron.h"
 
 class OsmoticForce
 {

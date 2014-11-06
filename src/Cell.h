@@ -7,7 +7,6 @@
 #include "Environment.h"
 #include "force/HookeanForce.h"
 #include "force/OsmoticForce.h"
-#include "force/NbRepulsiveForce.h"
 #include "force/HertzianRepulsion.h"
 #include "geometry/Vector3D.h"
 #include "geometry/Tetrahedron.h"
@@ -47,7 +46,7 @@ class Cell
         void addXYZ(const Vector3D&);
 
         void setRc(double);
-        void setA(double);
+        void setEcc(double);
         void setDp(double);
         void setGamma(double);
         void setVisc(double);

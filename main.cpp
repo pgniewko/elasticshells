@@ -64,17 +64,17 @@ static struct argp_option options[] =
     {"nb",        702, "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Verlet-list[1], Linked-domains [2][default: 0]"},
 
     {0,             0, 0, 0, "System Options:", 5},
-    {0,           'a', "NUM", 0, "LJ12-6 repulsion scaling parameter[default: 1.0]"},
+    {"ecc",       'a', "NUM", 0, "Effective cell-cell Young's modulus[default: 100.0]"},
     {"mass",      'm', "NUM", 0, "Total mass of a cell [default: 60.0]"},
     {"gamma",     'k', "NUM", 0, "Spring constant between vertices[default: 1.0]"},
-    {"ecw",       799, "NUM", 0, "Effective spring constant for cell-wall repulsion [default: 200.0]"},
+    {"ecw",       799, "NUM", 0, "Effective cell-box Young's modulus [default: 100.0]"},
     {"mu",        801, "NUM", 0, "Viscosity coefficient [default: 100.0]"},
     {"dp",        802, "NUM", 0, "Osmotic pressure [default: 0.0]"},
     {"r-cut",     803, "NUM", 0, "Radius cut-off for pair interactions [default: 0.5]"},
     {"bsx",       804, "NUM", 0, "X Box size [default: 10.0]"},
     {"bsy",       805, "NUM", 0, "Y Box size [default: 10.0]"},
     {"bsz",       806, "NUM", 0, "Z Box size [default: 10.0]"},
-    {"verlet-r",  807, "NUM", 0, "Verlet radius time R_c [default: 2]"},
+    {"verlet-r",  807, "NUM", 0, "Verlet radius times R_c [default: 2]"},
     {"bsdx",      808, "NUM", 0, "dx of Box size [default: 0.0]"},
     {"bsdy",      809, "NUM", 0, "dy of Box size [default: 0.0]"},
     {"bsdz",      810, "NUM", 0, "dz of Box size [default: 0.0]"},
@@ -112,7 +112,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->vlist_step = 100;
             arguments->n_cells = 1;
             arguments->nsteps = 0;
-            arguments->a = 1.0;
+            arguments->ecc = 100.0;
             arguments->dt = 0.01;
             arguments->dp = 0.0;
             arguments->visc = 100.0;
@@ -131,7 +131,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->bsxe = 10.0;
             arguments->bsye = 10.0;
             arguments->bsze = 10.0;
-            arguments->ecw = 200.0;
+            arguments->ecw = 100.0;
             arguments->pbc = false;
             arguments->draw_box = true;
             arguments->osmFlag = false;
@@ -163,7 +163,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->n_cells = arg ? atoi (arg) : 1;
             break;
         case 'a':
-            arguments->a = arg ? strtod (arg, NULL) : 1.0;
+            arguments->ecc = arg ? strtod (arg, NULL) : 1.0;
             break;
         case 'm':
             arguments->mass = arg ? strtod (arg, NULL) : 1.0;
@@ -322,6 +322,6 @@ int main(int argc, char** argv)
     //simulator.moveCell(shift, 1);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
-    biofilm_logs << utils::LogLevel::INFO << "EXECUTION TIME = " << clocks[0].time() << "\n";
+    biofilm_logs << utils::LogLevel::INFO << "EXECUTION TIME = " << clocks[0].time() << " [s] \n";
     return (EXIT_SUCCESS);
 }
