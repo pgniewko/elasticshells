@@ -1,5 +1,4 @@
 #ifndef HERTZIANREPULSION_H
-//#ifndef BOXCELLREPULSION_H
 #define	HERTZIANREPULSION_H
 
 #include <math.h>
