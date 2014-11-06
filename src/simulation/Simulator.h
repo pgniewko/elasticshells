@@ -33,7 +33,7 @@ struct params_t
     int d;
     int nbhandler;
     
-    double a;
+    double ecc;
     double dt;
     double dp;
     double visc;

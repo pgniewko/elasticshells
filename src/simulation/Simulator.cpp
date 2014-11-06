@@ -27,7 +27,7 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     params.d = args.d;
     params.nbhandler = args.nbFlag;
     
-    params.a = args.a;
+    params.ecc = args.ecc;
     params.dt = args.dt;
     params.dp = args.dp;
     params.visc = args.visc;
@@ -90,6 +90,26 @@ void Simulator::diagnoseParams(arguments args)
     if (args.d < 0)
         throw DataException("Depth of a triangulation cannot be negative\n!"
                             "Simulation will terminate with exit(1)!\n");
+    
+    
+    if (args.ecw < 0)
+        throw DataException("Effective cell-box Young's modulus cannot be negative\n!"
+                            "Simulation will terminate with exit(1)!\n");
+    
+    
+    if (args.ecc < 0)
+        throw DataException("Effective cell-cell Young's modulus cannot be negative\n!"
+                            "Simulation will terminate with exit(1)!\n");
+    
+    
+    if (args.dt <= 0)
+        throw DataException("Time step must be positive number ! \n!"
+                            "Simulation will terminate with exit(1)!\n");
+    
+    
+    if (args.k <= 0)
+        throw DataException("Spring constant for bonded vertices must be positive! \n!"
+                            "Simulation will terminate with exit(1)!\n");
 }
 
 void Simulator::logParams()
@@ -104,8 +124,8 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE << "DEPTH="  << params.d << "\n";
     simulator_logs << utils::LogLevel::FINE << "DP="  << params.dp << "\n";
     simulator_logs << utils::LogLevel::FINE << "GAMMA="  << params.k << "\n";
-    simulator_logs << utils::LogLevel::FINE << "A="  << params.a << "\n";
-    simulator_logs << utils::LogLevel::FINE << "E* CELL-BOX="  << box.ecw << "\n";
+    simulator_logs << utils::LogLevel::FINE << "E* CELL_CELL="  << params.ecc << "\n";
+    simulator_logs << utils::LogLevel::FINE << "E* CELL_BOX="  << box.ecw << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_CELL="  << params.r_cut << "\n";
     simulator_logs << utils::LogLevel::FINE << "R:CELL_BOX="  << params.r_bc << "\n";
     simulator_logs << utils::LogLevel::FINE << "BOX.PBC="<<(box.pbc ? "true" : "false") << "\n";
@@ -159,7 +179,7 @@ void Simulator::addCell(double r0)
         SimpleTriangulation sm(params.d);
         std::list<Triangle> tris = sm.triangulate(r0);
         Cell newCell(tris);
-        newCell.setA(params.a);
+        newCell.setEcc(params.ecc);
         newCell.setDp(params.dp);
         newCell.setRc(params.r_cut);
         newCell.setRCellBox(params.r_bc);
@@ -175,7 +195,7 @@ void Simulator::addCell(double r0)
     catch (MaxSizeException& e)
     {
         simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }
 
