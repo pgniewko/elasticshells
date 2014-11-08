@@ -17,8 +17,9 @@ DEBUG    := -g
 # Relative include and library paths for compilation of the examples
 INCLUDE  := -I$(CURDIR)/src
 LIB      := -L/usr/lib
+DFLAGS   := #-DTESTS
 
-CXXFLAGS := -lm -Wall -O3 -std=gnu++0x -fpermissive $(DEBUG) $(INCLUDE) -Wunused-but-set-variable
+CXXFLAGS := -lm -Wall -O3 -std=gnu++0x -fpermissive $(DEBUG) $(INCLUDE) -Wunused-but-set-variable $(DFLAGS)
 LDFLAGS  := $(LIB)
 LDLIBS   := -lcppunit -ldl
 

@@ -232,6 +232,9 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
             }
         }
     }
+#ifdef TESTS
+/* WRITE A CODE FOR SORTING NEIGHBORS*/
+#endif    
 }
 
 void Cell::calcBondedForces()
