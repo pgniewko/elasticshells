@@ -28,15 +28,6 @@ cp ../../bin/biofilm ./bin/
 
 PBC=
 
-# LINKED-CELLS
-./bin/biofilm -n $N --int=hm --depth 5 --ns $NS --dt 0.001 --dp 10.0 -k 50 -a 100 \
-        --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
-        --nb 2 --save-step $SS --box-step $BOXS \
-        --rv $RCUT \
-        -r $DIR/render_2b.py -t $DIR/traj_2b.xyz --surf $DIR/surf_2b.py -o $DIR/biofilm_2b.out \
-        $PBC \
-        -d
-
 # VERLET-LIST
 ./bin/biofilm -n $N --int=hm --depth 5 --ns $NS --dt 0.001 --dp 10.0 -k 50 -a 100 \
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
