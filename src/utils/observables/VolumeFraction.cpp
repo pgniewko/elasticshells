@@ -12,7 +12,7 @@ double VolumeFraction::caclVolumeFraction(Box& box, std::vector<Cell>& cells)
 
     for (int i = 0 ; i < cells.size(); i++)
     {
-        maxRbc = std::max(maxRbc, cells[i].getRbc());
+        maxRbc = std::max(maxRbc, cells[i].getVertexR());
     }
 
     //double boxVolume = box.getVolume(maxRbc);

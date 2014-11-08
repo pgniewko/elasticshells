@@ -9,15 +9,12 @@ VolumePressure::~VolumePressure() {}
 double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbhandler)
 {
     int numberofCells = cells.size();
-    double V;// = box.getVolume();
     double sab[] = {0, 0, 0, 0, 0, 0};
-    double maxRbc = 0.0;
 
     // RESET FORCES
     for (int i = 0 ; i < numberofCells; i++)
     {
         cells[i].voidForces();
-        maxRbc = std::max(maxRbc, cells[i].getRbc());
     }
 
     // CALCULATE INTRA-CELLULAR FORCES
@@ -50,7 +47,6 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
         }
     }
 
-    //Vector3D vertXYZ;
     Vector3D VertXYZimg;
     Vector3D vertForce;
 
@@ -58,7 +54,6 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
-            //vertXYZ = cells[i].getVertexXYZ(j);
             VertXYZimg = getImage(box, cells[i].getVertexXYZ(j) );
             vertForce = cells[i].getVertexForce(j);
             sab[0] += -VertXYZimg.x  * vertForce.x;
@@ -76,8 +71,7 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
         cells[i].voidForces();
     }
 
-    //V = box.getVolume(maxRbc);
-    V = box.getVolume();
+    double V = box.getVolume();
     double pressure = -(sab[0] + sab[1] + sab[2]);
     pressure /= 3.0;
     pressure /= V;
