@@ -45,14 +45,13 @@ class Cell
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
 
-        void setRc(double);
+        void setVertexR(double);
         void setEcc(double);
         void setDp(double);
         void setGamma(double);
         void setVisc(double);
         void setMass(double);
         void setCellId(int);
-        void setRCellBox(double);
         void setNRT(double);
 
         void setVerletR(double);
@@ -61,7 +60,8 @@ class Cell
         double getInitR();
         double getVisc();
         Vector3D getCm();
-        double getRbc();
+        double getVertexR();
+        
 
         Vector3D& getVertexXYZ(int);
         Vector3D& getVertexForce(int);
@@ -83,9 +83,8 @@ class Cell
         void constructTopology();
         int numberV;
         int numberT;
-        double Rc;
-        double rCellBox;
-        double a;
+        double r_vertex;
+        double ecc;
         double dp;
         double gamma;
         double verletR;

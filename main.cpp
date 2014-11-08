@@ -61,7 +61,7 @@ static struct argp_option options[] =
     {"box-step",  606, "INT", 0, "Box manipulation step interval [default: 10]"},
     {"vlist-step", 607, "INT", 0, "Verlet-list step interval [default: 100]"},
     {"int",       701, "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], Velocity-Verlet[vv] [default: fe]"},
-    {"nb",        702, "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Verlet-list[1], Linked-domains [2][default: 0]"},
+    {"nb",        702, "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Verlet-list[1], Linked-domains[2] [default: 0]"},
 
     {0,             0, 0, 0, "System Options:", 5},
     {"ecc",       'a', "NUM", 0, "Effective cell-cell Young's modulus[default: 100.0]"},
@@ -70,18 +70,17 @@ static struct argp_option options[] =
     {"ecw",       799, "NUM", 0, "Effective cell-box Young's modulus [default: 100.0]"},
     {"mu",        801, "NUM", 0, "Viscosity coefficient [default: 100.0]"},
     {"dp",        802, "NUM", 0, "Osmotic pressure [default: 0.0]"},
-    {"r-cut",     803, "NUM", 0, "Radius cut-off for pair interactions [default: 0.5]"},
+    {"rv",        803, "NUM", 0, "Radius of a single vertex [default: 0.25]"},
     {"bsx",       804, "NUM", 0, "X Box size [default: 10.0]"},
     {"bsy",       805, "NUM", 0, "Y Box size [default: 10.0]"},
     {"bsz",       806, "NUM", 0, "Z Box size [default: 10.0]"},
-    {"verlet-r",  807, "NUM", 0, "Verlet radius times R_c [default: 2]"},
+    {"verlet-r",  807, "NUM", 0, "Verlet radius times r_vertex [default: 2]"},
     {"bsdx",      808, "NUM", 0, "dx of Box size [default: 0.0]"},
     {"bsdy",      809, "NUM", 0, "dy of Box size [default: 0.0]"},
     {"bsdz",      810, "NUM", 0, "dz of Box size [default: 0.0]"},
     {"bsxe",      812, "NUM", 0, "X end of Box size [default: 0.0]"},
     {"bsye",      813, "NUM", 0, "Y end of Box size [default: 0.0]"},
     {"bsze",      814, "NUM", 0, "Z end of Box size [default: 0.0]"},
-    {"rbc",       811, "NUM", 0, "Radius cut-off for cell-box interactions [default: 0.5]"},
     {0}
 };
 
@@ -104,7 +103,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->traj_file = "./data/traj.xyz";
             arguments->output_file = "./data/biofilm.out";
             arguments->surface_file = "./data/surf.py";
-            arguments->integrator_a = "vv";
+            arguments->integrator_a = "fe";
             arguments->d = 3;
             arguments->log_step = 10;
             arguments->save_step = 10;
@@ -113,14 +112,13 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->n_cells = 1;
             arguments->nsteps = 0;
             arguments->ecc = 100.0;
-            arguments->dt = 0.01;
+            arguments->dt = 0.001;
             arguments->dp = 0.0;
             arguments->visc = 100.0;
             arguments->k = 1.0;
             arguments->mass = 60.0;
             arguments->ttime = 1.0;
-            arguments->r_cut = 0.5;
-            arguments->r_bc = 0.5;
+            arguments->r_vertex = 0.25;
             arguments->verlet_r = 2.0;
             arguments->bsx = 10.0;
             arguments->bsy = 10.0;
@@ -134,8 +132,8 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ecw = 100.0;
             arguments->pbc = false;
             arguments->draw_box = true;
-            arguments->osmFlag = false;
-            arguments->nbFlag = 0;
+            arguments->osmotic_flag = false;
+            arguments->nb_flag = 0;
             break;
         case 'q':
         case 's':
@@ -181,7 +179,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->draw_box = false;
             break;
         case 303:
-            arguments->osmFlag = true;
+            arguments->osmotic_flag = true;
             break;
         case 501:
             arguments->d = arg ? atoi (arg) : 3;
@@ -211,7 +209,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->integrator_a = arg;
             break;
         case 702:
-            arguments->nbFlag = arg ? atoi (arg) : 0;
+            arguments->nb_flag = arg ? atoi (arg) : 0;
             break;
         case 799:
             arguments->ecw = arg ? strtod (arg, NULL) : 200.0;
@@ -223,7 +221,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->dp = arg ? strtod (arg, NULL) : 0.0;
             break;
         case 803:
-            arguments->r_cut = arg ?  strtod (arg, NULL) : 0.5;
+            arguments->r_vertex = arg ?  strtod (arg, NULL) : 0.25;
             break;
         case 804:
             arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;
@@ -254,9 +252,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 814:
             arguments->bsze = arg ?  strtod (arg, NULL) : 10.0;
-            break;
-        case 811:
-            arguments->r_bc = arg ?  strtod (arg, NULL) : 0.5;
             break;
         case OPT_ABORT:
             arguments->abort = 1;

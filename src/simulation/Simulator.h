@@ -40,8 +40,7 @@ struct params_t
     double k;
     double mass;
     double ttime;
-    double r_cut;
-    double r_bc;
+    double r_vertex;
     double verlet_r;
     bool draw_box;
 };

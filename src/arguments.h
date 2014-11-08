@@ -24,15 +24,14 @@ struct arguments
     int n_cells;
     int nsteps;
 
-    double ecc;
+    double ecc;                         /* E cell-cell */
     double dt;
     double dp;
     double visc;
     double k;
     double mass;
     double ttime;
-    double r_cut;                   /* cell1-cell2 */
-    double r_bc;                    /* cell-box */
+    double r_vertex;                   /* vertex radius */
     double verlet_r;
 
     double bsx;
@@ -44,11 +43,11 @@ struct arguments
     double bsxe;
     double bsye;
     double bsze;
-    double ecw;
+    double ecw;                         /* E cell-wall */
     bool pbc;
     bool draw_box;
-    bool osmFlag;
-    int nbFlag;
+    bool osmotic_flag;
+    int nb_flag;
 };
 
 #endif	/* ARGUMENTS_H */

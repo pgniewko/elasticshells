@@ -24,7 +24,7 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     params.box_step = args.box_step;
     params.vlist_step = args.vlist_step;
     params.d = args.d;
-    params.nbhandler = args.nbFlag;
+    params.nbhandler = args.nb_flag;
     params.ecc = args.ecc;
     params.dt = args.dt;
     params.dp = args.dp;
@@ -32,9 +32,8 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     params.k = args.k;
     params.mass = args.mass;
     params.ttime = args.ttime;
-    params.r_cut = args.r_cut;
-    params.r_bc = args.r_bc;
-    params.verlet_r = params.verlet_r;
+    params.r_vertex = args.r_vertex;
+    params.verlet_r = args.verlet_r;
     params.draw_box = args.draw_box;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     setIntegrator(args.integrator_a);
@@ -53,7 +52,7 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     box.setPbc(args.pbc);
     box.setEcw(args.ecw);
     domains.setupDomainsList(getMaxScale(), box);
-    OsmoticForce::setVolumeFlag(args.osmFlag);
+    OsmoticForce::setVolumeFlag(args.osmotic_flag);
     logParams();
 }
 
@@ -98,6 +97,10 @@ void Simulator::diagnoseParams(arguments args)
     if (args.k <= 0)
         throw DataException("Spring constant for bonded vertices must be positive! \n!"
                             "Simulation will terminate with exit(1)!\n");
+    
+    if (args.r_vertex <= 0)
+        throw DataException("Vertex radius must be larger than 0! \n!"
+                            "Simulation will terminate with exit(1)!\n");
 }
 
 void Simulator::logParams()
@@ -112,8 +115,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE << "GAMMA="  << params.k << "\n";
     simulator_logs << utils::LogLevel::FINE << "E* CELL_CELL="  << params.ecc << "\n";
     simulator_logs << utils::LogLevel::FINE << "E* CELL_BOX="  << box.ecw << "\n";
-    simulator_logs << utils::LogLevel::FINE << "R:CELL_CELL="  << params.r_cut << "\n";
-    simulator_logs << utils::LogLevel::FINE << "R:CELL_BOX="  << params.r_bc << "\n";
+    simulator_logs << utils::LogLevel::FINE << "R.VERTEX="  << params.r_vertex << "\n";
     simulator_logs << utils::LogLevel::FINE << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINE << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
@@ -166,8 +168,7 @@ void Simulator::addCell(double r0)
         Cell newCell(tris);
         newCell.setEcc(params.ecc);
         newCell.setDp(params.dp);
-        newCell.setRc(params.r_cut);
-        newCell.setRCellBox(params.r_bc);
+        newCell.setVertexR(params.r_vertex);
         newCell.setGamma(params.k);
         newCell.setVerletR(params.verlet_r);
         newCell.setCellId(numberofCells);
@@ -193,8 +194,7 @@ void Simulator::initCells(int N, double ra, double rb)
 {
     double nx, ny, nz;
     bool flag = true;
-    double rbc = params.r_bc;
-    double rc = params.r_cut;
+    double rc = params.r_vertex;
     double rsum;
     double r0;
 
@@ -202,9 +202,9 @@ void Simulator::initCells(int N, double ra, double rb)
     {
         r0 = uniform(ra, rb);
         flag = true;
-        nx = uniform(-box.getX() + r0 + rbc, box.getX() - r0 - rbc);
-        ny = uniform(-box.getY() + r0 + rbc, box.getY() - r0 - rbc);
-        nz = uniform(-box.getZ() + r0 + rbc, box.getZ() - r0 - rbc);
+        nx = uniform(-box.getX() + r0 + rc, box.getX() - r0 - rc);
+        ny = uniform(-box.getY() + r0 + rc, box.getY() - r0 - rc);
+        nz = uniform(-box.getZ() + r0 + rc, box.getZ() - r0 - rc);
         Vector3D shift(nx, ny, nz);
 
         for (int i = 0; i < numberofCells; i++)
@@ -578,6 +578,6 @@ int Simulator::getTotalVertices()
 double Simulator::getMaxScale()
 {
     double maxscale = 0.0;
-    maxscale = std::max(params.r_bc, params.r_cut);
+    maxscale = std::max(maxscale, params.r_vertex);
     return maxscale;
 }

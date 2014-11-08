@@ -1,7 +1,7 @@
 #include "Cell.h"
 
-Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), Rc(0),
-    rCellBox(0), a(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0),
+Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), r_vertex(0),
+    ecc(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0),
     vertexMass(0), totalVisc(0), totalMass(0), nRT(0)
 {
     SimpleTriangulation sm(depth);
@@ -11,8 +11,8 @@ Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), Rc(0),
     constructTopology();
 }
 
-Cell::Cell(std::list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), Rc(0),
-    rCellBox(0), a(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0),
+Cell::Cell(std::list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), r_vertex(0),
+    ecc(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0),
     vertexMass(0), totalVisc(0), totalMass(0),  nRT(0)
 {
     constructVertices(tris);
@@ -22,7 +22,7 @@ Cell::Cell(std::list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), Rc(0)
 
 Cell::Cell(const Cell& orig) : cm(orig.cm), vertices(orig.vertices), triangles(orig.triangles),
     cellId(orig.cellId), numberV(orig.numberV), numberT(orig.numberT),
-    Rc(orig.Rc), rCellBox(orig.rCellBox), a(orig.a), dp(orig.dp), gamma(orig.gamma), verletR(orig.verletR),
+    r_vertex(orig.r_vertex), ecc(orig.ecc), dp(orig.dp), gamma(orig.gamma), verletR(orig.verletR),
     initR(orig.initR), vertexVisc(orig.vertexVisc), vertexMass(orig.vertexMass),
     totalVisc(orig.totalVisc), totalMass(orig.totalMass), nRT(orig.nRT)
 {}
@@ -158,7 +158,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
             {
                 getDistance(distance_jk,  other_cell.vertices[k].xyz, vertices[j].xyz, box);
 
-                if (distance_jk.length() <= Rc * verletR)
+                if (distance_jk.length() <= r_vertex * verletR)
                 {
                     vertices[j].nbVerts[vertices[j].numNbNeighs] = k;
                     vertices[j].nbCellsIdx[vertices[j].numNbNeighs] = other_cell.cellId;
@@ -175,7 +175,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
             {
                 getDistance(distance_jk, vertices[k].xyz, vertices[j].xyz, box);
 
-                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= Rc * verletR)
+                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_vertex * verletR)
                 {
                     vertices[j].nbVerts[vertices[j].numNbNeighs] = k;
                     vertices[j].nbCellsIdx[vertices[j].numNbNeighs] = other_cell.cellId;
@@ -211,10 +211,10 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
                 {
                     getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].xyz, vertices[i].xyz, box);
 
-                    if (distance_ik.length() <= Rc)
+                    if (distance_ik.length() <= r_vertex)
                     {
                         vertices[i].nbVerts[vertices[i].numNbNeighs] = vertIdx;
-                        vertices[i].nbCellsIdx[vertices[i].numNbNeighs] = cellIdx; //cells[i].cellId;
+                        vertices[i].nbCellsIdx[vertices[i].numNbNeighs] = cellIdx;
                         vertices[i].numNbNeighs++;
                     }
                 }
@@ -222,7 +222,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
                 {
                     getDistance(distance_ik, vertices[vertIdx].xyz, vertices[i].xyz, box);
 
-                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= Rc)
+                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_vertex)
                     {
                         vertices[i].nbVerts[vertices[i].numNbNeighs] = vertIdx;
                         vertices[i].nbCellsIdx[vertices[i].numNbNeighs] = cellIdx;
@@ -291,14 +291,14 @@ void Cell::calcNbForcesON2(const Cell& other_cell, Box& box)
             if (cellId != ocellid)
             {
                 getDistance(dij, other_cell.vertices[j].xyz, vertices[i].xyz, box);
-                vertices[i].force += HertzianRepulsion::calcForce(dij, Rc, a);
+                vertices[i].force += HertzianRepulsion::calcForce(dij, r_vertex, r_vertex, ecc);
             }
             else
             {
                 if (i != j && !vertices[i].isNeighbor(j))
                 {
                     getDistance(dij, other_cell.vertices[j].xyz, vertices[i].xyz, box);
-                    vertices[i].force += HertzianRepulsion::calcForce(dij, Rc, a);
+                    vertices[i].force += HertzianRepulsion::calcForce(dij, r_vertex, r_vertex, ecc);
                 }
             }
         }
@@ -319,7 +319,7 @@ void Cell::calcNbForcesVL(const Cell& other_cell, Box& box)
             {
                 vertid = vertices[i].nbVerts[j];
                 getDistance(divix, other_cell.vertices[vertid].xyz, vertices[i].xyz, box);
-                vertices[i].force += HertzianRepulsion::calcForce(divix, Rc, a);
+                vertices[i].force += HertzianRepulsion::calcForce(divix, r_vertex, r_vertex, ecc);
             }
         }
     }
@@ -333,7 +333,7 @@ void Cell::calcBoxForces(Box& box)
     double bsx = box.getX();
     double bsy = box.getY();
     double bsz = box.getZ();
-    double E = box.ecw;
+    double ecw = box.ecw;
 
     for (int i = 0; i < numberV; i++)
     {
@@ -342,19 +342,21 @@ void Cell::calcBoxForces(Box& box)
         wallYZ.y = vertices[i].xyz.y;
         wallYZ.z = vertices[i].xyz.z;
         dij = vertices[i].xyz - wallYZ;
-        vertices[i].force += HertzianRepulsion::calcForce(dij, rCellBox, E);
+        vertices[i].force += HertzianRepulsion::calcForce(dij, r_vertex, ecw);
+        
         sgny = SIGN(vertices[i].xyz.y);
         wallXZ.x = vertices[i].xyz.x;
         wallXZ.y = sgny * bsy;
         wallXZ.z = vertices[i].xyz.z;
         dij = vertices[i].xyz - wallXZ;
-        vertices[i].force += HertzianRepulsion::calcForce(dij, rCellBox, E);
+        vertices[i].force += HertzianRepulsion::calcForce(dij, r_vertex, ecw);
+        
         sgnz = SIGN(vertices[i].xyz.z);
         wallXY.x = vertices[i].xyz.x;
         wallXY.y = vertices[i].xyz.y;
         wallXY.z = sgnz * bsz;
         dij = vertices[i].xyz - wallXY;
-        vertices[i].force += HertzianRepulsion::calcForce(dij, rCellBox, E);
+        vertices[i].force += HertzianRepulsion::calcForce(dij, r_vertex, ecw);
     }
 }
 
@@ -487,19 +489,14 @@ int Cell::numberOfVerts()
     return numberV;
 }
 
-void Cell::setRc(double rc)
+void Cell::setVertexR(double rv)
 {
-    Rc = rc;
+    r_vertex = rv;
 }
 
-void Cell::setRCellBox(double r)
+void Cell::setEcc(double a)
 {
-    rCellBox = r;
-}
-
-void Cell::setEcc(double A)
-{
-    a = A / SQRT2;
+    ecc = a;
 }
 
 void Cell::setDp(double dP)
@@ -543,9 +540,9 @@ Vector3D Cell::getCm()
     return cm;
 }
 
-double Cell::getRbc()
+double Cell::getVertexR()
 {
-    return rCellBox;
+    return r_vertex;
 }
 
 Vector3D& Cell::getVertexXYZ(int idx)
