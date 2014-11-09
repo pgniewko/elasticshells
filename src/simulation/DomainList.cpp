@@ -57,7 +57,7 @@ void DomainList::initDomains()
         }
 
         init_domains = true;
-        domainlist_logs << utils::LogLevel::FINEST << "Linked domains list has been initialized." << "\n";
+        domainlist_logs << utils::LogLevel::FINEST << "Linked domains list has been initialized successfully." << "\n";
     }
 }
 
@@ -145,22 +145,22 @@ void DomainList::setBoxDim(Box& box)
     pbc = box.pbc;
 
     if (pbc)
-    {
-        x_min = -box.getX();
-        y_min = -box.getY();
-        z_min = -box.getZ();
-        x_max = box.getX();
-        y_max = box.getY();
-        z_max = box.getZ();
+    { // MAKE SURE THAT AT THE END DOMAINS ARE NOT TOO SMALL !!!
+        x_min = -box.getXend(); //-box.getX();
+        y_min = -box.getYend(); //-box.getY();
+        z_min = -box.getZend(); //-box.getZ();
+        x_max =  box.getXend(); //box.getX();
+        y_max =  box.getYend(); //box.getY();
+        z_max =  box.getZend(); //box.getZ();
     }
     else
     {
-        x_min = -(box.getX() + rc_max);
-        y_min = -(box.getY() + rc_max);
-        z_min = -(box.getZ() + rc_max);
-        x_max = box.getX() + rc_max;
-        y_max = box.getY() + rc_max;
-        z_max = box.getZ() + rc_max;
+        x_min = -(box.getXend() + rc_max); //-(box.getX() + rc_max);
+        y_min = -(box.getYend() + rc_max); //-(box.getY() + rc_max);
+        z_min = -(box.getZend() + rc_max); //-(box.getZ() + rc_max);
+        x_max =   box.getXend() + rc_max;  //box.getX() + rc_max;
+        y_max =   box.getYend() + rc_max;  //box.getY() + rc_max;
+        z_max =   box.getZend() + rc_max;  //box.getZ() + rc_max;
     }
 
     lx = x_max - x_min;
@@ -181,6 +181,7 @@ void DomainList::setBoxDim(Box& box)
     dx = lx / m;
     dy = ly / m;
     dz = lz / m;
+    domainlist_logs << utils::LogLevel::INFO << "NUMBER OF LINKED DOMAINS N_DOMAINS=" << N << "\n";
 }
 
 void DomainList::voidDomains()

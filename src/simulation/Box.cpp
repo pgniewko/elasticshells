@@ -2,15 +2,13 @@
 
 Box::Box(double bsx, double bsy, double bsz) : pbc(false), ecw(0.0),
     x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
-    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz),
-    dx(0), dy(0), dz(0)
+    xe(bsx), ye(bsy), ze(bsz), dx(0), dy(0), dz(0)
 {
 }
 
 Box::Box(double bsx, double bsy, double bsz, double dbs) : pbc(false), ecw(0.0),
     x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
-    xe(0.5 * bsx), ye(0.5 * bsy), ze(0.5 * bsz),
-    dx(dbs), dy(dbs), dz(dbs)
+    xe(bsx), ye(bsy), ze(bsz), dx(dbs), dy(dbs), dz(dbs)
 {
 }
 

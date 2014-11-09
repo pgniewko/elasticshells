@@ -215,7 +215,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
                     getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].xyz, vertices[i].xyz, box);
 
                     if (distance_ik.length() <= r_cut)
-                    {
+                    { // TODO: REFACTOR adding nb vertex 
                         vertices[i].nbVerts[vertices[i].numNbNeighs] = vertIdx;
                         vertices[i].nbCellsIdx[vertices[i].numNbNeighs] = cellIdx;
                         vertices[i].numNbNeighs++;
