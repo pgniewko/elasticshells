@@ -149,6 +149,7 @@ void Cell::voidVerletLsit()
 void Cell::builtVerletList(const Cell& other_cell, Box& box)
 {
     Vector3D distance_jk;
+    double r_cut = 2 * r_vertex;
 
     if (this->cellId != other_cell.cellId)
     {
@@ -158,7 +159,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
             {
                 getDistance(distance_jk,  other_cell.vertices[k].xyz, vertices[j].xyz, box);
 
-                if (distance_jk.length() <= r_vertex * verletR)
+                if (distance_jk.length() <= r_cut * verletR)
                 {
                     vertices[j].nbVerts[vertices[j].numNbNeighs] = k;
                     vertices[j].nbCellsIdx[vertices[j].numNbNeighs] = other_cell.cellId;
@@ -175,7 +176,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
             {
                 getDistance(distance_jk, vertices[k].xyz, vertices[j].xyz, box);
 
-                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_vertex * verletR)
+                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_cut * verletR)
                 {
                     vertices[j].nbVerts[vertices[j].numNbNeighs] = k;
                     vertices[j].nbCellsIdx[vertices[j].numNbNeighs] = other_cell.cellId;
@@ -193,6 +194,8 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
     Vector3D distance_ik;
     int vertIdx, cellIdx;
 
+    double r_cut = 2 * r_vertex;
+    
     for (int i = 0; i < numberV; i++)
     {
         domainIdx = vertices[i].domainIdx;
@@ -211,7 +214,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
                 {
                     getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].xyz, vertices[i].xyz, box);
 
-                    if (distance_ik.length() <= r_vertex)
+                    if (distance_ik.length() <= r_cut)
                     {
                         vertices[i].nbVerts[vertices[i].numNbNeighs] = vertIdx;
                         vertices[i].nbCellsIdx[vertices[i].numNbNeighs] = cellIdx;
@@ -222,7 +225,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
                 {
                     getDistance(distance_ik, vertices[vertIdx].xyz, vertices[i].xyz, box);
 
-                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_vertex)
+                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_cut)
                     {
                         vertices[i].nbVerts[vertices[i].numNbNeighs] = vertIdx;
                         vertices[i].nbCellsIdx[vertices[i].numNbNeighs] = cellIdx;
@@ -232,9 +235,11 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
             }
         }
     }
+    
 #ifdef TESTS
 /* WRITE A CODE FOR SORTING NEIGHBORS*/
 #endif    
+    
 }
 
 void Cell::calcBondedForces()
