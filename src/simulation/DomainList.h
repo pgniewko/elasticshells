@@ -22,6 +22,7 @@ class DomainList
         void assignVertex(Vertex&, int);
         int getDomainIndex(Vertex&);
         void setBoxDim(Box&);
+        void setM(Box&);
 
         int numberofAssignedParticles();
 

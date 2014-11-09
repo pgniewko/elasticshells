@@ -18,9 +18,14 @@ DomainList::~DomainList() {}
 void DomainList::setupDomainsList(double rcMax, Box& box)
 {
     rc_max = rcMax;
+    pbc = box.pbc;
+
+    if (!m_assigned)
+    {
+        setM(box);
+    }
     setBoxDim(box);
     initDomains();
-    pbc = box.pbc;
 }
 
 void DomainList::initDomains()
@@ -139,49 +144,75 @@ int DomainList::getDomainIndex(Vertex& vertex)
     return getDomainIndex(xix, yix, zix);
 }
 
-void DomainList::setBoxDim(Box& box)
+void DomainList::setM(Box& box)
 {
     double lx, ly, lz;
-    pbc = box.pbc;
-
+    double xmin, xmax, ymin, ymax, zmin, zmax;
+    
     if (pbc)
-    { // MAKE SURE THAT AT THE END DOMAINS ARE NOT TOO SMALL !!!
-        x_min = -box.getXend(); //-box.getX();
-        y_min = -box.getYend(); //-box.getY();
-        z_min = -box.getZend(); //-box.getZ();
-        x_max =  box.getXend(); //box.getX();
-        y_max =  box.getYend(); //box.getY();
-        z_max =  box.getZend(); //box.getZ();
+    { // MAKE SURE THAT AT THE END of SIM. DOMAINS ARE NOT TOO SMALL !!!
+        xmin = -box.getXend();
+        ymin = -box.getYend();
+        zmin = -box.getZend();
+        xmax =  box.getXend();
+        ymax =  box.getYend();
+        zmax =  box.getZend();
     }
     else
     {
-        x_min = -(box.getXend() + rc_max); //-(box.getX() + rc_max);
-        y_min = -(box.getYend() + rc_max); //-(box.getY() + rc_max);
-        z_min = -(box.getZend() + rc_max); //-(box.getZ() + rc_max);
-        x_max =   box.getXend() + rc_max;  //box.getX() + rc_max;
-        y_max =   box.getYend() + rc_max;  //box.getY() + rc_max;
-        z_max =   box.getZend() + rc_max;  //box.getZ() + rc_max;
+        xmin = -(box.getXend() + rc_max);
+        ymin = -(box.getYend() + rc_max);
+        zmin = -(box.getZend() + rc_max);
+        xmax =   box.getXend() + rc_max;
+        ymax =   box.getYend() + rc_max;
+        zmax =   box.getZend() + rc_max;
+    }
+
+    lx = xmax - xmin;
+    ly = ymax - ymin;
+    lz = zmax - zmin;
+
+    double Lmax;
+    Lmax = std::max(lx, ly);
+    Lmax = std::max(lz, Lmax);
+    m = ceil( Lmax / (2 * rc_max) );
+    m = std::min(m, MAX_M);
+    N = m * m * m;
+    m_assigned = true;
+    domainlist_logs << utils::LogLevel::INFO << "NUMBER OF LINKED DOMAINS N_DOMAINS=" << N << "\n";
+
+}
+
+void DomainList::setBoxDim(Box& box)
+{
+    double lx, ly, lz;
+
+    if (pbc)
+    {
+        x_min = -box.getX();
+        y_min = -box.getY();
+        z_min = -box.getZ();
+        x_max =  box.getX();
+        y_max =  box.getY();
+        z_max =  box.getZ();
+    }
+    else
+    {
+        x_min = -(box.getX() + rc_max);
+        y_min = -(box.getY() + rc_max);
+        z_min = -(box.getZ() + rc_max);
+        x_max =   box.getX() + rc_max;
+        y_max =   box.getY() + rc_max;
+        z_max =   box.getZ() + rc_max;
     }
 
     lx = x_max - x_min;
     ly = y_max - y_min;
     lz = z_max - z_min;
 
-    if (!m_assigned)
-    {
-        double Lmax;
-        Lmax = std::max(lx, ly);
-        Lmax = std::max(lz, Lmax);
-        m = ceil( Lmax / (2 * rc_max) );
-        m = std::min(m, MAX_M);
-        N = m * m * m;
-        m_assigned = true;
-    }
-
     dx = lx / m;
     dy = ly / m;
     dz = lz / m;
-    domainlist_logs << utils::LogLevel::INFO << "NUMBER OF LINKED DOMAINS N_DOMAINS=" << N << "\n";
 }
 
 void DomainList::voidDomains()

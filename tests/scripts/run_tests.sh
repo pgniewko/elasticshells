@@ -5,9 +5,9 @@ NS=30000
 BSX=9
 BSY=9
 BSZ=9
-BSXE=5.1
-BSYE=5.1
-BSZE=5.1
+BSXE=4.5
+BSYE=4.5
+BSZE=4.5
 DX=-0.01
 DY=-0.01
 DZ=-0.01
@@ -16,7 +16,7 @@ BOXS=50
 SS=50
 VS=10
 VR=3.0
-RCUT=0.25
+RCUT=0.3
 
 
 PROJECT_PATH=/home/pablo/Science/Biofilm
