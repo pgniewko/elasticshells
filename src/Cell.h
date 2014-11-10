@@ -17,6 +17,21 @@
 #include "simulation/Box.h"
 #include "simulation/DomainList.h"
 
+struct cell_params_t
+{
+    double r_vertex;
+    double ecc;
+    double dp;
+    double gamma;
+    double verletR;
+    double initR;
+    double vertexVisc;
+    double vertexMass;
+    double totalVisc;
+    double totalMass;
+    double vc;
+};
+
 class Cell
 {
     public:
@@ -56,8 +71,10 @@ class Cell
 
         void setVerletR(double);
         void setInitR(double);
+        void setVolumeC(double);
 
         double getInitR();
+        double getVolumeC();
         double getVisc();
         Vector3D getCm();
         double getVertexR();
@@ -81,20 +98,10 @@ class Cell
         void constructVertices(std::list<Triangle>);
         void constructVTriangles(std::list<Triangle>);
         void constructTopology();
+        cell_params_t params;
         int numberV;
         int numberT;
-        double r_vertex;
-        double ecc;
-        double dp;
-        double gamma;
-        double verletR;
-        double initR;
-        double vertexVisc;
-        double vertexMass;
-        double totalVisc;
-        double totalMass;
-
-        double nRT;
+        double nRT;  
 };
 
 #endif	/* CELL_H */

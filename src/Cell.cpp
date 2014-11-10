@@ -1,8 +1,6 @@
 #include "Cell.h"
 
-Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), r_vertex(0),
-    ecc(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0),
-    vertexMass(0), totalVisc(0), totalMass(0), nRT(0)
+Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), nRT(0)
 {
     SimpleTriangulation sm(depth);
     std::list<Triangle> tris = sm.triangulate();
@@ -11,9 +9,7 @@ Cell::Cell(int depth) :  cellId(-1), numberV(0), numberT(0), r_vertex(0),
     constructTopology();
 }
 
-Cell::Cell(std::list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), r_vertex(0),
-    ecc(0), dp(0), gamma(0), verletR(0), initR(0), vertexVisc(0),
-    vertexMass(0), totalVisc(0), totalMass(0),  nRT(0)
+Cell::Cell(std::list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), nRT(0)
 {
     constructVertices(tris);
     constructVTriangles(tris);
@@ -21,10 +17,7 @@ Cell::Cell(std::list<Triangle> tris) : cellId(-1), numberV(0), numberT(0), r_ver
 }
 
 Cell::Cell(const Cell& orig) : cm(orig.cm), vertices(orig.vertices), triangles(orig.triangles),
-    cellId(orig.cellId), numberV(orig.numberV), numberT(orig.numberT),
-    r_vertex(orig.r_vertex), ecc(orig.ecc), dp(orig.dp), gamma(orig.gamma), verletR(orig.verletR),
-    initR(orig.initR), vertexVisc(orig.vertexVisc), vertexMass(orig.vertexMass),
-    totalVisc(orig.totalVisc), totalMass(orig.totalMass), nRT(orig.nRT)
+    cellId(orig.cellId), params(orig.params), numberV(orig.numberV), numberT(orig.numberT), nRT(orig.nRT)
 {}
 
 Cell::~Cell() {}
@@ -149,7 +142,7 @@ void Cell::voidVerletLsit()
 void Cell::builtVerletList(const Cell& other_cell, Box& box)
 {
     Vector3D distance_jk;
-    double r_cut = 2 * r_vertex;
+    double r_cut = 2 * params.r_vertex;
 
     if (this->cellId != other_cell.cellId)
     {
@@ -159,7 +152,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
             {
                 getDistance(distance_jk,  other_cell.vertices[k].xyz, vertices[j].xyz, box);
 
-                if (distance_jk.length() <= r_cut * verletR)
+                if (distance_jk.length() <= r_cut * params.verletR)
                 {
                     vertices[j].nbVerts[vertices[j].numNbNeighs] = k;
                     vertices[j].nbCellsIdx[vertices[j].numNbNeighs] = other_cell.cellId;
@@ -176,7 +169,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
             {
                 getDistance(distance_jk, vertices[k].xyz, vertices[j].xyz, box);
 
-                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_cut * verletR)
+                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_cut * params.verletR)
                 {
                     vertices[j].nbVerts[vertices[j].numNbNeighs] = k;
                     vertices[j].nbCellsIdx[vertices[j].numNbNeighs] = other_cell.cellId;
@@ -194,7 +187,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
     Vector3D distance_ik;
     int vertIdx, cellIdx;
 
-    double r_cut = 2 * r_vertex;
+    double r_cut = 2 * params.r_vertex;
     
     for (int i = 0; i < numberV; i++)
     {
@@ -259,7 +252,7 @@ void Cell::calcHarmonicForces()
         {
             R0ij = vertices[i].r0[j];
             idxj = vertices[i].bondedVerts[j];
-            vertices[i].force += HookeanForce::calcForce(vertices[i].xyz, vertices[idxj].xyz, R0ij, gamma);
+            vertices[i].force += HookeanForce::calcForce(vertices[i].xyz, vertices[idxj].xyz, R0ij, params.gamma);
         }
     }
 }
@@ -269,6 +262,7 @@ void Cell::calcOsmoticForces()
     calcCM();
     double cellVolume = calcVolume();
     int iva, ivb, ivc;
+    double dp = params.dp;
 
     for (int i = 0; i < numberT; i++)
     {
@@ -278,9 +272,6 @@ void Cell::calcOsmoticForces()
         Vector3D fa = OsmoticForce::calcForce(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm, nRT, cellVolume, dp);
         Vector3D fb = OsmoticForce::calcForce(vertices[ivb].xyz, vertices[ivc].xyz, vertices[iva].xyz, cm, nRT, cellVolume, dp);
         Vector3D fc = OsmoticForce::calcForce(vertices[ivc].xyz, vertices[iva].xyz, vertices[ivb].xyz, cm, nRT, cellVolume, dp);
-        //Tetrahedron tetra(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm);
-        //Tetrahedron tetrb(vertices[ivb].xyz, vertices[ivc].xyz, vertices[iva].xyz, cm);
-        //Tetrahedron tetrc(vertices[ivc].xyz, vertices[iva].xyz, vertices[ivb].xyz, cm);
         vertices[iva].force += fa;
         vertices[ivb].force += fb;
         vertices[ivc].force += fc;
@@ -299,14 +290,14 @@ void Cell::calcNbForcesON2(const Cell& other_cell, Box& box)
             if (cellId != ocellid)
             {
                 getDistance(dij, other_cell.vertices[j].xyz, vertices[i].xyz, box);
-                vertices[i].force += HertzianRepulsion::calcForce(dij, r_vertex, r_vertex, ecc);
+                vertices[i].force += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
             }
             else
             {
                 if (i != j && !vertices[i].isNeighbor(j))
                 {
                     getDistance(dij, other_cell.vertices[j].xyz, vertices[i].xyz, box);
-                    vertices[i].force += HertzianRepulsion::calcForce(dij, r_vertex, r_vertex, ecc);
+                    vertices[i].force += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
                 }
             }
         }
@@ -327,7 +318,7 @@ void Cell::calcNbForcesVL(const Cell& other_cell, Box& box)
             {
                 vertid = vertices[i].nbVerts[j];
                 getDistance(divix, other_cell.vertices[vertid].xyz, vertices[i].xyz, box);
-                vertices[i].force += HertzianRepulsion::calcForce(divix, r_vertex, r_vertex, ecc);
+                vertices[i].force += HertzianRepulsion::calcForce(divix, params.r_vertex, params.r_vertex, params.ecc);
             }
         }
     }
@@ -350,21 +341,21 @@ void Cell::calcBoxForces(Box& box)
         wallYZ.y = vertices[i].xyz.y;
         wallYZ.z = vertices[i].xyz.z;
         dij = vertices[i].xyz - wallYZ;
-        vertices[i].force += HertzianRepulsion::calcForce(dij, r_vertex, ecw);
+        vertices[i].force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
         
         sgny = SIGN(vertices[i].xyz.y);
         wallXZ.x = vertices[i].xyz.x;
         wallXZ.y = sgny * bsy;
         wallXZ.z = vertices[i].xyz.z;
         dij = vertices[i].xyz - wallXZ;
-        vertices[i].force += HertzianRepulsion::calcForce(dij, r_vertex, ecw);
+        vertices[i].force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
         
         sgnz = SIGN(vertices[i].xyz.z);
         wallXY.x = vertices[i].xyz.x;
         wallXY.y = vertices[i].xyz.y;
         wallXY.z = sgnz * bsz;
         dij = vertices[i].xyz - wallXY;
-        vertices[i].force += HertzianRepulsion::calcForce(dij, r_vertex, ecw);
+        vertices[i].force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
     }
 }
 
@@ -425,14 +416,14 @@ void Cell::calcCM()
 
 void Cell::setVisc(double mu)
 {
-    vertexVisc = mu / numberV;
+    params.vertexVisc = mu / numberV;
 
     for (int i = 0; i < numberV; i++)
     {
-        vertices[i].setVisc(vertexVisc);
+        vertices[i].setVisc(params.vertexVisc);
     }
 
-    totalVisc = getVisc();
+    params.totalVisc = getVisc();
 }
 
 double Cell::getVisc()
@@ -461,14 +452,14 @@ double Cell::getMass()
 
 void Cell::setMass(double totm)
 {
-    vertexMass = totm / numberV;
+    params.vertexMass = totm / numberV;
 
     for (int i = 0; i < numberV; i++)
     {
-        vertices[i].setMass(vertexMass);
+        vertices[i].setMass(params.vertexMass);
     }
 
-    totalMass = getMass();
+    params.totalMass = getMass();
 }
 
 void Cell::addVelocity(const Vector3D& nv)
@@ -499,22 +490,22 @@ int Cell::numberOfVerts()
 
 void Cell::setVertexR(double rv)
 {
-    r_vertex = rv;
+    params.r_vertex = rv;
 }
 
 void Cell::setEcc(double a)
 {
-    ecc = a;
+    params.ecc = a;
 }
 
 void Cell::setDp(double dP)
 {
-    dp = dP;
+    params.dp = dP;
 }
 
 void Cell::setGamma(double g)
 {
-    gamma = g;
+    params.gamma = g;
 }
 
 void Cell::setCellId(int ix)
@@ -524,12 +515,17 @@ void Cell::setCellId(int ix)
 
 void Cell::setVerletR(double vr)
 {
-    verletR = vr;
+    params.verletR = vr;
 }
 
 void Cell::setInitR(double rinit)
 {
-    initR = rinit;
+    params.initR = rinit;
+}
+
+void Cell::setVolumeC(double vc)
+{
+    params.vc = vc;
 }
 
 void Cell::setNRT(double dp)
@@ -539,7 +535,12 @@ void Cell::setNRT(double dp)
 
 double Cell::getInitR()
 {
-    return initR;
+    return params.initR;
+}
+
+double Cell::getVolumeC()
+{
+    return params.vc;
 }
 
 Vector3D Cell::getCm()
@@ -550,7 +551,7 @@ Vector3D Cell::getCm()
 
 double Cell::getVertexR()
 {
-    return r_vertex;
+    return params.r_vertex;
 }
 
 Vector3D& Cell::getVertexXYZ(int idx)
