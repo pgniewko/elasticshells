@@ -59,7 +59,7 @@ static struct argp_option options[] =
     {"ns",        604, "INT", 0, "Number of simulation steps [default: 0]"},
     {"save-step", 605, "INT", 0, "Save step interval [default: 10]"},
     {"box-step",  606, "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"vlist-step", 607, "INT", 0, "Verlet-list step interval [default: 100]"},
+    {"vlist-step",607, "INT", 0, "Verlet-list step interval [default: 100]"},
     {"int",       701, "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], Velocity-Verlet[vv] [default: fe]"},
     {"nb",        702, "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Verlet-list[1], Linked-domains[2] [default: 0]"},
 
@@ -75,6 +75,7 @@ static struct argp_option options[] =
     {"bsy",       805, "NUM", 0, "Y Box size [default: 10.0]"},
     {"bsz",       806, "NUM", 0, "Z Box size [default: 10.0]"},
     {"verlet-r",  807, "NUM", 0, "Verlet radius times r_vertex [default: 2]"},
+    {"ir",        811, "NUM", 0, "Cells size at the initialization [default:1.5]"},
     {"bsdx",      808, "NUM", 0, "dx of Box size [default: 0.0]"},
     {"bsdy",      809, "NUM", 0, "dy of Box size [default: 0.0]"},
     {"bsdz",      810, "NUM", 0, "dz of Box size [default: 0.0]"},
@@ -120,6 +121,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
             arguments->verlet_r = 2.0;
+            arguments->init_radius = 1.5;
             arguments->bsx = 10.0;
             arguments->bsy = 10.0;
             arguments->bsz = 10.0;
@@ -243,6 +245,8 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 810:
             arguments->bsdz = arg ?  strtod (arg, NULL) : 0.0;
+        case 811:
+            arguments->init_radius = arg ?  strtod (arg, NULL) : 1.5;    
             break;
         case 812:
             arguments->bsxe = arg ?  strtod (arg, NULL) : 10.0;
@@ -307,16 +311,13 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = " << arguments.traj_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = " << arguments.output_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
+    
     clocks[0].tic();
     Simulator simulator(arguments);
-    //simulator.initCells(arguments.n_cells, 1.5, P3ROOT2 * 1.5);
-    simulator.initCells(arguments.n_cells, 1.5);
-    //simulator.addCell(1.5);
-    //simulator.addCell(1.5);
-    //Vector3D shift(-3.1, 0.0, 0.0);
-    //simulator.moveCell(shift, 1);
+    simulator.initCells(arguments.n_cells, arguments.init_radius);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
-    biofilm_logs << utils::LogLevel::INFO << "EXECUTION TIME = " << clocks[0].time() << " [s] \n";
+    
+    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION TIME = " << clocks[0].time() << " [s] \n";
     return (EXIT_SUCCESS);
 }

@@ -33,6 +33,7 @@ struct arguments
     double ttime;
     double r_vertex;                   /* vertex radius */
     double verlet_r;
+    double init_radius;
 
     double bsx;
     double bsy;
