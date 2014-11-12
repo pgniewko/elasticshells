@@ -3,6 +3,7 @@
 
 #include <math.h>      /* log, sqrt */
 
+
 extern  void init_genrand(unsigned long s);
 extern  void init_by_array(unsigned long init_key[], int key_length);
 extern  double genrand_real3(); /* generates a random number on (0,1)-real-interval */

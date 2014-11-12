@@ -6,6 +6,7 @@
 #include <exception>
 #include <stdexcept>
 
+
 class DataException : public std::runtime_error
 {
     public:

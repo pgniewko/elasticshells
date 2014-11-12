@@ -20,6 +20,8 @@ OBJECTS      := $(SOURCES:.cpp=.o)
 
 TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
+DEPS := $(SOURCES:.cpp=.d)
+
 #Linking commands:
 $(TARGET): $(OBJECTS)
 	@echo Linking...
@@ -36,8 +38,7 @@ $(SRC)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 $(TESTS)/%.o: $(TESTS)/%.cpp $(TESTS)/%.h
 
 %.o: %.cpp %.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
+	$(CXX) -MMD -MP $(CXXFLAGS) -c $< -o $@
 	
 # Tell make that these are phony targets
 .PHONY: build install clean tests indent
@@ -51,7 +52,7 @@ install:
 	
 clean:
 	@echo Cleaning...
-	rm -f $(TARGET) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS)
+	rm -f $(TARGET) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS) $(DEPS)
 	@echo Clean done.
 	
 tests: $(TEST_RUNNER)
@@ -62,3 +63,5 @@ indent:
 	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.cpp"
 	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.h"
 	@./astyle-clean.sh
+
+-include $(DEPS)

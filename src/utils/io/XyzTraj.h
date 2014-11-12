@@ -1,7 +1,6 @@
 #ifndef XYZTRAJ_H
 #define	XYZTRAJ_H
 
-
 #include <fstream>
 #include <vector>
 
