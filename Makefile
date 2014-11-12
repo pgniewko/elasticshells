@@ -20,7 +20,8 @@ OBJECTS      := $(SOURCES:.cpp=.o)
 
 TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
-DEPS := $(SOURCES:.cpp=.d)
+#DEPS         := $(SOURCES:.cpp=.d)
+DEPS         := $(OBJECTS:.o=.d)
 
 #Linking commands:
 $(TARGET): $(OBJECTS)

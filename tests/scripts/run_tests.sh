@@ -33,7 +33,7 @@ PBC=
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
         --nb 1 --save-step $SS --box-step $BOXS \
         --rv $RCUT --vlist-step $VS -verlet-r $VR \
-        -r $DIR/render_1b.py -t $DIR/traj_1b.xyz --surf $DIR/surf_1b.py -o $DIR/biofilm_1b.out \
+        -r $DIR/render_1b.py --xyz $DIR/traj_1b.xyz --surf $DIR/surf_1b.py -o $DIR/biofilm_1b.out \
         $PBC \
         -d
 
@@ -42,7 +42,7 @@ PBC=
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
         --nb 2 --save-step $SS --box-step $BOXS \
         --rv $RCUT \
-        -r $DIR/render_2b.py -t $DIR/traj_2b.xyz --surf $DIR/surf_2b.py -o $DIR/biofilm_2b.out \
+        -r $DIR/render_2b.py --xyz $DIR/traj_2b.xyz --surf $DIR/surf_2b.py -o $DIR/biofilm_2b.out \
         $PBC \
         -d
 
@@ -51,7 +51,7 @@ PBC=
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
         --nb 0 --save-step $SS --box-step $BOXS \
         --rv $RCUT \
-        -r $DIR/render_0b.py -t $DIR/traj_0b.xyz --surf $DIR/surf_0b.py -o $DIR/biofilm_0b.out \
+        -r $DIR/render_0b.py --xyz $DIR/traj_0b.xyz --surf $DIR/surf_0b.py -o $DIR/biofilm_0b.out \
         $PBC \
         -d
 
@@ -62,7 +62,7 @@ PBC="--pbc"
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
         --nb 1 --save-step $SS --box-step $BOXS \
         --rv $RCUT --vlist-step $VS -verlet-r $VR \
-        -r $DIR/render_1p.py -t $DIR/traj_1p.xyz --surf $DIR/surf_1p.py -o $DIR/biofilm_1p.out \
+        -r $DIR/render_1p.py --xyz $DIR/traj_1p.xyz --surf $DIR/surf_1p.py -o $DIR/biofilm_1p.out \
         $PBC \
         -d
 
@@ -71,7 +71,7 @@ PBC="--pbc"
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
         --nb 2 --save-step $SS --box-step $BOXS \
         --rv $RCUT \
-        -r $DIR/render_2p.py -t $DIR/traj_2p.xyz --surf $DIR/surf_2p.py -o $DIR/biofilm_2p.out \
+        -r $DIR/render_2p.py --xyz $DIR/traj_2p.xyz --surf $DIR/surf_2p.py -o $DIR/biofilm_2p.out \
         $PBC \
         -d
 
@@ -80,6 +80,6 @@ PBC="--pbc"
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
         --nb 0 --save-step $SS --box-step $BOXS \
         --rv $RCUT \
-        -r $DIR/render_0p.py -t $DIR/traj_0p.xyz --surf $DIR/surf_0p.py -o $DIR/biofilm_0p.out \
+        -r $DIR/render_0p.py -xyz $DIR/traj_0p.xyz --surf $DIR/surf_0p.py -o $DIR/biofilm_0p.out \
         $PBC \
         -d

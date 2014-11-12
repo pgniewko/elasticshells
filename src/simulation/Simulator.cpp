@@ -211,7 +211,7 @@ void Simulator::initCells(int N, double ra, double rb)
 {
     double nx, ny, nz;
     bool flag = true;
-    double rc = params.r_vertex;
+    double rc = 2.0 * params.r_vertex;
     double rsum;
     double r0;
 

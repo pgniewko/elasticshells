@@ -187,7 +187,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
     Vector3D distance_ik;
     int vertIdx, cellIdx;
 
-    double r_cut = 2 * params.r_vertex;
+    double r_cut = 2 * params.r_vertex + EPSILON;
     
     for (int i = 0; i < numberV; i++)
     {
@@ -228,9 +228,11 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
             }
         }
     }
-    
 #ifdef TESTS
-/* WRITE A CODE FOR SORTING NEIGHBORS*/
+    for (int i = 0; i < numberV; i++)
+    {
+        vertices[i].sortNbList();
+    }
 #endif    
     
 }

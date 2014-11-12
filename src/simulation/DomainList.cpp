@@ -175,7 +175,7 @@ void DomainList::setM(Box& box)
     double Lmax;
     Lmax = std::max(lx, ly);
     Lmax = std::max(lz, Lmax);
-    m = ceil( Lmax / (2 * rc_max) );
+    m = ceil( Lmax / (2 * rc_max + EPSILON) );
     m = std::min(m, MAX_M);
     N = m * m * m;
     m_assigned = true;
