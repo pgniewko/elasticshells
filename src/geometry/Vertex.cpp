@@ -105,6 +105,37 @@ void Vertex::addTriangle(int idx)
     }
 }
 
+void Vertex::addNbNeighbor(int vertIdx, int cellIdx)
+{
+    try
+    {
+        if (getNumNeighs() >= NBNEI_MAX)
+            throw MaxSizeException("Maximum number of neighbors has been reached.\n"
+                                   "New neighbor will not be added !\n");
+
+        if (vertIdx < 0)
+            throw RunTimeError("Trying to add a vertex with a negative index.\n"
+                               "Runtime data is incomplete. Simulation will be terminated. \n");
+        
+        
+        ////vertices[i].nbVerts[vertices[i].numNbNeighs] = vertIdx;
+        //vertices[i].nbCellsIdx[vertices[i].numNbNeighs] = cellIdx;
+        //vertices[i].numNbNeighs++;
+
+    }
+    catch (MaxSizeException& e)
+    {
+        std::cout << e.what() << std::endl;
+        return;
+    }
+    catch (RunTimeError& e)
+    {
+        std::cout << e.what() << std::endl;
+        exit(1);
+    }
+}
+
+
 bool Vertex::isNeighbor(int vidx)
 {
     for (int i = 0; i < numBonded; i++)
@@ -116,6 +147,27 @@ bool Vertex::isNeighbor(int vidx)
     }
 
     return false;
+}
+
+void Vertex::sortNbList()
+{
+    std::vector<nblist_t> v_nb_lsit;
+    
+    for (int i = 0; i < numNbNeighs; i++)
+    {
+        struct nblist_t nblist;
+        nblist.cell_id = nbCellsIdx[i];
+        nblist.vertex_id = nbVerts[i];
+	v_nb_lsit.push_back(nblist);
+    }
+
+    std::sort(v_nb_lsit.begin(), v_nb_lsit.end());
+    
+    for (unsigned int i = 0; i < v_nb_lsit.size(); i++)
+    {
+        nbCellsIdx[i] = v_nb_lsit[i].cell_id;
+        nbVerts[i] = v_nb_lsit[i].vertex_id;
+    }	
 }
 
 void Vertex::voidForce()

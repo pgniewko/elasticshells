@@ -1,10 +1,44 @@
 #ifndef VERTEX_H
 #define	VERTEX_H
 
+#include <vector>
+#include <algorithm>
+#include <iostream>
+
 #include "Environment.h"
 #include "Vector3D.h"
 #include "exceptions/MaxSizeException.h"
 #include "exceptions/RunTimeError.h"
+
+struct nblist_t
+{
+    int cell_id;
+    int vertex_id;
+    
+    bool operator > (const nblist_t& rhs) 
+    { 
+	if (cell_id == rhs.cell_id)
+        {
+            return vertex_id > rhs.vertex_id;
+        }
+        else
+        {
+            return cell_id > rhs.cell_id;
+        }
+    }
+
+    bool operator < (const nblist_t& rhs) 
+    { 
+	if (cell_id == rhs.cell_id)
+        {
+            return vertex_id < rhs.vertex_id;
+        }
+        else
+        {
+            return cell_id < rhs.cell_id;
+        }
+    }
+};
 
 class Vertex
 {
@@ -24,6 +58,7 @@ class Vertex
         void printVertex();
 
         void addNeighbor(int, double);
+        void addNbNeighbor(int, int);
         bool isNeighbor(int);
         void addTriangle(int);
 
@@ -35,6 +70,8 @@ class Vertex
         int getNeighborId(int);
         int getTriangleId(int);
         double getNeighborR0(int);
+        
+        void sortNbList();
 
         Vector3D xyz;
         Vector3D force;
