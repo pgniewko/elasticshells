@@ -29,8 +29,12 @@ class ForcesTests : public CPPUNIT_NS::TestFixture
         void tearDown();
 
     private:
+        Vector3D* v1, *v2, *v3, *v4;
         void testMethod();
         void testFailedMethod();
+        
+        void testHookeanMagnitude();
+        void testHookeanSign();
 };
 
 #endif	/* FORCESTESTS_H */
