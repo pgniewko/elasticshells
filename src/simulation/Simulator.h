@@ -42,6 +42,10 @@ struct params_t
     double ttime;
     double r_vertex;
     double verlet_r;
+    double growth_rate;
+    double vc;
+    double bud_d;
+    double div_ratio;
     bool draw_box;
 };
 

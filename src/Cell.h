@@ -24,12 +24,15 @@ struct cell_params_t
     double dp;
     double gamma;
     double verletR;
-    double initR;
+    double init_r;
     double vertexVisc;
     double vertexMass;
     double totalVisc;
     double totalMass;
+    double growth_rate;
     double vc;
+    double bud_d;
+    double div_ratio;
 };
 
 class Cell
@@ -71,15 +74,21 @@ class Cell
 
         void setVerletR(double);
         void setInitR(double);
+        
         void setVolumeC(double);
-
+        void setGrowthRate(double);
+        void setBudDiameter(double);
+        void setDivisionRatio(double);
+        
         double getInitR();
-        double getVolumeC();
         double getVisc();
         Vector3D getCm();
         double getVertexR();
         
 
+        void grow(double);
+        void divide();
+        
         Vector3D& getVertexXYZ(int);
         Vector3D& getVertexForce(int);
 

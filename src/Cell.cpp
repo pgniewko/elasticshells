@@ -520,12 +520,27 @@ void Cell::setVerletR(double vr)
 
 void Cell::setInitR(double rinit)
 {
-    params.initR = rinit;
+    params.init_r = rinit;
 }
 
 void Cell::setVolumeC(double vc)
 {
     params.vc = vc;
+}
+
+void Cell::setGrowthRate(double gr)
+{
+    params.growth_rate = gr;
+}
+
+void Cell::setBudDiameter(double bd)
+{
+    params.bud_d = bd;
+}
+
+void Cell::setDivisionRatio(double ds)
+{
+    params.div_ratio = ds;
 }
 
 void Cell::setNRT(double dp)
@@ -535,12 +550,7 @@ void Cell::setNRT(double dp)
 
 double Cell::getInitR()
 {
-    return params.initR;
-}
-
-double Cell::getVolumeC()
-{
-    return params.vc;
+    return params.init_r;
 }
 
 Vector3D Cell::getCm()
@@ -581,4 +591,14 @@ void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, Bo
         dkj.y -= y;
         dkj.z -= z;
     }
+}
+
+void Cell::grow(double dt)
+{
+    
+}
+
+void Cell::divide()
+{
+    
 }

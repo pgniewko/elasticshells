@@ -34,6 +34,10 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     params.verlet_r = args.verlet_r;
+    params.growth_rate = args.growth_rate;
+    params.vc = args.vc;
+    params.bud_d = args.bud_d;
+    params.div_ratio = args.div_ratio;
     params.draw_box = args.draw_box;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     setIntegrator(args.integrator_a);
@@ -61,7 +65,7 @@ Simulator::Simulator(const Simulator& orig) : numberofCells(orig.numberofCells),
     box(orig.box), sb(orig.sb), traj(orig.traj),
     logsim(orig.logsim), simulator_logs(orig.simulator_logs)
 {
-    // exception disallowed behavior
+    // exception - disallowed behavior
 }
 
 Simulator::~Simulator() {}
@@ -101,23 +105,32 @@ void Simulator::diagnoseParams(arguments args)
     if (args.r_vertex <= 0)
         throw DataException("Vertex radius must be larger than 0! \n!"
                             "Simulation will terminate with exit(1)!\n");
+    
+    if (args.growth_rate < 0)
+        throw DataException("Growth rate must be positive or 0! \n!"
+                            "Simulation will terminate with exit(1)!\n");
 }
 
 void Simulator::logParams()
 {
-    simulator_logs << utils::LogLevel::INFO << "BOX_STEP="  << params.box_step << "\n";
-    simulator_logs << utils::LogLevel::INFO << "SAVE_STEP=" << params.save_step << "\n";
-    simulator_logs << utils::LogLevel::INFO << "LOG_STEP="  << params.log_step << "\n";
-    simulator_logs << utils::LogLevel::INFO << "VERLET_STEP="  << params.vlist_step << "\n";
-    simulator_logs << utils::LogLevel::FINE << "TIME STEP(DT)="  << params.dt << "\n";
-    simulator_logs << utils::LogLevel::FINE << "DEPTH="  << params.d << "\n";
-    simulator_logs << utils::LogLevel::FINE << "DP="  << params.dp << "\n";
-    simulator_logs << utils::LogLevel::FINE << "GAMMA="  << params.k << "\n";
-    simulator_logs << utils::LogLevel::FINE << "E* CELL_CELL="  << params.ecc << "\n";
-    simulator_logs << utils::LogLevel::FINE << "E* CELL_BOX="  << box.ecw << "\n";
-    simulator_logs << utils::LogLevel::FINE << "R.VERTEX="  << params.r_vertex << "\n";
-    simulator_logs << utils::LogLevel::FINE << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
-    simulator_logs << utils::LogLevel::FINE << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "SIM_STEPS=" << params.nsteps << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "BOX_STEP="  << params.box_step << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "SAVE_STEP=" << params.save_step << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "VERLET_STEP="  << params.vlist_step << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "DEPTH="  << params.d << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "DP="  << params.dp << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "GAMMA="  << params.k << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "E* CELL_CELL="  << params.ecc << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "E* CELL_BOX="  << box.ecw << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "GROWTH_RATE="  << params.growth_rate << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "VOLUME C="  << params.vc << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "BUD_SCAR_D="  << params.bud_d << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "CELL_DIV_RATIO="  << params.div_ratio << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "MAX_SCALE=" << domains.getMaxScale() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
@@ -175,7 +188,11 @@ void Simulator::addCell(double r0)
         newCell.setMass(params.mass);
         newCell.setVisc(params.visc);
         newCell.setInitR(r0);
+        newCell.setGrowthRate(params.growth_rate);
+        newCell.setVolumeC(params.vc);
         newCell.setNRT(params.dp);
+        newCell.setBudDiameter(params.bud_d);
+        newCell.setDivisionRatio(params.div_ratio);
         addCell(newCell);
     }
     catch (MaxSizeException& e)

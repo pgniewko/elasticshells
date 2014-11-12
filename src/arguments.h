@@ -34,6 +34,10 @@ struct arguments
     double r_vertex;                   /* vertex radius */
     double verlet_r;
     double init_radius;
+    double growth_rate;
+    double vc;
+    double bud_d;
+    double div_ratio;
 
     double bsx;
     double bsy;
