@@ -17,6 +17,11 @@ class ForcesTests : public CPPUNIT_NS::TestFixture
         CPPUNIT_TEST_SUITE(ForcesTests);
 
         CPPUNIT_TEST(testMethod);
+        CPPUNIT_TEST(testHookeanForce);
+        CPPUNIT_TEST(testHertzianForce);
+        CPPUNIT_TEST(testOsmoticForce);
+        CPPUNIT_TEST(testNbRepulsiveForce);
+        
 
         CPPUNIT_TEST_FAIL(testFailedMethod);
 
@@ -33,8 +38,10 @@ class ForcesTests : public CPPUNIT_NS::TestFixture
         void testMethod();
         void testFailedMethod();
         
-        void testHookeanMagnitude();
-        void testHookeanSign();
+        void testHookeanForce();
+        void testHertzianForce();
+        void testOsmoticForce();
+        void testNbRepulsiveForce();
 };
 
 #endif	/* FORCESTESTS_H */

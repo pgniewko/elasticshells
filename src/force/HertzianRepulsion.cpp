@@ -26,7 +26,7 @@ Vector3D HertzianRepulsion::calcForce(const Vector3D& dij, const double R1, cons
         RX = std::max(R1, R2);
         eps = RX - dij.length();
     }
-    
+
     if (eps > 0)
     {
         double fmagn = D4_3 * E * pow(RX, 0.5) * pow(eps, 1.5);
