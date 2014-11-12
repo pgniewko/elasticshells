@@ -154,9 +154,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
 
                 if (distance_jk.length() <= r_cut * params.verletR)
                 {
-                    vertices[j].nbVerts[vertices[j].numNbNeighs] = k;
-                    vertices[j].nbCellsIdx[vertices[j].numNbNeighs] = other_cell.cellId;
-                    vertices[j].numNbNeighs++;
+                    vertices[j].addNbNeighbor(k, other_cell.cellId);
                 }
             }
         }
@@ -171,9 +169,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
 
                 if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_cut * params.verletR)
                 {
-                    vertices[j].nbVerts[vertices[j].numNbNeighs] = k;
-                    vertices[j].nbCellsIdx[vertices[j].numNbNeighs] = other_cell.cellId;
-                    vertices[j].numNbNeighs++;
+                    vertices[j].addNbNeighbor(k, other_cell.cellId);
                 }
             }
         }
@@ -208,10 +204,8 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
                     getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].xyz, vertices[i].xyz, box);
 
                     if (distance_ik.length() <= r_cut)
-                    { // TODO: REFACTOR adding nb vertex 
-                        vertices[i].nbVerts[vertices[i].numNbNeighs] = vertIdx;
-                        vertices[i].nbCellsIdx[vertices[i].numNbNeighs] = cellIdx;
-                        vertices[i].numNbNeighs++;
+                    {
+                        vertices[i].addNbNeighbor(vertIdx, cellIdx);
                     }
                 }
                 else
@@ -220,9 +214,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
 
                     if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_cut)
                     {
-                        vertices[i].nbVerts[vertices[i].numNbNeighs] = vertIdx;
-                        vertices[i].nbCellsIdx[vertices[i].numNbNeighs] = cellIdx;
-                        vertices[i].numNbNeighs++;
+                        vertices[i].addNbNeighbor(vertIdx, cellIdx);
                     }
                 }
             }

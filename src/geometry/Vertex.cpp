@@ -38,13 +38,13 @@ void Vertex::addNeighbor(int idx, double k0n)
 {
     try
     {
-        if (getNumNeighs() >= NEIGH_MAX)
+        if (numBonded >= NEIGH_MAX)
             throw MaxSizeException("Maximum number of neighbors has been reached.\n"
                                    "New neighbor will not be added !\n");
 
         if (idx < 0)
             throw RunTimeError("Trying to add a vertex with a negative index.\n"
-                               "Runtime data is incomplete. Simulation will be terminated. \n");
+                               "Runtime data is incorrect. Simulation will be terminated.\n");
 
         for (int i = 0; i < numBonded; i++)
         {
@@ -74,13 +74,13 @@ void Vertex::addTriangle(int idx)
 {
     try
     {
-        if (getNumNeighs() >= TRIAN_MAX)
+        if (numTris >= TRIAN_MAX)
             throw MaxSizeException("Maximum number of triangles has been reached."
                                    "New triangle will not be added !");
 
         if (idx < 0)
             throw RunTimeError("Trying to add a triangle with a negative index.\n"
-                               "Runtime data is incomplete. Simulation will be terminated. \n");
+                               "Runtime data is incorrect. Simulation will be terminated.\n");
 
         for (int i = 0; i < numTris; i++)
         {
@@ -109,18 +109,22 @@ void Vertex::addNbNeighbor(int vertIdx, int cellIdx)
 {
     try
     {
-        if (getNumNeighs() >= NBNEI_MAX)
+        if (numNbNeighs >= NBNEI_MAX)
             throw MaxSizeException("Maximum number of neighbors has been reached.\n"
                                    "New neighbor will not be added !\n");
 
         if (vertIdx < 0)
             throw RunTimeError("Trying to add a vertex with a negative index.\n"
-                               "Runtime data is incomplete. Simulation will be terminated. \n");
+                               "Runtime data is incorrect. Simulation will be terminated. \n");
+        
+        if (cellIdx < 0)
+            throw RunTimeError("Trying to add a vertex with a negative cell index.\n"
+                               "Runtime data is incorrect. Simulation will be terminated. \n");
         
         
-        ////vertices[i].nbVerts[vertices[i].numNbNeighs] = vertIdx;
-        //vertices[i].nbCellsIdx[vertices[i].numNbNeighs] = cellIdx;
-        //vertices[i].numNbNeighs++;
+        nbVerts[numNbNeighs] = vertIdx;
+        nbCellsIdx[numNbNeighs] = cellIdx;
+        numNbNeighs++;
 
     }
     catch (MaxSizeException& e)
