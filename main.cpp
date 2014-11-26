@@ -61,7 +61,9 @@ static struct argp_option options[] =
     {"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"draw-box",  411,       0, 0, "Deactivate box in rendering script - [default: true]"},
-    {"depth",     412,   "INT", 0, "SimpleTriangulation depth [default: 3]"},
+    {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato] [default: simple]"},
+    {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
+    {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], ico[1], oct[2] [default: 0]"},
     
     {0,             0,       0, 0, "Cell Options:", 5},
     {"mass",      'm', "FLOAT", 0, "Total mass of a cell [default: 60.0]"},
@@ -111,7 +113,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->output_file = "./data/biofilm.out";
             arguments->surface_file = "./data/surf.py";
             arguments->integrator_a = "fe";
+            arguments->tritype = "simple";
             arguments->d = 3;
+            arguments->platotype = 0;
             arguments->log_step = 10;
             arguments->save_step = 1;
             arguments->box_step = 10;
@@ -212,10 +216,16 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 411:
             arguments->draw_box = false;
-            break; 
+            break;
         case 412:
-            arguments->d = arg ? atoi (arg) : 3;
+            arguments->tritype = arg;
             break;    
+        case 413:
+            arguments->d = arg ? atoi (arg) : 3;
+            break;
+        case 414:
+            arguments->platotype = arg ? atoi (arg) : 0;
+            break;
         case 'm':
             arguments->mass = arg ? strtod (arg, NULL) : 1.0;
             break;

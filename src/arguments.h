@@ -15,6 +15,7 @@ struct arguments
     char* surface_file;
 
     char* integrator_a;
+    char* tritype;
 
     int d;
     int log_step;
@@ -23,7 +24,8 @@ struct arguments
     int vlist_step;
     int n_cells;
     int nsteps;
-
+    int platotype;
+    
     double ecc;                         /* E cell-cell */
     double dt;
     double dp;

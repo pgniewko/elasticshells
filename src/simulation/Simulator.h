@@ -16,6 +16,7 @@
 #include "exceptions/DataException.h"
 #include "exceptions/NotImplementedException.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
+#include "geometry/algorithms/PlatonicTriangulatoin.h"
 #include "utils/io/ScriptBuilder.h"
 #include "utils/io/XyzTraj.h"
 #include "utils/io/LogSimulation.h"
@@ -32,6 +33,7 @@ struct params_t
     int nsteps;
     int d;
     int nbhandler;
+    int platotype;
 
     double ecc;
     double dt;
@@ -66,6 +68,7 @@ class Simulator
         void simulate(int);
         void integrate();
         void setIntegrator(char* token);
+        void setTriangulator(char* token);
 
         void addCell(const Cell&);
         void addCell();
@@ -94,6 +97,7 @@ class Simulator
         double getMaxScale();
 
         int numberofCells;
+        char* triangulator;
         params_t params;
 
         std::vector<Cell> cells;

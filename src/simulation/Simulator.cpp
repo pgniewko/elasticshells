@@ -40,7 +40,9 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     params.div_ratio = args.div_ratio;
     params.draw_box = args.draw_box;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
+    params.platotype = args.platotype;
     setIntegrator(args.integrator_a);
+    setTriangulator(args.tritype);
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
@@ -77,7 +79,7 @@ void Simulator::diagnoseParams(arguments args)
                                       "Single point representation is not implemented yet. "
                                       "Simulator is about to terminate !");
 
-    if (args.d > 9)
+    if (args.d > 7)
         throw DataException("DataException:\n"
                             "Depth of a triangulation too large ! "
                             "For machine's safety Simulator is about to terminate !");
@@ -118,6 +120,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::INFO  << "SAVE_STEP=" << params.save_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "VERLET_STEP="  << params.vlist_step << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "TRIANGULATOR="  << triangulator << "\n";
     simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << "\n";
     simulator_logs << utils::LogLevel::FINE  << "DEPTH="  << params.d << "\n";
     simulator_logs << utils::LogLevel::FINE  << "DP="  << params.dp << "\n";
@@ -176,8 +179,19 @@ void Simulator::addCell(double r0)
                                    "New cell will not be added !\n"
                                    "Program is going to TERMINANTE!");
 
-        SimpleTriangulation sm(params.d);
-        std::list<Triangle> tris = sm.triangulate(r0);
+        std::list<Triangle> tris;
+        if (STRCMP (triangulator, "plato"))
+        {
+            PlatonicTriangulatoin tio(params.d, params.platotype);
+            tris = tio.triangulate(r0);
+        }
+        else if (STRCMP (triangulator, "simple"))
+        {
+            SimpleTriangulation sm(params.d);
+            tris = sm.triangulate(r0);
+        }
+        
+        
         Cell newCell(tris);
         newCell.setEcc(params.ecc);
         newCell.setDp(params.dp);
@@ -269,6 +283,13 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i <= steps; i++)
     {
+        for (int cn = 0; cn < cells.size(); cn++)
+        {
+            cells[cn].grow(params.dt, params.growth_rate);
+            sb.saveRenderScript(cells, box, params.draw_box);
+            sb.saveSurfaceScript(cells);
+        }
+        
         if (params.nbhandler == 1)
         {
             if ( (i + 1) % params.vlist_step == 0)
@@ -429,7 +450,25 @@ void Simulator::setIntegrator(char* token)
     }
     else
     {
+        //TODO: print warning
         this->setIntegrator(&Simulator::integrateEuler);
+    }
+}
+
+void Simulator::setTriangulator(char* token)
+{
+    if (STRCMP (token, "simple"))
+    {
+        triangulator = token;
+    }
+    else if (STRCMP (token, "plato"))
+    {
+        triangulator = token;
+    }
+    else
+    {
+        //TODO: print warning
+        triangulator = "simple";
     }
 }
 
