@@ -1,7 +1,6 @@
-Description
+DESCRIPTION
 ==================================================
-
-Compilation - Linux / Mac OS / Windows 
+COMPILATION - LINUX / MAX OS / WINDOWS 
 ==================================================
 
 * Performance profiling with `gprof`:
@@ -12,11 +11,17 @@ Compilation - Linux / Mac OS / Windows
     + Run gprof tool in order to analyze the performance:
         `gprof ./bin/biofilm gmon.out | less`
 
-Related programs
+RELATED PROGRAMS
 ================
+Biofilm software is using external library(steinhardt [link](https://github.com/nquesada/steinhardt)) to calculate order parameters.
+In order to make it running you need GNU Scientific Library (GSL).
+On Ubuntu you can install it with the commad:
+```
+apt-get install libgsl0-dev
+```
 
 
-Contents
+CONTENTS
 ========
 
 * To check the number of lines of code run
@@ -26,15 +31,15 @@ Contents
 ```
 
 
-Usage
+USAGE
 =====
 
 
-Copyright Notice
+COPYRIGHT NOTICE
 ================
 Copyright (C) 2014 -,  Pawel Gniewek
 All rights reserved.
 License: BSD
 
-Acknowledgments
+ACKNOWLEDGMENTS
 ===============
