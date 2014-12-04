@@ -8,10 +8,10 @@
 #define SIGN(a) (a >= 0 ? 1 : -1)
 
 #define MAX_CELLS 100
-#define MAX_V 200
-#define MAX_T 500
-#define NEIGH_MAX 10
-#define TRIAN_MAX 10
+#define MAX_V 400
+#define MAX_T 800
+#define NEIGH_MAX 20
+#define TRIAN_MAX 40
 #define NBNEI_MAX 100
 #define MAX_IN_DOMAIN 20 // maximum number of particles in a domain
 #define MAX_M 20 // maximum number of linked-domains
