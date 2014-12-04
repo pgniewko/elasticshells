@@ -26,7 +26,7 @@ DEPS         := $(OBJECTS:.o=.d)
 #Linking commands:
 $(TARGET): $(OBJECTS)
 	@echo Linking...
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 $(TEST_RUNNER): $(TEST_OBJECTS) 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
@@ -65,4 +65,6 @@ indent:
 	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.h"
 	@./astyle-clean.sh
 
+lib:
+	@echo 
 -include $(DEPS)
