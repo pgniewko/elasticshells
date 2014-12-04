@@ -11,14 +11,18 @@ COMPILATION - LINUX / MAX OS / WINDOWS
     + Run gprof tool in order to analyze the performance:
         `gprof ./bin/biofilm gmon.out | less`
 
-RELATED PROGRAMS
+RELATED LIBRARIES/PROGRAMS
 ================
-Biofilm software is using external library(steinhardt [link](https://github.com/nquesada/steinhardt)) to calculate order parameters.
-In order to make it running you need GNU Scientific Library (GSL).
-On Ubuntu you can install it with the commad:
+* For compiling and running tests CppUnit [link](sourceforge.net/projects/cppunit) is needed.
+
+* GNU Scientific Library (GSL) [link](http://www.gnu.org/software/gsl/)
+On Ubuntu you can install it by running:
 ```
 apt-get install libgsl0-dev
 ```
+
+* Steinhardt order parameters library [link](https://github.com/nquesada/steinhardt).
+
 
 
 CONTENTS
