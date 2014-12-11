@@ -55,5 +55,5 @@ License: BSD
 
 ACKNOWLEDGMENTS
 ===============
-We thank Dominik Gront (Univeristy of Warsaw) for sharing BioShell `Logger` and
+We thank Dominik Gront (University of Warsaw) for sharing BioShell `Logger` and
 `LogManager` classes.
