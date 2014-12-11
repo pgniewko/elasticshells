@@ -24,6 +24,10 @@
 #include "force/OsmoticForce.h"
 #include "simulation/DomainList.h"
 
+//#include "utils/observables/order/Aspherity.h"
+//#include "utils/observables/order/QL.h"
+//#include "utils/observables/order/WL.h"
+
 struct params_t
 {
     int log_step;
@@ -81,6 +85,7 @@ class Simulator
 
         void moveCell(const Vector3D&, int);
         void addCellVel(const Vector3D&, int);
+        void moveCellToXYZ(const Vector3D&, int);
 
         int getNumberOfCells();
         void setBoxSize(double);

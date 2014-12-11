@@ -31,12 +31,10 @@ std::list<Triangle> PlatonicTriangulatoin::triangulate(double r0)
         {
             createTetrahedron();
         }
-        
         else if (type == 1)
         {
             createHexahedron();
         }
-        
         else if (type == 2)
         {
             createOctahedron();   
@@ -76,7 +74,7 @@ std::list<Triangle> PlatonicTriangulatoin::triangulate()
 
 void PlatonicTriangulatoin::createTetrahedron()
 {
-    double C = 0.5773502691896257; // sqrt(3.0) / 3.0
+    double C = SQRT3 / 3.0; // - OK, checked. change C = SQRT3/3 to 1. no diff.
     tris.push_back(Triangle(Vector3D( C, C, C), Vector3D(-C,-C, C), Vector3D(-C, C,-C) ));
     tris.push_back(Triangle(Vector3D( C, C, C), Vector3D( C,-C,-C), Vector3D(-C,-C, C) ));
     tris.push_back(Triangle(Vector3D(-C, C,-C), Vector3D(-C,-C, C), Vector3D( C,-C,-C) ));
@@ -85,7 +83,7 @@ void PlatonicTriangulatoin::createTetrahedron()
 
 void PlatonicTriangulatoin::createHexahedron()
 {
-    // create cube
+    // create cube - OK, checked 
     //top
     tris.push_back(Triangle(Vector3D( 1, 1, 1), Vector3D(-1, 1,-1), Vector3D( 1, 1,-1)));
     tris.push_back(Triangle(Vector3D(-1, 1,-1), Vector3D( 1, 1, 1), Vector3D(-1, 1, 1)));
@@ -109,9 +107,7 @@ void PlatonicTriangulatoin::createHexahedron()
 
 void PlatonicTriangulatoin::createOctahedron()
 {
-    
-    // Join vertices to create a unit octahedron
-    
+    // Join vertices to create a unit octahedron - OK, checked   
     // The top half
     tris.push_back(Triangle(Vector3D( 1, 0, 0), Vector3D( 0, 0, 1), Vector3D( 0, 1, 0)));
     tris.push_back(Triangle(Vector3D( 0, 1, 0), Vector3D( 0, 0, 1), Vector3D(-1, 0, 0)));
@@ -132,25 +128,28 @@ void PlatonicTriangulatoin::createIcosahedron()
     double t = 0.8506508084; // t=(1+sqrt(5))/2, tau=t/sqrt(1+t^2)
     double u = 0.5257311121; // one=1/sqrt(1+t^2) , unit sphere
     
-    // Structure for unit icosahedron
+    // Structure for unit icosahedron - OK, checked
     tris.push_back(Triangle(Vector3D( u, 0, t), Vector3D(-u, 0, t), Vector3D( 0, t, u)));
     tris.push_back(Triangle(Vector3D( u, 0, t), Vector3D( 0,-t, u), Vector3D(-u, 0, t)));
     tris.push_back(Triangle(Vector3D( u, 0,-t), Vector3D( 0, t,-u), Vector3D(-u, 0,-t)));
     tris.push_back(Triangle(Vector3D( u, 0,-t), Vector3D(-u, 0,-t), Vector3D( 0,-t,-u)));
     tris.push_back(Triangle(Vector3D( t, u, 0), Vector3D( t,-u, 0), Vector3D( u, 0, t)));
     tris.push_back(Triangle(Vector3D( t, u, 0), Vector3D( u, 0,-t), Vector3D( t,-u, 0)));
+    
     tris.push_back(Triangle(Vector3D(-t,-u, 0), Vector3D(-t, u, 0), Vector3D(-u, 0, t)));
     tris.push_back(Triangle(Vector3D(-t,-u, 0), Vector3D(-u, 0,-t), Vector3D(-t, u, 0)));
     tris.push_back(Triangle(Vector3D( 0, t, u), Vector3D( 0, t,-u), Vector3D( t, u, 0)));
     tris.push_back(Triangle(Vector3D( 0, t, u), Vector3D(-t, u, 0), Vector3D( 0, t,-u)));
     tris.push_back(Triangle(Vector3D( 0,-t, u), Vector3D( t,-u, 0), Vector3D( 0,-t,-u)));
     tris.push_back(Triangle(Vector3D( 0,-t, u), Vector3D( 0,-t,-u), Vector3D(-t,-u, 0)));
+    
     tris.push_back(Triangle(Vector3D( 0, t, u), Vector3D( t, u, 0), Vector3D( u, 0, t)));
     tris.push_back(Triangle(Vector3D( 0, t,-u), Vector3D( u, 0,-t), Vector3D( t, u, 0)));
     tris.push_back(Triangle(Vector3D( u, 0, t), Vector3D( t,-u, 0), Vector3D( 0,-t, u)));
     tris.push_back(Triangle(Vector3D( u, 0,-t), Vector3D( 0,-t,-u), Vector3D( t,-u, 0)));
     tris.push_back(Triangle(Vector3D(-u, 0, t), Vector3D(-t, u, 0), Vector3D( 0, t, u)));
     tris.push_back(Triangle(Vector3D(-u, 0,-t), Vector3D( 0, t,-u), Vector3D(-t, u, 0)));
+    
     tris.push_back(Triangle(Vector3D(-u, 0, t), Vector3D( 0,-t, u), Vector3D(-t,-u, 0)));
     tris.push_back(Triangle(Vector3D(-u, 0,-t), Vector3D(-t,-u, 0), Vector3D( 0,-t,-u)));
 }

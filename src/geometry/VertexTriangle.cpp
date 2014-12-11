@@ -24,6 +24,26 @@ void VertexTriangle::printVertexTriangle()
     std::cout << " ia =" << ia << " ib =" << ib << " ic =" << ic << std::endl;
 }
 
+void VertexTriangle::subsVertex(int ix_old, int ix_new)
+{
+    if (ix_old == ia)
+    {
+        ia = ix_new;
+        return;
+    }
+    else if (ix_old == ib)
+    {
+        ib = ix_new;
+        return; 
+    }
+    else if (ix_old == ic)
+    {
+        ic = ix_new;
+        return;
+    }
+    return;
+}
+
 double VertexTriangle::area(const Vertex vs[])
 {
     if (ia != -1 && ib != -1 && ic != -1)

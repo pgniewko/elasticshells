@@ -35,6 +35,14 @@ struct cell_params_t
     double div_ratio;
 };
 
+enum class cell_phase_t
+{
+    C_G0,   // gap phase (resting)
+    C_G1,   // mother cell growth
+    C_SG2,  // S+G2 - i.e. bud creation and budding phase
+    C_M     // cell division phase
+};
+
 class Cell
 {
     public:
@@ -49,6 +57,8 @@ class Cell
         int numberOfTris() ;
         int numberOfVerts();
 
+        void calcR0av();
+        
         void calcBondedForces();
         void calcHarmonicForces();
         void calcOsmoticForces();
@@ -62,6 +72,7 @@ class Cell
 
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
+        //void moveToXYZ(const Vector3D&);
 
         void setVertexR(double);
         void setEcc(double);
@@ -86,8 +97,10 @@ class Cell
         double getVertexR();
         
 
-        void grow(double);
+        void grow(double, double);
+        void growBud(double, double);
         void divide();
+        void findBud();
         
         Vector3D& getVertexXYZ(int);
         Vector3D& getVertexForce(int);
@@ -98,19 +111,30 @@ class Cell
         Vector3D cm;
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
+        
 
         int cellId;
+        cell_phase_t my_phase;
 
     private:
+        
         bool isUnique(std::list<Vector3D>&, const Vector3D&);
         int getVertex(const Vector3D);
+        int getNextVertex();
         void constructVertices(std::list<Triangle>);
         void constructVTriangles(std::list<Triangle>);
         void constructTopology();
+        
         cell_params_t params;
         int numberV;
         int numberT;
-        double nRT;  
+        double nRT;
+        
+        double r0av;
+        int vcounter;
+        
+        int budIdx[MAX_V];
+        int budVno;
 };
 
 

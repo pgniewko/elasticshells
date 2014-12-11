@@ -40,6 +40,13 @@ struct nblist_t
     }
 };
 
+enum class vertex_t
+{
+    MOTHER,
+    BUD,
+    GHOST
+};
+
 class Vertex
 {
     public:
@@ -58,9 +65,11 @@ class Vertex
         void printVertex();
 
         void addNeighbor(int, double);
+        void removeNeighbor(int);
         void addNbNeighbor(int, int);
         bool isNeighbor(int);
         void addTriangle(int);
+        void removeTriangle(int);
 
         void voidForce();
         void voidVelocity();
@@ -72,6 +81,10 @@ class Vertex
         double getNeighborR0(int);
         
         void sortNbList();
+        void normalizedR0(double);
+        
+        bool isBud();
+        bool setBud(bool);
 
         Vector3D xyz;
         Vector3D force;
@@ -82,8 +95,10 @@ class Vertex
         Vector3D tmp_velocity;      // make it private
 
         int bondedVerts[NEIGH_MAX];
-        int bondedTris[TRIAN_MAX];
         double r0[NEIGH_MAX];
+        
+        int bondedTris[TRIAN_MAX];
+        
 
         int nbVerts[NBNEI_MAX];
         int nbCellsIdx[NBNEI_MAX];
@@ -94,10 +109,12 @@ class Vertex
 
         int domainIdx;              // make it private
 
+        vertex_t my_type;
     private:
         int myid;
         double mass;
         double visc;
+        bool isbud;
 };
 
 #endif	/* VERTEX_H */

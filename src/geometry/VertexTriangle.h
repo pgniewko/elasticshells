@@ -19,6 +19,7 @@ class VertexTriangle
         double area(const Vertex[]);
 
         void printVertexTriangle();
+        void subsVertex(int, int);
 
         int ia, ib, ic;
         int myindex;

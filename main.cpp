@@ -77,7 +77,7 @@ static struct argp_option options[] =
     {"rv",        506, "FLOAT", 0, "Radius of a single vertex [default: 0.25]"},
     {"gr",        507, "FLOAT", 0, "Growth rate [default: 0.0]"},
     {"vc",        508, "FLOAT", 0, "Volume at division [default: 20.0]"},
-    {"bud-d",     509, "FLOAT", 0, "Bud-neck diameter [default: 0.25]"},
+    {"bud-d",     509, "FLOAT", 0, "Bud-neck diameter [default: 0.5]"},
     {"div-ratio", 510, "FLOAT", 0, "Size ratio at cell division [default: 0.7]"},
 
     {0,             0,       0, 0, "Box options:", 6},
@@ -134,7 +134,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->init_radius = 1.5;
             arguments->growth_rate = 0.0;
             arguments->vc = 20.0;
-            arguments->bud_d = 0.25;
+            arguments->bud_d = 0.5;
             arguments->div_ratio = 0.7;
             arguments->bsx = 10.0;
             arguments->bsy = 10.0;
@@ -260,7 +260,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->vc = arg ?  strtod (arg, NULL) : 20.0;
             break;
         case 509:
-            arguments->bud_d = arg ?  strtod (arg, NULL) : 0.25;
+            arguments->bud_d = arg ?  strtod (arg, NULL) : 0.5;
             break;
         case 510:
             arguments->div_ratio = arg ?  strtod (arg, NULL) : 0.7;
@@ -351,6 +351,9 @@ int main(int argc, char** argv)
     clocks[0].tic();
     Simulator simulator(arguments);
     simulator.initCells(arguments.n_cells, arguments.init_radius);
+    simulator.moveCellToXYZ(Vector3D(0, 0, 0), 0);
+    //simulator.moveCellToXYZ(Vector3D(1.3, 1.3, 1.3), 1);
+    //simulator.moveCellToXYZ(Vector3D(-1.3, -1.3, -1.3), 2);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
     
