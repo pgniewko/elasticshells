@@ -30,4 +30,4 @@ SRC      := ./src
 BIN      := ./bin
 
 # Installation directory
-#PREFIX=/usr/local
+PREFIX   := /usr/local

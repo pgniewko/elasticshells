@@ -1,10 +1,30 @@
 DESCRIPTION
 ==================================================
-COMPILATION - LINUX / MAX OS / WINDOWS 
+COMPILING AND INSTALLATION - LINUX
 ==================================================
+* Executables
+To build the code run make in Makefile dir:
+```
+make
+```
+To change compilation settings edit config.mk file.
+
+* Installation
+
+To install binary files run:
+```
+make install
+```
+
+Binary files will be installed in `$PREFIX=/usr/local` (by default) directory.
+To uninstall biofilm simulator use:
+```
+make uninstall
+```
+Please note that you must be root in order to install at `/usr/local` .
 
 * Performance profiling with `gprof`:
-    + Compile the code(main.cpp) file witg the option: 
+    + Compile the code(main.cpp) file with the option: 
         `-pg`
     + Run the binary file as usual: 
         `biofilm [OPTIONS ...]`
@@ -23,7 +43,8 @@ apt-get install libgsl0-dev
 
 * Steinhardt order parameters [library](https://github.com/nquesada/steinhardt).
 The library can be found in `lib/steinhardt` directory.
-First we need to compile a static library, and then we can install it in `/usr/local/lib`:
+First we compile a static library, then combine objects into library, create an index within the library,
+and finally we can install it in `/usr/local/lib`:
 ```
 $ g++ -O3 -Wall -lm -lgsl -lgslcblas -c -o steinhardt.o steinhardt.c 
 $ ar -rcs libsteinhardt.a steinhardt.o

@@ -42,15 +42,12 @@ $(TESTS)/%.o: $(TESTS)/%.cpp $(TESTS)/%.h
 	$(CXX) -MMD -MP $(CXXFLAGS) -c $< -o $@
 	
 # Tell make that these are phony targets
-.PHONY: build install clean tests indent
+.PHONY: build clean tests install uninstall indent
 
 
 build: $(TARGET)
 	@echo Build done.
 
-install:
-	@echo You must be root to install.
-	
 clean:
 	@echo Cleaning...
 	rm -f $(TARGET) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS) $(DEPS)
@@ -60,11 +57,22 @@ tests: $(TEST_RUNNER)
 	@$(TEST_RUNNER)
 	@echo Test done.
 
+install: $(TARGET)
+	@echo You must be root to install. Have password ready!
+	sudo install -m 755 $(TARGET) $(PREFIX)/bin
+	@echo "Installation complete!"
+
+uninstall:
+	@echo You must be root to uninstall. Have password ready!
+	@if [ -f $(PREFIX)/bin/biofilm ]; \
+	then \
+	    sudo rm $(PREFIX)/bin/biofilm; \
+	fi
+	@echo '$(PREFIX)/bin/biofilm' uninstalled!
+	
 indent:
 	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.cpp"
 	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.h"
 	@./astyle-clean.sh
 
-lib:
-	@echo 
 -include $(DEPS)
