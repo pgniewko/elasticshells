@@ -3,11 +3,12 @@ DESCRIPTION
 COMPILING AND INSTALLATION - LINUX
 ==================================================
 * Executables
-To build the code run make in Makefile dir:
+To build executables run:
 ```
 make
 ```
-To change compilation settings edit config.mk file.
+To change compilation settings edit `config.mk` file.
+Executables will be located in `./bin` directory.
 
 * Installation
 
@@ -17,7 +18,7 @@ make install
 ```
 
 Binary files will be installed in `$PREFIX=/usr/local` (by default) directory.
-To uninstall biofilm simulator use:
+To uninstall executables use:
 ```
 make uninstall
 ```
