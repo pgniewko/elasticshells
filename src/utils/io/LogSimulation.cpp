@@ -21,11 +21,12 @@ void LogSimulation::close()
 
 void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, double rv, int simstep, int numV, int nbhandler)
 {
-    double pressure = SurfacePressure::calcPressure(box, cells);
+    double pressure = SurfacePressure::calcPressure(box, cells, rv);
     double volumeFrac = VolumeFraction::caclVolumeFraction(box, cells, rv);
     double cellsVolume = VolumeFraction::caclCellsVolume(cells);
     double boxVolume = box.getVolume(rv);
     int numofcells = cells.size();
-    double q6 = QL::calcQl(cells[0], 4, 5.0);
-    fprintf(os, "%i %i %i %8.2f %8.2f %10.8f %8.6f %8.6f\n", simstep, numofcells, numV, boxVolume, cellsVolume, volumeFrac, pressure, q6);
+    fprintf(os, "%i %i %i %8.2f %8.2f %10.8f %8.6f\n", simstep, numofcells, numV, boxVolume, cellsVolume, volumeFrac, pressure);
+    //double q6 = QL::calcQl(cells[0], 4, 5.0);
+    //fprintf(os, "%i %i %i %8.2f %8.2f %10.8f %8.6f %8.6f\n", simstep, numofcells, numV, boxVolume, cellsVolume, volumeFrac, pressure, q6);
 }

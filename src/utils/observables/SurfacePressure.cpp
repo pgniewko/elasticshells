@@ -6,7 +6,7 @@ SurfacePressure::SurfacePressure(const SurfacePressure& orig) {}
 
 SurfacePressure::~SurfacePressure() {}
 
-double SurfacePressure::calcPressure(Box& box, std::vector<Cell>& cells)
+double SurfacePressure::calcPressure(Box& box, std::vector<Cell>& cells, double rv)
 {
     if (box.pbc)
     {
@@ -61,11 +61,10 @@ double SurfacePressure::calcPressure(Box& box, std::vector<Cell>& cells)
             forceZ = HertzianRepulsion::calcForce(djk, rvertex, ecw);
             fz = forceZ.length();
             
-            //totalForce +=  sqrt( fx * fx + fy * fy + fz * fz );
             totalForce +=  (fx + fy + fz);
         }
     }
 
-    double area = box.getArea();
+    double area = box.getArea(rv);
     return totalForce / area;
 }

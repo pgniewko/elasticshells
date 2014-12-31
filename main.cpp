@@ -351,7 +351,7 @@ int main(int argc, char** argv)
     clocks[0].tic();
     Simulator simulator(arguments);
     simulator.initCells(arguments.n_cells, arguments.init_radius);
-    simulator.moveCellToXYZ(Vector3D(0, 0, 0), 0);
+    //simulator.moveCellToXYZ(Vector3D(0, 0, 0), 0);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
     
