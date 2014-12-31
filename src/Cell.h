@@ -16,6 +16,7 @@
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
 #include "simulation/DomainList.h"
+#include "simulation/Tinker.h"
 
 struct cell_params_t
 {
@@ -45,7 +46,9 @@ enum class cell_phase_t
 
 class Cell
 {
+    friend class Tinker;
     public:
+        
         Cell(int);
         Cell(std::list<Triangle>);
         Cell(const Cell& orig);
@@ -108,22 +111,15 @@ class Cell
         void voidForces();
         void getDistance(Vector3D&, const Vector3D&, const Vector3D&, Box&);
 
-        Vector3D cm;
+        Vector3D cm_m;
+        Vector3D cm_b;
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
         
-
         int cellId;
         cell_phase_t my_phase;
-
-    private:
         
-        bool isUnique(std::list<Vector3D>&, const Vector3D&);
-        int getVertex(const Vector3D);
-        int getNextVertex();
-        void constructVertices(std::list<Triangle>);
-        void constructVTriangles(std::list<Triangle>);
-        void constructTopology();
+    private:
         
         cell_params_t params;
         int numberV;
