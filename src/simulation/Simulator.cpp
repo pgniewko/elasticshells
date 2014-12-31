@@ -279,49 +279,10 @@ void Simulator::simulate(int steps)
     traj.open();
     traj.save(cells, getTotalVertices());
     logsim.open();
-    logsim.dumpState(box, cells, 1, getTotalVertices(), params.nbhandler);
-        
-    //std::cout << "a=" << Aspherity::calcAspherity(cells[0]) <<  std::endl;
-    //std::cout << "Q" << 2 << "=" << QL::calcQl(cells[0], 2, 5.0) << std::endl;
-    //std::cout << "Q" << 4 << "=" << QL::calcQl(cells[0], 4, 5.0) << std::endl;
-    //std::cout << "Q" << 6 << "=" << QL::calcQl(cells[0], 6, 5.0) << std::endl;
-    //std::cout << "Q" << 8 << "=" << QL::calcQl(cells[0], 8, 5.0) << std::endl;
-    //std::cout << "Q" << 10 << "=" << QL::calcQl(cells[0], 10, 5.0) << std::endl;
-    
-    //std::cout << "W" << 2 << "=" << WL::calcWl(cells[0], 2, 5.0) << std::endl;
-    //std::cout << "W" << 4 << "=" << WL::calcWl(cells[0], 4, 5.0) << std::endl;
-    //std::cout << "W" << 6 << "=" << WL::calcWl(cells[0], 6, 5.0) << std::endl;
-    //std::cout << "W" << 8 << "=" << WL::calcWl(cells[0], 8, 5.0) << std::endl;
-    //std::cout << "W" << 10 << "=" << WL::calcWl(cells[0], 10, 5.0) << std::endl;
-    //for (int cn = 0; cn < cells.size(); cn++)
-    //{
-    //    cells[cn].findBud();
-    //}
+    logsim.dumpState(box, cells, params.r_vertex, 1, getTotalVertices(), params.nbhandler);
 
-    cells[1].my_phase = cell_phase_t::C_G1;
     for (int i = 0; i <= steps; i++)
-    {
-        for (int cn = 0; cn < cells.size(); cn++)
-        {
-            
-            if (cells[cn].my_phase == cell_phase_t::C_G0)
-            {
-            //    std::cout << " my phase is C_G0" << " and id " << cells[cn].cellId<< std::endl;
-               // std::cout << (int)cell_phase_t::C_SG2 << std::endl;
-                //if (cell_phase_t::C_G0 == 1)
-                //{
-                //    std::cout << " dupa o.O" << std::endl;
-                //}
-            //}
-            //if (i <= 10000)
-            //{
-            //    cells[cn].grow(params.dt, params.growth_rate);
-            //    sb.saveRenderScript(cells, box, params.draw_box);
-            //    sb.saveSurfaceScript(cells);
-            //}
-            }
-        }
-        
+    {   
         if (params.nbhandler == 1)
         {
             if ( (i + 1) % params.vlist_step == 0)
@@ -351,7 +312,7 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % params.log_step == 0)
         {
-            logsim.dumpState(box, cells, (i + 1), getTotalVertices(), params.nbhandler);
+            logsim.dumpState(box, cells, params.r_vertex, (i + 1), getTotalVertices(), params.nbhandler);
         }
 
         if ( (i + 1) % params.box_step == 0)
@@ -482,7 +443,7 @@ void Simulator::setIntegrator(char* token)
     }
     else
     {
-        //TODO: print warning
+        //TODO: print info
         this->setIntegrator(&Simulator::integrateEuler);
     }
 }
@@ -499,7 +460,7 @@ void Simulator::setTriangulator(char* token)
     }
     else
     {
-        //TODO: print warning
+        //TODO: print info
         triangulator = "simple";
     }
 }
@@ -637,7 +598,7 @@ void Simulator::moveCell(const Vector3D& v3d, int cellid)
 void Simulator::moveCellToXYZ(const Vector3D& v3d, int cellid)
 {
     cells[cellid].calcCM();
-    Vector3D shift = v3d - cells[cellid].cm;
+    Vector3D shift = v3d - cells[cellid].cm_m;
     cells[cellid].addXYZ(shift);
 }
 
