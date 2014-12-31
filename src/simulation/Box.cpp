@@ -49,15 +49,28 @@ void Box::resize()
     }
 }
 
-double Box::getVolume()
+double Box::getVolume(double rv)
 {
-    return 2.0 * x * 2.0 * y * 2.0 * z;
+    return 2.0 * (x-rv) * 2.0 * (y-rv) * 2.0 * (z-rv);
 }
 
-double Box::getArea()
+double Box::getArea(double rv)
 {
-    return 2 * (4 * x * y + 4 * x * z + 4 * y * z);
+    double xc = x - rv;
+    double yc = y - rv;
+    double zc = z - rv;
+    return 2 * (4 * xc * yc + 4 * xc * zc + 4 * yc * zc);
 }
+
+//double Box::getVolume()
+//{
+//    return 2.0 * x * 2.0 * y * 2.0 * z;
+//}
+
+//double Box::getArea()
+//{
+//    return 2 * (4 * x * y + 4 * x * z + 4 * y * z);
+//}
 
 void Box::setX(const double newx)
 {
