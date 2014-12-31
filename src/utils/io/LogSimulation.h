@@ -8,7 +8,7 @@
 #include "simulation/Box.h"
 #include "utils/observables/SurfacePressure.h"
 #include "utils/observables/VolumeFraction.h"
-#include "utils/observables/VolumePressure.h"
+#include "utils/observables/order/QL.h"
 
 class LogSimulation
 {
@@ -19,7 +19,7 @@ class LogSimulation
 
         void open();
         void close();
-        void dumpState(Box&, std::vector<Cell>&, int, int, int);
+        void dumpState(Box&, std::vector<Cell>&, double, int, int, int);
 
     private:
         char* logfile;

@@ -12,7 +12,7 @@ double Aspherity::calcAspherity(Cell cell)
     double sq_av_radius = 0.0;
     double sq_sum = 0.0;
     cell.calcCM();
-    Vector3D cell_cm = cell.cm;
+    Vector3D cell_cm = cell.cm_m;
     
     for (int i = 0; i < cell.numberOfVerts(); i++)
     {
