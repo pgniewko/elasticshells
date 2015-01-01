@@ -1,18 +1,18 @@
 #include "Vertex.h"
 
 Vertex::Vertex() : xyz(0, 0, 0), numBonded(0), numTris(0), numNbNeighs(0),
-    domainIdx(-1), myid(-1), mass(1.0), isbud(false), my_type(vertex_t::MOTHER) {}
+    domainIdx(-1), myid(-1), mass(1.0), my_type(vertex_t::MOTHER) {}
 
 Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), numBonded(0), numTris(0),
-    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), isbud(false), my_type(vertex_t::MOTHER) {}
+    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), my_type(vertex_t::MOTHER) {}
 
 Vertex::Vertex(Vector3D v) : xyz(v), numBonded(0), numTris(0),
-    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), isbud(false) {}
+    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), my_type(vertex_t::MOTHER) {}
 
 Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(orig.velocity),
     tmp_xyz(orig.tmp_xyz), tmp_force(orig.tmp_force), tmp_velocity(orig.tmp_velocity),
     numBonded(orig.numBonded), numTris(orig.numTris), numNbNeighs(orig.numNbNeighs), domainIdx(orig.domainIdx),
-    myid(orig.myid), mass( orig.mass ), visc(orig.visc), isbud(orig.isbud), my_type(orig.my_type)
+    myid(orig.myid), mass( orig.mass ), visc(orig.visc), my_type(orig.my_type)
 {
     for (int i = 0; i < numBonded; i++)
     {
@@ -36,7 +36,6 @@ Vertex::~Vertex() {}
 
 void Vertex::addNeighbor(int idx, double k0n)
 {
-    //std::cout <<" my index=" << myid << " adding idx=" << idx << std::endl;
     try
     {
         if (numBonded >= NEIGH_MAX)
@@ -73,8 +72,7 @@ void Vertex::addNeighbor(int idx, double k0n)
 
 void Vertex::removeNeighbor(int vidx)
 {
-    //std::cout << "my index=" << myid << " removing vidx="<<vidx << std::endl;
-    int pos;
+    int pos = -1;
     if ( isNeighbor(vidx) )
     {
         for (int i = 0; i < numBonded; i++)
@@ -85,28 +83,14 @@ void Vertex::removeNeighbor(int vidx)
             }
         }
         
-        //std::cout << "pos of vidx pos=" << pos << std::endl;
-        
-        for (int i = 0; i < numBonded ; i++)
-        {
-            //std::cout << " (bv, r0) = " << bondedVerts[i] << "," <<r0[i];
-        }
-        //std::cout << std::endl;
-        
         for (int i = pos; i < numBonded - 1; i++)
         {
             bondedVerts[i] = bondedVerts[i + 1];
             r0[i] = r0[i + 1];
         }
-        
         numBonded--;
-        
-        for (int i = 0; i < numBonded ; i++)
-        {
-            //std::cout << " (bv, r0) = " << bondedVerts[i] << "," <<r0[i];
-        }
-        //std::cout << std::endl;
     }
+    return;
 }
 
 void Vertex::addTriangle(int idx)
@@ -163,6 +147,8 @@ void Vertex::removeTriangle(int tidx)
         bondedTris[i] = bondedTris[i + 1];
     }
     numTris--;
+
+    return;
 }
 
 void Vertex::addNbNeighbor(int vertIdx, int cellIdx)
@@ -336,13 +322,7 @@ void Vertex::normalizedR0(double newR0)
     }
 }
 
-bool Vertex::isBud()
+const vertex_t& Vertex::getMyType()
 {
-    return isbud;
-}
-
-bool Vertex::setBud(bool boolval)
-{
-    isbud = boolval;
-    return isbud;
+    return my_type;
 }

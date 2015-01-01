@@ -83,8 +83,7 @@ class Vertex
         void sortNbList();
         void normalizedR0(double);
         
-        bool isBud();
-        bool setBud(bool);
+        const vertex_t& getMyType();
 
         Vector3D xyz;
         Vector3D force;
@@ -108,13 +107,12 @@ class Vertex
         int numNbNeighs;
 
         int domainIdx;              // make it private
-
-        vertex_t my_type;
+        
     private:
         int myid;
         double mass;
         double visc;
-        bool isbud;
+        vertex_t my_type;
 };
 
 #endif	/* VERTEX_H */
