@@ -282,7 +282,7 @@ void Simulator::simulate(int steps)
     logsim.dumpState(box, cells, params.r_vertex, 1, getTotalVertices(), params.nbhandler);
 
     for (int i = 0; i <= steps; i++)
-    {   
+    {
         if (params.nbhandler == 1)
         {
             if ( (i + 1) % params.vlist_step == 0)
@@ -319,6 +319,11 @@ void Simulator::simulate(int steps)
         {
             box.resize();
             domains.setBoxDim(box);
+        }
+        
+        for (int i = 0; i < numberofCells; i++)
+        {
+            cells[i].cellCycle();
         }
 
         if ( i % (steps / 10) == 0.0 )
