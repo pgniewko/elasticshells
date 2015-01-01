@@ -6,7 +6,21 @@ QL::QL(const QL& orig) {}
 
 QL::~QL() {}
 
-double QL::calcQl(Cell cell, int l, double rc)
+double QL::calcQl(std::vector<Cell>& cells, int l, double rc)
+{
+    double qlsum = 0.0;
+    double N = 0.0;
+    for (int i = 0; i < cells.size(); i++)
+    {
+        qlsum += QL::calcQl(cells[i], l, rc);
+        N += 1.0;
+    }
+    
+    qlsum /= N;
+    return qlsum;
+}
+
+double QL::calcQl(Cell& cell, int l, double rc)
 {
     int count;
     int n = cell.numberOfVerts();
