@@ -6,7 +6,21 @@ WL::WL(const WL& orig) {}
 
 WL::~WL() {}
 
-double WL::calcWl(Cell cell, int l, double rc)
+double WL::calcWl(std::vector<Cell>& cells, int l, double rc)
+{
+    double wlsum = 0.0;
+    double N = 0.0;
+    for (int i = 0; i < cells.size(); i++)
+    {
+        wlsum += WL::calcWl(cells[i], l, rc);
+        N += 1.0;
+    }
+    
+    wlsum /= N;
+    return wlsum;
+}
+
+double WL::calcWl(Cell& cell, int l, double rc)
 {
     int count;
     int n = cell.numberOfVerts();
