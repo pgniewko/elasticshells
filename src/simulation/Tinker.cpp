@@ -1,16 +1,10 @@
 #include "Tinker.h" 
 
-Tinker::Tinker() 
-{
-}
+Tinker::Tinker() {}
 
-Tinker::Tinker(const Tinker& orig) 
-{
-}
+Tinker::Tinker(const Tinker& orig) {}
 
-Tinker::~Tinker() 
-{
-}
+Tinker::~Tinker() {}
 
 void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
 {
@@ -388,4 +382,14 @@ int Tinker::getNextVertex(Cell& cell)
     std::cout << " vertexId=" << vertexId << std::endl;
 
     return vertexId;
+}
+
+void Tinker::bud(Cell& cell)
+{
+    return;
+}
+
+void Tinker::divide(Cell& cell)
+{
+    return;
 }

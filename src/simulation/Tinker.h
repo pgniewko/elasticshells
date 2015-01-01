@@ -22,6 +22,8 @@ public:
     static void constructTopology(Cell&);
     
     static void grow(Cell&);
+    static void bud(Cell&);
+    static void divide(Cell&);
 private:
     static bool isUnique(std::list<Vector3D>&, Vector3D&);
     static int getNextVertex(Cell&);
