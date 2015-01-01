@@ -19,7 +19,7 @@ Cell::Cell(std::list<Triangle> tris) : cellId(-1), my_phase(cell_phase_t::C_G0),
 }
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles),
-    cellId(orig.cellId), my_phase(orig.my_phase), params(orig.params), numberV(orig.numberV), numberT(orig.numberT), nRT(orig.nRT), r0av(orig.r0av),
+    cellId(orig.cellId), params(orig.params), my_phase(orig.my_phase), numberV(orig.numberV), numberT(orig.numberT), nRT(orig.nRT), r0av(orig.r0av),
     vcounter(orig.vcounter), budVno(orig.budVno)
 {}
 
@@ -295,14 +295,14 @@ void Cell::calcCM()
 
     for (int i = 0; i < numberV; i++)
     {
-        if (vertices[i].my_type == vertex_t::MOTHER)
+        if (vertices[i].getMyType() == vertex_t::MOTHER)
         {
             m = vertices[i].getMass();
             tmp_m += m * vertices[i].xyz;
             Mm += m;
         }
         
-        if (vertices[i].my_type == vertex_t::BUD)
+        if (vertices[i].getMyType() == vertex_t::BUD)
         {
             m = vertices[i].getMass();
             tmp_b += m * vertices[i].xyz;
@@ -509,19 +509,41 @@ void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, Bo
     }
 }
 
-void Cell::grow(double dt, double gr)
+void Cell::cellCycle()
 {
-    return;
+    if (my_phase == cell_phase_t::C_G0)
+    {
+        // DO NOTHING
+    }
+    else if (my_phase == cell_phase_t::C_G1)
+    {
+        grow();
+    }
+    
+    else if (my_phase == cell_phase_t::C_SG2)
+    {
+        bud();
+    }
+    else if (my_phase == cell_phase_t::C_M)
+    {
+        divide();
+    }
 }
 
-void Cell::growBud(double dt, double gr)
+void Cell::grow()
 {
-    return;
+    Tinker::grow(*this);
+}
+
+void Cell::bud()
+{
+    findBud();
+    Tinker::bud(*this);
 }
 
 void Cell::divide()
 {
-    return;
+    Tinker::divide(*this);
 }
 
 void Cell::findBud()

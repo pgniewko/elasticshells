@@ -99,17 +99,13 @@ class Cell
         Vector3D getCm();
         double getVertexR();
         
-
-        void grow(double, double);
-        void growBud(double, double);
-        void divide();
-        void findBud();
-        
         Vector3D& getVertexXYZ(int);
         Vector3D& getVertexForce(int);
 
         void voidForces();
         void getDistance(Vector3D&, const Vector3D&, const Vector3D&, Box&);
+        
+        void cellCycle();
 
         Vector3D cm_m;
         Vector3D cm_b;
@@ -117,11 +113,16 @@ class Cell
         VertexTriangle triangles[MAX_T];
         
         int cellId;
-        cell_phase_t my_phase;
+        
         
     private:
+        void grow();
+        void bud();
+        void divide();
+        void findBud();
         
         cell_params_t params;
+        cell_phase_t my_phase;
         int numberV;
         int numberT;
         double nRT;
