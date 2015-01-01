@@ -80,6 +80,6 @@ PBC="--pbc"
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
         --nb 0 --save-step $SS --box-step $BOXS \
         --rv $RCUT \
-        -r $DIR/render_0p.py -xyz $DIR/traj_0p.xyz --surf $DIR/surf_0p.py -o $DIR/biofilm_0p.out \
+        -r $DIR/render_0p.py --xyz $DIR/traj_0p.xyz --surf $DIR/surf_0p.py -o $DIR/biofilm_0p.out \
         $PBC \
         -d
