@@ -25,8 +25,9 @@ DEPS         := $(OBJECTS:.o=.d)
 
 #Linking commands:
 $(TARGET): $(OBJECTS)
-	@echo Linking...
+	@echo LINKING ...
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
+	@echo BUILDING IS DONE
 
 $(TEST_RUNNER): $(TEST_OBJECTS) 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
@@ -46,12 +47,11 @@ $(TESTS)/%.o: $(TESTS)/%.cpp $(TESTS)/%.h
 
 
 build: $(TARGET)
-	@echo Build done.
+	@echo BUILDING IS DONE
 
 clean:
 	@echo Cleaning...
 	rm -f $(TARGET) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS) $(DEPS)
-	@echo Clean done.
 	
 tests: $(TEST_RUNNER)
 	@$(TEST_RUNNER)
