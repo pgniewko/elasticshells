@@ -39,8 +39,9 @@ void Vertex::addNeighbor(int idx, double k0n)
     try
     {
         if (numBonded >= NEIGH_MAX)
-            throw MaxSizeException("Maximum number of neighbors has been reached.\n"
-                                   "New neighbor will not be added !\n");
+            throw MaxSizeException("Maximum number of neighbors has been reached."
+                                   "New neighbor will not be added!\n"
+                                   "Simulation will be terminated.\n");
 
         if (idx < 0)
             throw RunTimeError("Trying to add a vertex with a negative index.\n"
@@ -60,12 +61,13 @@ void Vertex::addNeighbor(int idx, double k0n)
     }
     catch (MaxSizeException& e)
     {
-        std::cout << e.what() << std::endl;
-        return;
+        std::cerr << e.what() << std::endl;
+        exit(1);
+        //return;
     }
     catch (RunTimeError& e)
     {
-        std::cout << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         exit(1);
     }
 }
@@ -99,7 +101,8 @@ void Vertex::addTriangle(int idx)
     {
         if (numTris >= TRIAN_MAX)
             throw MaxSizeException("Maximum number of triangles has been reached."
-                                   "New triangle will not be added !");
+                                   "New triangle will not be added!\n"
+                                   "Simulation will be terminated.\n");
 
         if (idx < 0)
             throw RunTimeError("Trying to add a triangle with a negative index.\n"
@@ -118,12 +121,13 @@ void Vertex::addTriangle(int idx)
     }
     catch (MaxSizeException& e)
     {
-        std::cout << e.what() << std::endl;
-        return;
+        std::cerr << e.what() << std::endl;
+        exit(1);
+        //return;
     }
     catch (RunTimeError& e)
     {
-        std::cout << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         exit(1);
     }
 }
@@ -156,16 +160,17 @@ void Vertex::addNbNeighbor(int vertIdx, int cellIdx)
     try
     {
         if (numNbNeighs >= NBNEI_MAX)
-            throw MaxSizeException("Maximum number of neighbors has been reached.\n"
-                                   "New neighbor will not be added !\n");
+            throw MaxSizeException("Maximum number of neighbors has been reached."
+                                   "New neighbor will not be added.\n"
+                                   "Simulation will be terminated!\n");
 
         if (vertIdx < 0)
             throw RunTimeError("Trying to add a vertex with a negative index.\n"
-                               "Runtime data is incorrect. Simulation will be terminated. \n");
+                               "Runtime data is incorrect. Simulation will be terminated!\n");
         
         if (cellIdx < 0)
             throw RunTimeError("Trying to add a vertex with a negative cell index.\n"
-                               "Runtime data is incorrect. Simulation will be terminated. \n");
+                               "Runtime data is incorrect. Simulation will be terminated!\n");
         
         
         nbVerts[numNbNeighs] = vertIdx;
@@ -175,12 +180,13 @@ void Vertex::addNbNeighbor(int vertIdx, int cellIdx)
     }
     catch (MaxSizeException& e)
     {
-        std::cout << e.what() << std::endl;
-        return;
+        std::cerr << e.what() << std::endl;
+        exit(1);
+        //return;
     }
     catch (RunTimeError& e)
     {
-        std::cout << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         exit(1);
     }
 }

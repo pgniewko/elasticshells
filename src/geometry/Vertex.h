@@ -49,6 +49,7 @@ enum class vertex_t
 
 class Vertex
 {
+    friend class Tinker;
     public:
         Vertex();
         Vertex(double, double, double);
