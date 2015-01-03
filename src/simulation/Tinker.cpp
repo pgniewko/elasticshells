@@ -117,10 +117,7 @@ void Tinker::constructTopology(Cell& cell)
 
 void Tinker::grow(Cell& cell)
 {
-    if (uniform() > 0.00)
-        return;
- 
-    int vertexId = getNextVertex(cell);
+    int vertexId = getRandomVertex(cell);
     
     
     int triangle_num = uniform(0, cell.vertices[vertexId].numTris);
@@ -313,75 +310,99 @@ void Tinker::grow(Cell& cell)
     
 }
 
-int Tinker::getNextVertex(Cell& cell)
+// CREATE LIST DEP ON CELL CYCLE STAGE
+int Tinker::getRandomVertex(Cell& cell)
 {
     int vertexId = -1;
-    // RANDOM
-    return uniform(0, cell.numberV);
-    
-    double spatialNb[cell.numberV];
-    for (int i = 0; i < cell.numberV; i++)
+    int vertexCounter = 0;
+    if (cell.my_phase == cell_phase_t::C_G1)
     {
-        spatialNb[i] = 0.0;
-    }
-    
-    double ptot = 0.0;
-    double cutoff = cell.r0av;
-    for (int i = 0; i< cell.numberV; i++)
-    {
-        for (int j = 0; j < cell.numberV; j++)
+        for (int i = 0; i < cell.numberV; i++)
         {
-            double r = (cell.vertices[i].xyz - cell.vertices[j].xyz).length() ;
-            if (r <= cutoff && j!=i) 
+            if (cell.vertices[i].my_type == vertex_t::MOTHER)
             {
-                spatialNb[i] += 1.0 / r;
-                //spatialNb[j] += 1.0;// / r;
-                //ptot += 1.0;// / r;
-                //ptot += 1.0;// / r;
+                vidx[vertexCounter] = i;
+                vertexCounter++;
+            }
+        }     
+    }
+    else if (cell.my_phase == cell_phase_t::C_SG2)
+    {
+        for (int i = 0; i < cell.numberV; i++)
+        {
+            if (cell.vertices[i].my_type == vertex_t::BUD)
+            {
+                vidx[vertexCounter] = i;
+                vertexCounter++;
             }
         }
     }
-    
-    for (int i = 0; i < cell.numberV; i++)
+    else
     {
-        spatialNb[i] = std::max(spatialNb[i], 1.0);
+        std::cout << "ERROR a.k.a. BUG" << std::endl;
+        exit(1);
     }
     
-    for (int i = 0; i < cell.numberV; i++)
-    {
-        ptot += 1.0 / spatialNb[i];
-        std::cout << "spatialNb[" << i << "]=" << spatialNb[i] << std::endl;
-    }
-    std::cout << "ptot=" << ptot << std::endl;
+    // RANDOM
+    vertexId = uniform(0, vertexCounter);
+    return vidx[vertexId];
     
-    //for (int i = 0; i < numberV; i++)
+    //double spatialNb[cell.numberV];
+    //for (int i = 0; i < cell.numberV; i++)
     //{
-    //    spatialNb[i] /= ptot;
+    //    spatialNb[i] = 0.0;
     //}
     
-    double sumcheck = 0.0;
-    for (int i = 0; i < cell.numberV; i++)
-    {
-        sumcheck += (1. / spatialNb[i]) / (ptot);
-    }
-    //std::cout << "sumcheck=" << sumcheck << std::endl;
+    //double ptot = 0.0;
+    //double cutoff = cell.r0av;
+    //for (int i = 0; i< cell.numberV; i++)
+    //{
+    //    for (int j = 0; j < cell.numberV; j++)
+    //    {
+    //        double r = (cell.vertices[i].xyz - cell.vertices[j].xyz).length() ;
+    //        if (r <= cutoff && j!=i) 
+    //        {
+    //            spatialNb[i] += 1.0 / r;
+                //spatialNb[j] += 1.0;// / r;
+                //ptot += 1.0;// / r;
+                //ptot += 1.0;// / r;
+    //        }
+    //    }
+    //}
     
-    double randn = uniform(0, 1.0);
-    double fracsum = 0.0;
+    //for (int i = 0; i < cell.numberV; i++)
+    //{
+    //    spatialNb[i] = std::max(spatialNb[i], 1.0);
+    //}
+    
+    //for (int i = 0; i < cell.numberV; i++)
+    //{
+    //    ptot += 1.0 / spatialNb[i];
+    //    std::cout << "spatialNb[" << i << "]=" << spatialNb[i] << std::endl;
+    //}
+    //std::cout << "ptot=" << ptot << std::endl;
+    
+    
+    //double sumcheck = 0.0;
+    //for (int i = 0; i < cell.numberV; i++)
+    //{
+    //    sumcheck += (1. / spatialNb[i]) / (ptot);
+    //}
+    
+    //double randn = uniform(0, 1.0);
+    //double fracsum = 0.0;
    
-    for (int i = 0; i < cell.numberV; i++)
-    {
-        fracsum += (1. / spatialNb[i]) / (ptot);
-        if (randn < fracsum)
-        {
-            vertexId = i;
-            break;
-        }
-    }
-    std::cout << "sumcheck=" << sumcheck <<  " fracsum="<<fracsum<< std::endl;
-    std::cout << " vertexId=" << vertexId << std::endl;
+    //for (int i = 0; i < cell.numberV; i++)
+    //{
+    //    fracsum += (1. / spatialNb[i]) / (ptot);
+    //    if (randn < fracsum)
+    //    {
+    //        vertexId = i;
+    //        break;
+    //    }
+    //}
 
-    return vertexId;
+    //return vertexId;
 }
 
 void Tinker::bud(Cell& cell)
@@ -393,3 +414,5 @@ void Tinker::divide(Cell& cell)
 {
     return;
 }
+
+int Tinker::vidx[MAX_V];
