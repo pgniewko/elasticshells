@@ -511,8 +511,10 @@ void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, Bo
 
 void Cell::cellCycle()
 {
+    
     if (my_phase == cell_phase_t::C_G0)
     {
+        // check if need to switch to C_G1
         // DO NOTHING
     }
     else if (my_phase == cell_phase_t::C_G1)
@@ -532,6 +534,9 @@ void Cell::cellCycle()
 
 void Cell::grow()
 {
+    if (uniform() > 0.00)
+        return;
+        
     Tinker::grow(*this);
 }
 

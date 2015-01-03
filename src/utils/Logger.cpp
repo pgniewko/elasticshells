@@ -37,7 +37,7 @@
 
    Any feedback is very welcome.
    http://www.bioshell.pl/
-   email: dgront @ gmail.com or dgront @ chem.uw.edu.pl (remove space)
+   email: dgront @ gmail.com or dgront @ chem.uw.edu.pl (remove spaces)
 */
 
 #include <string>

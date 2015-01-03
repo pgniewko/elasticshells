@@ -14,7 +14,7 @@
 #define TRIAN_MAX 40
 #define NBNEI_MAX 100
 #define MAX_IN_DOMAIN 20 // maximum number of particles in a domain
-#define MAX_M 20 // maximum number of linked-domains
+#define MAX_M 20 // maximum number of linked-domains - in every direction
 #define MAX_D_NEIGH 27 // MUST BE 27 - ALWAYS !
 
 const double E       = 2.71828182845905;
