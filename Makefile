@@ -60,7 +60,8 @@ tests: $(TEST_RUNNER)
 install: $(TARGET)
 	@echo You must be root to install. Have password ready!
 	sudo install -m 755 $(TARGET) $(PREFIX)/bin
-	@echo "Installation complete!"
+	@echo 'biofilm has been installet at $(PREFIX)/bin'
+	@echo "INSTALLATION COMPLETE !"
 
 uninstall:
 	@echo You must be root to uninstall. Have password ready!
