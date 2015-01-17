@@ -9,6 +9,9 @@ make
 ```
 To change compilation settings edit `config.mk` file.
 Executables will be located in `./bin` directory.
+For a correct compilation g++ >= 4.9 is necessary.
+To built on OS X systems `arpg.h` library must be installed and
+linked (`LDLIBS   := ... largp ...`) in `config.mk` file.
 
 * Installation
 
@@ -22,7 +25,7 @@ To uninstall executables use:
 ```
 make uninstall
 ```
-Please note that you must be root in order to install at `/usr/local` .
+Please note that you must be root in order to install at `/usr/local`.
 
 * Performance profiling with `gprof`:
     + Compile the code(main.cpp) file with the option: 
