@@ -60,7 +60,7 @@ class Cell
         int numberOfTris() ;
         int numberOfVerts();
 
-        void calcR0av();
+        //void calcR0av();
         
         void calcBondedForces();
         void calcHarmonicForces();
@@ -114,6 +114,9 @@ class Cell
         
         int cellId;
         
+        void setR0AvForAll();
+        double getPercLength(int, int);
+        double nbMagnitudeForce(std::vector<Cell>, Box&, int);
         
     private:
         void grow();
@@ -121,6 +124,8 @@ class Cell
         void divide();
         void findBud();
         
+        void calcAverageR0();
+        double sumL2();
         cell_params_t params;
         cell_phase_t my_phase;
         int numberV;
@@ -128,7 +133,7 @@ class Cell
         double nRT;
         
         double r0av;
-        int vcounter;
+        int vcounter; // remove - prawdopodobnie bezurzyteczny
         
         int budIdx[MAX_V];
         int budVno;
