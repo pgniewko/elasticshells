@@ -9,15 +9,16 @@
 #include "Environment.h"
 #include "Cell.h"
 
-class WL {
-public:
-    WL();
-    WL(const WL& orig);
-    virtual ~WL();
-    
-    static double calcWl(Cell&, int, double);
-    static double calcWl(std::vector<Cell>&, int, double);
-private:
+class WL
+{
+    public:
+        WL();
+        WL(const WL& orig);
+        virtual ~WL();
+
+        static double calcWl(Cell&, int, double);
+        static double calcWl(std::vector<Cell>&, int, double);
+    private:
 
 };
 

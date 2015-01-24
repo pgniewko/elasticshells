@@ -12,6 +12,7 @@ double SurfaceForce::calcForces(Box& box, std::vector<Cell>& cells, double rv)
     {
         return 0.0;
     }
+
     double ecw = box.ecw;
     double rvertex;
     Vector3D wallYZ, wallXZ, wallXY;
@@ -59,5 +60,6 @@ double SurfaceForce::calcForces(Box& box, std::vector<Cell>& cells, double rv)
             totalForce +=  (fx + fy + fz);
         }
     }
+
     return totalForce;
 }

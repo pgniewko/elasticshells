@@ -1,4 +1,4 @@
-#include "Tinker.h" 
+#include "Tinker.h"
 
 Tinker::Tinker() {}
 
@@ -120,16 +120,12 @@ void Tinker::grow(Cell& cell)
     //int vertexId = getRandomVertex(cell);
     //int vertexId = getLonelyVertex(cell);
     int vertexId = getOldestVertex(cell);
-    
-    
     int triangle_num = uniform(0, cell.vertices[vertexId].numTris);
-    
-    
     int triangleId = cell.vertices[vertexId].bondedTris[triangle_num];
-    
     int vertPos = -1;
     int vert1 = -1;
     int vert2 = -1;
+
     if (cell.triangles[triangleId].ia == vertexId)
     {
         vertPos = 0;
@@ -140,15 +136,15 @@ void Tinker::grow(Cell& cell)
     }
     else
     {
-         vertPos = 2;
+        vertPos = 2;
     }
-    
+
     if (vertPos == 0)
     {
         vert1 = cell.triangles[triangleId].ib;
         vert2 = cell.triangles[triangleId].ic;
     }
-    else if(vertPos == 1)
+    else if (vertPos == 1)
     {
         vert1 = cell.triangles[triangleId].ia;
         vert2 = cell.triangles[triangleId].ic;
@@ -156,16 +152,18 @@ void Tinker::grow(Cell& cell)
     else
     {
         vert1 = cell.triangles[triangleId].ia;
-        vert2 = cell.triangles[triangleId].ib;        
+        vert2 = cell.triangles[triangleId].ib;
     }
-    
+
     int secondTriangleId = -1;
+
     for (int i = 0; i < cell.vertices[vert1].numTris; i++)
     {
         for (int j = 0; j < cell.vertices[vert2].numTris; j++)
         {
             int t1 = cell.vertices[vert1].bondedTris[i];
             int t2 = cell.vertices[vert2].bondedTris[j];
+
             if (t1 == t2 && t1 != triangleId)
             {
                 secondTriangleId = t1;
@@ -173,7 +171,6 @@ void Tinker::grow(Cell& cell)
         }
     }
 
-    
     Vector3D newcoor = 0.5 * (cell.vertices[vert1].xyz + cell.vertices[vert2].xyz);
     cell.vertices[cell.numberV] = Vertex(newcoor.x, newcoor.y, newcoor.z);
     cell.vertices[cell.numberV].setId(cell.numberV);
@@ -181,15 +178,14 @@ void Tinker::grow(Cell& cell)
     cell.vertices[cell.numberV].setVisc(cell.vertices[vertexId].getVisc());
     int newid = cell.numberV;
     cell.numberV++;
-    
-    
     int vert3 = -1;
+
     if (cell.triangles[secondTriangleId].ia == vert1)
     {
         if (cell.triangles[secondTriangleId].ib == vert2)
         {
             vert3 = cell.triangles[secondTriangleId].ic;
-        } 
+        }
         else
         {
             vert3 = cell.triangles[secondTriangleId].ib;
@@ -201,59 +197,52 @@ void Tinker::grow(Cell& cell)
         if (cell.triangles[secondTriangleId].ia == vert2)
         {
             vert3 = cell.triangles[secondTriangleId].ic;
-        } 
+        }
         else
         {
             vert3 = cell.triangles[secondTriangleId].ia;
         }
-    }    
+    }
 
     if (cell.triangles[secondTriangleId].ic == vert1)
     {
         if (cell.triangles[secondTriangleId].ia == vert2)
         {
             vert3 = cell.triangles[secondTriangleId].ib;
-        } 
+        }
         else
         {
             vert3 = cell.triangles[secondTriangleId].ia;
         }
     }
-    
-    //REMOVE OLD BONDS    
+
+    //REMOVE OLD BONDS
     cell.vertices[vert1].removeNeighbor(vert2);
     cell.vertices[vert2].removeNeighbor(vert1);
-    
     // CREATE NEW BONDS
-    
     Vector3D ab;
-
     // /*
     ab = cell.vertices[newid].xyz - cell.vertices[vert1].xyz;
     cell.vertices[newid].addNeighbor(vert1, ab.length() );
     cell.vertices[vert1].addNeighbor(newid, ab.length() );
-    
     ab = cell.vertices[newid].xyz - cell.vertices[vert2].xyz;
     cell.vertices[newid].addNeighbor(vert2, ab.length() );
     cell.vertices[vert2].addNeighbor(newid, ab.length() );
-    
     ab = cell.vertices[newid].xyz - cell.vertices[vertexId].xyz;
     cell.vertices[newid].addNeighbor(vertexId, ab.length() );
     cell.vertices[vertexId].addNeighbor(newid, ab.length() );
-    
     ab = cell.vertices[newid].xyz - cell.vertices[vert3].xyz;
     cell.vertices[newid].addNeighbor(vert3, ab.length() );
     cell.vertices[vert3].addNeighbor(newid, ab.length() );
     //*/
-    
     /*
     cell.vertices[newid].addNeighbor(vert1, cell.r0av+uniform(-0.05,0.05));
     cell.vertices[vert1].addNeighbor(newid, cell.r0av+uniform(-0.05,0.05));
-    
-    
+
+
     cell.vertices[newid].addNeighbor(vert2, cell.r0av+uniform(-0.05,0.05));
     cell.vertices[vert2].addNeighbor(newid, cell.r0av+uniform(-0.05,0.05));
-    
+
 
     cell.vertices[newid].addNeighbor(vertexId, cell.r0av+uniform(-0.05,0.05));
     cell.vertices[vertexId].addNeighbor(newid, cell.r0av+uniform(-0.05,0.05));
@@ -262,18 +251,13 @@ void Tinker::grow(Cell& cell)
     cell.vertices[newid].addNeighbor(vert3, cell.r0av+uniform(-0.05,0.05));
     cell.vertices[vert3].addNeighbor(newid, cell.r0av+uniform(-0.05,0.05));
     */
-    
-
-    
     // REMOVE TRIANGLES FROM THE VERTICES RECORD
     cell.vertices[vert2].removeTriangle(triangleId);
     cell.vertices[vert2].removeTriangle(secondTriangleId);
-    
-    cell.triangles[triangleId].subsVertex(vert2, newid); 
+    cell.triangles[triangleId].subsVertex(vert2, newid);
     cell.triangles[secondTriangleId].subsVertex(vert2, newid);
     cell.vertices[newid].addTriangle(triangleId);
     cell.vertices[newid].addTriangle(secondTriangleId);
-    
     // NEW TRIANGLE 1
     VertexTriangle newTri1(vertexId, vert2, newid);
     cell.triangles[cell.numberT] = VertexTriangle(newTri1);
@@ -283,8 +267,6 @@ void Tinker::grow(Cell& cell)
     cell.vertices[vert2].addTriangle(tid1);
     cell.vertices[newid].addTriangle(tid1);
     cell.numberT++;
-    
-    
     // NEW TRIANGLE 2
     VertexTriangle newTri2(newid, vert2, vert3);
     cell.triangles[cell.numberT] = VertexTriangle(newTri2);
@@ -294,11 +276,8 @@ void Tinker::grow(Cell& cell)
     cell.vertices[vert2].addTriangle(tid2);
     cell.vertices[vert3].addTriangle(tid2);
     cell.numberT++;
-    
     //cell.vcounter++;
     ///std::cout << "vcounter=" << vcounter << std::endl;
-
-    
 }
 
 // CREATE LIST DEP ON CELL CYCLE STAGE
@@ -313,6 +292,7 @@ int Tinker::getLonelyVertex(Cell& cell)
 {
     int vertexCounter = validVertList(cell);
     double spatialNb[MAX_V];
+
     for (int i = 0; i < vertexCounter; i++)
     {
         spatialNb[i] = 0.0;
@@ -321,13 +301,15 @@ int Tinker::getLonelyVertex(Cell& cell)
     double ptot = 0.0;
     double cutoff = 2.0 * cell.params.r_vertex;
     int I, J;
-    for (int i = 0; i< vertexCounter; i++)
+
+    for (int i = 0; i < vertexCounter; i++)
     {
         for (int j = 0; j < vertexCounter; j++)
         {
             I = vidx[i];
             J = vidx[j];
             double r = (cell.vertices[J].xyz - cell.vertices[I].xyz).length() ;
+
             if (r <= cutoff && J != I)
             {
                 spatialNb[i] += 1.0 / r;
@@ -346,6 +328,7 @@ int Tinker::getLonelyVertex(Cell& cell)
     }
 
     double sumcheck = 0.0;
+
     for (int i = 0; i < cell.numberV; i++)
     {
         sumcheck += (1. / spatialNb[i]) / (ptot);
@@ -353,11 +336,12 @@ int Tinker::getLonelyVertex(Cell& cell)
 
     double randn = uniform(0, 1.0);
     double fracsum = 0.0;
-
     int vertexId = -1;
+
     for (int i = 0; i < vertexCounter; i++)
     {
         fracsum += (1. / spatialNb[i]) / (ptot);
+
         if (randn < fracsum)
         {
             vertexId = i;
@@ -372,6 +356,7 @@ int Tinker::getOldestVertex(Cell& cell)
 {
     int vertexCounter = validVertList(cell);
     double vertAge[MAX_V];
+
     for (int i = 0; i < vertexCounter; i++)
     {
         vertAge[i] = 0.0;
@@ -379,7 +364,8 @@ int Tinker::getOldestVertex(Cell& cell)
 
     double ptot = 0.0;
     int I, J;
-    for (int i = 0; i< vertexCounter; i++)
+
+    for (int i = 0; i < vertexCounter; i++)
     {
         I = vidx[i];
         vertAge[i] += cell.vertices[I].gtimer;
@@ -398,11 +384,12 @@ int Tinker::getOldestVertex(Cell& cell)
 
     double randn = uniform(0, 1.0);
     double fracsum = 0.0;
-
     int vertexId = -1;
+
     for (int i = 0; i < vertexCounter; i++)
     {
         fracsum += vertAge[i] / ptot;
+
         if (randn < fracsum)
         {
             vertexId = i;
@@ -418,6 +405,7 @@ int Tinker::getOldestVertex(Cell& cell)
 int Tinker::validVertList(Cell& cell)
 {
     int vertexCounter = 0;
+
     if (cell.my_phase == cell_phase_t::C_G1)
     {
         for (int i = 0; i < cell.numberV; i++)
@@ -427,7 +415,7 @@ int Tinker::validVertList(Cell& cell)
                 vidx[vertexCounter] = i;
                 vertexCounter++;
             }
-        }     
+        }
     }
     else if (cell.my_phase == cell_phase_t::C_SG2)
     {
@@ -445,7 +433,7 @@ int Tinker::validVertList(Cell& cell)
         std::cout << "ERROR. Cell not is G1 or G2 phases." << std::endl;
         exit(1);
     }
-    
+
     return vertexCounter;
 }
 

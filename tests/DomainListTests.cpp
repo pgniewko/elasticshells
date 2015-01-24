@@ -2,10 +2,12 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DomainListTests);
 
-DomainListTests::DomainListTests() {
+DomainListTests::DomainListTests()
+{
 }
 
-DomainListTests::~DomainListTests() {
+DomainListTests::~DomainListTests()
+{
 }
 
 void DomainListTests::setUp()

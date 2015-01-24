@@ -103,11 +103,11 @@ void Simulator::diagnoseParams(arguments args)
     if (args.k <= 0)
         throw DataException("Spring constant for bonded vertices must be positive! \n!"
                             "Simulation will terminate with exit(1)!\n");
-    
+
     if (args.r_vertex <= 0)
         throw DataException("Vertex radius must be larger than 0! \n!"
                             "Simulation will terminate with exit(1)!\n");
-    
+
     if (args.growth_rate < 0)
         throw DataException("Growth rate must be positive or 0! \n!"
                             "Simulation will terminate with exit(1)!\n");
@@ -180,6 +180,7 @@ void Simulator::addCell(double r0)
                                    "Program is going to TERMINANTE!");
 
         std::list<Triangle> tris;
+
         if (STRCMP (triangulator, "plato"))
         {
             PlatonicTriangulatoin tio(params.d, params.platotype);
@@ -190,8 +191,7 @@ void Simulator::addCell(double r0)
             SimpleTriangulation sm(params.d);
             tris = sm.triangulate(r0);
         }
-        
-        
+
         Cell newCell(tris);
         newCell.setEcc(params.ecc);
         newCell.setDp(params.dp);
@@ -320,7 +320,7 @@ void Simulator::simulate(int steps)
             box.resize();
             domains.setBoxDim(box);
         }
-        
+
         for (int i = 0; i < numberofCells; i++)
         {
             cells[i].cellCycle();

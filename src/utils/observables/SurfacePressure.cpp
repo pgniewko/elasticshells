@@ -12,7 +12,6 @@ double SurfacePressure::calcPressure(Box& box, std::vector<Cell>& cells, double 
 //    {
 //        return 0.0;
 //    }
-
 //    double ecw = box.ecw;
 //    double rvertex;
 //    Vector3D wallYZ, wallXZ, wallXY;
@@ -28,15 +27,12 @@ double SurfacePressure::calcPressure(Box& box, std::vector<Cell>& cells, double 
 //    int numOfCells = cells.size();
 //    double totalForce = 0.0;
 //    Vector3D djk;
-
 //    for (int i = 0; i < numOfCells; i++)
 //    {
 //        rvertex = cells[i].getVertexR();
-
 //        for (int j = 0; j < cells[i].numberOfVerts(); j++)
 //        {
 //            vertXYZ = cells[i].getVertexXYZ(j);
-
 //            sgnx = SIGN(vertXYZ.x);
 //            wallYZ.x = sgnx * bsx;
 //            wallYZ.y = vertXYZ.y;
@@ -63,10 +59,8 @@ double SurfacePressure::calcPressure(Box& box, std::vector<Cell>& cells, double 
 //            totalForce +=  (fx + fy + fz);
 //        }
 //    }
-
     //double area = box.getArea(rv);
     //return totalForce / area;
-
     double totalForce = SurfaceForce::calcForces(box, cells, rv) ;
     double area = box.getArea(rv);
     return totalForce / area;

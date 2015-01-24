@@ -57,17 +57,17 @@ static struct argp_option options[] =
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"vlist-step",408,   "INT", 0, "Verlet-list step interval [default: 100]"},
+    {"vlist-step", 408,   "INT", 0, "Verlet-list step interval [default: 100]"},
     {"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato] [default: simple]"},
     {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
     {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], ico[1], oct[2] [default: 0]"},
-    
+
     {0,             0,       0, 0, "Cell Options:", 5},
     {"mass",      'm', "FLOAT", 0, "Total mass of a cell [default: 60.0]"},
-    {"gamma",     'k', "FLOAT", 0, "Spring constant between vertices[default: 1.0]"}, 
+    {"gamma",     'k', "FLOAT", 0, "Spring constant between vertices[default: 1.0]"},
     {"ecc",       'a', "FLOAT", 0, "Effective cell-cell Young's modulus[default: 100.0]"},
     {"ecw",       501, "FLOAT", 0, "Effective cell-box Young's modulus [default: 100.0]"},
     {"ir",        502, "FLOAT", 0, "Cells size at the initialization [default:1.5]"},
@@ -171,10 +171,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 'o':
             arguments->output_file = arg;
-            break;    
+            break;
         case 301:
             arguments->surface_file = arg;
-            break;    
+            break;
         case 302:
             arguments->traj_file = arg;
             break;
@@ -186,16 +186,16 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 401:
             arguments->nsteps = arg ? atoi (arg) : 100;
-            break;    
+            break;
         case 402:
             arguments->dt = arg ? strtod (arg, NULL) : 0.001;
-            break;    
+            break;
         case 403:
             arguments->integrator_a = arg;
-            break;    
+            break;
         case 404:
             arguments->nb_flag = arg ? atoi (arg) : 0;
-            break;    
+            break;
         case 405:
             arguments->log_step = arg ? atoi (arg) : 10;
             break;
@@ -207,10 +207,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 408:
             arguments->vlist_step = arg ? atoi (arg) : 100;
-            break;    
+            break;
         case 409:
             arguments->verlet_r = arg ?  strtod (arg, NULL) : 3.0;
-            break;    
+            break;
         case 410:
             arguments->pbc = true;
             break;
@@ -219,7 +219,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 412:
             arguments->tritype = arg;
-            break;    
+            break;
         case 413:
             arguments->d = arg ? atoi (arg) : 3;
             break;
@@ -239,14 +239,14 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ecw = arg ? strtod (arg, NULL) : 200.0;
             break;
         case 502:
-            arguments->init_radius = arg ?  strtod (arg, NULL) : 1.5;    
-            break;  
+            arguments->init_radius = arg ?  strtod (arg, NULL) : 1.5;
+            break;
         case 503:
             arguments->visc = arg ? strtod (arg, NULL) : 100.0;
             break;
         case 504:
             arguments->dp = arg ? strtod (arg, NULL) : 0.0;
-            break;    
+            break;
         case 505:
             arguments->osmotic_flag = true;
             break;
@@ -255,7 +255,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 507:
             arguments->growth_rate = arg ?  strtod (arg, NULL) : 0.0;
-            break;    
+            break;
         case 508:
             arguments->vc = arg ?  strtod (arg, NULL) : 20.0;
             break;
@@ -264,8 +264,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 510:
             arguments->div_ratio = arg ?  strtod (arg, NULL) : 0.7;
-            break;    
-            
+            break;
         case 601:
             arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;
             break;
@@ -347,14 +346,12 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = " << arguments.traj_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = " << arguments.output_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
-    
     clocks[0].tic();
     Simulator simulator(arguments);
     simulator.initCells(arguments.n_cells, arguments.init_radius);
     //simulator.moveCellToXYZ(Vector3D(0, 0, 0), 0);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
-    
     biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION TIME = " << clocks[0].time() << " [s] \n";
     return (EXIT_SUCCESS);
 }

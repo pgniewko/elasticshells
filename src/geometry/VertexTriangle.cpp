@@ -34,13 +34,14 @@ void VertexTriangle::subsVertex(int ix_old, int ix_new)
     else if (ix_old == ib)
     {
         ib = ix_new;
-        return; 
+        return;
     }
     else if (ix_old == ic)
     {
         ic = ix_new;
         return;
     }
+
     return;
 }
 

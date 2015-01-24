@@ -21,8 +21,8 @@ Cell::Cell(std::list<Triangle> tris) : cellId(-1), my_phase(cell_phase_t::C_G1),
 }
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles),
-cellId(orig.cellId), params(orig.params), my_phase(orig.my_phase), numberV(orig.numberV), numberT(orig.numberT), nRT(orig.nRT),
-        r0av(orig.r0av), vcounter(orig.vcounter), budVno(orig.budVno)
+    cellId(orig.cellId), params(orig.params), my_phase(orig.my_phase), numberV(orig.numberV), numberT(orig.numberT), nRT(orig.nRT),
+    r0av(orig.r0av), vcounter(orig.vcounter), budVno(orig.budVno)
 {}
 
 Cell::~Cell() {}
@@ -78,9 +78,8 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
     int domainn;
     Vector3D distance_ik;
     int vertIdx, cellIdx;
-
     double r_cut = 2 * params.r_vertex + EPSILON;
-    
+
     for (int i = 0; i < numberV; i++)
     {
         domainIdx = vertices[i].domainIdx;
@@ -116,13 +115,15 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
             }
         }
     }
+
 #ifdef TESTS
+
     for (int i = 0; i < numberV; i++)
     {
         vertices[i].sortNbList();
     }
-#endif    
-    
+
+#endif
 }
 
 void Cell::calcBondedForces()
@@ -232,14 +233,12 @@ void Cell::calcBoxForces(Box& box)
         wallYZ.z = vertices[i].xyz.z;
         dij = vertices[i].xyz - wallYZ;
         vertices[i].force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
-        
         sgny = SIGN(vertices[i].xyz.y);
         wallXZ.x = vertices[i].xyz.x;
         wallXZ.y = sgny * bsy;
         wallXZ.z = vertices[i].xyz.z;
         dij = vertices[i].xyz - wallXZ;
         vertices[i].force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
-        
         sgnz = SIGN(vertices[i].xyz.z);
         wallXY.x = vertices[i].xyz.x;
         wallXY.y = vertices[i].xyz.y;
@@ -303,7 +302,7 @@ void Cell::calcCM()
             tmp_m += m * vertices[i].xyz;
             Mm += m;
         }
-        
+
         if (vertices[i].getMyType() == vertex_t::BUD)
         {
             m = vertices[i].getMass();
@@ -317,8 +316,9 @@ void Cell::calcCM()
         tmp_m /= Mm;
         cm_m = tmp_m;
     }
-    
-    if (Mb > 0.0){
+
+    if (Mb > 0.0)
+    {
         tmp_b /= Mb;
         cm_b = tmp_b;
     }
@@ -515,7 +515,6 @@ void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, Bo
 
 void Cell::cellCycle()
 {
-    
     if (my_phase == cell_phase_t::C_G0)
     {
         // check if need to switch to C_G1
@@ -525,7 +524,6 @@ void Cell::cellCycle()
     {
         grow();
     }
-    
     else if (my_phase == cell_phase_t::C_SG2)
     {
         bud();
@@ -539,8 +537,10 @@ void Cell::cellCycle()
 void Cell::grow()
 {
     if (uniform() > params.growth_rate)
+    {
         return;
-        
+    }
+
     Tinker::grow(*this);
 }
 
@@ -563,6 +563,7 @@ void Cell::findBud()
 void Cell::calcAverageR0()
 {
     double totSum = 0.0;
+
     for (int i = 0; i < numberV; i++)
     {
         for (int j = 0; j < vertices[i].numBonded; j++)
@@ -571,6 +572,7 @@ void Cell::calcAverageR0()
             totSum += 1.0;
         }
     }
+
     r0av /= totSum;
 }
 
@@ -580,7 +582,7 @@ void Cell::setR0AvForAll()
     {
         for (int j = 0; j < vertices[i].numBonded; j++)
         {
-             vertices[i].r0[j] = r0av;
+            vertices[i].r0[j] = r0av;
         }
     }
 }
@@ -588,6 +590,7 @@ void Cell::setR0AvForAll()
 double Cell::sumL2()
 {
     double sum_l2 = 0.0;
+
     for (int i = 0; i < numberV; i++)
     {
         for (int j = 0; j < vertices[i].numBonded; j++)
@@ -595,6 +598,7 @@ double Cell::sumL2()
             sum_l2 += vertices[i].r0[j] * vertices[i].r0[j];
         }
     }
+
     sum_l2 /= 2.0;
     return sum_l2;
 }
@@ -603,17 +607,15 @@ double Cell::getPercLength(int i, int j)
 {
     double r0 = vertices[i].r0[j];
     int k = vertices[i].bondedVerts[j];
-
     double r = (vertices[i].xyz - vertices[k].xyz).length();
-
     return 1.0 - r / r0;
-
 }
 
 double Cell::nbMagnitudeForce(std::vector<Cell> cells, Box& box, int vix)
 {
     //std::cout << " vix=" << vix << std::endl;
-    Vector3D force(0,0,0);
+    Vector3D force(0, 0, 0);
+
     for (int ci = 0; ci < cells.size(); ci++)
     {
         int ocellid = cells[ci].cellId;
@@ -634,7 +636,6 @@ double Cell::nbMagnitudeForce(std::vector<Cell> cells, Box& box, int vix)
                     //force += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
                 }
             }
-
         }
     }
 
@@ -645,38 +646,37 @@ double Cell::nbMagnitudeForce(std::vector<Cell> cells, Box& box, int vix)
     double bsy = box.getY();
     double bsz = box.getZ();
     double ecw = box.ecw;
-
     //for (int i = 0; i < numberV; i++)
     //{
-        sgnx = SIGN(vertices[vix].xyz.x);
-        wallYZ.x = sgnx * bsx;
-        wallYZ.y = vertices[vix].xyz.y;
-        wallYZ.z = vertices[vix].xyz.z;
-        dij = vertices[vix].xyz - wallYZ;
-        force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+    sgnx = SIGN(vertices[vix].xyz.x);
+    wallYZ.x = sgnx * bsx;
+    wallYZ.y = vertices[vix].xyz.y;
+    wallYZ.z = vertices[vix].xyz.z;
+    dij = vertices[vix].xyz - wallYZ;
+    force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+    sgny = SIGN(vertices[vix].xyz.y);
+    wallXZ.x = vertices[vix].xyz.x;
+    wallXZ.y = sgny * bsy;
+    wallXZ.z = vertices[vix].xyz.z;
+    dij = vertices[vix].xyz - wallXZ;
+    force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+    sgnz = SIGN(vertices[vix].xyz.z);
+    wallXY.x = vertices[vix].xyz.x;
+    wallXY.y = vertices[vix].xyz.y;
+    wallXY.z = sgnz * bsz;
+    dij = vertices[vix].xyz - wallXY;
+    force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+    double vertexSurface = 0.0;
 
-        sgny = SIGN(vertices[vix].xyz.y);
-        wallXZ.x = vertices[vix].xyz.x;
-        wallXZ.y = sgny * bsy;
-        wallXZ.z = vertices[vix].xyz.z;
-        dij = vertices[vix].xyz - wallXZ;
-        force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
-        sgnz = SIGN(vertices[vix].xyz.z);
-        wallXY.x = vertices[vix].xyz.x;
-        wallXY.y = vertices[vix].xyz.y;
-        wallXY.z = sgnz * bsz;
-        dij = vertices[vix].xyz - wallXY;
-        force += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+    for (int i = 0;  i < vertices[vix].numTris; i++)
+    {
+        vertexSurface += triangles[i].area(vertices);
+        int j = vertices[vix].bondedTris[i];
+        vertexSurface += triangles[j].area(vertices);
+    }
 
-        double vertexSurface = 0.0;
-        for (int i = 0;  i < vertices[vix].numTris; i++)
-        {
-            vertexSurface += triangles[i].area(vertices);
-            int j = vertices[vix].bondedTris[i];
-            vertexSurface += triangles[j].area(vertices);
-        }
-        vertexSurface /= 3.0;
-        //std::cout << "ar=" << 1.0 << std::endl;
-        return force.length() / vertexSurface;
-        //return force.length();
+    vertexSurface /= 3.0;
+    //std::cout << "ar=" << 1.0 << std::endl;
+    return force.length() / vertexSurface;
+    //return force.length();
 }

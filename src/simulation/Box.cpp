@@ -51,7 +51,7 @@ void Box::resize()
 
 double Box::getVolume(double rv)
 {
-    return 2.0 * (x-rv) * 2.0 * (y-rv) * 2.0 * (z-rv);
+    return 2.0 * (x - rv) * 2.0 * (y - rv) * 2.0 * (z - rv);
 }
 
 double Box::getArea(double rv)

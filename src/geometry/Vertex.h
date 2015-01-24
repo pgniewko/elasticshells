@@ -15,10 +15,10 @@ struct nblist_t
 {
     int cell_id;
     int vertex_id;
-    
-    bool operator > (const nblist_t& rhs) 
-    { 
-	if (cell_id == rhs.cell_id)
+
+    bool operator > (const nblist_t& rhs)
+    {
+        if (cell_id == rhs.cell_id)
         {
             return vertex_id > rhs.vertex_id;
         }
@@ -28,9 +28,9 @@ struct nblist_t
         }
     }
 
-    bool operator < (const nblist_t& rhs) 
-    { 
-	if (cell_id == rhs.cell_id)
+    bool operator < (const nblist_t& rhs)
+    {
+        if (cell_id == rhs.cell_id)
         {
             return vertex_id < rhs.vertex_id;
         }
@@ -50,7 +50,7 @@ enum class vertex_t
 
 class Vertex
 {
-    friend class Tinker;
+        friend class Tinker;
     public:
         Vertex();
         Vertex(double, double, double);
@@ -81,10 +81,10 @@ class Vertex
         int getNeighborId(int);
         int getTriangleId(int);
         double getNeighborR0(int);
-        
+
         void sortNbList();
         void normalizedR0(double);
-        
+
         void addTime(double);
         void voidTime();
 
@@ -100,9 +100,9 @@ class Vertex
 
         int bondedVerts[NEIGH_MAX];
         double r0[NEIGH_MAX];
-        
+
         int bondedTris[TRIAN_MAX];
-        
+
 
         int nbVerts[NBNEI_MAX];
         int nbCellsIdx[NBNEI_MAX];
@@ -112,7 +112,7 @@ class Vertex
         int numNbNeighs;
 
         int domainIdx;              // make it private
-        
+
     private:
         int myid;
         double mass;

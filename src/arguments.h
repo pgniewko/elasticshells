@@ -25,7 +25,7 @@ struct arguments
     int n_cells;
     int nsteps;
     int platotype;
-    
+
     double ecc;                         /* E cell-cell */
     double dt;
     double dp;

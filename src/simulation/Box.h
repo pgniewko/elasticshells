@@ -45,16 +45,16 @@ class Box
 
         //double getVolume();
         //double getArea();
-        double getVolume(double=0.0);
-        double getArea(double=0.0);
+        double getVolume(double = 0.0);
+        double getArea(double = 0.0);
 
         void setPbc(bool);
         void setEcw(double);
         bool pbc;
         double ecw;
-        double getXEdge(double=0.0);
-        double getYEdge(double=0.0);
-        double getZEdge(double=0.0);
+        double getXEdge(double = 0.0);
+        double getYEdge(double = 0.0);
+        double getZEdge(double = 0.0);
 
     private:
         double x;

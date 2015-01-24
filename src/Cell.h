@@ -46,9 +46,9 @@ enum class cell_phase_t
 
 class Cell
 {
-    friend class Tinker;
+        friend class Tinker;
     public:
-        
+
         Cell(int);
         Cell(std::list<Triangle>);
         Cell(const Cell& orig);
@@ -61,7 +61,7 @@ class Cell
         int numberOfVerts();
 
         //void calcR0av();
-        
+
         void calcBondedForces();
         void calcHarmonicForces();
         void calcOsmoticForces();
@@ -88,42 +88,42 @@ class Cell
 
         void setVerletR(double);
         void setInitR(double);
-        
+
         void setVolumeC(double);
         void setGrowthRate(double);
         void setBudDiameter(double);
         void setDivisionRatio(double);
-        
+
         double getInitR();
         double getVisc();
         Vector3D getCm();
         double getVertexR();
-        
+
         Vector3D& getVertexXYZ(int);
         Vector3D& getVertexForce(int);
 
         void voidForces();
         void getDistance(Vector3D&, const Vector3D&, const Vector3D&, Box&);
-        
+
         void cellCycle();
 
         Vector3D cm_m;
         Vector3D cm_b;
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
-        
+
         int cellId;
-        
+
         void setR0AvForAll();
         double getPercLength(int, int);
         double nbMagnitudeForce(std::vector<Cell>, Box&, int);
-        
+
     private:
         void grow();
         void bud();
         void divide();
         void findBud();
-        
+
         void calcAverageR0();
         double sumL2();
         cell_params_t params;
@@ -131,10 +131,10 @@ class Cell
         int numberV;
         int numberT;
         double nRT;
-        
+
         double r0av;
         int vcounter; // remove - prawdopodobnie bezurzyteczny
-        
+
         int budIdx[MAX_V];
         int budVno;
 };

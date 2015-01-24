@@ -18,12 +18,12 @@ void DomainTests::tearDown()
 {
 }
 
-void DomainTests::testMethod() 
+void DomainTests::testMethod()
 {
     CPPUNIT_ASSERT(true);
 }
 
-void DomainTests::testFailedMethod() 
+void DomainTests::testFailedMethod()
 {
     CPPUNIT_ASSERT(false);
 }

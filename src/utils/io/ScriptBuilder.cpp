@@ -124,16 +124,16 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
     //os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
     //os << "cmd.do(\"alter elem i, vdw=0.1\")\n";
     //os << "cmd.do(\"alter elem j, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem a, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem b, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem c, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem d, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem e, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem f, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem g, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem h, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem i, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem j, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem a, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem b, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem c, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem d, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem e, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem f, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem g, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem h, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem i, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem j, vdw=" << rv << "\")\n";
     os << "cmd.do(\"rebuild\")\n\n";
 
     if (boxFlag)
@@ -227,16 +227,16 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
     //os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
     //os << "cmd.do(\"alter elem i, vdw=0.1\")\n";
     //os << "cmd.do(\"alter elem j, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem a, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem b, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem c, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem d, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem e, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem f, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem g, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem h, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem i, vdw="<< rv <<"\")\n";
-    os << "cmd.do(\"alter elem j, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem a, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem b, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem c, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem d, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem e, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem f, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem g, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem h, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem i, vdw=" << rv << "\")\n";
+    os << "cmd.do(\"alter elem j, vdw=" << rv << "\")\n";
     os << "cmd.do(\"rebuild\")\n\n";
 
     if (boxFlag)
@@ -286,10 +286,12 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
 
         lastCellIndex += cells[i].numberOfVerts();
     }
+
     os << "cmd.do(\"show lines\")\n";
     os << "cmd.do(\"bg white\")\n\n";
     lastCellIndex = 0;
     double maxval = 0.0;
+
     for (unsigned int i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
@@ -298,12 +300,14 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
             name1Ix = (int) iidx / 1000;
             atom1Ix = iidx % 1000;
             double bfactor = cells[i].nbMagnitudeForce(cells, box, j);
+
             if (bfactor > maxval)
             {
                 maxval = bfactor;
             }
+
             //cells[i].nbMagnitudeForce(cells, box, j);
-            os <<  "cmd.alter('%s' % (\"" << namesx[name1Ix] << "_" << atom1Ix << "\"), 'b=%f' % ("<< bfactor << ") ) \n";
+            os <<  "cmd.alter('%s' % (\"" << namesx[name1Ix] << "_" << atom1Ix << "\"), 'b=%f' % (" << bfactor << ") ) \n";
             //os << "cmd.do(\"select " << namesx[name1Ix] << " " << atom1Ix << ", name " << namesx[name1Ix] << atom1Ix << "\")\n";
         }
 
@@ -311,11 +315,13 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
     }
 
     lastCellIndex = 0;
+
     for (unsigned int i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
+
             for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
             {
                 jidx = cells[i].vertices[j].bondedVerts[k] + 1 + lastCellIndex;
@@ -324,9 +330,10 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
                 name2Ix = (int) jidx / 1000;
                 atom2Ix = jidx % 1000;
                 double px = cells[i].getPercLength(j, k);
+
                 if (SIGN(px) * px <  perc)
                 {
-                //set_bond line_color, red, A_1 A_2
+                    //set_bond line_color, red, A_1 A_2
                     os << "cmd.do(\"set_bond line_color, red,  " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
                     os << "cmd.do(\"set_bond line_width, 6,  " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
                 }
@@ -334,19 +341,21 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
                 {
                     os << "cmd.do(\"set_bond line_width, 3,  " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
                 }
+
                 //os << "cmd.do(\"bond " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
             }
         }
+
         lastCellIndex += cells[i].numberOfVerts();
     }
+
     os << "minval = " << 0.0 << "\n";
     os << "maxval = " << 1.0 << "\n";
-    os << "cmd.spectrum(\"b\", \"blue_red\", minimum=0, maximum="<< maxval << ")\n";
+    os << "cmd.spectrum(\"b\", \"blue_red\", minimum=0, maximum=" << maxval << ")\n";
     //os << "cmd.spectrum(\"b\", \"green_white_blue\", minimum=0, maximum=maxval)";
     //os << "cmd.spectrum(\"b\", \"green_white_red\", minimum=0, maximum=maxval)";
     os << "cmd.do(\"set line_color, gray\")\n";
     os.close();
-
 }
 
 

@@ -24,6 +24,7 @@ void DomainList::setupDomainsList(double rcMax, Box& box)
     {
         setM(box);
     }
+
     setBoxDim(box);
     initDomains();
 }
@@ -148,9 +149,10 @@ void DomainList::setM(Box& box)
 {
     double lx, ly, lz;
     double xmin, xmax, ymin, ymax, zmin, zmax;
-    
+
     if (pbc)
-    { // MAKE SURE THAT AT THE END of SIM. DOMAINS ARE NOT TOO SMALL !!!
+    {
+        // MAKE SURE THAT AT THE END of SIM. DOMAINS ARE NOT TOO SMALL !!!
         xmin = -box.getXend();
         ymin = -box.getYend();
         zmin = -box.getZend();
@@ -171,7 +173,6 @@ void DomainList::setM(Box& box)
     lx = xmax - xmin;
     ly = ymax - ymin;
     lz = zmax - zmin;
-
     double Lmax;
     Lmax = std::max(lx, ly);
     Lmax = std::max(lz, Lmax);
@@ -180,7 +181,6 @@ void DomainList::setM(Box& box)
     N = m * m * m;
     m_assigned = true;
     domainlist_logs << utils::LogLevel::INFO << "NUMBER OF LINKED DOMAINS N_DOMAINS=" << N << "\n";
-
 }
 
 void DomainList::setBoxDim(Box& box)
@@ -209,7 +209,6 @@ void DomainList::setBoxDim(Box& box)
     lx = x_max - x_min;
     ly = y_max - y_min;
     lz = z_max - z_min;
-
     dx = lx / m;
     dy = ly / m;
     dz = lz / m;

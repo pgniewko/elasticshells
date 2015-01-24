@@ -75,6 +75,7 @@ void Vertex::addNeighbor(int idx, double k0n)
 void Vertex::removeNeighbor(int vidx)
 {
     int pos = -1;
+
     if ( isNeighbor(vidx) )
     {
         for (int i = 0; i < numBonded; i++)
@@ -84,14 +85,16 @@ void Vertex::removeNeighbor(int vidx)
                 pos = i;
             }
         }
-        
+
         for (int i = pos; i < numBonded - 1; i++)
         {
             bondedVerts[i] = bondedVerts[i + 1];
             r0[i] = r0[i + 1];
         }
+
         numBonded--;
     }
+
     return;
 }
 
@@ -135,6 +138,7 @@ void Vertex::addTriangle(int idx)
 void Vertex::removeTriangle(int tidx)
 {
     int pos = -1;
+
     for (int i = 0; i < numTris; i++)
     {
         if (bondedTris[i] == tidx)
@@ -142,16 +146,18 @@ void Vertex::removeTriangle(int tidx)
             pos = i;
         }
     }
-    
+
     if (pos == -1)
+    {
         return;
-        
+    }
+
     for (int i = pos; i < numTris - 1; i++)
     {
         bondedTris[i] = bondedTris[i + 1];
     }
-    numTris--;
 
+    numTris--;
     return;
 }
 
@@ -167,16 +173,14 @@ void Vertex::addNbNeighbor(int vertIdx, int cellIdx)
         if (vertIdx < 0)
             throw RunTimeError("Trying to add a vertex with a negative index.\n"
                                "Runtime data is incorrect. Simulation will be terminated!\n");
-        
+
         if (cellIdx < 0)
             throw RunTimeError("Trying to add a vertex with a negative cell index.\n"
                                "Runtime data is incorrect. Simulation will be terminated!\n");
-        
-        
+
         nbVerts[numNbNeighs] = vertIdx;
         nbCellsIdx[numNbNeighs] = cellIdx;
         numNbNeighs++;
-
     }
     catch (MaxSizeException& e)
     {
@@ -208,22 +212,22 @@ bool Vertex::isNeighbor(int vidx)
 void Vertex::sortNbList()
 {
     std::vector<nblist_t> v_nb_lsit;
-    
+
     for (int i = 0; i < numNbNeighs; i++)
     {
         struct nblist_t nblist;
         nblist.cell_id = nbCellsIdx[i];
         nblist.vertex_id = nbVerts[i];
-	v_nb_lsit.push_back(nblist);
+        v_nb_lsit.push_back(nblist);
     }
 
     std::sort(v_nb_lsit.begin(), v_nb_lsit.end());
-    
+
     for (unsigned int i = 0; i < v_nb_lsit.size(); i++)
     {
         nbCellsIdx[i] = v_nb_lsit[i].cell_id;
         nbVerts[i] = v_nb_lsit[i].vertex_id;
-    }	
+    }
 }
 
 void Vertex::voidForce()

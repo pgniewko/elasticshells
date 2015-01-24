@@ -9,15 +9,16 @@
 #include "Environment.h"
 #include "Cell.h"
 
-class QL {
-public:
-    QL();
-    QL(const QL& orig);
-    virtual ~QL();
-    
-    static double calcQl(Cell&, int, double);
-    static double calcQl(std::vector<Cell>&, int, double);
-private:
+class QL
+{
+    public:
+        QL();
+        QL(const QL& orig);
+        virtual ~QL();
+
+        static double calcQl(Cell&, int, double);
+        static double calcQl(std::vector<Cell>&, int, double);
+    private:
 
 };
 

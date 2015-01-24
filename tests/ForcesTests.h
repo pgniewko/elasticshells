@@ -21,7 +21,7 @@ class ForcesTests : public CPPUNIT_NS::TestFixture
         CPPUNIT_TEST(testHertzianForce);
         CPPUNIT_TEST(testOsmoticForce);
         CPPUNIT_TEST(testNbRepulsiveForce);
-        
+
 
         CPPUNIT_TEST_FAIL(testFailedMethod);
 
@@ -37,7 +37,7 @@ class ForcesTests : public CPPUNIT_NS::TestFixture
         Vector3D* v1, *v2, *v3, *v4;
         void testMethod();
         void testFailedMethod();
-        
+
         void testHookeanForce();
         void testHertzianForce();
         void testOsmoticForce();
