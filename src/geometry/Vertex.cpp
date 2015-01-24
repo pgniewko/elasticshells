@@ -1,18 +1,18 @@
 #include "Vertex.h"
 
 Vertex::Vertex() : xyz(0, 0, 0), numBonded(0), numTris(0), numNbNeighs(0),
-    domainIdx(-1), myid(-1), mass(1.0), my_type(vertex_t::MOTHER) {}
+    domainIdx(-1), myid(-1), mass(1.0), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
 Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), numBonded(0), numTris(0),
-    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), my_type(vertex_t::MOTHER) {}
+    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
 Vertex::Vertex(Vector3D v) : xyz(v), numBonded(0), numTris(0),
-    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), my_type(vertex_t::MOTHER) {}
+    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
 Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(orig.velocity),
     tmp_xyz(orig.tmp_xyz), tmp_force(orig.tmp_force), tmp_velocity(orig.tmp_velocity),
     numBonded(orig.numBonded), numTris(orig.numTris), numNbNeighs(orig.numNbNeighs), domainIdx(orig.domainIdx),
-    myid(orig.myid), mass( orig.mass ), visc(orig.visc), my_type(orig.my_type)
+    myid(orig.myid), mass( orig.mass ), visc(orig.visc), gtimer(0.0), my_type(orig.my_type)
 {
     for (int i = 0; i < numBonded; i++)
     {
@@ -331,4 +331,14 @@ void Vertex::normalizedR0(double newR0)
 const vertex_t& Vertex::getMyType()
 {
     return my_type;
+}
+
+void Vertex::addTime(double dt)
+{
+    gtimer += dt;
+}
+
+void Vertex::voidTime()
+{
+    gtimer = 0.0;
 }

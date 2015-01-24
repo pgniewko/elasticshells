@@ -11,6 +11,7 @@
 #include "geometry/VertexTriangle.h"
 
 class Cell;
+//class Vertex;
 
 class Tinker {
 public:
@@ -27,8 +28,11 @@ public:
 private:
     static bool isUnique(std::list<Vector3D>&, Vector3D&);
     static int getRandomVertex(Cell&);
+    static int getLonelyVertex(Cell&);
     static int getLeastDensiestVertex(Cell&);
+    static int getOldestVertex(Cell&);
     static int getVertex(Cell&, const Vector3D&);
+    static int validVertList(Cell&);
     
     static int vidx[MAX_V];
 

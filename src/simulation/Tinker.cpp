@@ -117,7 +117,9 @@ void Tinker::constructTopology(Cell& cell)
 
 void Tinker::grow(Cell& cell)
 {
-    int vertexId = getRandomVertex(cell);
+    //int vertexId = getRandomVertex(cell);
+    //int vertexId = getLonelyVertex(cell);
+    int vertexId = getOldestVertex(cell);
     
     
     int triangle_num = uniform(0, cell.vertices[vertexId].numTris);
@@ -224,24 +226,9 @@ void Tinker::grow(Cell& cell)
     
     // CREATE NEW BONDS
     
-    Vector3D ab;// = vertices[aid].xyz - vertices[bid].xyz;
-    ab = cell.vertices[newid].xyz - cell.vertices[vert1].xyz;
-    //vertices[newid].addNeighbor(vert1, ab.length());
-    //vertices[vert1].addNeighbor(newid, ab.length());
-    
-    ab = cell.vertices[newid].xyz - cell.vertices[vert2].xyz;
-    //vertices[newid].addNeighbor(vert2, ab.length());
-    //vertices[vert2].addNeighbor(newid, ab.length());
-    
-    ab = cell.vertices[newid].xyz - cell.vertices[vertexId].xyz;
-    //vertices[newid].addNeighbor(vertexId, ab.length());
-    //vertices[vertexId].addNeighbor(newid, ab.length());
-    
-    ab = cell.vertices[newid].xyz - cell.vertices[vert3].xyz;
-    //vertices[newid].addNeighbor(vert3, ab.length() );
-    //vertices[vert3].addNeighbor(newid, ab.length() );
-    
-    // =========
+    Vector3D ab;
+
+    // /*
     ab = cell.vertices[newid].xyz - cell.vertices[vert1].xyz;
     cell.vertices[newid].addNeighbor(vert1, ab.length() );
     cell.vertices[vert1].addNeighbor(newid, ab.length() );
@@ -257,20 +244,24 @@ void Tinker::grow(Cell& cell)
     ab = cell.vertices[newid].xyz - cell.vertices[vert3].xyz;
     cell.vertices[newid].addNeighbor(vert3, ab.length() );
     cell.vertices[vert3].addNeighbor(newid, ab.length() );
+    //*/
     
-    // ======
-    //vertices[newid].addNeighbor(vert1, 0.5 * r0av);
-    //vertices[vert1].addNeighbor(newid, 0.5 * r0av);
+    /*
+    cell.vertices[newid].addNeighbor(vert1, cell.r0av+uniform(-0.05,0.05));
+    cell.vertices[vert1].addNeighbor(newid, cell.r0av+uniform(-0.05,0.05));
     
-    //vertices[newid].addNeighbor(vert2, 0.5 * r0av);
-    //vertices[vert2].addNeighbor(newid, 0.5 * r0av);
     
-    //vertices[newid].addNeighbor(vertexId, 0.5 * r0av);
-    //vertices[vertexId].addNeighbor(newid, 0.5 * r0av);
+    cell.vertices[newid].addNeighbor(vert2, cell.r0av+uniform(-0.05,0.05));
+    cell.vertices[vert2].addNeighbor(newid, cell.r0av+uniform(-0.05,0.05));
     
-    //vertices[newid].addNeighbor(vert3, 0.5 * r0av);
-    //vertices[vert3].addNeighbor(newid, 0.5 * r0av);
-    // ==========
+
+    cell.vertices[newid].addNeighbor(vertexId, cell.r0av+uniform(-0.05,0.05));
+    cell.vertices[vertexId].addNeighbor(newid, cell.r0av+uniform(-0.05,0.05));
+
+
+    cell.vertices[newid].addNeighbor(vert3, cell.r0av+uniform(-0.05,0.05));
+    cell.vertices[vert3].addNeighbor(newid, cell.r0av+uniform(-0.05,0.05));
+    */
     
 
     
@@ -304,7 +295,7 @@ void Tinker::grow(Cell& cell)
     cell.vertices[vert3].addTriangle(tid2);
     cell.numberT++;
     
-    cell.vcounter++;
+    //cell.vcounter++;
     ///std::cout << "vcounter=" << vcounter << std::endl;
 
     
@@ -313,7 +304,119 @@ void Tinker::grow(Cell& cell)
 // CREATE LIST DEP ON CELL CYCLE STAGE
 int Tinker::getRandomVertex(Cell& cell)
 {
+    int vertexCounter = validVertList(cell);
+    int vertexId = uniform(0, vertexCounter);
+    return vidx[vertexId];
+}
+
+int Tinker::getLonelyVertex(Cell& cell)
+{
+    int vertexCounter = validVertList(cell);
+    double spatialNb[MAX_V];
+    for (int i = 0; i < vertexCounter; i++)
+    {
+        spatialNb[i] = 0.0;
+    }
+
+    double ptot = 0.0;
+    double cutoff = 2.0 * cell.params.r_vertex;
+    int I, J;
+    for (int i = 0; i< vertexCounter; i++)
+    {
+        for (int j = 0; j < vertexCounter; j++)
+        {
+            I = vidx[i];
+            J = vidx[j];
+            double r = (cell.vertices[J].xyz - cell.vertices[I].xyz).length() ;
+            if (r <= cutoff && J != I)
+            {
+                spatialNb[i] += 1.0 / r;
+            }
+        }
+    }
+
+    for (int i = 0; i < vertexCounter; i++)
+    {
+        spatialNb[i] = std::max(spatialNb[i], 1.0);
+    }
+
+    for (int i = 0; i < vertexCounter; i++)
+    {
+        ptot += 1.0 / spatialNb[i];
+    }
+
+    double sumcheck = 0.0;
+    for (int i = 0; i < cell.numberV; i++)
+    {
+        sumcheck += (1. / spatialNb[i]) / (ptot);
+    }
+
+    double randn = uniform(0, 1.0);
+    double fracsum = 0.0;
+
     int vertexId = -1;
+    for (int i = 0; i < vertexCounter; i++)
+    {
+        fracsum += (1. / spatialNb[i]) / (ptot);
+        if (randn < fracsum)
+        {
+            vertexId = i;
+            break;
+        }
+    }
+
+    return vertexId;
+}
+
+int Tinker::getOldestVertex(Cell& cell)
+{
+    int vertexCounter = validVertList(cell);
+    double vertAge[MAX_V];
+    for (int i = 0; i < vertexCounter; i++)
+    {
+        vertAge[i] = 0.0;
+    }
+
+    double ptot = 0.0;
+    int I, J;
+    for (int i = 0; i< vertexCounter; i++)
+    {
+        I = vidx[i];
+        vertAge[i] += cell.vertices[I].gtimer;
+    }
+
+    for (int i = 0; i < vertexCounter; i++)
+    {
+        ptot += vertAge[i];
+    }
+
+    if (ptot == 0.0)
+    {
+        std::cerr << "ptot=0.0. Bug - FIX IT !" << std::endl;
+        exit(1);
+    }
+
+    double randn = uniform(0, 1.0);
+    double fracsum = 0.0;
+
+    int vertexId = -1;
+    for (int i = 0; i < vertexCounter; i++)
+    {
+        fracsum += vertAge[i] / ptot;
+        if (randn < fracsum)
+        {
+            vertexId = i;
+            break;
+        }
+    }
+
+    //std::cout << vertAge[vertexId] << std::endl;
+    cell.vertices[vertexId].voidTime();
+    return vertexId;
+}
+
+int Tinker::validVertList(Cell& cell)
+{
     int vertexCounter = 0;
     if (cell.my_phase == cell_phase_t::C_G1)
     {
@@ -339,70 +442,11 @@ int Tinker::getRandomVertex(Cell& cell)
     }
     else
     {
-        std::cout << "ERROR a.k.a. BUG" << std::endl;
+        std::cout << "ERROR. Cell not is G1 or G2 phases." << std::endl;
         exit(1);
     }
     
-    // RANDOM
-    vertexId = uniform(0, vertexCounter);
-    return vidx[vertexId];
-    
-    //double spatialNb[cell.numberV];
-    //for (int i = 0; i < cell.numberV; i++)
-    //{
-    //    spatialNb[i] = 0.0;
-    //}
-    
-    //double ptot = 0.0;
-    //double cutoff = cell.r0av;
-    //for (int i = 0; i< cell.numberV; i++)
-    //{
-    //    for (int j = 0; j < cell.numberV; j++)
-    //    {
-    //        double r = (cell.vertices[i].xyz - cell.vertices[j].xyz).length() ;
-    //        if (r <= cutoff && j!=i) 
-    //        {
-    //            spatialNb[i] += 1.0 / r;
-                //spatialNb[j] += 1.0;// / r;
-                //ptot += 1.0;// / r;
-                //ptot += 1.0;// / r;
-    //        }
-    //    }
-    //}
-    
-    //for (int i = 0; i < cell.numberV; i++)
-    //{
-    //    spatialNb[i] = std::max(spatialNb[i], 1.0);
-    //}
-    
-    //for (int i = 0; i < cell.numberV; i++)
-    //{
-    //    ptot += 1.0 / spatialNb[i];
-    //    std::cout << "spatialNb[" << i << "]=" << spatialNb[i] << std::endl;
-    //}
-    //std::cout << "ptot=" << ptot << std::endl;
-    
-    
-    //double sumcheck = 0.0;
-    //for (int i = 0; i < cell.numberV; i++)
-    //{
-    //    sumcheck += (1. / spatialNb[i]) / (ptot);
-    //}
-    
-    //double randn = uniform(0, 1.0);
-    //double fracsum = 0.0;
-   
-    //for (int i = 0; i < cell.numberV; i++)
-    //{
-    //    fracsum += (1. / spatialNb[i]) / (ptot);
-    //    if (randn < fracsum)
-    //    {
-    //        vertexId = i;
-    //        break;
-    //    }
-    //}
-
-    //return vertexId;
+    return vertexCounter;
 }
 
 void Tinker::bud(Cell& cell)

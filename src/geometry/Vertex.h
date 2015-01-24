@@ -9,6 +9,7 @@
 #include "Vector3D.h"
 #include "exceptions/MaxSizeException.h"
 #include "exceptions/RunTimeError.h"
+//#include "simulation/Tinker.h"
 
 struct nblist_t
 {
@@ -84,6 +85,9 @@ class Vertex
         void sortNbList();
         void normalizedR0(double);
         
+        void addTime(double);
+        void voidTime();
+
         const vertex_t& getMyType();
 
         Vector3D xyz;
@@ -113,6 +117,8 @@ class Vertex
         int myid;
         double mass;
         double visc;
+
+        double gtimer;
         vertex_t my_type;
 };
 
