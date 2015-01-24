@@ -52,6 +52,9 @@ class Box
         void setEcw(double);
         bool pbc;
         double ecw;
+        double getXEdge(double=0.0);
+        double getYEdge(double=0.0);
+        double getZEdge(double=0.0);
 
     private:
         double x;

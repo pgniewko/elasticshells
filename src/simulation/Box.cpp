@@ -189,3 +189,18 @@ double Box::getZend()
 {
     return ze;
 }
+
+double Box::getXEdge(double rv)
+{
+    return 2 * (x - rv);
+}
+
+double Box::getYEdge(double rv)
+{
+    return 2 * (y - rv);
+}
+
+double Box::getZEdge(double rv)
+{
+    return 2 * (z - rv);
+}
