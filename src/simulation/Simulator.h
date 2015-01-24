@@ -100,6 +100,7 @@ class Simulator
         void rebuildVerletLists();
         void rebuildDomainsList();
         double getMaxScale();
+        void makeVertsOlder();
 
         int numberofCells;
         char* triangulator;

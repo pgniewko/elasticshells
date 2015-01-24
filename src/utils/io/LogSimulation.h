@@ -7,6 +7,7 @@
 #include "Cell.h"
 #include "simulation/Box.h"
 #include "utils/observables/SurfacePressure.h"
+#include "utils/observables/SurfaceForce.h"
 #include "utils/observables/VolumeFraction.h"
 #include "utils/observables/order/QL.h"
 

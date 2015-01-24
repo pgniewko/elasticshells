@@ -274,7 +274,7 @@ void Simulator::simulate(int steps)
         rebuildDomainsList();
     }
 
-    sb.saveRenderScript(cells, box, params.draw_box);
+    sb.saveRenderScript(cells, box, params.draw_box, params.r_vertex);
     sb.saveSurfaceScript(cells);
     traj.open();
     traj.save(cells, getTotalVertices());
@@ -332,6 +332,9 @@ void Simulator::simulate(int steps)
         }
     }
 
+    sb.saveRenderScript(cells, box, params.draw_box, params.r_vertex);
+    sb.saveStressScript(cells, box, params.draw_box, params.r_vertex);
+    //traj.savePdb(cells);
     traj.close();
     logsim.close();
 }
@@ -466,13 +469,14 @@ void Simulator::setTriangulator(char* token)
     else
     {
         //TODO: print info
-        triangulator = "simple";
+        triangulator = (char*)& "simple";
     }
 }
 
 void Simulator::integrate()
 {
     (*this.*integrator)();
+    makeVertsOlder(); // function's temporary location
 }
 
 void Simulator::integrateEuler()
@@ -641,4 +645,15 @@ double Simulator::getMaxScale()
     double maxscale = 0.0;
     maxscale = std::max(maxscale, params.r_vertex);
     return maxscale;
+}
+
+void Simulator::makeVertsOlder()
+{
+    for (int i = 0; i < numberofCells; i++)
+    {
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        {
+            cells[i].vertices[j].addTime(params.dt);
+        }
+    }
 }
