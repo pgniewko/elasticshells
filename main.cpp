@@ -60,7 +60,7 @@ static struct argp_option options[] =
     {"vlist-step",408,   "INT", 0, "Verlet-list step interval [default: 100]"},
     {"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
-    {"draw-box",  411,       0, 0, "Deactivate box in rendering script - [default: true]"},
+    {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato] [default: simple]"},
     {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
     {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], ico[1], oct[2] [default: 0]"},
@@ -108,12 +108,12 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->verbose = 1;
             arguments->debug = 0;
             arguments->abort = 0;
-            arguments->render_file = "./data/render.py";
-            arguments->traj_file = "./data/traj.xyz";
-            arguments->output_file = "./data/biofilm.out";
-            arguments->surface_file = "./data/surf.py";
-            arguments->integrator_a = "fe";
-            arguments->tritype = "simple";
+            arguments->render_file = (char*)&"./data/render.py";
+            arguments->traj_file = (char*)&"./data/traj.xyz";
+            arguments->output_file = (char*)&"./data/biofilm.out";
+            arguments->surface_file = (char*)&"./data/surf.py";
+            arguments->integrator_a = (char*)&"fe";
+            arguments->tritype = (char*)&"simple";
             arguments->d = 3;
             arguments->platotype = 0;
             arguments->log_step = 10;
