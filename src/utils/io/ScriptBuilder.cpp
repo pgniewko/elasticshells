@@ -97,7 +97,7 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
 }
 
 
-void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool boxFlag)
+void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool boxFlag, double rv)
 {
     std::ofstream os;
     os.open(script);
@@ -114,16 +114,26 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
     os << "cmd.do(\"set sphere_color, tv_red\")\n";
     os << "cmd.do(\"set line_color, marine\")\n";
     os << "cmd.do(\"show spheres\")\n";
-    os << "cmd.do(\"alter elem a, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem b, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem c, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem d, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem e, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem f, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem g, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem i, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem j, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem a, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem b, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem c, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem d, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem e, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem f, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem g, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem i, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem j, vdw=0.1\")\n";
+    os << "cmd.do(\"alter elem a, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem b, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem c, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem d, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem e, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem f, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem g, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem h, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem i, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem j, vdw="<< rv <<"\")\n";
     os << "cmd.do(\"rebuild\")\n\n";
 
     if (boxFlag)
@@ -187,6 +197,156 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
 //        os << "cmd.load_cgo(obj, \"box\", 1)\n";
 //    }
     os.close();
+}
+
+void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool boxFlag, double rv, double perc)
+{
+    std::ofstream os;
+    //os.open(stress_script);
+    os.open("test_stress.py");
+    os << "from pymol.cgo import *\n";
+    os << "from pymol import cmd \n\n";
+    //if (boxFlag)
+    //{
+    //    printBox(os, box);
+    //}
+    os << "cmd.do(\"load " << trajfile << ", cells\")\n";
+    os << "cmd.do(\"select rawdata, all\")\n";
+    os << "cmd.do(\"unbond rawdata, rawdata\")\n";
+    os << "cmd.do(\"hide all\")\n";
+    //os << "cmd.do(\"set sphere_color, tv_red\")\n";
+    os << "cmd.do(\"set line_color, marine\")\n";
+    os << "cmd.do(\"show spheres\")\n";
+    //os << "cmd.do(\"alter elem a, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem b, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem c, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem d, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem e, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem f, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem g, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem i, vdw=0.1\")\n";
+    //os << "cmd.do(\"alter elem j, vdw=0.1\")\n";
+    os << "cmd.do(\"alter elem a, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem b, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem c, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem d, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem e, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem f, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem g, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem h, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem i, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"alter elem j, vdw="<< rv <<"\")\n";
+    os << "cmd.do(\"rebuild\")\n\n";
+
+    if (boxFlag)
+    {
+        printBox(os, box);
+    }
+
+    char namesx[10] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+    int name1Ix;
+    int atom1Ix;
+    int name2Ix;
+    int atom2Ix;
+    int iidx, jidx;
+    int lastCellIndex = 0;
+
+    for (unsigned int i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        {
+            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
+            name1Ix = (int) iidx / 1000;
+            atom1Ix = iidx % 1000;
+            os << "cmd.do(\"select " << namesx[name1Ix] << " " << atom1Ix << ", name " << namesx[name1Ix] << atom1Ix << "\")\n";
+        }
+
+        lastCellIndex += cells[i].numberOfVerts();
+    }
+
+    lastCellIndex = 0;
+
+    for (unsigned int i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        {
+            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
+
+            for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
+            {
+                jidx = cells[i].vertices[j].bondedVerts[k] + 1 + lastCellIndex;
+                name1Ix = (int) iidx / 1000;
+                atom1Ix = iidx % 1000;
+                name2Ix = (int) jidx / 1000;
+                atom2Ix = jidx % 1000;
+                os << "cmd.do(\"bond " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
+            }
+        }
+
+        lastCellIndex += cells[i].numberOfVerts();
+    }
+    os << "cmd.do(\"show lines\")\n";
+    os << "cmd.do(\"bg white\")\n\n";
+    lastCellIndex = 0;
+    double maxval = 0.0;
+    for (unsigned int i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        {
+            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
+            name1Ix = (int) iidx / 1000;
+            atom1Ix = iidx % 1000;
+            double bfactor = cells[i].nbMagnitudeForce(cells, box, j);
+            if (bfactor > maxval)
+            {
+                maxval = bfactor;
+            }
+            //cells[i].nbMagnitudeForce(cells, box, j);
+            os <<  "cmd.alter('%s' % (\"" << namesx[name1Ix] << "_" << atom1Ix << "\"), 'b=%f' % ("<< bfactor << ") ) \n";
+            //os << "cmd.do(\"select " << namesx[name1Ix] << " " << atom1Ix << ", name " << namesx[name1Ix] << atom1Ix << "\")\n";
+        }
+
+        lastCellIndex += cells[i].numberOfVerts();
+    }
+
+    lastCellIndex = 0;
+    for (unsigned int i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        {
+            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
+            for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
+            {
+                jidx = cells[i].vertices[j].bondedVerts[k] + 1 + lastCellIndex;
+                name1Ix = (int) iidx / 1000;
+                atom1Ix = iidx % 1000;
+                name2Ix = (int) jidx / 1000;
+                atom2Ix = jidx % 1000;
+                double px = cells[i].getPercLength(j, k);
+                if (SIGN(px) * px <  perc)
+                {
+                //set_bond line_color, red, A_1 A_2
+                    os << "cmd.do(\"set_bond line_color, red,  " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
+                    os << "cmd.do(\"set_bond line_width, 6,  " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
+                }
+                else
+                {
+                    os << "cmd.do(\"set_bond line_width, 3,  " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
+                }
+                //os << "cmd.do(\"bond " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
+            }
+        }
+        lastCellIndex += cells[i].numberOfVerts();
+    }
+    os << "minval = " << 0.0 << "\n";
+    os << "maxval = " << 1.0 << "\n";
+    os << "cmd.spectrum(\"b\", \"blue_red\", minimum=0, maximum="<< maxval << ")\n";
+    //os << "cmd.spectrum(\"b\", \"green_white_blue\", minimum=0, maximum=maxval)";
+    //os << "cmd.spectrum(\"b\", \"green_white_red\", minimum=0, maximum=maxval)";
+    os << "cmd.do(\"set line_color, gray\")\n";
+    os.close();
+
 }
 
 
