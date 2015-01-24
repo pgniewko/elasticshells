@@ -1,11 +1,12 @@
 #ifndef SURFACEPRESSURE_H
 #define	SURFACEPRESSURE_H
 
-#include <vector>
+//#include <vector>
 
 #include "Cell.h"
 #include "simulation/Box.h"
-#include "force/HertzianRepulsion.h"
+#include "utils/observables/SurfaceForce.h"
+//#include "force/HertzianRepulsion.h"
 
 class SurfacePressure
 {
