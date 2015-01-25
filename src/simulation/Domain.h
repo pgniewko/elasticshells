@@ -23,6 +23,8 @@ class Domain
         int numberOfNeighs;
         int numberOfVerts;
 
+        static utils::Logger domain_logs;
+
 //private:
 };
 

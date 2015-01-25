@@ -1,5 +1,9 @@
 #include "Tinker.h"
 
+utils::Logger Tinker::tinker_log("tinker");
+
+int Tinker::vidx[MAX_V];
+
 Tinker::Tinker() {}
 
 Tinker::Tinker(const Tinker& orig) {}
@@ -446,5 +450,3 @@ void Tinker::divide(Cell& cell)
 {
     return;
 }
-
-int Tinker::vidx[MAX_V];

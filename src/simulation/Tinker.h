@@ -37,6 +37,7 @@ class Tinker
 
         static int vidx[MAX_V];
 
+        static utils::Logger tinker_log;
 };
 
 #endif	/* TINKER_H */

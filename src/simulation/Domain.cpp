@@ -1,6 +1,6 @@
 #include "Domain.h"
 
-utils::Logger domain_logs("domain");
+utils::Logger Domain::domain_logs("domain");
 
 Domain::Domain() : myid(-1), numberOfNeighs(0), numberOfVerts(0) {}
 

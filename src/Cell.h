@@ -137,6 +137,8 @@ class Cell
 
         int budIdx[MAX_V];
         int budVno;
+
+        static utils::Logger cell_log;
 };
 
 

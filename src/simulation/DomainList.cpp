@@ -1,6 +1,6 @@
 #include "DomainList.h"
 
-utils::Logger domainlist_logs("domainlist");
+utils::Logger DomainList::domainlist_logs("domainlist");
 
 DomainList::DomainList() : m(1), N(1), pbc(false), m_assigned(false), init_domains(false),
     x_min(0), y_min(0), z_min(0),

@@ -1,5 +1,7 @@
 #include "Cell.h"
 
+utils::Logger Cell::cell_log("cell");
+
 Cell::Cell(int depth) :  cellId(-1), my_phase(cell_phase_t::C_G1), numberV(0), numberT(0), nRT(0), r0av(0),
     vcounter(0), budVno(0)
 {

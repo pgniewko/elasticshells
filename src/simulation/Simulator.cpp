@@ -1,8 +1,11 @@
 #include "Simulator.h"
 
+
+utils::Logger Simulator::simulator_logs("simulator");
+
 Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     sb(args.render_file, args.surface_file, args.traj_file),
-    traj(args.traj_file), logsim(args.output_file), simulator_logs("simulator")
+    traj(args.traj_file), logsim(args.output_file)
 {
     try
     {
@@ -65,7 +68,7 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
 Simulator::Simulator(const Simulator& orig) : numberofCells(orig.numberofCells),
     params(orig.params),
     box(orig.box), sb(orig.sb), traj(orig.traj),
-    logsim(orig.logsim), simulator_logs(orig.simulator_logs)
+    logsim(orig.logsim)
 {
     // exception - disallowed behavior
 }

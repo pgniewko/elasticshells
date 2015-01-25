@@ -112,9 +112,10 @@ class Simulator
         ScriptBuilder sb;
         XyzTraj traj;
         LogSimulation logsim;
-        utils::Logger simulator_logs;
 
         DomainList domains;
+
+        static utils::Logger simulator_logs;
 };
 
 #endif	/* SIMULATOR_H */
