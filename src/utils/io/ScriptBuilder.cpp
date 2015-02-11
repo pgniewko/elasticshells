@@ -124,6 +124,7 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
     //os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
     //os << "cmd.do(\"alter elem i, vdw=0.1\")\n";
     //os << "cmd.do(\"alter elem j, vdw=0.1\")\n";
+    rv = 0.1;
     os << "cmd.do(\"alter elem a, vdw=" << rv << "\")\n";
     os << "cmd.do(\"alter elem b, vdw=" << rv << "\")\n";
     os << "cmd.do(\"alter elem c, vdw=" << rv << "\")\n";
@@ -196,6 +197,77 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
 //        os << "obj = B.box\n";
 //        os << "cmd.load_cgo(obj, \"box\", 1)\n";
 //    }
+    os.close();
+}
+
+void ScriptBuilder::saveStressScript2(std::vector<Cell>& cells, Box& box, bool boxFlag, double rv, double perc)
+{
+    std::ofstream os;
+    os.open("test_stress2.py");
+    os << "from pymol.cgo import *\n";
+    os << "from pymol import cmd \n\n";
+    os << "class Line(object):\n";
+    os << " def __init__ (self, x, y, z, linewidth, color):\n";
+    os << "  lw = linewidth\n";
+    os << "  c1 = color[0]\n";
+    os << "  c2 = color[1]\n";
+    os << "  c3 = color[2]\n";
+    os << "  self.line = [\n";
+//    os << "    LINEWIDTH, float(lw), BEGIN, LINES,\n";
+    os << "    CYLINDER,  x[0], y[0], z[0], x[1], y[1], z[1], linewidth, c1, c2,c3,c1,c2,c3, \n";
+//    os << "    COLOR,  color[0], color[1], color[2],\n";
+//    os << "    VERTEX, x[0], y[0], z[0],\n";
+//    os << "    VERTEX, x[1], y[1], z[1],\n";
+    os << "    END\n";
+    os << "  ]\n\n";
+    os << "cmd.do(\"hide spheres\")\n";
+    int counter = 1;
+    double maxforce = 0.0;
+
+    for (unsigned int i = 0; i < cells.size(); i++)
+    {
+        for (unsigned int j = 0; j < cells.size(); j++)
+        {
+            double forceij = cells[i].nbMagnitudeForce(cells[j], box);
+            maxforce = std::max(maxforce, forceij);
+        }
+    }
+
+    maxforce *= 2.0;
+
+    for (unsigned int i = 0; i < cells.size(); i++)
+    {
+        for (unsigned int j = 0; j < cells.size(); j++)
+        {
+            double forceij = cells[i].nbMagnitudeForce(cells[j], box);
+            cells[i].calcCM();
+            Vector3D cmi = cells[i].getCm();
+            cells[j].calcCM();
+            Vector3D cmj = cells[j].getCm();
+
+            if (forceij > 0 and i > j)
+            {
+                double xi = cmi.x * box.getXstart() / box.getX();
+                double xj = cmj.x * box.getXstart() / box.getX();
+                double yi = cmi.y * box.getYstart() / box.getY();
+                double yj = cmj.y * box.getYstart() / box.getY();
+                double zi = cmi.z * box.getZstart() / box.getZ();
+                double zj = cmj.z * box.getZstart() / box.getZ();
+                //std::cout << cmi <<std::endl;
+                //std::cout << cmj <<std::endl;
+                os << "L = Line(";
+                os << "(" << xi << "," << xj << "),";
+                os << "(" << yi << "," << yj << "),";
+                os << "(" << zi << "," << zj << "), ";
+                os << "(" << forceij / maxforce << "), ";
+                os << "color=(1.0, 0.0, 0.0) )\n";
+                os << "obj = L.line\n";
+                os << "cmd.load_cgo(obj, \"line" << counter << "\", 1)\n";
+                counter++;
+            }
+        }
+    }
+
     os.close();
 }
 

@@ -335,8 +335,8 @@ void Simulator::simulate(int steps)
         }
     }
 
-    sb.saveRenderScript(cells, box, params.draw_box, params.r_vertex);
-    sb.saveStressScript(cells, box, params.draw_box, params.r_vertex);
+    //sb.saveRenderScript(cells, box, params.draw_box, params.r_vertex);
+    sb.saveStressScript2(cells, box, params.draw_box, params.r_vertex);
     //traj.savePdb(cells);
     traj.close();
     logsim.close();

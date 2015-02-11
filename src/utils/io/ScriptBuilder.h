@@ -19,6 +19,7 @@ class ScriptBuilder
         void saveSurfaceScript(std::vector<Cell>&);
 
         void saveStressScript(std::vector<Cell>&, Box&, bool box = false, double rv = 0.0, double perc = 0.10);
+        void saveStressScript2(std::vector<Cell>&, Box&, bool box = false, double rv = 0.0, double perc = 0.10);
         void saveBfactors();
         void setDrawBox(bool);
     private:

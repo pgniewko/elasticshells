@@ -46,7 +46,7 @@ class DomainList
         double dx, dy, dz;
         double rc_max;
 
-        Domain domains[MAX_M * MAX_M * MAX_M];
+        Domain domains[MAX_M* MAX_M* MAX_M];
 
         static utils::Logger domainlist_logs;
 
