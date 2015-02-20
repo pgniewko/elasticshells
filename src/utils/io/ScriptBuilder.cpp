@@ -1,11 +1,12 @@
 #include "ScriptBuilder.h"
 
 //ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'})
-ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf)
+ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf, char* sx)
 {
     script = rs;
     surfaceScript = ss;
     trajfile = tf;
+    stress_script = sx;
 }
 
 ScriptBuilder::ScriptBuilder(const ScriptBuilder& orig) {}
@@ -203,7 +204,7 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
 void ScriptBuilder::saveStressScript2(std::vector<Cell>& cells, Box& box, bool boxFlag, double rv, double perc)
 {
     std::ofstream os;
-    os.open("test_stress2.py");
+    os.open(stress_script);
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
     os << "class Line(object):\n";
@@ -274,8 +275,8 @@ void ScriptBuilder::saveStressScript2(std::vector<Cell>& cells, Box& box, bool b
 void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool boxFlag, double rv, double perc)
 {
     std::ofstream os;
-    //os.open(stress_script);
-    os.open("test_stress.py");
+    os.open(stress_script);
+    //os.open("test_stress.py");
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
     //if (boxFlag)

@@ -10,7 +10,7 @@
 class ScriptBuilder
 {
     public:
-        ScriptBuilder(char*, char*, char*);
+        ScriptBuilder(char*, char*, char*, char*);
         ScriptBuilder(const ScriptBuilder& orig);
         virtual ~ScriptBuilder();
 

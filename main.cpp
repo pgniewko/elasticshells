@@ -45,6 +45,7 @@ static struct argp_option options[] =
     {"surf",        301, "FILE",  0, "Output to SURFACE-FILE instead of standard output [default: ... ]" },
     {"out",         'o', "FILE",  0, "Print log to FILE instead of standard output [default: ... ]" },
     {"xyz",         302, "FILE",  0, "Print trajectory to FILE [default: ... ]" },
+    {"ss",          303, "FILE",  0, "Print stress to FILE [default: ... ]" },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0,             0,       0, 0, "Simulation Options:", 4},
@@ -112,6 +113,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->traj_file = (char*)&"./data/traj.xyz";
             arguments->output_file = (char*)&"./data/biofilm.out";
             arguments->surface_file = (char*)&"./data/surf.py";
+            arguments->stress_file = (char*)&"./data/stress.py";
             arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
             arguments->d = 3;
@@ -177,6 +179,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 302:
             arguments->traj_file = arg;
+            break;
+        case 303:
+            arguments->stress_file = arg;
             break;
         case 'n':
             arguments->n_cells = arg ? atoi (arg) : 1;
@@ -346,6 +351,7 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = " << arguments.traj_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = " << arguments.output_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = " << arguments.stress_file << "\n";
     clocks[0].tic();
     Simulator simulator(arguments);
     simulator.initCells(arguments.n_cells, arguments.init_radius);

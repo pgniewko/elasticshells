@@ -4,7 +4,7 @@
 utils::Logger Simulator::simulator_logs("simulator");
 
 Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
-    sb(args.render_file, args.surface_file, args.traj_file),
+    sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
     traj(args.traj_file), logsim(args.output_file)
 {
     try

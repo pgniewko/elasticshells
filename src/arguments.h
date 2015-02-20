@@ -13,6 +13,7 @@ struct arguments
     char* traj_file;              /* file arg to ‘--traj’ */
     char* output_file;            /* file arg to ‘--log’ */
     char* surface_file;
+    char* stress_file;
 
     char* integrator_a;
     char* tritype;

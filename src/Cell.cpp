@@ -641,13 +641,13 @@ double Cell::nbMagnitudeForce(std::vector<Cell> cells, Box& box, int vix)
         }
     }
 
-    Vector3D wallYZ, wallXZ, wallXY;
-    Vector3D dij;
-    double sgnx, sgny, sgnz;
-    double bsx = box.getX();
-    double bsy = box.getY();
-    double bsz = box.getZ();
-    double ecw = box.ecw;
+    //Vector3D wallYZ, wallXZ, wallXY;
+    //Vector3D dij;
+    //double sgnx, sgny, sgnz;
+    //double bsx = box.getX();
+    //double bsy = box.getY();
+    //double bsz = box.getZ();
+    //double ecw = box.ecw;
     //for (int i = 0; i < numberV; i++)
     //{
     //sgnx = SIGN(vertices[vix].xyz.x);
