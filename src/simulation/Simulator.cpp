@@ -239,6 +239,12 @@ void Simulator::initCells(int N, double ra, double rb)
         nx = uniform(-box.getX() + r0 + rc, box.getX() - r0 - rc);
         ny = uniform(-box.getY() + r0 + rc, box.getY() - r0 - rc);
         nz = uniform(-box.getZ() + r0 + rc, box.getZ() - r0 - rc);
+        if (numberofCells == 0)
+        {
+            nx = 0;
+            ny = 0;
+            nz = 0;
+        }
         Vector3D shift(nx, ny, nz);
 
         for (int i = 0; i < numberofCells; i++)
@@ -302,7 +308,9 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % params.save_step == 0)
         {
-            if (false)
+            //TODO: another argument
+            //if (false)
+            if (true)
             {
                 traj.save(cells, getTotalVertices());
             }
