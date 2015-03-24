@@ -316,8 +316,6 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % params.save_step == 0)
         {
-            //TODO: another argument
-            //if (false)
             if (params.scale)
             {
                 traj.save(cells, getTotalVertices());
