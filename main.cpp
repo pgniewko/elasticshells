@@ -65,6 +65,7 @@ static struct argp_option options[] =
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato] [default: simple]"},
     {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
     {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], ico[1], oct[2] [default: 0]"},
+    {"scale",     415,       0, 0, "Scale the saved coordinates upon compression [default: false]"},
 
     {0,             0,       0, 0, "Cell Options:", 5},
     {"mass",      'm', "FLOAT", 0, "Total mass of a cell [default: 60.0]"},
@@ -80,6 +81,8 @@ static struct argp_option options[] =
     {"vc",        508, "FLOAT", 0, "Volume at division [default: 20.0]"},
     {"bud-d",     509, "FLOAT", 0, "Bud-neck diameter [default: 0.5]"},
     {"div-ratio", 510, "FLOAT", 0, "Size ratio at cell division [default: 0.7]"},
+    {"ir2",       511, "FLOAT", 0, "Cells size at the initialization - upper limit [default:1.5]"},
+    {"ddp",       512, "FLOAT", 0, "Variation in osmotic pressure [default: 0.0]"},
 
     {0,             0,       0, 0, "Box options:", 6},
     {"bsx",       601, "FLOAT", 0, "X Box size [default: 10.0]"},
@@ -127,6 +130,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ecc = 100.0;
             arguments->dt = 0.001;
             arguments->dp = 0.0;
+            arguments->ddp = 0.0;
             arguments->visc = 100.0;
             arguments->k = 1.0;
             arguments->mass = 60.0;
@@ -134,6 +138,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->r_vertex = 0.25;
             arguments->verlet_r = 2.0;
             arguments->init_radius = 1.5;
+            arguments->init_radius2 = 1.5;
             arguments->growth_rate = 0.0;
             arguments->vc = 20.0;
             arguments->bud_d = 0.5;
@@ -151,6 +156,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->pbc = false;
             arguments->draw_box = true;
             arguments->osmotic_flag = false;
+            arguments->scale_flag = false;
             arguments->nb_flag = 0;
             break;
         case 'q':
@@ -231,6 +237,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 414:
             arguments->platotype = arg ? atoi (arg) : 0;
             break;
+        case 415:
+            arguments->scale_flag = true;
+            break;
         case 'm':
             arguments->mass = arg ? strtod (arg, NULL) : 1.0;
             break;
@@ -269,6 +278,12 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 510:
             arguments->div_ratio = arg ?  strtod (arg, NULL) : 0.7;
+            break;
+        case 511:
+            arguments->init_radius2 = arg ?  strtod (arg, NULL) : 1.5;
+            break;
+        case 512:
+            arguments->ddp = arg ?  strtod (arg, NULL) : 0.0;
             break;
         case 601:
             arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;
@@ -354,7 +369,8 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = " << arguments.stress_file << "\n";
     clocks[0].tic();
     Simulator simulator(arguments);
-    simulator.initCells(arguments.n_cells, arguments.init_radius);
+    //simulator.initCells(arguments.n_cells, arguments.init_radius);
+    simulator.initCells(arguments.n_cells, arguments.init_radius, arguments.init_radius2);
     //simulator.moveCellToXYZ(Vector3D(0, 0, 0), 0);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();

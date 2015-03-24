@@ -85,6 +85,7 @@ class Cell
         void setMass(double);
         void setCellId(int);
         void setNRT(double);
+        void setNRT(double, double);
 
         void setVerletR(double);
         void setInitR(double);

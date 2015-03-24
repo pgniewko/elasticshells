@@ -30,6 +30,7 @@ struct arguments
     double ecc;                         /* E cell-cell */
     double dt;
     double dp;
+    double ddp;
     double visc;
     double k;
     double mass;
@@ -37,6 +38,7 @@ struct arguments
     double r_vertex;                   /* vertex radius */
     double verlet_r;
     double init_radius;
+    double init_radius2;
     double growth_rate;
     double vc;
     double bud_d;
@@ -55,6 +57,7 @@ struct arguments
     bool pbc;
     bool draw_box;
     bool osmotic_flag;
+    bool scale_flag;
     int nb_flag;
 };
 

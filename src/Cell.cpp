@@ -467,7 +467,14 @@ void Cell::setDivisionRatio(double ds)
 
 void Cell::setNRT(double dp)
 {
-    nRT = dp * ( calcVolume() - OsmoticForce::getEpsilon() );
+    setNRT(dp, 0.0);
+    //nRT = dp * ( calcVolume() - OsmoticForce::getEpsilon() );
+}
+
+void Cell::setNRT(double dp, double ddp)
+{
+    double randu = uniform(0, ddp);
+    nRT = (dp + randu) * ( calcVolume() - OsmoticForce::getEpsilon() );
 }
 
 double Cell::getInitR()

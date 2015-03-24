@@ -31,6 +31,7 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     params.ecc = args.ecc;
     params.dt = args.dt;
     params.dp = args.dp;
+    params.dp = args.ddp;
     params.visc = args.visc;
     params.k = args.k;
     params.mass = args.mass;
@@ -42,6 +43,7 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     params.bud_d = args.bud_d;
     params.div_ratio = args.div_ratio;
     params.draw_box = args.draw_box;
+    params.scale = args.scale_flag;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
     setIntegrator(args.integrator_a);
@@ -127,6 +129,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << "\n";
     simulator_logs << utils::LogLevel::FINE  << "DEPTH="  << params.d << "\n";
     simulator_logs << utils::LogLevel::FINE  << "DP="  << params.dp << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "DDP="  << params.ddp << "\n";
     simulator_logs << utils::LogLevel::FINE  << "GAMMA="  << params.k << "\n";
     simulator_logs << utils::LogLevel::FINE  << "E* CELL_CELL="  << params.ecc << "\n";
     simulator_logs << utils::LogLevel::FINE  << "E* CELL_BOX="  << box.ecw << "\n";
@@ -207,7 +210,7 @@ void Simulator::addCell(double r0)
         newCell.setInitR(r0);
         newCell.setGrowthRate(params.growth_rate);
         newCell.setVolumeC(params.vc);
-        newCell.setNRT(params.dp);
+        newCell.setNRT(params.dp, params.ddp);
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
         addCell(newCell);
@@ -226,6 +229,11 @@ void Simulator::initCells(int N, double r0)
 
 void Simulator::initCells(int N, double ra, double rb)
 {
+    if (ra > rb)
+    {
+        simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: ra > rb. Simulator will set: rb = ra \n";
+        rb = ra;
+    }
     double nx, ny, nz;
     bool flag = true;
     double rc = 2.0 * params.r_vertex;
@@ -310,7 +318,7 @@ void Simulator::simulate(int steps)
         {
             //TODO: another argument
             //if (false)
-            if (true)
+            if (params.scale)
             {
                 traj.save(cells, getTotalVertices());
             }

@@ -42,6 +42,7 @@ struct params_t
     double ecc;
     double dt;
     double dp;
+    double ddp;
     double visc;
     double k;
     double mass;
@@ -53,6 +54,7 @@ struct params_t
     double bud_d;
     double div_ratio;
     bool draw_box;
+    bool scale;
 };
 
 class Simulator
