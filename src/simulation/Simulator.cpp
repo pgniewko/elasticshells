@@ -31,7 +31,7 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     params.ecc = args.ecc;
     params.dt = args.dt;
     params.dp = args.dp;
-    params.dp = args.ddp;
+    params.ddp = args.ddp;
     params.visc = args.visc;
     params.k = args.k;
     params.mass = args.mass;
@@ -316,7 +316,7 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % params.save_step == 0)
         {
-            if (params.scale)
+            if (!params.scale)
             {
                 traj.save(cells, getTotalVertices());
             }
