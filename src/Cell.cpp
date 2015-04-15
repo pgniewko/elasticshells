@@ -11,6 +11,7 @@ Cell::Cell(int depth) :  cellId(-1), my_phase(cell_phase_t::C_G1), numberV(0), n
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
     calcAverageR0();
+    randomRotate();
 }
 
 Cell::Cell(std::list<Triangle> tris) : cellId(-1), my_phase(cell_phase_t::C_G1), numberV(0), numberT(0), nRT(0),
@@ -20,6 +21,7 @@ Cell::Cell(std::list<Triangle> tris) : cellId(-1), my_phase(cell_phase_t::C_G1),
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
     calcAverageR0();
+    randomRotate();
 }
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles),
@@ -734,4 +736,58 @@ double Cell::nbMagnitudeForce(Cell ocell, Box& box)
 
     //return (total_force / totalContactSurface);
     return total_force;
+}
+
+void Cell::randomRotate()
+{
+    double u1 = uniform();
+    double u2 = uniform();
+    double u3 = uniform();
+
+    double q0 = sqrt(1 - u1) * sin(2*M_PI*u2);
+    double q1 = sqrt(1 - u1) * cos(2*M_PI*u2);
+    double q2 = sqrt(u1) * sin(2*M_PI*u3);
+    double q3 = sqrt(u1) * cos(2*M_PI*u3);
+
+    double A[3][3];
+    A[0][0] = q0*q0 + q1*q1 - q2*q2 - q3*q3;
+    A[0][1] = 2*(q1*q2 + q0*q3);
+    A[0][2] = 2*(q1*q3 - q0*q2);
+
+    A[1][0] = 2*(q1*q2 - q0*q3);
+    A[1][1] = q0*q0 - q1*q1 + q2*q2 - q3*q3;
+    A[1][2] = 2*(q2*q3 + q0*q1);
+
+    A[2][0] = 2*(q1*q3 + q0*q2);
+    A[2][1] = 2*(q2*q3 - q0*q1);
+    A[2][2] = q0*q0 - q1*q1 - q2*q2 + q3*q3;
+
+    calcCM();
+
+    double xnew = 0.0;
+    double ynew = 0.0;
+    double znew = 0.0;
+
+    for (int i = 0; i  < numberV; i++)
+    {
+        double xi = vertices[i].xyz.x - cm_m.x;
+        double yi = vertices[i].xyz.y - cm_m.y;
+        double zi = vertices[i].xyz.z - cm_m.z;
+
+        xnew  = A[0][0] * xi;
+        xnew += A[0][1] * yi;
+        xnew += A[0][2] * zi;
+
+        ynew  = A[1][0] * xi;
+        ynew += A[1][1] * yi;
+        ynew += A[1][2] * zi;
+
+        znew  = A[2][0] * xi;
+        znew += A[2][1] * yi;
+        znew += A[2][2] * zi;
+
+        vertices[i].xyz.x = xnew + cm_m.x;
+        vertices[i].xyz.y = ynew + cm_m.y;
+        vertices[i].xyz.z = znew + cm_m.z;
+    }
 }

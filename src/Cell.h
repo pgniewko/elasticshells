@@ -125,6 +125,7 @@ class Cell
         void bud();
         void divide();
         void findBud();
+        void randomRotate();
 
         void calcAverageR0();
         double sumL2();

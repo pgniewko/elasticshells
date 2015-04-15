@@ -137,8 +137,8 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
             arguments->verlet_r = 2.0;
-            arguments->init_radius = 1.5;
-            arguments->init_radius2 = 1.5;
+            arguments->init_radius = 2.5;
+            arguments->init_radius2 = 2.5;
             arguments->growth_rate = 0.0;
             arguments->vc = 20.0;
             arguments->bud_d = 0.5;
