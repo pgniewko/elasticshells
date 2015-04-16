@@ -46,6 +46,7 @@ static struct argp_option options[] =
     {"out",         'o', "FILE",  0, "Print log to FILE instead of standard output [default: ... ]" },
     {"xyz",         302, "FILE",  0, "Print trajectory to FILE [default: ... ]" },
     {"ss",          303, "FILE",  0, "Print stress to FILE [default: ... ]" },
+    {"seed",        304, "LONG",  0, "Random generator seed [default: 0x123] " },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0,             0,       0, 0, "Simulation Options:", 4},
@@ -158,6 +159,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->osmotic_flag = false;
             arguments->scale_flag = false;
             arguments->nb_flag = 0;
+            arguments->seed = 0x123;
             break;
         case 'q':
         case 's':
@@ -188,6 +190,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 303:
             arguments->stress_file = arg;
+            break;
+        case 304:
+            arguments->seed =  arg ? atol (arg) : 0x123;
             break;
         case 'n':
             arguments->n_cells = arg ? atoi (arg) : 1;
@@ -335,9 +340,7 @@ Timer clocks[10];
 int main(int argc, char** argv)
 {
     print_time();
-    /* Initialize MT19937 Pseudo-random-number generator. */
-    unsigned long init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
-    init_by_array(init, length);
+
     /* Parse our arguments; every option seen by parse_opt will
        be reflected in arguments. */
     struct arguments arguments;
@@ -361,6 +364,11 @@ int main(int argc, char** argv)
         biofilm_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT*\n";
         exit(1);
     }
+
+
+    /* Initialize MT19937 Pseudo-random-number generator. */
+    unsigned long init[4] = {arguments.seed, 0x234, 0x345, 0x456}, length = 4;
+    init_by_array(init, length);
 
     biofilm_logs << utils::LogLevel::FILE << "RENDER_FILE = " << arguments.render_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = " << arguments.traj_file << "\n";

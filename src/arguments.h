@@ -59,6 +59,8 @@ struct arguments
     bool osmotic_flag;
     bool scale_flag;
     int nb_flag;
+
+    long seed;
 };
 
 #endif	/* ARGUMENTS_H */
