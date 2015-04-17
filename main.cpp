@@ -73,7 +73,7 @@ static struct argp_option options[] =
     {"gamma",     'k', "FLOAT", 0, "Spring constant between vertices[default: 1.0]"},
     {"ecc",       'a', "FLOAT", 0, "Effective cell-cell Young's modulus[default: 100.0]"},
     {"ecw",       501, "FLOAT", 0, "Effective cell-box Young's modulus [default: 100.0]"},
-    {"ir",        502, "FLOAT", 0, "Cells size at the initialization [default:1.5]"},
+    {"ir",        502, "FLOAT", 0, "Cells size at the initialization - lower limit [default:2.5"},
     {"mu",        503, "FLOAT", 0, "Viscosity coefficient [default: 100.0]"},
     {"dp",        504, "FLOAT", 0, "Osmotic pressure [default: 0.0]"},
     {"osm",       505,       0, 0, "Volume dependent osmotic pressure [default:  false]"},
@@ -82,7 +82,7 @@ static struct argp_option options[] =
     {"vc",        508, "FLOAT", 0, "Volume at division [default: 20.0]"},
     {"bud-d",     509, "FLOAT", 0, "Bud-neck diameter [default: 0.5]"},
     {"div-ratio", 510, "FLOAT", 0, "Size ratio at cell division [default: 0.7]"},
-    {"ir2",       511, "FLOAT", 0, "Cells size at the initialization - upper limit [default:1.5]"},
+    {"ir2",       511, "FLOAT", 0, "Cells size at the initialization - upper limit [default:2.5]"},
     {"ddp",       512, "FLOAT", 0, "Variation in osmotic pressure [default: 0.0]"},
 
     {0,             0,       0, 0, "Box options:", 6},
@@ -258,7 +258,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ecw = arg ? strtod (arg, NULL) : 200.0;
             break;
         case 502:
-            arguments->init_radius = arg ?  strtod (arg, NULL) : 1.5;
+            arguments->init_radius = arg ?  strtod (arg, NULL) : 2.5;
             break;
         case 503:
             arguments->visc = arg ? strtod (arg, NULL) : 100.0;
@@ -285,7 +285,8 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->div_ratio = arg ?  strtod (arg, NULL) : 0.7;
             break;
         case 511:
-            arguments->init_radius2 = arg ?  strtod (arg, NULL) : 1.5;
+            arguments->init_radius2 = arg ?  strtod (arg, NULL) : 2.5;
+            arguments->init_radius2 = std::max(arguments->init_radius, arguments->init_radius2);
             break;
         case 512:
             arguments->ddp = arg ?  strtod (arg, NULL) : 0.0;
