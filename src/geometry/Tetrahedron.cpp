@@ -19,6 +19,23 @@ double Tetrahedron::volume() const
     return volume;
 }
 
+double Tetrahedron::volume(double eps) const
+{
+    Vector3D AD = a - d;
+    Vector3D BD = b - d;
+    Vector3D CD = c - d;
+    double nAD = AD.length() + eps;
+    double nBD = BD.length() + eps;
+    double nCD = CD.length() + eps;
+    AD.setLength(nAD);
+    BD.setLength(nBD);
+    CD.setLength(nCD);
+    Vector3D CcrossD = cross(BD, CD);
+    double volume = fabs(AD * CcrossD);
+    volume /= 6.0;
+    return volume;
+}
+
 double Tetrahedron::volumeSgn() const
 {
     Vector3D AD = a - d;

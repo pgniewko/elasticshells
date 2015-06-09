@@ -55,6 +55,7 @@ class Cell
         virtual ~Cell();
         double calcSurfaceArea();
         double calcVolume();
+        double calcVolume(double);
         double getMass();
         void calcCM();
         int numberOfTris() ;
@@ -119,6 +120,12 @@ class Cell
         double getPercLength(int, int);
         double nbMagnitudeForce(std::vector<Cell>, Box&, int);
         double nbMagnitudeForce(Cell, Box&);
+
+        double contactForce(const Cell&, Box&);
+        //double contactForce(Box&);
+
+        double contactArea(const Cell&, Box&);
+        double contactArea(Box&);
 
     private:
         void grow();

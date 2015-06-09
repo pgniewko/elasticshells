@@ -10,6 +10,9 @@
 #include "utils/observables/SurfaceForce.h"
 #include "utils/observables/VolumeFraction.h"
 #include "utils/observables/order/QL.h"
+#include "utils/observables/WallCoverageFraction.h"
+#include "utils/observables/AverageContactStress.h"
+//#include "utils/observables/"
 
 class LogSimulation
 {

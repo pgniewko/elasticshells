@@ -290,6 +290,24 @@ double Cell::calcVolume()
     return volume;
 }
 
+double Cell::calcVolume(double eps)
+{
+    double volume = 0.0;
+    int va, vb, vc;
+    calcCM();
+
+    for (int i = 0; i < numberT; i++)
+    {
+        va = triangles[i].ia;
+        vb = triangles[i].ib;
+        vc = triangles[i].ic;
+        Tetrahedron tetr(vertices[va].xyz, vertices[vb].xyz, vertices[vc].xyz, cm_m);
+        volume += tetr.volume(eps);
+    }
+
+    return volume;
+}
+
 void Cell::calcCM()
 {
     Vector3D tmp_m(0.0, 0.0, 0.0);
@@ -790,4 +808,189 @@ void Cell::randomRotate()
         vertices[i].xyz.y = ynew + cm_m.y;
         vertices[i].xyz.z = znew + cm_m.z;
     }
+}
+
+double Cell::contactForce(const Cell& other_cell, Box& box)
+{
+    int ocellid = other_cell.cellId;
+    Vector3D dij;
+
+    Vector3D force_collector(0, 0, 0);
+    double contact_force = 0.0;
+
+    for (int i = 0; i < numberV; i++)
+    {
+        for (int j = 0; j < other_cell.numberV; j++)
+        {
+            if (cellId != ocellid)
+            {
+                getDistance(dij, other_cell.vertices[j].xyz, vertices[i].xyz, box);
+                force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
+            }
+        }
+        contact_force += force_collector.length();
+        force_collector = Vector3D(0,0,0);
+    }
+    return contact_force;
+}
+
+//double Cell::contactForce(Box& box)
+//{
+//    Vector3D wallYZ, wallXZ, wallXY;
+//    Vector3D dij;
+//    double sgnx, sgny, sgnz;
+//    double bsx = box.getX();
+//    double bsy = box.getY();
+//    double bsz = box.getZ();
+//    double ecw = box.ecw;
+
+//    Vector3D force_collector(0, 0, 0);
+//    double contact_force = 0.0;
+
+//    for (int i = 0; i < numberV; i++)
+//    {
+//        sgnx = SIGN(vertices[i].xyz.x);
+//        wallYZ.x = sgnx * bsx;
+//        wallYZ.y = vertices[i].xyz.y;
+//        wallYZ.z = vertices[i].xyz.z;
+//        dij = vertices[i].xyz - wallYZ;
+//        force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+//        sgny = SIGN(vertices[i].xyz.y);
+//        wallXZ.x = vertices[i].xyz.x;
+//        wallXZ.y = sgny * bsy;
+//        wallXZ.z = vertices[i].xyz.z;
+//        dij = vertices[i].xyz - wallXZ;
+//        force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+//        sgnz = SIGN(vertices[i].xyz.z);
+//        wallXY.x = vertices[i].xyz.x;
+//        wallXY.y = vertices[i].xyz.y;
+//        wallXY.z = sgnz * bsz;
+//        dij = vertices[i].xyz - wallXY;
+//        force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+//
+//        contact_force += force_collector.length();
+//        force_collector = Vector3D(0,0,0);
+//    }
+//    return force_collector;
+//}
+
+double Cell::contactArea(const Cell& ocell, Box& box)
+{
+    int ocellid = ocell.cellId;
+    Vector3D dij;
+
+    Vector3D force_collector1(0, 0, 0);
+    Vector3D force_collector2(0, 0, 0);
+    Vector3D force_collector3(0, 0, 0);
+
+    int idx1, idx2, idx3;
+    double fc1, fc2, fc3;
+
+    double contact_area = 0.0;
+
+    for (int i = 0; i < numberT; i++)
+    {
+        idx1 = triangles[i].ia;
+        idx2 = triangles[i].ib;
+        idx3 = triangles[i].ic;
+
+        if (cellId != ocellid)
+        {
+            for (int j = 0; j < ocell.numberV; j++)
+            {
+                getDistance(dij, ocell.vertices[j].xyz, vertices[idx1].xyz, box);
+                force_collector1 += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
+
+                getDistance(dij, ocell.vertices[j].xyz, vertices[idx2].xyz, box);
+                force_collector2 += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
+
+                getDistance(dij, ocell.vertices[j].xyz, vertices[idx3].xyz, box);
+                force_collector3 += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
+            }
+        }
+
+        fc1 = force_collector1.length();
+        fc2 = force_collector2.length();
+        fc3 = force_collector3.length();
+
+        if (fc1*fc2*fc3 > 0)
+        {
+            contact_area += triangles[i].area(vertices);
+        }
+
+        force_collector1 = Vector3D(0,0,0);
+        force_collector2 = Vector3D(0,0,0);
+        force_collector3 = Vector3D(0,0,0);
+        fc1 = 0;
+        fc2 = 0;
+        fc3 = 0;
+
+    }
+
+    return contact_area;
+}
+
+double Cell::contactArea(Box& box)
+{
+    Vector3D wallYZ, wallXZ, wallXY;
+    Vector3D dij;
+    double sgnx, sgny, sgnz;
+    double bsx = box.getX();
+    double bsy = box.getY();
+    double bsz = box.getZ();
+    double ecw = box.ecw;
+
+    Vector3D force_collector(0, 0, 0);
+    double contact_area = 0.0;
+
+    int idxset [3] = {0, 0, 0};
+    double fc [3] = {0, 0, 0};
+    int idx;
+
+    for (int i = 0; i < numberT; i++)
+    {
+        idxset[0] = triangles[i].ia;
+        idxset[1] = triangles[i].ib;
+        idxset[2] = triangles[i].ic;
+
+        for (int j = 0; j < 3; j++)
+        {
+            idx = idxset[j];
+
+            sgnx = SIGN(vertices[idx].xyz.x);
+            wallYZ.x = sgnx * bsx;
+            wallYZ.y = vertices[idx].xyz.y;
+            wallYZ.z = vertices[idx].xyz.z;
+            dij = vertices[idx].xyz - wallYZ;
+            force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+
+            sgny = SIGN(vertices[idx].xyz.y);
+            wallXZ.x = vertices[idx].xyz.x;
+            wallXZ.y = sgny * bsy;
+            wallXZ.z = vertices[idx].xyz.z;
+            dij = vertices[idx].xyz - wallXZ;
+            force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+
+            sgnz = SIGN(vertices[idx].xyz.z);
+            wallXY.x = vertices[idx].xyz.x;
+            wallXY.y = vertices[idx].xyz.y;
+            wallXY.z = sgnz * bsz;
+            dij = vertices[idx].xyz - wallXY;
+            force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
+
+            fc[j] = force_collector.length();
+            force_collector = Vector3D(0,0,0);
+        }
+
+        if (fc[0] * fc[1] * fc[2] > 0)
+        {
+            contact_area += triangles[i].area(vertices);
+        }
+        force_collector = Vector3D(0,0,0);
+        fc[0] = 0;
+        fc[1] = 0;
+        fc[2] = 0;
+
+    }
+    return contact_area;
 }
