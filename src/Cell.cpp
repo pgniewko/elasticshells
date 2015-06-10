@@ -1014,4 +1014,5 @@ double Cell::surfaceStrainEnergy()
             //return f;
         }
     }
+    return deps;
 }
