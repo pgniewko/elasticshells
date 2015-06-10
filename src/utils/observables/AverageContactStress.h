@@ -1,6 +1,11 @@
 #ifndef AVERAGECONTACTSTRESS_H
 #define	AVERAGECONTACTSTRESS_H
 
+#include <vector>
+
+#include "Cell.h"
+#include "simulation/Box.h"
+
 class AverageContactStress {
 public:
     AverageContactStress();

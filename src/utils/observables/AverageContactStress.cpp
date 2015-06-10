@@ -1,5 +1,3 @@
-#include <vector>
-
 #include "AverageContactStress.h"
 
 AverageContactStress::AverageContactStress() {}
@@ -30,6 +28,10 @@ double AverageContactStress::caclContactStress(Box& box, std::vector<Cell>& cell
         }
     }
 
-    average_stress /= counter;
+    if (counter > 0)
+        average_stress /= counter;
+    else
+        average_stress = 0.0;
+
     return average_stress;
 }
