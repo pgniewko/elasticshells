@@ -1,6 +1,11 @@
 #ifndef WALLCOVERAGEFRACTION_H
 #define	WALLCOVERAGEFRACTION_H
 
+#include <vector>
+
+#include "Cell.h"
+#include "simulation/Box.h"
+
 class WallCoverageFraction {
 public:
     WallCoverageFraction();

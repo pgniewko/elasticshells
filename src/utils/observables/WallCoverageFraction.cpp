@@ -1,7 +1,4 @@
-#include <vector>
-
 #include "WallCoverageFraction.h"
-#include "src/simulation/Box.h"
 
 WallCoverageFraction::WallCoverageFraction() {}
 
