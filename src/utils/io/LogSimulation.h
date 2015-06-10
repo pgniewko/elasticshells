@@ -13,6 +13,8 @@
 //#include "utils/observables/WallCoverageFraction.h"
 #include "utils/observables/AverageContactStress.h"
 #include "../../utils/observables/WallCoverageFraction.h"
+#include "../../utils/observables/TotalCellsArea.h"
+#include "../../utils/observables/SurfaceStrainEnergy.h"
 
 class LogSimulation
 {

@@ -127,6 +127,8 @@ class Cell
         double contactArea(const Cell&, Box&);
         double contactArea(Box&);
 
+        double surfaceStrainEnergy();
+
     private:
         void grow();
         void bud();

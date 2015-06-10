@@ -25,10 +25,12 @@ void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, double rv, int
     double volume_frac = VolumeFraction::caclVolumeFraction(box, cells, rv);
     double area_coverage = WallCoverageFraction::wallsCoverage(box, cells);
     double mean_stress = AverageContactStress::caclContactStress(box, cells);
+    double tot_surface = TotalCellsArea::totalCellArea(cells);
+    double strain_energy = SurfaceStrainEnergy::calcSurfaceEnergy(cells);
     double box_volume = box.getVolume(0.0);
     double box_area = box.getArea(0.0);
     int numofcells = cells.size();
-    fprintf(os, "%i %i %8.6f %8.6f %8.6f  %8.6f %10.6f %10.6f\n", simstep, numofcells, box_volume, box_area, pressure, volume_frac, area_coverage, mean_stress);
+    fprintf(os, "%i %i %8.6f %8.6f %8.6f  %8.6f %10.6f %10.6f %10.6f %10.6f\n", simstep, numofcells, box_volume, box_area, pressure, volume_frac, area_coverage, mean_stress, tot_surface, strain_energy);
     //double forces = SurfaceForce::calcForces(box, cells, rv);
     //double cellsVolume = VolumeFraction::caclCellsVolume(cells);
     //double boxVolume = box.getVolume(rv);

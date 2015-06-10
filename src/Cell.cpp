@@ -994,3 +994,24 @@ double Cell::contactArea(Box& box)
     }
     return contact_area;
 }
+
+double Cell::surfaceStrainEnergy()
+{
+    double deps = 0.0;
+    double R0ij;
+    int idxj;
+
+    for (int i = 0; i < numberV; i++)
+    {
+        for (int j = 0; j < vertices[i].numBonded; j++)
+        {
+            R0ij = vertices[i].r0[j];
+            idxj = vertices[i].bondedVerts[j];
+            //vertices[i].force += HookeanForce::calcForce(vertices[i].xyz, vertices[idxj].xyz, R0ij, params.gamma);
+            Vector3D dR = vertices[idxj].xyz - vertices[i].xyz;
+            double R = dR.length();
+            deps += 0.5 * params.gamma * (R0ij - R) * (R0ij - R);
+            //return f;
+        }
+    }
+}
