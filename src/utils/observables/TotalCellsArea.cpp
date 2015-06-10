@@ -14,4 +14,5 @@ double TotalCellsArea::totalCellArea(std::vector<Cell>& cells)
     {
         total_area += cells[i].calcSurfaceArea();
     }
+    return total_area;
 }
