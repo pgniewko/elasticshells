@@ -924,7 +924,6 @@ double Cell::contactArea(const Cell& ocell, Box& box)
         fc1 = 0;
         fc2 = 0;
         fc3 = 0;
-
     }
 
     return contact_area;

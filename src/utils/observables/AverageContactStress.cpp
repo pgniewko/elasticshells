@@ -14,16 +14,19 @@ double AverageContactStress::caclContactStress(Box& box, std::vector<Cell>& cell
     double average_stress = 0.0;
     int counter = 0;
 
-    for (int i = 0; i < cellsnumber-1; i++)
+    for (int i = 0; i < cellsnumber; i++)
     {
-        for (int j = i+1; j < cellsnumber; j++)
+        for (int j = 0; j < cellsnumber; j++)
         {
-            contact_force = cells[i].contactForce(cells[j], box);
-            contact_area = cells[i].contactArea(cells[j], box);
-            if (contact_force > 0  && contact_area > 0)
+            if (i != j)
             {
-                average_stress += (contact_force/contact_area);
-                counter++;
+                contact_force = cells[i].contactForce(cells[j], box);
+                contact_area = cells[i].contactArea(cells[j], box);
+                if (contact_force > 0  && contact_area > 0)
+                {
+                    average_stress += (contact_force/contact_area);
+                    counter++;
+                }
             }
         }
     }

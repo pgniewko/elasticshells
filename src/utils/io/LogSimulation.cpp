@@ -23,7 +23,7 @@ void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, double rv, int
 {
     double pressure = SurfacePressure::calcPressure(box, cells, rv);
     double volume_frac = VolumeFraction::caclVolumeFraction(box, cells, rv);
-    double area_coverage = WallCoverageFraction::wallsCoverage(box, cells);
+    double area_coverage = WallCoverageFraction::wallsCoverage(box, cells, rv);
     double mean_stress = AverageContactStress::caclContactStress(box, cells);
     double tot_surface = TotalCellsArea::totalCellArea(cells);
     double strain_energy = SurfaceStrainEnergy::calcSurfaceEnergy(cells);

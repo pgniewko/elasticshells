@@ -11,7 +11,7 @@ public:
     WallCoverageFraction();
     WallCoverageFraction(const WallCoverageFraction& orig);
     virtual ~WallCoverageFraction();
-    static double wallsCoverage(Box&, std::vector<Cell>&);
+    static double wallsCoverage(Box&, std::vector<Cell>&, double = 0.0);
 private:
 
 };
