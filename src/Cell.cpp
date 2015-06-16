@@ -888,6 +888,8 @@ double Cell::contactArea(const Cell& ocell, Box& box)
 
     double contact_area = 0.0;
 
+    calcCM();
+
     for (int i = 0; i < numberT; i++)
     {
         idx1 = triangles[i].ia;
@@ -915,7 +917,8 @@ double Cell::contactArea(const Cell& ocell, Box& box)
 
         if (fc1*fc2*fc3 > 0)
         {
-            contact_area += triangles[i].area(vertices);
+            //contact_area += triangles[i].area(vertices);
+            contact_area += triangles[i].area(vertices, cm_m, params.r_vertex);
         }
 
         force_collector1 = Vector3D(0,0,0);

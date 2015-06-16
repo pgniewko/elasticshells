@@ -4,6 +4,7 @@
 #include "Environment.h"
 #include "Vertex.h"
 #include "Triangle.h"
+#include "geometry/Vector3D.h"
 
 class Vertex;
 
@@ -17,6 +18,7 @@ class VertexTriangle
         void setId(int);
         int getId();
         double area(const Vertex[]);
+        double area(const Vertex[], const Vector3D, double);
 
         void printVertexTriangle();
         void subsVertex(int, int);

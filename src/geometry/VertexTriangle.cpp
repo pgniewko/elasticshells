@@ -57,3 +57,28 @@ double VertexTriangle::area(const Vertex vs[])
         return 0.0;
     }
 }
+
+double VertexTriangle::area(const Vertex vs[], const Vector3D cm, double eps)
+{
+    if (ia != -1 && ib != -1 && ic != -1)
+    {
+        Vector3D ta = vs[ia].xyz - cm;
+        Vector3D tb = vs[ib].xyz - cm;
+        Vector3D tc = vs[ic].xyz - cm;
+
+        double n_ta = ta.length() + eps;
+        double n_tb = tb.length() + eps;
+        double n_tc = tc.length() + eps;
+
+        ta.setLength(n_ta);
+        tb.setLength(n_tb);
+        tc.setLength(n_tc);
+
+        Triangle t(ta, tb, tc);
+        return t.area();
+    }
+    else
+    {
+        return 0.0;
+    }
+}
