@@ -341,7 +341,6 @@ Timer clocks[10];
 int main(int argc, char** argv)
 {
     print_time();
-
     /* Parse our arguments; every option seen by parse_opt will
        be reflected in arguments. */
     struct arguments arguments;
@@ -366,11 +365,9 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-
     /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {arguments.seed, 0x234, 0x345, 0x456}, length = 4;
     init_by_array(init, length);
-
     biofilm_logs << utils::LogLevel::FILE << "RENDER_FILE = " << arguments.render_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = " << arguments.traj_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = " << arguments.output_file << "\n";

@@ -235,6 +235,7 @@ void Simulator::initCells(int N, double ra, double rb)
         simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: ra > rb. Simulator will set: rb = ra \n";
         rb = ra;
     }
+
     double nx, ny, nz;
     bool flag = true;
     double rc = 2.0 * params.r_vertex;
@@ -248,12 +249,14 @@ void Simulator::initCells(int N, double ra, double rb)
         nx = uniform(-box.getX() + r0 + rc, box.getX() - r0 - rc);
         ny = uniform(-box.getY() + r0 + rc, box.getY() - r0 - rc);
         nz = uniform(-box.getZ() + r0 + rc, box.getZ() - r0 - rc);
+
         if (numberofCells == 0)
         {
             nx = 0;
             ny = 0;
             nz = 0;
         }
+
         Vector3D shift(nx, ny, nz);
 
         for (int i = 0; i < numberofCells; i++)

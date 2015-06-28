@@ -4,13 +4,14 @@
 #include <vector>
 #include "Cell.h"
 
-class SurfaceStrainEnergy {
-public:
-    SurfaceStrainEnergy();
-    SurfaceStrainEnergy(const SurfaceStrainEnergy& orig);
-    virtual ~SurfaceStrainEnergy();
-    static double calcSurfaceEnergy(std::vector<Cell>&);
-private:
+class SurfaceStrainEnergy
+{
+    public:
+        SurfaceStrainEnergy();
+        SurfaceStrainEnergy(const SurfaceStrainEnergy& orig);
+        virtual ~SurfaceStrainEnergy();
+        static double calcSurfaceEnergy(std::vector<Cell>&);
+    private:
 
 };
 

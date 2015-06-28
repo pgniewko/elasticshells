@@ -4,13 +4,14 @@
 #include <vector>
 #include "Cell.h"
 
-class TotalCellsArea {
-public:
-    TotalCellsArea();
-    TotalCellsArea(const TotalCellsArea& orig);
-    virtual ~TotalCellsArea();
-    static double totalCellArea(std::vector<Cell>&);
-private:
+class TotalCellsArea
+{
+    public:
+        TotalCellsArea();
+        TotalCellsArea(const TotalCellsArea& orig);
+        virtual ~TotalCellsArea();
+        static double totalCellArea(std::vector<Cell>&);
+    private:
 
 };
 

@@ -450,7 +450,6 @@ void Cell::setDp(double dP, double ddp)
     params.dp = dP + randu;
     V0 = calcVolume();
     nRT = params.dp * V0 * ( 1.0 - OsmoticForce::getEpsilon() );
-
 //    std::cout << "V0=" << V0 << " " << "eps=" << OsmoticForce::getEpsilon() << " nRT=" << nRT << " P=" << params.dp << std::endl;
 }
 
@@ -498,7 +497,7 @@ void Cell::setDivisionRatio(double ds)
 //void Cell::setNRT(double dp)
 //{
 //    setNRT(dp, 0.0);
-    //nRT = dp * ( calcVolume() - OsmoticForce::getEpsilon() );
+//nRT = dp * ( calcVolume() - OsmoticForce::getEpsilon() );
 //}
 
 //void Cell::setNRT(double dp, double ddp)
@@ -772,27 +771,21 @@ void Cell::randomRotate()
     double u1 = uniform();
     double u2 = uniform();
     double u3 = uniform();
-
-    double q0 = sqrt(1 - u1) * sin(2*M_PI*u2);
-    double q1 = sqrt(1 - u1) * cos(2*M_PI*u2);
-    double q2 = sqrt(u1) * sin(2*M_PI*u3);
-    double q3 = sqrt(u1) * cos(2*M_PI*u3);
-
+    double q0 = sqrt(1 - u1) * sin(2 * M_PI * u2);
+    double q1 = sqrt(1 - u1) * cos(2 * M_PI * u2);
+    double q2 = sqrt(u1) * sin(2 * M_PI * u3);
+    double q3 = sqrt(u1) * cos(2 * M_PI * u3);
     double A[3][3];
-    A[0][0] = q0*q0 + q1*q1 - q2*q2 - q3*q3;
-    A[0][1] = 2*(q1*q2 + q0*q3);
-    A[0][2] = 2*(q1*q3 - q0*q2);
-
-    A[1][0] = 2*(q1*q2 - q0*q3);
-    A[1][1] = q0*q0 - q1*q1 + q2*q2 - q3*q3;
-    A[1][2] = 2*(q2*q3 + q0*q1);
-
-    A[2][0] = 2*(q1*q3 + q0*q2);
-    A[2][1] = 2*(q2*q3 - q0*q1);
-    A[2][2] = q0*q0 - q1*q1 - q2*q2 + q3*q3;
-
+    A[0][0] = q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3;
+    A[0][1] = 2 * (q1 * q2 + q0 * q3);
+    A[0][2] = 2 * (q1 * q3 - q0 * q2);
+    A[1][0] = 2 * (q1 * q2 - q0 * q3);
+    A[1][1] = q0 * q0 - q1 * q1 + q2 * q2 - q3 * q3;
+    A[1][2] = 2 * (q2 * q3 + q0 * q1);
+    A[2][0] = 2 * (q1 * q3 + q0 * q2);
+    A[2][1] = 2 * (q2 * q3 - q0 * q1);
+    A[2][2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
     calcCM();
-
     double xnew = 0.0;
     double ynew = 0.0;
     double znew = 0.0;
@@ -802,19 +795,15 @@ void Cell::randomRotate()
         double xi = vertices[i].xyz.x - cm_m.x;
         double yi = vertices[i].xyz.y - cm_m.y;
         double zi = vertices[i].xyz.z - cm_m.z;
-
         xnew  = A[0][0] * xi;
         xnew += A[0][1] * yi;
         xnew += A[0][2] * zi;
-
         ynew  = A[1][0] * xi;
         ynew += A[1][1] * yi;
         ynew += A[1][2] * zi;
-
         znew  = A[2][0] * xi;
         znew += A[2][1] * yi;
         znew += A[2][2] * zi;
-
         vertices[i].xyz.x = xnew + cm_m.x;
         vertices[i].xyz.y = ynew + cm_m.y;
         vertices[i].xyz.z = znew + cm_m.z;
@@ -825,7 +814,6 @@ double Cell::contactForce(const Cell& other_cell, Box& box)
 {
     int ocellid = other_cell.cellId;
     Vector3D dij;
-
     Vector3D force_collector(0, 0, 0);
     double contact_force = 0.0;
 
@@ -839,9 +827,11 @@ double Cell::contactForce(const Cell& other_cell, Box& box)
                 force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
             }
         }
+
         contact_force += force_collector.length();
-        force_collector = Vector3D(0,0,0);
+        force_collector = Vector3D(0, 0, 0);
     }
+
     return contact_force;
 }
 
@@ -889,16 +879,12 @@ double Cell::contactArea(const Cell& ocell, Box& box)
 {
     int ocellid = ocell.cellId;
     Vector3D dij;
-
     Vector3D force_collector1(0, 0, 0);
     Vector3D force_collector2(0, 0, 0);
     Vector3D force_collector3(0, 0, 0);
-
     int idx1, idx2, idx3;
     double fc1, fc2, fc3;
-
     double contact_area = 0.0;
-
     calcCM();
 
     for (int i = 0; i < numberT; i++)
@@ -913,10 +899,8 @@ double Cell::contactArea(const Cell& ocell, Box& box)
             {
                 getDistance(dij, ocell.vertices[j].xyz, vertices[idx1].xyz, box);
                 force_collector1 += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
-
                 getDistance(dij, ocell.vertices[j].xyz, vertices[idx2].xyz, box);
                 force_collector2 += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
-
                 getDistance(dij, ocell.vertices[j].xyz, vertices[idx3].xyz, box);
                 force_collector3 += HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.ecc);
             }
@@ -926,15 +910,15 @@ double Cell::contactArea(const Cell& ocell, Box& box)
         fc2 = force_collector2.length();
         fc3 = force_collector3.length();
 
-        if (fc1*fc2*fc3 > 0)
+        if (fc1 * fc2 * fc3 > 0)
         {
             //contact_area += triangles[i].area(vertices);
             contact_area += triangles[i].area(vertices, cm_m, params.r_vertex);
         }
 
-        force_collector1 = Vector3D(0,0,0);
-        force_collector2 = Vector3D(0,0,0);
-        force_collector3 = Vector3D(0,0,0);
+        force_collector1 = Vector3D(0, 0, 0);
+        force_collector2 = Vector3D(0, 0, 0);
+        force_collector3 = Vector3D(0, 0, 0);
         fc1 = 0;
         fc2 = 0;
         fc3 = 0;
@@ -952,10 +936,8 @@ double Cell::contactArea(Box& box)
     double bsy = box.getY();
     double bsz = box.getZ();
     double ecw = box.ecw;
-
     Vector3D force_collector(0, 0, 0);
     double contact_area = 0.0;
-
     int idxset [3] = {0, 0, 0};
     double fc [3] = {0, 0, 0};
     int idx;
@@ -969,42 +951,39 @@ double Cell::contactArea(Box& box)
         for (int j = 0; j < 3; j++)
         {
             idx = idxset[j];
-
             sgnx = SIGN(vertices[idx].xyz.x);
             wallYZ.x = sgnx * bsx;
             wallYZ.y = vertices[idx].xyz.y;
             wallYZ.z = vertices[idx].xyz.z;
             dij = vertices[idx].xyz - wallYZ;
             force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
-
             sgny = SIGN(vertices[idx].xyz.y);
             wallXZ.x = vertices[idx].xyz.x;
             wallXZ.y = sgny * bsy;
             wallXZ.z = vertices[idx].xyz.z;
             dij = vertices[idx].xyz - wallXZ;
             force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
-
             sgnz = SIGN(vertices[idx].xyz.z);
             wallXY.x = vertices[idx].xyz.x;
             wallXY.y = vertices[idx].xyz.y;
             wallXY.z = sgnz * bsz;
             dij = vertices[idx].xyz - wallXY;
             force_collector += HertzianRepulsion::calcForce(dij, params.r_vertex, ecw);
-
             fc[j] = force_collector.length();
-            force_collector = Vector3D(0,0,0);
+            force_collector = Vector3D(0, 0, 0);
         }
 
         if (fc[0] * fc[1] * fc[2] > 0)
         {
             contact_area += triangles[i].area(vertices);
         }
-        force_collector = Vector3D(0,0,0);
+
+        force_collector = Vector3D(0, 0, 0);
         fc[0] = 0;
         fc[1] = 0;
         fc[2] = 0;
-
     }
+
     return contact_area;
 }
 
@@ -1027,6 +1006,7 @@ double Cell::surfaceStrainEnergy()
             //return f;
         }
     }
+
     return deps;
 }
 
@@ -1035,6 +1015,7 @@ double Cell::getTurgor()
     double vol_excluded = V0 * OsmoticForce::getEpsilon();
     double cellVolume = calcVolume();
     double turgor;
+
     if ( OsmoticForce::getFlag() )
     {
         if ( (cellVolume - vol_excluded) > 0 )
@@ -1051,6 +1032,7 @@ double Cell::getTurgor()
     {
         turgor = params.dp;
     }
+
     //std::cout << "V0=" << V0 << " " << "eps=" << OsmoticForce::getEpsilon() << " cell vol=" << cellVolume << " nRT=" << nRT << " P=" << turgor << std::endl;
     return turgor;
 }

@@ -15,6 +15,7 @@ double AverageTurgor::populationAverageTurgor(std::vector<Cell>& cells)
     {
         av_turgor += cells[i].getTurgor();
     }
+
     av_turgor /= N;
     return av_turgor;
 }

@@ -65,15 +65,12 @@ double VertexTriangle::area(const Vertex vs[], const Vector3D cm, double eps)
         Vector3D ta = vs[ia].xyz - cm;
         Vector3D tb = vs[ib].xyz - cm;
         Vector3D tc = vs[ic].xyz - cm;
-
         double n_ta = ta.length() + eps;
         double n_tb = tb.length() + eps;
         double n_tc = tc.length() + eps;
-
         ta.setLength(n_ta);
         tb.setLength(n_tb);
         tc.setLength(n_tc);
-
         Triangle t(ta, tb, tc);
         return t.area();
     }
