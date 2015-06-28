@@ -81,12 +81,14 @@ class Cell
         void setVertexR(double);
         void setEcc(double);
         void setDp(double);
+        void setDp(double, double);
         void setGamma(double);
         void setVisc(double);
         void setMass(double);
         void setCellId(int);
-        void setNRT(double);
-        void setNRT(double, double);
+
+        //void setNRT(double);
+        //void setNRT(double, double);
 
         void setVerletR(double);
         void setInitR(double);
@@ -129,6 +131,8 @@ class Cell
 
         double surfaceStrainEnergy();
 
+        double getTurgor();
+
     private:
         void grow();
         void bud();
@@ -145,6 +149,7 @@ class Cell
         double nRT;
 
         double r0av;
+        double V0;
         int vcounter; // remove - prawdopodobnie bezurzyteczny
 
         int budIdx[MAX_V];

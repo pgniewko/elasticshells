@@ -2,7 +2,7 @@
 
 utils::Logger Cell::cell_log("cell");
 
-Cell::Cell(int depth) :  cellId(-1), my_phase(cell_phase_t::C_G1), numberV(0), numberT(0), nRT(0), r0av(0),
+Cell::Cell(int depth) :  cellId(-1), my_phase(cell_phase_t::C_G1), numberV(0), numberT(0), nRT(0), r0av(0), V0(0),
     vcounter(0), budVno(0)
 {
     SimpleTriangulation sm(depth);
@@ -15,7 +15,7 @@ Cell::Cell(int depth) :  cellId(-1), my_phase(cell_phase_t::C_G1), numberV(0), n
 }
 
 Cell::Cell(std::list<Triangle> tris) : cellId(-1), my_phase(cell_phase_t::C_G1), numberV(0), numberT(0), nRT(0),
-    r0av(0), vcounter(0), budVno(0)
+    r0av(0), V0(0), vcounter(0), budVno(0)
 {
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
@@ -26,7 +26,7 @@ Cell::Cell(std::list<Triangle> tris) : cellId(-1), my_phase(cell_phase_t::C_G1),
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles),
     cellId(orig.cellId), params(orig.params), my_phase(orig.my_phase), numberV(orig.numberV), numberT(orig.numberT), nRT(orig.nRT),
-    r0av(orig.r0av), vcounter(orig.vcounter), budVno(orig.budVno)
+    r0av(orig.r0av), V0(orig.V0), vcounter(orig.vcounter), budVno(orig.budVno)
 {}
 
 Cell::~Cell() {}
@@ -155,7 +155,7 @@ void Cell::calcHarmonicForces()
 void Cell::calcOsmoticForces()
 {
     calcCM();
-    double cellVolume = calcVolume();
+    double activeCellVolume = calcVolume() - V0 * OsmoticForce::getEpsilon();
     int iva, ivb, ivc;
     double dp = params.dp;
 
@@ -164,9 +164,9 @@ void Cell::calcOsmoticForces()
         iva = triangles[i].ia;
         ivb = triangles[i].ib;
         ivc = triangles[i].ic;
-        Vector3D fa = OsmoticForce::calcForce(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm_m, nRT, cellVolume, dp);
-        Vector3D fb = OsmoticForce::calcForce(vertices[ivb].xyz, vertices[ivc].xyz, vertices[iva].xyz, cm_m, nRT, cellVolume, dp);
-        Vector3D fc = OsmoticForce::calcForce(vertices[ivc].xyz, vertices[iva].xyz, vertices[ivb].xyz, cm_m, nRT, cellVolume, dp);
+        Vector3D fa = OsmoticForce::calcForce(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm_m, nRT, activeCellVolume, dp);
+        Vector3D fb = OsmoticForce::calcForce(vertices[ivb].xyz, vertices[ivc].xyz, vertices[iva].xyz, cm_m, nRT, activeCellVolume, dp);
+        Vector3D fc = OsmoticForce::calcForce(vertices[ivc].xyz, vertices[iva].xyz, vertices[ivb].xyz, cm_m, nRT, activeCellVolume, dp);
         vertices[iva].force += fa;
         vertices[ivb].force += fb;
         vertices[ivc].force += fc;
@@ -441,7 +441,17 @@ void Cell::setEcc(double a)
 
 void Cell::setDp(double dP)
 {
-    params.dp = dP;
+    setDp(dP, 0.0);
+}
+
+void Cell::setDp(double dP, double ddp)
+{
+    double randu = uniform(0, ddp);
+    params.dp = dP + randu;
+    V0 = calcVolume();
+    nRT = params.dp * V0 * ( 1.0 - OsmoticForce::getEpsilon() );
+
+//    std::cout << "V0=" << V0 << " " << "eps=" << OsmoticForce::getEpsilon() << " nRT=" << nRT << " P=" << params.dp << std::endl;
 }
 
 void Cell::setGamma(double g)
@@ -485,17 +495,18 @@ void Cell::setDivisionRatio(double ds)
     params.div_ratio = ds;
 }
 
-void Cell::setNRT(double dp)
-{
-    setNRT(dp, 0.0);
+//void Cell::setNRT(double dp)
+//{
+//    setNRT(dp, 0.0);
     //nRT = dp * ( calcVolume() - OsmoticForce::getEpsilon() );
-}
+//}
 
-void Cell::setNRT(double dp, double ddp)
-{
-    double randu = uniform(0, ddp);
-    nRT = (dp + randu) * ( calcVolume() - OsmoticForce::getEpsilon() );
-}
+//void Cell::setNRT(double dp, double ddp)
+//{
+//    V0 = calcVolume();
+//    double randu = uniform(0, ddp);
+//    nRT = (dp + randu) * V0 * ( 1.0 - OsmoticForce::getEpsilon() );
+//}
 
 double Cell::getInitR()
 {
@@ -1017,4 +1028,29 @@ double Cell::surfaceStrainEnergy()
         }
     }
     return deps;
+}
+
+double Cell::getTurgor()
+{
+    double vol_excluded = V0 * OsmoticForce::getEpsilon();
+    double cellVolume = calcVolume();
+    double turgor;
+    if ( OsmoticForce::getFlag() )
+    {
+        if ( (cellVolume - vol_excluded) > 0 )
+        {
+            turgor = nRT / (cellVolume - vol_excluded);
+        }
+        else
+        {
+            cell_log << utils::LogLevel::SEVERE << " CELL VOLEUME SMALLER THAN OSMOTIC EXCLUDED VOLUME !\n";
+            turgor = nRT / (0.01 * V0) ;
+        }
+    }
+    else
+    {
+        turgor = params.dp;
+    }
+    //std::cout << "V0=" << V0 << " " << "eps=" << OsmoticForce::getEpsilon() << " cell vol=" << cellVolume << " nRT=" << nRT << " P=" << turgor << std::endl;
+    return turgor;
 }

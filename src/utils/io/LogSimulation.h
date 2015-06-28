@@ -15,6 +15,7 @@
 #include "../../utils/observables/WallCoverageFraction.h"
 #include "../../utils/observables/TotalCellsArea.h"
 #include "../../utils/observables/SurfaceStrainEnergy.h"
+#include "../../utils/observables/AverageTurgor.h"
 
 class LogSimulation
 {

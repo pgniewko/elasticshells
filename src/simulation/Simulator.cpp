@@ -141,6 +141,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::FINER << "OSMOTIC_EPS=" << OsmoticForce::getEpsilon() << "\n";
     simulator_logs << utils::LogLevel::FINER << "MAX_SCALE=" << domains.getMaxScale() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getY() << "\n";
@@ -200,7 +201,7 @@ void Simulator::addCell(double r0)
 
         Cell newCell(tris);
         newCell.setEcc(params.ecc);
-        newCell.setDp(params.dp);
+        newCell.setDp(params.dp, params.ddp);
         newCell.setVertexR(params.r_vertex);
         newCell.setGamma(params.k);
         newCell.setVerletR(params.verlet_r);
@@ -210,7 +211,7 @@ void Simulator::addCell(double r0)
         newCell.setInitR(r0);
         newCell.setGrowthRate(params.growth_rate);
         newCell.setVolumeC(params.vc);
-        newCell.setNRT(params.dp, params.ddp);
+        //newCell.setNRT(params.dp, params.ddp);
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
         addCell(newCell);

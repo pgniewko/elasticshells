@@ -30,7 +30,8 @@ void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, double rv, int
     double box_volume = box.getVolume(0.0);
     double box_area = box.getArea(0.0);
     int numofcells = cells.size();
-    fprintf(os, "%i %i %8.6f %8.6f %8.6f  %8.6f %10.6f %10.6f %10.6f %10.6f\n", simstep, numofcells, box_volume, box_area, pressure, volume_frac, area_coverage, mean_stress, tot_surface, strain_energy);
+    double average_turgor = AverageTurgor::populationAverageTurgor(cells) ;
+    fprintf(os, "%i %i %8.6f %8.6f %8.6f  %8.6f %10.6f %10.6f %10.6f %10.6f %10.6f\n", simstep, numofcells, box_volume, box_area, pressure, volume_frac, area_coverage, mean_stress, tot_surface, strain_energy, average_turgor);
     //double forces = SurfaceForce::calcForces(box, cells, rv);
     //double cellsVolume = VolumeFraction::caclCellsVolume(cells);
     //double boxVolume = box.getVolume(rv);

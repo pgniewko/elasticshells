@@ -14,7 +14,7 @@ Vector3D OsmoticForce::calcForce(const Vector3D& va, const Vector3D& vb, const V
 
     if (volumeFlag)
     {
-        f *= ( nRT / (vol - epsilon) );
+        f *= ( nRT / vol );
     }
     else
     {
@@ -44,5 +44,6 @@ const bool OsmoticForce::getFlag()
     return volumeFlag;
 }
 
-double OsmoticForce::epsilon = 0.0;
+//double OsmoticForce::epsilon = 0.0;
+double OsmoticForce::epsilon = 0.4;
 bool OsmoticForce::volumeFlag = false;
