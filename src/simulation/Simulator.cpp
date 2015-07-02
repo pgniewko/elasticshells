@@ -218,7 +218,6 @@ void Simulator::addCell(const Cell& newCell)
                                    "New cell will not be added !");
 
         cells.push_back(newCell);
-        //number_of_cells++;
         number_of_cells = cells.size();
     }
     catch (MaxSizeException& e)
@@ -451,30 +450,6 @@ void Simulator::shiftCell(const Vector3D& v3d, int cellid)
     cells[cellid].addXYZ(v3d);
 }
 
-//void Simulator::moveCellToXYZ(const Vector3D& v3d, int cellid)
-//{
-//    cells[cellid].calcCM();
-//    Vector3D shift = v3d - cells[cellid].cm_m;
-//    cells[cellid].addXYZ(shift);
-//}
-
-//void Simulator::addCellVel(const Vector3D& v3d, int cellid)
-//{
-//    cells[cellid].addVelocity(v3d);
-//}
-
-//void Simulator::setBoxSize(const double bs)
-//{
-//    box.setX(bs);
-//    box.setY(bs);
-//    box.setZ(bs);
-//}
-
-//int Simulator::getNumberOfCells()
-//{
-//    return number_of_cells;
-//}
-
 int Simulator::getTotalVertices()
 {
     int totalnumber = 0;
@@ -493,18 +468,6 @@ double Simulator::getMaxLengthScale()
     maxscale = std::max(maxscale, params.r_vertex);
     return maxscale;
 }
-
-//void Simulator::makeVertsOlder()
-//{
-//    for (int i = 0; i < number_of_cells; i++)
-//    {
-//        for (int j = 0; j < cells[i].numberOfVerts(); j++)
-//        {
-//            cells[i].vertices[j].addTime(params.dt);
-//        }
-//    }
-//}
-
 
 /*
  * TRIANGULATION

@@ -60,72 +60,38 @@ class Simulator
         Simulator(const Simulator& orig);
         virtual ~Simulator();
 
-//        void integrateEuler();
-//        void integrateVv();
-//        void heunMethod();
-//        void midpointRungeKutta();
-
-
         void simulate();
         void simulate(int);
 
         void initCells(int, double);
         void initCells(int, double, double);
 
-//        void integrate();
-//        void setIntegrator(char* token);
-//        void setTriangulator(char* token);
-//
-//        void addCell(const Cell&);
-//        void addCell();
-//        void addCell(double);
-//
-//
-//        void calcForces();
-//
-//        //void addCellVel(const Vector3D&, int);
-//        //void moveCellToXYZ(const Vector3D&, int);
-//
-//        //int getNumberOfCells();
-//        //void setBoxSize(double);
-//        int getTotalVertices();
-
     private:
 
         void (Simulator::*integrator)();
         void shiftCell(const Vector3D&, int);
         void setIntegrator(void (Simulator::*functoall)());
-        void diagnoseParams(arguments);
-        void logParams();
-        void rebuildVerletLists();
-        void rebuildDomainsList();
-        double getMaxLengthScale();
-
-        void integrate();
         void setIntegrator(char* token);
         void setTriangulator(char* token);
+        void diagnoseParams(arguments);
+        void logParams();
+
+        void addCell();
+        void addCell(const Cell&);
+        void addCell(double);
+
+        void calcForces();
+        void integrate();
+        void rebuildVerletLists();
+        void rebuildDomainsList();
 
         void integrateEuler();
         void integrateVv();
         void heunMethod();
         void midpointRungeKutta();
 
-        //void makeVertsOlder();
-        void addCell(const Cell&);
-        void addCell();
-        void addCell(double);
-
-
-        void calcForces();
-
-        //void addCellVel(const Vector3D&, int);
-        //void moveCellToXYZ(const Vector3D&, int);
-
-        //int getNumberOfCells();
-        //void setBoxSize(double);
         int getTotalVertices();
-
-
+        double getMaxLengthScale();
 
         int number_of_cells;
         char* triangulator;
