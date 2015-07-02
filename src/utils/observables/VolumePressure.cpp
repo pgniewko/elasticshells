@@ -52,7 +52,7 @@ double VolumePressure::calcPressure(Box& box, std::vector<Cell>& cells, int nbha
 
     for (int i = 0; i < numberofCells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             VertXYZimg = getImage(box, cells[i].getVertexXYZ(j) );
             vertForce = cells[i].getVertexForce(j);

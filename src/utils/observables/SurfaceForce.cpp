@@ -33,7 +33,7 @@ double SurfaceForce::calcForces(Box& box, std::vector<Cell>& cells, double rv)
     {
         rvertex = cells[i].getVertexR();
 
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             vertXYZ = cells[i].getVertexXYZ(j);
             sgnx = SIGN(vertXYZ.x);

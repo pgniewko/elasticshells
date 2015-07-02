@@ -73,7 +73,7 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberOfTris(); j++)
+        for (int j = 0; j < cells[i].getNumberTriangles(); j++)
         {
             idxa = cells[i].triangles[j].ia + 1 + lastCellIndex;
             idxb = cells[i].triangles[j].ib + 1 + lastCellIndex;
@@ -91,7 +91,7 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
             faceCounter++;
         }
 
-        lastCellIndex += cells[i].numberOfVerts();
+        lastCellIndex += cells[i].getNumberVertices();
     }
 
     os.close();
@@ -153,7 +153,7 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
             name1Ix = (int) iidx / 1000;
@@ -161,14 +161,14 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
             os << "cmd.do(\"select " << namesx[name1Ix] << " " << atom1Ix << ", name " << namesx[name1Ix] << atom1Ix << "\")\n";
         }
 
-        lastCellIndex += cells[i].numberOfVerts();
+        lastCellIndex += cells[i].getNumberVertices();
     }
 
     lastCellIndex = 0;
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
 
@@ -183,7 +183,7 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
             }
         }
 
-        lastCellIndex += cells[i].numberOfVerts();
+        lastCellIndex += cells[i].getNumberVertices();
     }
 
     os << "cmd.do(\"show lines\")\n";
@@ -327,7 +327,7 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
             name1Ix = (int) iidx / 1000;
@@ -335,14 +335,14 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
             os << "cmd.do(\"select " << namesx[name1Ix] << " " << atom1Ix << ", name " << namesx[name1Ix] << atom1Ix << "\")\n";
         }
 
-        lastCellIndex += cells[i].numberOfVerts();
+        lastCellIndex += cells[i].getNumberVertices();
     }
 
     lastCellIndex = 0;
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
 
@@ -357,7 +357,7 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
             }
         }
 
-        lastCellIndex += cells[i].numberOfVerts();
+        lastCellIndex += cells[i].getNumberVertices();
     }
 
     os << "cmd.do(\"show lines\")\n";
@@ -367,7 +367,7 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
             name1Ix = (int) iidx / 1000;
@@ -384,14 +384,14 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
             //os << "cmd.do(\"select " << namesx[name1Ix] << " " << atom1Ix << ", name " << namesx[name1Ix] << atom1Ix << "\")\n";
         }
 
-        lastCellIndex += cells[i].numberOfVerts();
+        lastCellIndex += cells[i].getNumberVertices();
     }
 
     lastCellIndex = 0;
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
 
@@ -419,7 +419,7 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool bo
             }
         }
 
-        lastCellIndex += cells[i].numberOfVerts();
+        lastCellIndex += cells[i].getNumberVertices();
     }
 
     os << "minval = " << 0.0 << "\n";

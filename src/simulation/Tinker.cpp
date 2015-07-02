@@ -23,9 +23,9 @@ void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
             xtmp = i->a.x;
             ytmp = i->a.y;
             ztmp = i->a.z;
-            cell.vertices[cell.numberV] = Vertex(xtmp, ytmp, ztmp);
-            cell.vertices[cell.numberV].setId(cell.numberV);
-            cell.numberV++;
+            cell.vertices[cell.number_v] = Vertex(xtmp, ytmp, ztmp);
+            cell.vertices[cell.number_v].setId(cell.number_v);
+            cell.number_v++;
         }
 
         if ( Tinker::isUnique(vectors, i->b) )
@@ -34,9 +34,9 @@ void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
             xtmp = i->b.x;
             ytmp = i->b.y;
             ztmp = i->b.z;
-            cell.vertices[cell.numberV] = Vertex(xtmp, ytmp, ztmp);
-            cell.vertices[cell.numberV].setId(cell.numberV);
-            cell.numberV++;
+            cell.vertices[cell.number_v] = Vertex(xtmp, ytmp, ztmp);
+            cell.vertices[cell.number_v].setId(cell.number_v);
+            cell.number_v++;
         }
 
         if ( Tinker::isUnique(vectors, i->c) )
@@ -45,9 +45,9 @@ void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
             xtmp = i->c.x;
             ytmp = i->c.y;
             ztmp = i->c.z;
-            cell.vertices[cell.numberV] = Vertex(xtmp, ytmp, ztmp);
-            cell.vertices[cell.numberV].setId(cell.numberV);
-            cell.numberV++;
+            cell.vertices[cell.number_v] = Vertex(xtmp, ytmp, ztmp);
+            cell.vertices[cell.number_v].setId(cell.number_v);
+            cell.number_v++;
         }
     }
 }
@@ -74,15 +74,15 @@ void Tinker::constructVTriangles(Cell& cell, std::list<Triangle>& tris)
         int vb = getVertex(cell, i->b);
         int vc = getVertex(cell, i->c);
         VertexTriangle vrxt(va, vb, vc);
-        cell.triangles[cell.numberT] = VertexTriangle(vrxt);
-        cell.triangles[cell.numberT].setId(cell.numberT);
-        cell.numberT++;
+        cell.triangles[cell.number_t] = VertexTriangle(vrxt);
+        cell.triangles[cell.number_t].setId(cell.number_t);
+        cell.number_t++;
     }
 }
 
 int Tinker::getVertex(Cell& cell, const Vector3D& v)
 {
-    for (int i = 0; i < cell.numberV; i++)
+    for (int i = 0; i < cell.number_v; i++)
     {
         if (cell.vertices[i].xyz.x == v.x && cell.vertices[i].xyz.y == v.y && cell.vertices[i].xyz.z == v.z)
         {
@@ -95,7 +95,7 @@ int Tinker::getVertex(Cell& cell, const Vector3D& v)
 
 void Tinker::constructTopology(Cell& cell)
 {
-    for (int i = 0; i < cell.numberT; i++)
+    for (int i = 0; i < cell.number_t; i++)
     {
         int aid = cell.triangles[i].ia;
         int bid = cell.triangles[i].ib;
@@ -176,12 +176,12 @@ void Tinker::grow(Cell& cell)
     }
 
     Vector3D newcoor = 0.5 * (cell.vertices[vert1].xyz + cell.vertices[vert2].xyz);
-    cell.vertices[cell.numberV] = Vertex(newcoor.x, newcoor.y, newcoor.z);
-    cell.vertices[cell.numberV].setId(cell.numberV);
-    cell.vertices[cell.numberV].setMass(cell.vertices[vertexId].getMass());
-    cell.vertices[cell.numberV].setVisc(cell.vertices[vertexId].getVisc());
-    int newid = cell.numberV;
-    cell.numberV++;
+    cell.vertices[cell.number_v] = Vertex(newcoor.x, newcoor.y, newcoor.z);
+    cell.vertices[cell.number_v].setId(cell.number_v);
+    cell.vertices[cell.number_v].setMass(cell.vertices[vertexId].getMass());
+    cell.vertices[cell.number_v].setVisc(cell.vertices[vertexId].getVisc());
+    int newid = cell.number_v;
+    cell.number_v++;
     int vert3 = -1;
 
     if (cell.triangles[secondTriangleId].ia == vert1)
@@ -264,22 +264,22 @@ void Tinker::grow(Cell& cell)
     cell.vertices[newid].addTriangle(secondTriangleId);
     // NEW TRIANGLE 1
     VertexTriangle newTri1(vertexId, vert2, newid);
-    cell.triangles[cell.numberT] = VertexTriangle(newTri1);
-    cell.triangles[cell.numberT].setId(cell.numberT);
-    int tid1 = cell.triangles[cell.numberT].myindex;
+    cell.triangles[cell.number_t] = VertexTriangle(newTri1);
+    cell.triangles[cell.number_t].setId(cell.number_t);
+    int tid1 = cell.triangles[cell.number_t].myindex;
     cell.vertices[vertexId].addTriangle(tid1);
     cell.vertices[vert2].addTriangle(tid1);
     cell.vertices[newid].addTriangle(tid1);
-    cell.numberT++;
+    cell.number_t++;
     // NEW TRIANGLE 2
     VertexTriangle newTri2(newid, vert2, vert3);
-    cell.triangles[cell.numberT] = VertexTriangle(newTri2);
-    cell.triangles[cell.numberT].setId(cell.numberT);
-    int tid2 = cell.triangles[cell.numberT].myindex;
+    cell.triangles[cell.number_t] = VertexTriangle(newTri2);
+    cell.triangles[cell.number_t].setId(cell.number_t);
+    int tid2 = cell.triangles[cell.number_t].myindex;
     cell.vertices[newid].addTriangle(tid2);
     cell.vertices[vert2].addTriangle(tid2);
     cell.vertices[vert3].addTriangle(tid2);
-    cell.numberT++;
+    cell.number_t++;
     //cell.vcounter++;
     ///std::cout << "vcounter=" << vcounter << std::endl;
 }
@@ -333,7 +333,7 @@ int Tinker::getLonelyVertex(Cell& cell)
 
     double sumcheck = 0.0;
 
-    for (int i = 0; i < cell.numberV; i++)
+    for (int i = 0; i < cell.number_v; i++)
     {
         sumcheck += (1. / spatialNb[i]) / (ptot);
     }
@@ -412,7 +412,7 @@ int Tinker::validVertList(Cell& cell)
 
     if (cell.my_phase == cell_phase_t::C_G1)
     {
-        for (int i = 0; i < cell.numberV; i++)
+        for (int i = 0; i < cell.number_v; i++)
         {
             if (cell.vertices[i].my_type == vertex_t::MOTHER)
             {
@@ -423,7 +423,7 @@ int Tinker::validVertList(Cell& cell)
     }
     else if (cell.my_phase == cell_phase_t::C_SG2)
     {
-        for (int i = 0; i < cell.numberV; i++)
+        for (int i = 0; i < cell.number_v; i++)
         {
             if (cell.vertices[i].my_type == vertex_t::BUD)
             {

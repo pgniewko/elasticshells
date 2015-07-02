@@ -31,7 +31,7 @@ struct cell_params_t
     double totalVisc;
     double totalMass;
     double growth_rate;
-    double vc;
+    double div_volume;
     double bud_d;
     double div_ratio;
 };
@@ -58,8 +58,8 @@ class Cell
         double calcVolume(double);
         double getMass();
         void calcCM();
-        int numberOfTris() ;
-        int numberOfVerts();
+        int getNumberTriangles() ;
+        int getNumberVertices();
 
         //void calcR0av();
 
@@ -82,7 +82,7 @@ class Cell
         void setEcc(double);
         void setDp(double);
         void setDp(double, double);
-        void setGamma(double);
+        void setSpringConst(double);
         void setVisc(double);
         void setMass(double);
         void setCellId(int);
@@ -93,13 +93,13 @@ class Cell
         void setVerletR(double);
         void setInitR(double);
 
-        void setVolumeC(double);
+        void setDivisionVol(double);
         void setGrowthRate(double);
         void setBudDiameter(double);
         void setDivisionRatio(double);
 
         double getInitR();
-        double getVisc();
+        double getCellViscosity();
         Vector3D getCm();
         double getVertexR();
 
@@ -109,14 +109,14 @@ class Cell
         void voidForces();
         void getDistance(Vector3D&, const Vector3D&, const Vector3D&, Box&);
 
-        void cellCycle();
+        void cellCycle(double);
 
         Vector3D cm_m;
         Vector3D cm_b;
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
 
-        int cellId;
+        int cell_id;
 
         void setR0AvForAll();
         double getPercLength(int, int);
@@ -144,16 +144,16 @@ class Cell
         double sumL2();
         cell_params_t params;
         cell_phase_t my_phase;
-        int numberV;
-        int numberT;
+        int number_v;
+        int number_t;
         double nRT;
 
         double r0av;
         double V0;
-        int vcounter; // remove - prawdopodobnie bezurzyteczny
+//        int vcounter; // remove - prawdopodobnie bezurzyteczny
 
-        int budIdx[MAX_V];
-        int budVno;
+        int bud_idx[MAX_V];
+        int vert_no_bud;
 
         static utils::Logger cell_log;
 };

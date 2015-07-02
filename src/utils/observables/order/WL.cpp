@@ -24,7 +24,7 @@ double WL::calcWl(std::vector<Cell>& cells, int l, double rc)
 double WL::calcWl(Cell& cell, int l, double rc)
 {
     int count;
-    int n = cell.numberOfVerts();
+    int n = cell.getNumberVertices();
     double qss = 0.0;
     double* x, *y, *z;
     double* qlRe, *qlIm;

@@ -35,7 +35,7 @@ void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, dou
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             index = cells[i].vertices[j].getId() + 1 + lastCellIndex;
             nameIx = (int) index / 1000;
@@ -43,6 +43,6 @@ void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, dou
             fprintf(os, "%c%i %10.5f %10.5f %10.5f \n", names[nameIx], atomIx, sx * cells[i].vertices[j].xyz.x, sy * cells[i].vertices[j].xyz.y, sz * cells[i].vertices[j].xyz.z);
         }
 
-        lastCellIndex += cells[i].numberOfVerts();
+        lastCellIndex += cells[i].getNumberVertices();
     }
 }

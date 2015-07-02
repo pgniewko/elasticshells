@@ -258,14 +258,14 @@ void Simulator::addCell(double r0)
         newCell.setEcc(params.ecc);
         newCell.setDp(params.dp, params.ddp);
         newCell.setVertexR(params.r_vertex);
-        newCell.setGamma(params.k);
+        newCell.setSpringConst(params.k);
         newCell.setVerletR(params.verlet_r);
         newCell.setCellId(number_of_cells);
         newCell.setMass(params.mass);
         newCell.setVisc(params.visc);
         newCell.setInitR(r0);
         newCell.setGrowthRate(params.growth_rate);
-        newCell.setVolumeC(params.vc);
+        newCell.setDivisionVol(params.vc);
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
         addCell(newCell);
@@ -428,7 +428,7 @@ void Simulator::rebuildDomainsList()
 
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             domains.assignVertex(cells[i].vertices[j], i);
         }
@@ -456,7 +456,7 @@ int Simulator::getTotalVertices()
 
    for (int i = 0; i < number_of_cells; i++)
     {
-        totalnumber += cells[i].numberOfVerts();
+        totalnumber += cells[i].getNumberVertices();
     }
 
     return totalnumber;
@@ -538,7 +538,7 @@ void Simulator::integrateEuler()
 
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
             cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / visc;
@@ -554,7 +554,7 @@ void Simulator::heunMethod()
 
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             cells[i].vertices[j].tmp_xyz = cells[i].vertices[j].xyz;
             cells[i].vertices[j].tmp_force = cells[i].vertices[j].force;
@@ -564,7 +564,7 @@ void Simulator::heunMethod()
     //move the whole time-step and calculate  forces
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
             cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / visc;
@@ -576,7 +576,7 @@ void Simulator::heunMethod()
     // Move the whole time-step upon the forces acting in the half-time-step
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
             cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + 0.5 * dt * ( cells[i].vertices[j].tmp_force + cells[i].vertices[j].force) / visc;
@@ -592,7 +592,7 @@ void Simulator::midpointRungeKutta()
 
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             cells[i].vertices[j].tmp_xyz = cells[i].vertices[j].xyz;
         }
@@ -601,7 +601,7 @@ void Simulator::midpointRungeKutta()
     //move half time-step and calculate  forces
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
             cells[i].vertices[j].xyz += 0.5 * dt * cells[i].vertices[j].force / visc;
@@ -613,7 +613,7 @@ void Simulator::midpointRungeKutta()
     // Move the whole time-step upon the forces acting in the half-time-step
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
             cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + dt * cells[i].vertices[j].force / visc;
@@ -629,7 +629,7 @@ void Simulator::integrateVv()
 
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             m = cells[i].vertices[j].getMass();
             cells[i].vertices[j].xyz += dt * cells[i].vertices[j].velocity; // x(t+1)_a = x(t) + v(t)*dt
@@ -642,7 +642,7 @@ void Simulator::integrateVv()
 
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             m = cells[i].vertices[j].getMass();
             cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
