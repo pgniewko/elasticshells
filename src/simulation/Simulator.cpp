@@ -1,11 +1,10 @@
 #include "Simulator.h"
 
-
 utils::Logger Simulator::simulator_logs("simulator");
 
-Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
+Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
-    traj(args.traj_file), logsim(args.output_file)
+    traj(args.traj_file), log_sim(args.output_file)
 {
     try
     {
@@ -62,15 +61,15 @@ Simulator::Simulator(const arguments& args) : numberofCells(0), box(0, 0, 0),
     box.setZend(args.bsze);
     box.setPbc(args.pbc);
     box.setEcw(args.ecw);
-    domains.setupDomainsList(getMaxScale(), box);
+    domains.setupDomainsList(getMaxLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     logParams();
 }
 
-Simulator::Simulator(const Simulator& orig) : numberofCells(orig.numberofCells),
+Simulator::Simulator(const Simulator& orig) : number_of_cells(orig.number_of_cells),
     params(orig.params),
     box(orig.box), sb(orig.sb), traj(orig.traj),
-    logsim(orig.logsim)
+    log_sim(orig.log_sim)
 {
     // exception - disallowed behavior
 }
@@ -135,7 +134,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "E* CELL_BOX="  << box.ecw << "\n";
     simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << "\n";
     simulator_logs << utils::LogLevel::FINE  << "GROWTH_RATE="  << params.growth_rate << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "VOLUME C="  << params.vc << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "VOLUME_CR="  << params.vc << "\n";
     simulator_logs << utils::LogLevel::FINE  << "BUD_SCAR_D="  << params.bud_d << "\n";
     simulator_logs << utils::LogLevel::FINE  << "CELL_DIV_RATIO="  << params.div_ratio << "\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
@@ -154,6 +153,62 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZend() << "\n";
 }
 
+void Simulator::initCells(int N, double r0)
+{
+    initCells(N, r0, r0);
+}
+
+void Simulator::initCells(int N, double ra, double rb)
+{
+    if (ra > rb)
+    {
+        simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: ra > rb. Simulator will set: rb = ra \n";
+        rb = ra;
+    }
+
+    double nx, ny, nz;
+    bool flag = true;
+    double rc = 2.0 * params.r_vertex;
+    double rsum;
+    double r0;
+
+    while (number_of_cells < N)
+    {
+        r0 = uniform(ra, rb);
+        flag = true;
+        nx = uniform(-box.getX() + r0 + rc, box.getX() - r0 - rc);
+        ny = uniform(-box.getY() + r0 + rc, box.getY() - r0 - rc);
+        nz = uniform(-box.getZ() + r0 + rc, box.getZ() - r0 - rc);
+
+        if (number_of_cells == 0)
+        {
+            nx = 0;
+            ny = 0;
+            nz = 0;
+        }
+
+        Vector3D shift(nx, ny, nz);
+
+        for (int i = 0; i < number_of_cells; i++)
+        {
+            Vector3D tmpcm = cells[i].getCm();
+            Vector3D delta = shift - tmpcm;
+            rsum = cells[i].getInitR() + r0 + rc + EPSILON;
+
+            if ( delta.length() < rsum)
+            {
+                flag = false;
+            }
+        }
+
+        if (flag)
+        {
+            addCell(r0);
+            shiftCell(shift, number_of_cells - 1);
+        }
+    }
+}
+
 void Simulator::addCell(const Cell& newCell)
 {
     try
@@ -163,7 +218,8 @@ void Simulator::addCell(const Cell& newCell)
                                    "New cell will not be added !");
 
         cells.push_back(newCell);
-        numberofCells++;
+        //number_of_cells++;
+        number_of_cells = cells.size();
     }
     catch (MaxSizeException& e)
     {
@@ -205,13 +261,12 @@ void Simulator::addCell(double r0)
         newCell.setVertexR(params.r_vertex);
         newCell.setGamma(params.k);
         newCell.setVerletR(params.verlet_r);
-        newCell.setCellId(numberofCells);
+        newCell.setCellId(number_of_cells);
         newCell.setMass(params.mass);
         newCell.setVisc(params.visc);
         newCell.setInitR(r0);
         newCell.setGrowthRate(params.growth_rate);
         newCell.setVolumeC(params.vc);
-        //newCell.setNRT(params.dp, params.ddp);
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
         addCell(newCell);
@@ -220,62 +275,6 @@ void Simulator::addCell(double r0)
     {
         simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(EXIT_FAILURE);
-    }
-}
-
-void Simulator::initCells(int N, double r0)
-{
-    initCells(N, r0, r0);
-}
-
-void Simulator::initCells(int N, double ra, double rb)
-{
-    if (ra > rb)
-    {
-        simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: ra > rb. Simulator will set: rb = ra \n";
-        rb = ra;
-    }
-
-    double nx, ny, nz;
-    bool flag = true;
-    double rc = 2.0 * params.r_vertex;
-    double rsum;
-    double r0;
-
-    while (numberofCells < N)
-    {
-        r0 = uniform(ra, rb);
-        flag = true;
-        nx = uniform(-box.getX() + r0 + rc, box.getX() - r0 - rc);
-        ny = uniform(-box.getY() + r0 + rc, box.getY() - r0 - rc);
-        nz = uniform(-box.getZ() + r0 + rc, box.getZ() - r0 - rc);
-
-        if (numberofCells == 0)
-        {
-            nx = 0;
-            ny = 0;
-            nz = 0;
-        }
-
-        Vector3D shift(nx, ny, nz);
-
-        for (int i = 0; i < numberofCells; i++)
-        {
-            Vector3D tmpcm = cells[i].getCm();
-            Vector3D delta = shift - tmpcm;
-            rsum = cells[i].getInitR() + r0 + rc + EPSILON;
-
-            if ( delta.length() < rsum)
-            {
-                flag = false;
-            }
-        }
-
-        if (flag)
-        {
-            addCell(r0);
-            moveCell(shift, numberofCells - 1);
-        }
     }
 }
 
@@ -299,8 +298,8 @@ void Simulator::simulate(int steps)
     sb.saveSurfaceScript(cells);
     traj.open();
     traj.save(cells, getTotalVertices());
-    logsim.open();
-    logsim.dumpState(box, cells, params.r_vertex, 1, getTotalVertices(), params.nbhandler);
+    log_sim.open();
+    log_sim.dumpState(box, cells, params.r_vertex, 1, getTotalVertices(), params.nbhandler);
 
     for (int i = 0; i <= steps; i++)
     {
@@ -333,7 +332,7 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % params.log_step == 0)
         {
-            logsim.dumpState(box, cells, params.r_vertex, (i + 1), getTotalVertices(), params.nbhandler);
+            log_sim.dumpState(box, cells, params.r_vertex, (i + 1), getTotalVertices(), params.nbhandler);
         }
 
         if ( (i + 1) % params.box_step == 0)
@@ -342,9 +341,9 @@ void Simulator::simulate(int steps)
             domains.setBoxDim(box);
         }
 
-        for (int i = 0; i < numberofCells; i++)
+        for (int i = 0; i < number_of_cells; i++)
         {
-            cells[i].cellCycle();
+            cells[i].cellCycle(params.dt);
         }
 
         if ( i % (steps / 10) == 0.0 )
@@ -357,27 +356,27 @@ void Simulator::simulate(int steps)
     sb.saveStressScript2(cells, box, params.draw_box, params.r_vertex);
     //traj.savePdb(cells);
     traj.close();
-    logsim.close();
+    log_sim.close();
 }
 
 void Simulator::calcForces()
 {
     // RESET FORCES
-    for (int i = 0 ; i < numberofCells; i++)
+    for (int i = 0 ; i < number_of_cells; i++)
     {
         cells[i].voidForces();
     }
 
     // CALCULATE INTRA-CELLULAR FORCES
-    for (int i = 0 ; i < numberofCells; i++)
+    for (int i = 0 ; i < number_of_cells; i++)
     {
         cells[i].calcBondedForces();
     }
 
     // CALCULATE INTER-CELLULAR FORCES
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < numberofCells; j++)
+        for (int j = 0; j < number_of_cells; j++)
         {
             if (params.nbhandler == 0)
             {
@@ -401,7 +400,7 @@ void Simulator::calcForces()
     // CALCULATE FORCES BETWEEN CELLS AND BOX
     if (!box.pbc)
     {
-        for (int i = 0 ; i < numberofCells; i++)
+        for (int i = 0 ; i < number_of_cells; i++)
         {
             cells[i].calcBoxForces(box);
         }
@@ -410,14 +409,14 @@ void Simulator::calcForces()
 
 void Simulator::rebuildVerletLists()
 {
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         cells[i].voidVerletLsit();
     }
 
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < numberofCells; j ++)
+        for (int j = 0; j < number_of_cells; j ++)
         {
             cells[i].builtVerletList(cells[j], box);
         }
@@ -428,7 +427,7 @@ void Simulator::rebuildDomainsList()
 {
     domains.voidDomains();
 
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
@@ -436,21 +435,80 @@ void Simulator::rebuildDomainsList()
         }
     }
 
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         cells[i].voidVerletLsit();
     }
 
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         cells[i].builtNbList(cells, domains, box);
     }
 }
 
-void Simulator::setIntegrator(void (Simulator::*functoall)())
+void Simulator::shiftCell(const Vector3D& v3d, int cellid)
 {
-    integrator = functoall;
+    cells[cellid].addXYZ(v3d);
 }
+
+//void Simulator::moveCellToXYZ(const Vector3D& v3d, int cellid)
+//{
+//    cells[cellid].calcCM();
+//    Vector3D shift = v3d - cells[cellid].cm_m;
+//    cells[cellid].addXYZ(shift);
+//}
+
+//void Simulator::addCellVel(const Vector3D& v3d, int cellid)
+//{
+//    cells[cellid].addVelocity(v3d);
+//}
+
+//void Simulator::setBoxSize(const double bs)
+//{
+//    box.setX(bs);
+//    box.setY(bs);
+//    box.setZ(bs);
+//}
+
+//int Simulator::getNumberOfCells()
+//{
+//    return number_of_cells;
+//}
+
+int Simulator::getTotalVertices()
+{
+    int totalnumber = 0;
+
+   for (int i = 0; i < number_of_cells; i++)
+    {
+        totalnumber += cells[i].numberOfVerts();
+    }
+
+    return totalnumber;
+}
+
+double Simulator::getMaxLengthScale()
+{
+    double maxscale = 0.0;
+    maxscale = std::max(maxscale, params.r_vertex);
+    return maxscale;
+}
+
+//void Simulator::makeVertsOlder()
+//{
+//    for (int i = 0; i < number_of_cells; i++)
+//    {
+//        for (int j = 0; j < cells[i].numberOfVerts(); j++)
+//        {
+//            cells[i].vertices[j].addTime(params.dt);
+//        }
+//    }
+//}
+
+
+/*
+ * TRIANGULATION
+ */
 
 void Simulator::setIntegrator(char* token)
 {
@@ -472,8 +530,8 @@ void Simulator::setIntegrator(char* token)
     }
     else
     {
-        //TODO: print info
         this->setIntegrator(&Simulator::integrateEuler);
+        simulator_logs << utils::LogLevel::FINE  << "DEFAULT FORWARD EULER IS USED\n";
     }
 }
 
@@ -489,15 +547,24 @@ void Simulator::setTriangulator(char* token)
     }
     else
     {
-        //TODO: print info
         triangulator = (char*)& "simple";
+        simulator_logs << utils::LogLevel::FINE  << "SIMPLE TRIANGULATION IS APPLIED\n";
     }
 }
+
+/*
+ * INTEGRATORS
+ */
 
 void Simulator::integrate()
 {
     (*this.*integrator)();
-    makeVertsOlder(); // function's temporary location
+//    makeVertsOlder(); // function's temporary location
+}
+
+void Simulator::setIntegrator(void (Simulator::*functoall)())
+{
+    integrator = functoall;
 }
 
 void Simulator::integrateEuler()
@@ -506,7 +573,7 @@ void Simulator::integrateEuler()
     double visc;
     double dt = params.dt;
 
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
@@ -522,7 +589,7 @@ void Simulator::heunMethod()
     double visc;
     double dt = params.dt;
 
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
@@ -532,7 +599,7 @@ void Simulator::heunMethod()
     }
 
     //move the whole time-step and calculate  forces
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
@@ -544,7 +611,7 @@ void Simulator::heunMethod()
     calcForces();
 
     // Move the whole time-step upon the forces acting in the half-time-step
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
@@ -560,7 +627,7 @@ void Simulator::midpointRungeKutta()
     double visc;
     double dt = params.dt;
 
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
@@ -569,7 +636,7 @@ void Simulator::midpointRungeKutta()
     }
 
     //move half time-step and calculate  forces
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
@@ -581,7 +648,7 @@ void Simulator::midpointRungeKutta()
     calcForces();
 
     // Move the whole time-step upon the forces acting in the half-time-step
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
@@ -597,7 +664,7 @@ void Simulator::integrateVv()
     double m;
     double dt = params.dt;
 
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
@@ -610,71 +677,12 @@ void Simulator::integrateVv()
 
     calcForces();
 
-    for (int i = 0; i < numberofCells; i++)
+    for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].numberOfVerts(); j++)
         {
             m = cells[i].vertices[j].getMass();
             cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
-        }
-    }
-}
-
-void Simulator::moveCell(const Vector3D& v3d, int cellid)
-{
-    cells[cellid].addXYZ(v3d);
-}
-
-void Simulator::moveCellToXYZ(const Vector3D& v3d, int cellid)
-{
-    cells[cellid].calcCM();
-    Vector3D shift = v3d - cells[cellid].cm_m;
-    cells[cellid].addXYZ(shift);
-}
-
-void Simulator::addCellVel(const Vector3D& v3d, int cellid)
-{
-    cells[cellid].addVelocity(v3d);
-}
-
-void Simulator::setBoxSize(const double bs)
-{
-    box.setX(bs);
-    box.setY(bs);
-    box.setZ(bs);
-}
-
-int Simulator::getNumberOfCells()
-{
-    return numberofCells;
-}
-
-int Simulator::getTotalVertices()
-{
-    int totalnumber = 0;
-
-    for (int i = 0; i < numberofCells; i++)
-    {
-        totalnumber += cells[i].numberOfVerts();
-    }
-
-    return totalnumber;
-}
-
-double Simulator::getMaxScale()
-{
-    double maxscale = 0.0;
-    maxscale = std::max(maxscale, params.r_vertex);
-    return maxscale;
-}
-
-void Simulator::makeVertsOlder()
-{
-    for (int i = 0; i < numberofCells; i++)
-    {
-        for (int j = 0; j < cells[i].numberOfVerts(); j++)
-        {
-            cells[i].vertices[j].addTime(params.dt);
         }
     }
 }

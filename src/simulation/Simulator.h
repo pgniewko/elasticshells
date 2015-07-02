@@ -24,10 +24,6 @@
 #include "force/OsmoticForce.h"
 #include "simulation/DomainList.h"
 
-//#include "utils/observables/order/Aspherity.h"
-//#include "utils/observables/order/QL.h"
-//#include "utils/observables/order/WL.h"
-
 struct params_t
 {
     int log_step;
@@ -64,47 +60,74 @@ class Simulator
         Simulator(const Simulator& orig);
         virtual ~Simulator();
 
-        void integrateEuler();
-        void integrateVv();
-        void heunMethod();
-        void midpointRungeKutta();
+//        void integrateEuler();
+//        void integrateVv();
+//        void heunMethod();
+//        void midpointRungeKutta();
 
 
         void simulate();
         void simulate(int);
-        void integrate();
-        void setIntegrator(char* token);
-        void setTriangulator(char* token);
-
-        void addCell(const Cell&);
-        void addCell();
-        void addCell(double);
 
         void initCells(int, double);
         void initCells(int, double, double);
 
-        void calcForces();
-
-        void moveCell(const Vector3D&, int);
-        void addCellVel(const Vector3D&, int);
-        void moveCellToXYZ(const Vector3D&, int);
-
-        int getNumberOfCells();
-        void setBoxSize(double);
-        int getTotalVertices();
+//        void integrate();
+//        void setIntegrator(char* token);
+//        void setTriangulator(char* token);
+//
+//        void addCell(const Cell&);
+//        void addCell();
+//        void addCell(double);
+//
+//
+//        void calcForces();
+//
+//        //void addCellVel(const Vector3D&, int);
+//        //void moveCellToXYZ(const Vector3D&, int);
+//
+//        //int getNumberOfCells();
+//        //void setBoxSize(double);
+//        int getTotalVertices();
 
     private:
 
         void (Simulator::*integrator)();
+        void shiftCell(const Vector3D&, int);
         void setIntegrator(void (Simulator::*functoall)());
         void diagnoseParams(arguments);
         void logParams();
         void rebuildVerletLists();
         void rebuildDomainsList();
-        double getMaxScale();
-        void makeVertsOlder();
+        double getMaxLengthScale();
 
-        int numberofCells;
+        void integrate();
+        void setIntegrator(char* token);
+        void setTriangulator(char* token);
+
+        void integrateEuler();
+        void integrateVv();
+        void heunMethod();
+        void midpointRungeKutta();
+
+        //void makeVertsOlder();
+        void addCell(const Cell&);
+        void addCell();
+        void addCell(double);
+
+
+        void calcForces();
+
+        //void addCellVel(const Vector3D&, int);
+        //void moveCellToXYZ(const Vector3D&, int);
+
+        //int getNumberOfCells();
+        //void setBoxSize(double);
+        int getTotalVertices();
+
+
+
+        int number_of_cells;
         char* triangulator;
         params_t params;
 
@@ -113,7 +136,7 @@ class Simulator
 
         ScriptBuilder sb;
         XyzTraj traj;
-        LogSimulation logsim;
+        LogSimulation log_sim;
 
         DomainList domains;
 
@@ -121,4 +144,3 @@ class Simulator
 };
 
 #endif	/* SIMULATOR_H */
-
