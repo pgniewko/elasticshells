@@ -22,7 +22,7 @@
 
 utils::Logger biofilm_logs("biofilm");
 
-const char* argp_program_version = "biofilm 0.4.1";
+const char* argp_program_version = "biofilm 0.5.1";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
 
 static char doc[] =
@@ -341,10 +341,17 @@ Timer clocks[10];
 int main(int argc, char** argv)
 {
     print_time();
+    if ( argc <= 1 )
+    {
+        argp_help(&argp, stdout, ARGP_HELP_SEE, argv[0]);
+        exit(1);
+    }
+
     /* Parse our arguments; every option seen by parse_opt will
        be reflected in arguments. */
     struct arguments arguments;
     argp_parse (&argp, argc, argv, 0, 0, &arguments);
+
 
     if (arguments.debug && !arguments.silent)
     {
