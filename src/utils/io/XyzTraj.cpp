@@ -45,4 +45,5 @@ void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, dou
 
         lastCellIndex += cells[i].getNumberVertices();
     }
+    fflush(os);
 }
