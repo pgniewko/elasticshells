@@ -28,9 +28,12 @@ struct arguments
     int platotype;
 
     double ecc;                         /* E cell-cell */
+//    double nu;
+//    double thickess
     double dt;
     double dp;
     double ddp;
+    double eps;
     double visc;
     double k;
     double mass;

@@ -84,6 +84,7 @@ static struct argp_option options[] =
     {"div-ratio", 510, "FLOAT", 0, "Size ratio at cell division [default: 0.7]"},
     {"ir2",       511, "FLOAT", 0, "Cells size at the initialization - upper limit [default:2.5]"},
     {"ddp",       512, "FLOAT", 0, "Variation in osmotic pressure [default: 0.0]"},
+    {"eps",       513, "FLOAT", 0, "Non osmotic volume fraction [default: 0.0]"},
 
     {0,             0,       0, 0, "Box options:", 6},
     {"bsx",       601, "FLOAT", 0, "X Box size [default: 10.0]"},
@@ -132,6 +133,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->dt = 0.001;
             arguments->dp = 0.0;
             arguments->ddp = 0.0;
+            arguments->eps = 0.0;
             arguments->visc = 100.0;
             arguments->k = 1.0;
             arguments->mass = 60.0;
@@ -290,6 +292,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 512:
             arguments->ddp = arg ?  strtod (arg, NULL) : 0.0;
+            break;
+        case 513:
+            arguments->eps = arg ?  strtod (arg, NULL) : 0.0;
             break;
         case 601:
             arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;

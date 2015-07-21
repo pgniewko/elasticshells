@@ -63,6 +63,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setEcw(args.ecw);
     domains.setupDomainsList(getMaxLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
+    OsmoticForce::setEpsilon(args.eps);
     logParams();
 }
 

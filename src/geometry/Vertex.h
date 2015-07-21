@@ -9,7 +9,6 @@
 #include "Vector3D.h"
 #include "exceptions/MaxSizeException.h"
 #include "exceptions/RunTimeError.h"
-//#include "simulation/Tinker.h"
 
 struct nblist_t
 {

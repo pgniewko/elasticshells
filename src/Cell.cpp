@@ -451,11 +451,11 @@ void Cell::setDp(double dP)
 
 void Cell::setDp(double dP, double ddp)
 {
-    double randu = uniform(0, ddp);
+    //double randu = uniform(0, ddp);
+    double randu = uniform(-ddp, ddp);
     params.dp = dP + randu;
     V0 = calcVolume();
     nRT = params.dp * V0 * ( 1.0 - OsmoticForce::getEpsilon() );
-//    std::cout << "V0=" << V0 << " " << "eps=" << OsmoticForce::getEpsilon() << " nRT=" << nRT << " P=" << params.dp << std::endl;
 }
 
 void Cell::setSpringConst(double g)
