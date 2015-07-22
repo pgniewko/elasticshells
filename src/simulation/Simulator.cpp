@@ -62,7 +62,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setZend(args.bsze);
     box.setPbc(args.pbc);
     box.setEwall(args.E_wall);
-    box.setEwall(args.nu);
+    box.setNu(args.nu);
     domains.setupDomainsList(getMaxLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
@@ -136,7 +136,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "E BOX="  << box.getE() << " [MPa]\n";
     simulator_logs << utils::LogLevel::FINE  << "SURFACE_MODULUS="  << (params.E_cell * params.th) << " [MPa * micron]\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (CELL)="  << params.nu << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (CELL)="  << box.getNu() << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (BOX)="  << box.getNu() << "\n";
     simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << " [micron]\n";
     simulator_logs << utils::LogLevel::FINE  << "GROWTH_RATE="  << params.growth_rate << "\n";
     simulator_logs << utils::LogLevel::FINE  << "VOLUME_CR="  << params.vc << "\n";
