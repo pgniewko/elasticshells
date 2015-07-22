@@ -74,7 +74,7 @@ USAGE
 
 COPYRIGHT NOTICE
 ================
-Copyright (C) 2014 -,  Pawel Gniewek
+Copyright (C) 2014-2015,  Pawel Gniewek
 All rights reserved.
 License: BSD
 
