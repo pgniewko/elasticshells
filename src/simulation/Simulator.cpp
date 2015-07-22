@@ -4,7 +4,7 @@ utils::Logger Simulator::simulator_logs("simulator");
 
 Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
-    traj(args.traj_file), log_sim(args.output_file)
+    traj(args.traj_file), log_sim(args.output_file, args.ob_config_file)
 {
     try
     {
@@ -27,12 +27,13 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.vlist_step = args.vlist_step;
     params.d = args.d;
     params.nbhandler = args.nb_flag;
-    params.ecc = args.ecc;
+    params.E_cell = args.E_cell;
+    params.nu = args.nu;
+    params.th = args.thickness;
     params.dt = args.dt;
     params.dp = args.dp;
     params.ddp = args.ddp;
     params.visc = args.visc;
-    params.k = args.k;
     params.mass = args.mass;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
@@ -60,7 +61,8 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setYend(args.bsye);
     box.setZend(args.bsze);
     box.setPbc(args.pbc);
-    box.setEcw(args.ecw);
+    box.setEwall(args.E_wall);
+    box.setEwall(args.nu);
     domains.setupDomainsList(getMaxLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
@@ -93,11 +95,11 @@ void Simulator::diagnoseParams(arguments args)
         throw DataException("Depth of a triangulation cannot be negative\n!"
                             "Simulation will terminate with exit(1)!\n");
 
-    if (args.ecw < 0)
+    if (args.E_wall < 0)
         throw DataException("Effective cell-box Young's modulus cannot be negative\n!"
                             "Simulation will terminate with exit(1)!\n");
 
-    if (args.ecc < 0)
+    if (args.E_cell < 0)
         throw DataException("Effective cell-cell Young's modulus cannot be negative\n!"
                             "Simulation will terminate with exit(1)!\n");
 
@@ -105,9 +107,9 @@ void Simulator::diagnoseParams(arguments args)
         throw DataException("Time step must be positive number ! \n!"
                             "Simulation will terminate with exit(1)!\n");
 
-    if (args.k <= 0)
-        throw DataException("Spring constant for bonded vertices must be positive! \n!"
-                            "Simulation will terminate with exit(1)!\n");
+//    if (args.k <= 0)
+//        throw DataException("Spring constant for bonded vertices must be positive! \n!"
+//                            "Simulation will terminate with exit(1)!\n");
 
     if (args.r_vertex <= 0)
         throw DataException("Vertex radius must be larger than 0! \n!"
@@ -126,14 +128,16 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "VERLET_STEP="  << params.vlist_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "TRIANGULATOR="  << triangulator << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << " [s]\n";
     simulator_logs << utils::LogLevel::FINE  << "DEPTH="  << params.d << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "DP="  << params.dp << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "DDP="  << params.ddp << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "GAMMA="  << params.k << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "E* CELL_CELL="  << params.ecc << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "E* CELL_BOX="  << box.ecw << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "DP="  << params.dp << " [bar]\n";
+    simulator_logs << utils::LogLevel::FINE  << "DDP="  << params.ddp << " [bar]\n";
+    simulator_logs << utils::LogLevel::FINE  << "E CELL="  << params.E_cell << " [MPa]\n";
+    simulator_logs << utils::LogLevel::FINE  << "E BOX="  << box.getE() << " [MPa]\n";
+    simulator_logs << utils::LogLevel::FINE  << "SURFACE_MODULUS="  << (params.E_cell * params.th) << " [MPa * micron]\n";
+    simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (CELL)="  << params.nu << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (CELL)="  << box.getNu() << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << " [micron]\n";
     simulator_logs << utils::LogLevel::FINE  << "GROWTH_RATE="  << params.growth_rate << "\n";
     simulator_logs << utils::LogLevel::FINE  << "VOLUME_CR="  << params.vc << "\n";
     simulator_logs << utils::LogLevel::FINE  << "BUD_SCAR_D="  << params.bud_d << "\n";
@@ -256,10 +260,11 @@ void Simulator::addCell(double r0)
         }
 
         Cell newCell(tris);
-        newCell.setEcc(params.ecc);
+        newCell.setEcc(params.E_cell);
+        newCell.setNu(params.nu);
+        newCell.setSpringConst(params.E_cell * params.th);
         newCell.setDp(params.dp, params.ddp);
         newCell.setVertexR(params.r_vertex);
-        newCell.setSpringConst(params.k);
         newCell.setVerletR(params.verlet_r);
         newCell.setCellId(number_of_cells);
         newCell.setMass(params.mass);

@@ -35,12 +35,13 @@ struct params_t
     int nbhandler;
     int platotype;
 
-    double ecc;
+    double E_cell;
+    double nu;
+    double th;
     double dt;
     double dp;
     double ddp;
     double visc;
-    double k;
     double mass;
     double ttime;
     double r_vertex;

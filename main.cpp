@@ -59,7 +59,7 @@ static struct argp_option options[] =
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"vlist-step", 408,   "INT", 0, "Verlet-list step interval [default: 100]"},
+    {"vlist-step",408,   "INT", 0, "Verlet-list step interval [default: 100]"},
     {"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
@@ -70,9 +70,9 @@ static struct argp_option options[] =
 
     {0,             0,       0, 0, "Cell Options:", 5},
     {"mass",      'm', "FLOAT", 0, "Total mass of a cell [default: 60.0]"},
-    {"gamma",     'k', "FLOAT", 0, "Spring constant between vertices[default: 1.0]"},
-    {"ecc",       'a', "FLOAT", 0, "Effective cell-cell Young's modulus[default: 100.0]"},
-    {"ecw",       501, "FLOAT", 0, "Effective cell-box Young's modulus [default: 100.0]"},
+//    {"gamma",     'k', "FLOAT", 0, "Spring constant between vertices[default: 1.0]"},
+    {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
+    {"ecw",       501, "FLOAT", 0, "Box Young's modulus [UNIT=0.1 MPa] [default: 2000.0]"},
     {"ir",        502, "FLOAT", 0, "Cells size at the initialization - lower limit [default:2.5"},
     {"mu",        503, "FLOAT", 0, "Viscosity coefficient [default: 100.0]"},
     {"dp",        504, "FLOAT", 0, "Osmotic pressure [default: 0.0]"},
@@ -83,8 +83,10 @@ static struct argp_option options[] =
     {"bud-d",     509, "FLOAT", 0, "Bud-neck diameter [default: 0.5]"},
     {"div-ratio", 510, "FLOAT", 0, "Size ratio at cell division [default: 0.7]"},
     {"ir2",       511, "FLOAT", 0, "Cells size at the initialization - upper limit [default:2.5]"},
-    {"ddp",       512, "FLOAT", 0, "Variation in osmotic pressure [default: 0.0]"},
+    {"ddp",       512, "FLOAT", 0, "Variation in osmotic pressure [UNIT=0.1 MPa] [default: 0.0]"},
     {"eps",       513, "FLOAT", 0, "Non osmotic volume fraction [default: 0.0]"},
+    {"nu",        514, "FLOAT", 0, "Cell and box Poisson's ratio (the same for box and cell) [default: 0.5]"},
+    {"th",        515, "FLOAT", 0, "Cell-wall thickness [UNIT=1 micron]  [default: 0.1]"},
 
     {0,             0,       0, 0, "Box options:", 6},
     {"bsx",       601, "FLOAT", 0, "X Box size [default: 10.0]"},
@@ -119,6 +121,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->output_file = (char*)&"./data/biofilm.out";
             arguments->surface_file = (char*)&"./data/surf.py";
             arguments->stress_file = (char*)&"./data/stress.py";
+            arguments->ob_config_file = (char*)&"./observers.config";
             arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
             arguments->d = 3;
@@ -129,13 +132,16 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->vlist_step = 100;
             arguments->n_cells = 1;
             arguments->nsteps = 10;
-            arguments->ecc = 100.0;
+            arguments->E_cell = 1500.0;
+            arguments->E_wall = 2000.0;
+            arguments->nu = 0.5;
+            arguments->thickness = 0.1;
             arguments->dt = 0.001;
             arguments->dp = 0.0;
             arguments->ddp = 0.0;
             arguments->eps = 0.0;
             arguments->visc = 100.0;
-            arguments->k = 1.0;
+//            arguments->k = 1.0;
             arguments->mass = 60.0;
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
@@ -155,7 +161,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->bsxe = 10.0;
             arguments->bsye = 10.0;
             arguments->bsze = 10.0;
-            arguments->ecw = 100.0;
             arguments->pbc = false;
             arguments->draw_box = true;
             arguments->osmotic_flag = false;
@@ -250,14 +255,14 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 'm':
             arguments->mass = arg ? strtod (arg, NULL) : 1.0;
             break;
-        case 'k':
-            arguments->k = arg ? strtod (arg, NULL) : 1.0;
-            break;
-        case 'a':
-            arguments->ecc = arg ? strtod (arg, NULL) : 1.0;
+//        case 'k':
+//            arguments->k = arg ? strtod (arg, NULL) : 1.0;
+//            break;
+        case 500:
+            arguments->E_cell = arg ? strtod (arg, NULL) : 1500.0;
             break;
         case 501:
-            arguments->ecw = arg ? strtod (arg, NULL) : 200.0;
+            arguments->E_wall = arg ? strtod (arg, NULL) : 2000.0;
             break;
         case 502:
             arguments->init_radius = arg ?  strtod (arg, NULL) : 2.5;
@@ -295,6 +300,12 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
         case 513:
             arguments->eps = arg ?  strtod (arg, NULL) : 0.0;
+            break;
+        case 514:
+            arguments->nu = arg ?  strtod (arg, NULL) : 0.5;
+            break;
+        case 515:
+            arguments->thickness = arg ?  strtod (arg, NULL) : 0.1;
             break;
         case 601:
             arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;
@@ -385,6 +396,7 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = " << arguments.output_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = " << arguments.stress_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
     clocks[0].tic();
     Simulator simulator(arguments);
     //simulator.initCells(arguments.n_cells, arguments.init_radius);

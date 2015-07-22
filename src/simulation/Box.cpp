@@ -1,21 +1,21 @@
 #include "Box.h"
 
-Box::Box(double bsx, double bsy, double bsz) : pbc(false), ecw(0.0),
+Box::Box(double bsx, double bsy, double bsz) : pbc(false),
     x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
-    xe(bsx), ye(bsy), ze(bsz), dx(0), dy(0), dz(0)
+    xe(bsx), ye(bsy), ze(bsz), dx(0), dy(0), dz(0), E_box(0.0), nu(0.0)
 {
 }
 
-Box::Box(double bsx, double bsy, double bsz, double dbs) : pbc(false), ecw(0.0),
+Box::Box(double bsx, double bsy, double bsz, double dbs) : pbc(false),
     x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
-    xe(bsx), ye(bsy), ze(bsz), dx(dbs), dy(dbs), dz(dbs)
+    xe(bsx), ye(bsy), ze(bsz), dx(dbs), dy(dbs), dz(dbs), E_box(0.0), nu(0.0)
 {
 }
 
-Box::Box(const Box& orig) : pbc(orig.pbc), ecw(orig.ecw),
+Box::Box(const Box& orig) : pbc(orig.pbc),
     x(orig.x), y(orig.y), z(orig.z), xs(orig.xs), ys(orig.ys), zs(orig.zs),
     xe(orig.xe), ye(orig.ye), ze(orig.ze),
-    dx(orig.dx), dy(orig.dy), dz(orig.dz)
+    dx(orig.dx), dy(orig.dy), dz(orig.dz), E_box(orig.E_box), nu(orig.nu)
 {
 }
 
@@ -26,9 +26,14 @@ void Box::setPbc(bool pbcf)
     pbc = pbcf;
 }
 
-void Box::setEcw(double e)
+void Box::setEwall(double e)
 {
-    ecw = e;
+    E_box = e;
+}
+
+void Box::setNu(double n)
+{
+    nu = n;
 }
 
 void Box::resize()
@@ -203,4 +208,14 @@ double Box::getYEdge(double rv)
 double Box::getZEdge(double rv)
 {
     return 2 * (z - rv);
+}
+
+double Box::getE()
+{
+    return E_box;
+}
+
+double Box::getNu()
+{
+    return nu;
 }

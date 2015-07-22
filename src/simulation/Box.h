@@ -49,12 +49,16 @@ class Box
         double getArea(double = 0.0);
 
         void setPbc(bool);
-        void setEcw(double);
+        void setEwall(double);
+        void setNu(double);
         bool pbc;
-        double ecw;
+//        double E_box;
+//        double r_;
         double getXEdge(double = 0.0);
         double getYEdge(double = 0.0);
         double getZEdge(double = 0.0);
+        double getNu();
+        double getE();
 
     private:
         double x;
@@ -69,6 +73,8 @@ class Box
         double dx;
         double dy;
         double dz;
+        double E_box;
+        double nu;
 };
 
 #endif	/* BOX_H */

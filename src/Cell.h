@@ -22,6 +22,7 @@ struct cell_params_t
 {
     double r_vertex;
     double ecc;
+    double nu;
     double dp;
     double gamma;
     double verletR;
@@ -86,6 +87,7 @@ class Cell
         void setVisc(double);
         void setMass(double);
         void setCellId(int);
+        void setNu(double);
 
         //void setNRT(double);
         //void setNRT(double, double);
@@ -102,6 +104,8 @@ class Cell
         double getCellViscosity();
         Vector3D getCm();
         double getVertexR();
+        double getE();
+        double getNu();
 
         Vector3D& getVertexXYZ(int);
         Vector3D& getVertexForce(int);

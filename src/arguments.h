@@ -14,6 +14,7 @@ struct arguments
     char* output_file;            /* file arg to ‘--log’ */
     char* surface_file;
     char* stress_file;
+    char* ob_config_file;
 
     char* integrator_a;
     char* tritype;
@@ -27,15 +28,16 @@ struct arguments
     int nsteps;
     int platotype;
 
-    double ecc;                         /* E cell-cell */
-//    double nu;
-//    double thickess
+    double E_cell;                         /* E cell-cell */
+    double E_wall;                         /* E cell-wall */
+    double nu;
+    double thickness;
     double dt;
     double dp;
     double ddp;
     double eps;
     double visc;
-    double k;
+//    double k;
     double mass;
     double ttime;
     double r_vertex;                   /* vertex radius */
@@ -56,7 +58,6 @@ struct arguments
     double bsxe;
     double bsye;
     double bsze;
-    double ecw;                         /* E cell-wall */
     bool pbc;
     bool draw_box;
     bool osmotic_flag;
