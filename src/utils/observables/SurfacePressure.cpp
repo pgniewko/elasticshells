@@ -61,7 +61,7 @@ double SurfacePressure::calcPressure(Box& box, std::vector<Cell>& cells, double 
 //    }
     //double area = box.getArea(rv);
     //return totalForce / area;
-    double totalForce = SurfaceForce::calcForces(box, cells, rv) ;
-    double area = box.getArea(0.0);
+    double totalForce = SurfaceForce::calcForces(box, cells) ;
+    double area = box.getArea(rv);
     return totalForce / area;
 }

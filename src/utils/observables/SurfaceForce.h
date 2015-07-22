@@ -14,7 +14,7 @@ class SurfaceForce
         SurfaceForce();
         SurfaceForce(const SurfaceForce& orig);
         virtual ~SurfaceForce();
-        static double calcForces(Box&, std::vector<Cell>&, double = 0.0);
+        static double calcForces(Box&, std::vector<Cell>&);
     private:
 
 };
