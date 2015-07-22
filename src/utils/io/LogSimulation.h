@@ -19,7 +19,7 @@
 class LogSimulation
 {
     public:
-        LogSimulation(char*);
+        LogSimulation(char*, char*);
         LogSimulation(const LogSimulation& orig);
         virtual ~LogSimulation();
 
@@ -30,6 +30,7 @@ class LogSimulation
 
     private:
         char* logfile;
+        char* configfile;
         FILE* os;
 
 };

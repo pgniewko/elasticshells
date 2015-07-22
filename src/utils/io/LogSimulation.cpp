@@ -1,11 +1,12 @@
 #include "LogSimulation.h"
 
-LogSimulation::LogSimulation(char* lf)
+LogSimulation::LogSimulation(char* lf, char* cf)
 {
     logfile = lf;
+    configfile = cf;
 }
 
-LogSimulation::LogSimulation(const LogSimulation& orig) : logfile(orig.logfile) {}
+LogSimulation::LogSimulation(const LogSimulation& orig) : logfile(orig.logfile), configfile(orig.configfile) {}
 
 LogSimulation::~LogSimulation() {}
 
@@ -26,7 +27,7 @@ void LogSimulation::registerObservers()
 
 void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, double rv, int simstep, int numV, int nbhandler)
 {
-    double pressure = SurfacePressure::calcPressure(box, cells, rv);
+    double pressure = SurfacePressure::calcPressure(box, cells, 0.0);
     double volume_frac = VolumeFraction::caclVolumeFraction(box, cells, rv);
     double area_coverage = WallCoverageFraction::wallsCoverage(box, cells, rv);
     double mean_stress = AverageContactStress::caclContactStress(box, cells);
