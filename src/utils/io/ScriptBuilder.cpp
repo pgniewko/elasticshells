@@ -1,6 +1,7 @@
 #include "ScriptBuilder.h"
 
-//ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf) : names( {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'})
+extern const char names[];
+
 ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf, char* sx)
 {
     script = rs;
@@ -23,6 +24,7 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
 {
     std::ofstream os;
     os.open(surfaceScript);
+
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
     os << "def compute_normal(x1, y1, z1, x2, y2, z2, x3, y3, z3):\n\n";
@@ -58,6 +60,7 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
     os << "  coor3 = cmd.get_model(atom3).atom[0].coord\n";
     os << "  draw_plane_cgo(name,coor1,coor2,coor3,color)\n\n";
     os << "cmd.extend(\"draw_plane\", draw_plane)\n\n\n";
+
     int lastCellIndex = 0;
     int faceCounter = 0;
     int idxa, idxb, idxc;
@@ -67,9 +70,7 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
     int atom2Ix;
     int name3Ix;
     int atom3Ix;
-    char cA;
-    char cB;
-    char cC;
+    char cA, cB, cC;
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
@@ -102,12 +103,9 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
 {
     std::ofstream os;
     os.open(script);
+
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
-    //if (boxFlag)
-    //{
-    //    printBox(os, box);
-    //}
     os << "cmd.do(\"load " << trajfile << ", cells\")\n";
     os << "cmd.do(\"select rawdata, all\")\n";
     os << "cmd.do(\"unbond rawdata, rawdata\")\n";
@@ -115,17 +113,6 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
     os << "cmd.do(\"set sphere_color, tv_red\")\n";
     os << "cmd.do(\"set line_color, marine\")\n";
     os << "cmd.do(\"show spheres\")\n";
-    //os << "cmd.do(\"alter elem a, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem b, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem c, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem d, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem e, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem f, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem g, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem i, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem j, vdw=0.1\")\n";
-    rv = 0.1;
     os << "cmd.do(\"alter elem a, vdw=" << rv << "\")\n";
     os << "cmd.do(\"alter elem b, vdw=" << rv << "\")\n";
     os << "cmd.do(\"alter elem c, vdw=" << rv << "\")\n";
@@ -143,7 +130,6 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
         printBox(os, box);
     }
 
-    char namesx[10] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
     int name1Ix;
     int atom1Ix;
     int name2Ix;
@@ -158,7 +144,7 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
             iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
             name1Ix = (int) iidx / 1000;
             atom1Ix = iidx % 1000;
-            os << "cmd.do(\"select " << namesx[name1Ix] << " " << atom1Ix << ", name " << namesx[name1Ix] << atom1Ix << "\")\n";
+            os << "cmd.do(\"select " << names[name1Ix] << " " << atom1Ix << ", name " << names[name1Ix] << atom1Ix << "\")\n";
         }
 
         lastCellIndex += cells[i].getNumberVertices();
@@ -179,7 +165,7 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
                 atom1Ix = iidx % 1000;
                 name2Ix = (int) jidx / 1000;
                 atom2Ix = jidx % 1000;
-                os << "cmd.do(\"bond " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
+                os << "cmd.do(\"bond " << names[name1Ix] << "_" << atom1Ix << ", " << names[name2Ix] << "_" << atom2Ix << "\")\n";
             }
         }
 
@@ -188,249 +174,8 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
 
     os << "cmd.do(\"show lines\")\n";
     os << "cmd.do(\"bg white\")\n\n";
-//    if (boxFlag)
-//    {
-//        os << "B = Box(";
-//        os << "("<< -box.getX() << "," << box.getX() <<"),";
-//        os << "("<< -box.getY() << "," << box.getY() <<"),";
-//        os << "("<< -box.getZ() << "," << box.getZ() <<"),";
-//        os << " 2.5, color=(0.0, 0.0, 0.0) )\n";
-//        os << "obj = B.box\n";
-//        os << "cmd.load_cgo(obj, \"box\", 1)\n";
-//    }
     os.close();
 }
-
-void ScriptBuilder::saveStressScript2(std::vector<Cell>& cells, Box& box, bool boxFlag, double rv, double perc)
-{
-    std::ofstream os;
-    os.open(stress_script);
-    os << "from pymol.cgo import *\n";
-    os << "from pymol import cmd \n\n";
-    os << "class Line(object):\n";
-    os << " def __init__ (self, x, y, z, linewidth, color):\n";
-    os << "  lw = linewidth\n";
-    os << "  c1 = color[0]\n";
-    os << "  c2 = color[1]\n";
-    os << "  c3 = color[2]\n";
-    os << "  self.line = [\n";
-//    os << "    LINEWIDTH, float(lw), BEGIN, LINES,\n";
-    os << "    CYLINDER,  x[0], y[0], z[0], x[1], y[1], z[1], linewidth, c1, c2,c3,c1,c2,c3, \n";
-//    os << "    COLOR,  color[0], color[1], color[2],\n";
-//    os << "    VERTEX, x[0], y[0], z[0],\n";
-//    os << "    VERTEX, x[1], y[1], z[1],\n";
-    os << "    END\n";
-    os << "  ]\n\n";
-    os << "cmd.do(\"hide spheres\")\n";
-    int counter = 1;
-    double maxforce = 0.0;
-
-    for (unsigned int i = 0; i < cells.size(); i++)
-    {
-        for (unsigned int j = 0; j < cells.size(); j++)
-        {
-            double forceij = cells[i].nbMagnitudeForce(cells[j], box);
-            maxforce = std::max(maxforce, forceij);
-        }
-    }
-
-    maxforce *= 2.0;
-
-    for (unsigned int i = 0; i < cells.size(); i++)
-    {
-        for (unsigned int j = 0; j < cells.size(); j++)
-        {
-            double forceij = cells[i].nbMagnitudeForce(cells[j], box);
-            cells[i].calcCM();
-            Vector3D cmi = cells[i].getCm();
-            cells[j].calcCM();
-            Vector3D cmj = cells[j].getCm();
-
-            if (forceij > 0 and i > j)
-            {
-                double xi = cmi.x * box.getXstart() / box.getX();
-                double xj = cmj.x * box.getXstart() / box.getX();
-                double yi = cmi.y * box.getYstart() / box.getY();
-                double yj = cmj.y * box.getYstart() / box.getY();
-                double zi = cmi.z * box.getZstart() / box.getZ();
-                double zj = cmj.z * box.getZstart() / box.getZ();
-                //std::cout << cmi <<std::endl;
-                //std::cout << cmj <<std::endl;
-                os << "L = Line(";
-                os << "(" << xi << "," << xj << "),";
-                os << "(" << yi << "," << yj << "),";
-                os << "(" << zi << "," << zj << "), ";
-                os << "(" << forceij / maxforce << "), ";
-                os << "color=(1.0, 0.0, 0.0) )\n";
-                os << "obj = L.line\n";
-                os << "cmd.load_cgo(obj, \"line" << counter << "\", 1)\n";
-                counter++;
-            }
-        }
-    }
-
-    os.close();
-}
-
-void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box, bool boxFlag, double rv, double perc)
-{
-    std::ofstream os;
-    os.open(stress_script);
-    //os.open("test_stress.py");
-    os << "from pymol.cgo import *\n";
-    os << "from pymol import cmd \n\n";
-    //if (boxFlag)
-    //{
-    //    printBox(os, box);
-    //}
-    os << "cmd.do(\"load " << trajfile << ", cells\")\n";
-    os << "cmd.do(\"select rawdata, all\")\n";
-    os << "cmd.do(\"unbond rawdata, rawdata\")\n";
-    os << "cmd.do(\"hide all\")\n";
-    //os << "cmd.do(\"set sphere_color, tv_red\")\n";
-    os << "cmd.do(\"set line_color, marine\")\n";
-    os << "cmd.do(\"show spheres\")\n";
-    //os << "cmd.do(\"alter elem a, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem b, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem c, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem d, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem e, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem f, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem g, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem h, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem i, vdw=0.1\")\n";
-    //os << "cmd.do(\"alter elem j, vdw=0.1\")\n";
-    os << "cmd.do(\"alter elem a, vdw=" << rv << "\")\n";
-    os << "cmd.do(\"alter elem b, vdw=" << rv << "\")\n";
-    os << "cmd.do(\"alter elem c, vdw=" << rv << "\")\n";
-    os << "cmd.do(\"alter elem d, vdw=" << rv << "\")\n";
-    os << "cmd.do(\"alter elem e, vdw=" << rv << "\")\n";
-    os << "cmd.do(\"alter elem f, vdw=" << rv << "\")\n";
-    os << "cmd.do(\"alter elem g, vdw=" << rv << "\")\n";
-    os << "cmd.do(\"alter elem h, vdw=" << rv << "\")\n";
-    os << "cmd.do(\"alter elem i, vdw=" << rv << "\")\n";
-    os << "cmd.do(\"alter elem j, vdw=" << rv << "\")\n";
-    os << "cmd.do(\"rebuild\")\n\n";
-
-    if (boxFlag)
-    {
-        printBox(os, box);
-    }
-
-    char namesx[10] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-    int name1Ix;
-    int atom1Ix;
-    int name2Ix;
-    int atom2Ix;
-    int iidx, jidx;
-    int lastCellIndex = 0;
-
-    for (unsigned int i = 0; i < cells.size(); i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
-            name1Ix = (int) iidx / 1000;
-            atom1Ix = iidx % 1000;
-            os << "cmd.do(\"select " << namesx[name1Ix] << " " << atom1Ix << ", name " << namesx[name1Ix] << atom1Ix << "\")\n";
-        }
-
-        lastCellIndex += cells[i].getNumberVertices();
-    }
-
-    lastCellIndex = 0;
-
-    for (unsigned int i = 0; i < cells.size(); i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
-
-            for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
-            {
-                jidx = cells[i].vertices[j].bondedVerts[k] + 1 + lastCellIndex;
-                name1Ix = (int) iidx / 1000;
-                atom1Ix = iidx % 1000;
-                name2Ix = (int) jidx / 1000;
-                atom2Ix = jidx % 1000;
-                os << "cmd.do(\"bond " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
-            }
-        }
-
-        lastCellIndex += cells[i].getNumberVertices();
-    }
-
-    os << "cmd.do(\"show lines\")\n";
-    os << "cmd.do(\"bg white\")\n\n";
-    lastCellIndex = 0;
-    double maxval = 0.0;
-
-    for (unsigned int i = 0; i < cells.size(); i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
-            name1Ix = (int) iidx / 1000;
-            atom1Ix = iidx % 1000;
-            double bfactor = cells[i].nbMagnitudeForce(cells, box, j);
-
-            if (bfactor > maxval)
-            {
-                maxval = bfactor;
-            }
-
-            //cells[i].nbMagnitudeForce(cells, box, j);
-            os <<  "cmd.alter('%s' % (\"" << namesx[name1Ix] << "_" << atom1Ix << "\"), 'b=%f' % (" << bfactor << ") ) \n";
-            //os << "cmd.do(\"select " << namesx[name1Ix] << " " << atom1Ix << ", name " << namesx[name1Ix] << atom1Ix << "\")\n";
-        }
-
-        lastCellIndex += cells[i].getNumberVertices();
-    }
-
-    lastCellIndex = 0;
-
-    for (unsigned int i = 0; i < cells.size(); i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
-
-            for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
-            {
-                jidx = cells[i].vertices[j].bondedVerts[k] + 1 + lastCellIndex;
-                name1Ix = (int) iidx / 1000;
-                atom1Ix = iidx % 1000;
-                name2Ix = (int) jidx / 1000;
-                atom2Ix = jidx % 1000;
-                double px = cells[i].getPercLength(j, k);
-
-                if (SIGN(px) * px <  perc)
-                {
-                    //set_bond line_color, red, A_1 A_2
-                    os << "cmd.do(\"set_bond line_color, red,  " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
-                    os << "cmd.do(\"set_bond line_width, 6,  " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
-                }
-                else
-                {
-                    os << "cmd.do(\"set_bond line_width, 3,  " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
-                }
-
-                //os << "cmd.do(\"bond " << namesx[name1Ix] << "_" << atom1Ix << ", " << namesx[name2Ix] << "_" << atom2Ix << "\")\n";
-            }
-        }
-
-        lastCellIndex += cells[i].getNumberVertices();
-    }
-
-    os << "minval = " << 0.0 << "\n";
-    os << "maxval = " << 1.0 << "\n";
-    os << "cmd.spectrum(\"b\", \"blue_red\", minimum=0, maximum=" << maxval << ")\n";
-    //os << "cmd.spectrum(\"b\", \"green_white_blue\", minimum=0, maximum=maxval)";
-    //os << "cmd.spectrum(\"b\", \"green_white_red\", minimum=0, maximum=maxval)";
-    os << "cmd.do(\"set line_color, gray\")\n";
-    os.close();
-}
-
 
 void ScriptBuilder::printBox(std::ofstream& os,  Box& box)
 {
@@ -476,4 +221,72 @@ void ScriptBuilder::printBox(std::ofstream& os,  Box& box)
     os << " 2.5, color=(0.0, 0.0, 0.0) )\n";
     os << "obj = B.box\n";
     os << "cmd.load_cgo(obj, \"box\", 1)\n\n\n";
+}
+
+void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box)
+{
+    std::ofstream os;
+    os.open(stress_script);
+
+    os << "from pymol.cgo import *\n";
+    os << "from pymol import cmd \n\n";
+    os << "class Line(object):\n";
+    os << " def __init__ (self, x, y, z, linewidth, color):\n";
+    os << "  lw = linewidth\n";
+    os << "  c1 = color[0]\n";
+    os << "  c2 = color[1]\n";
+    os << "  c3 = color[2]\n";
+    os << "  self.line = [\n";
+    os << "    CYLINDER,  x[0], y[0], z[0], x[1], y[1], z[1], linewidth, c1, c2,c3,c1,c2,c3, \n";
+    os << "    END\n";
+    os << "  ]\n\n";
+    os << "cmd.do(\"hide spheres\")\n";
+
+    int counter = 1;
+    double maxforce = 0.0;
+
+    for (unsigned int i = 0; i < cells.size(); i++)
+    {
+        for (unsigned int j = 0; j < cells.size(); j++)
+        {
+            double forceij = 0.0;
+            maxforce = std::max(maxforce, forceij);
+        }
+    }
+
+    maxforce *= 2.0;
+
+    for (unsigned int i = 0; i < cells.size(); i++)
+    {
+        for (unsigned int j = 0; j < cells.size(); j++)
+        {
+            double forceij = 0.0;
+            cells[i].calcCM();
+            Vector3D cmi = cells[i].getCm();
+            cells[j].calcCM();
+            Vector3D cmj = cells[j].getCm();
+
+            if (forceij > 0 and i > j)
+            {
+                double xi = cmi.x * box.getXstart() / box.getX();
+                double xj = cmj.x * box.getXstart() / box.getX();
+                double yi = cmi.y * box.getYstart() / box.getY();
+                double yj = cmj.y * box.getYstart() / box.getY();
+                double zi = cmi.z * box.getZstart() / box.getZ();
+                double zj = cmj.z * box.getZstart() / box.getZ();
+                os << "L = Line(";
+                os << "(" << xi << "," << xj << "),";
+                os << "(" << yi << "," << yj << "),";
+                os << "(" << zi << "," << zj << "), ";
+                //os << "(" << forceij / maxforce << "), ";
+                os << "(" << forceij << "), ";
+                os << "color=(1.0, 0.0, 0.0) )\n";
+                os << "obj = L.line\n";
+                os << "cmd.load_cgo(obj, \"line" << counter << "\", 1)\n";
+                counter++;
+            }
+        }
+    }
+
+    os.close();
 }

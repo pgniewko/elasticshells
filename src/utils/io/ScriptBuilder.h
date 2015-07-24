@@ -15,16 +15,13 @@ class ScriptBuilder
         virtual ~ScriptBuilder();
 
         void printBox(std::ofstream&, Box&);
-        void saveRenderScript(std::vector<Cell>&, Box&, bool box = false, double rv = 0.0);
+        void saveRenderScript(std::vector<Cell>&, Box&, bool = false, double = 0.1);
         void saveSurfaceScript(std::vector<Cell>&);
 
-        void saveStressScript(std::vector<Cell>&, Box&, bool box = false, double rv = 0.0, double perc = 0.10);
-        void saveStressScript2(std::vector<Cell>&, Box&, bool box = false, double rv = 0.0, double perc = 0.10);
+        void saveStressScript(std::vector<Cell>&, Box&);
         void saveBfactors();
         void setDrawBox(bool);
     private:
-
-        //char names[10];
         char* script;
         char* stress_script;
         char* surfaceScript;

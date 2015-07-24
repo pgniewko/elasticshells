@@ -124,8 +124,8 @@ class Cell
 
         void setR0AvForAll();
         double getPercLength(int, int);
-        double nbMagnitudeForce(std::vector<Cell>, Box&, int);
-        double nbMagnitudeForce(Cell, Box&);
+//        double nbMagnitudeForce(std::vector<Cell>, Box&, int);
+//        double nbMagnitudeForce(Cell, Box&);
 
         double contactForce(const Cell&, Box&);
         //double contactForce(Box&);
