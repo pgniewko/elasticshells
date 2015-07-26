@@ -74,7 +74,7 @@ Simulator::Simulator(const Simulator& orig) : number_of_cells(orig.number_of_cel
     box(orig.box), sb(orig.sb), traj(orig.traj),
     log_sim(orig.log_sim)
 {
-    // exception - disallowed behavior
+    // throw an exception - disallowed behavior
 }
 
 Simulator::~Simulator() {}
@@ -132,9 +132,9 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "DEPTH="  << params.d << "\n";
     simulator_logs << utils::LogLevel::FINE  << "DP="  << params.dp << " [bar]\n";
     simulator_logs << utils::LogLevel::FINE  << "DDP="  << params.ddp << " [bar]\n";
-    simulator_logs << utils::LogLevel::FINE  << "E CELL="  << params.E_cell << " [MPa]\n";
-    simulator_logs << utils::LogLevel::FINE  << "E BOX="  << box.getE() << " [MPa]\n";
-    simulator_logs << utils::LogLevel::FINE  << "SURFACE_MODULUS="  << (params.E_cell * params.th) << " [MPa * micron]\n";
+    simulator_logs << utils::LogLevel::FINE  << "E CELL="  << 0.1*params.E_cell << " [MPa]\n";
+    simulator_logs << utils::LogLevel::FINE  << "E BOX="  << 0.1*box.getE() << " [MPa]\n";
+    simulator_logs << utils::LogLevel::FINE  << "SURFACE_MODULUS="  << (params.E_cell * params.th) << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (CELL)="  << params.nu << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (BOX)="  << box.getNu() << "\n";
     simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << " [micron]\n";
@@ -299,11 +299,15 @@ void Simulator::simulate(int steps)
         rebuildDomainsList();
     }
 
-    sb.saveRenderScript(cells, box, params.draw_box, params.r_vertex);
+//    sb.saveRenderScript(cells, box, params.draw_box, params.r_vertex);
+    sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
     traj.open();
     traj.save(cells, getTotalVertices());
+    
+    log_sim.registerObservers();
     log_sim.open();
+    log_sim.printHeader();
     log_sim.dumpState(box, cells, params.r_vertex, 1, getTotalVertices(), params.nbhandler);
 
     for (int i = 0; i <= steps; i++)
@@ -357,9 +361,7 @@ void Simulator::simulate(int steps)
         }
     }
 
-    //sb.saveRenderScript(cells, box, params.draw_box, params.r_vertex);
-    sb.saveStressScript2(cells, box, params.draw_box, params.r_vertex);
-    //traj.savePdb(cells);
+    sb.saveStressScript(cells, box);
     traj.close();
     log_sim.close();
 }
