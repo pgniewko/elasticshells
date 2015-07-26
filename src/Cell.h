@@ -59,10 +59,8 @@ class Cell
         double calcVolume(double);
         double getMass();
         void calcCM();
-        int getNumberTriangles() ;
+        int getNumberTriangles();
         int getNumberVertices();
-
-        //void calcR0av();
 
         void calcBondedForces();
         void calcHarmonicForces();
@@ -77,7 +75,6 @@ class Cell
 
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
-        //void moveToXYZ(const Vector3D&);
 
         void setVertexR(double);
         void setEcc(double);
@@ -88,9 +85,6 @@ class Cell
         void setMass(double);
         void setCellId(int);
         void setNu(double);
-
-        //void setNRT(double);
-        //void setNRT(double, double);
 
         void setVerletR(double);
         void setInitR(double);
@@ -124,17 +118,10 @@ class Cell
 
         void setR0AvForAll();
         double getPercLength(int, int);
-//        double nbMagnitudeForce(std::vector<Cell>, Box&, int);
-//        double nbMagnitudeForce(Cell, Box&);
-
         double contactForce(const Cell&, Box&);
-        //double contactForce(Box&);
-
         double contactArea(const Cell&, Box&);
         double contactArea(Box&);
-
         double surfaceStrainEnergy();
-
         double getTurgor();
 
     private:

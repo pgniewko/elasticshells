@@ -35,8 +35,7 @@ void Cell::voidVerletLsit()
 {
     for (int i = 0; i < number_v; i++)
     {
-        vertices[i].numNbNeighs = 0; 
-        
+        vertices[i].numNbNeighs = 0;
     }
 }
 
