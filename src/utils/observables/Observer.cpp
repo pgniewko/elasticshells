@@ -1,10 +1,19 @@
 #include "Observer.h"
 
-Observer::Observer() {}
+Observer::Observer(const char* name, const char* format) : observer_name(name), output_format(format) 
+{
+    std::cout << "Observer:Buduja mnie"<<std::endl;
+}
 
-Observer::Observer(const Observer& orig) {}
+Observer::Observer(const Observer& orig) : observer_name(orig.observer_name), output_format(orig.output_format)
+{
+    std::cout <<"Obseerver: Kopjuja mnie" << std::endl;
+}
 
-Observer::~Observer() {}
+Observer::~Observer() 
+{
+    std::cout <<"Obseerver: Niszcza mnie" << std::endl;
+}
 
 const char* Observer::getFormat()
 {

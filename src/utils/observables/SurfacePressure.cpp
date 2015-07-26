@@ -1,67 +1,34 @@
 #include "SurfacePressure.h"
 
-SurfacePressure::SurfacePressure() {}
-
-SurfacePressure::SurfacePressure(const SurfacePressure& orig) {}
-
-SurfacePressure::~SurfacePressure() {}
-
-double SurfacePressure::calcPressure(Box& box, std::vector<Cell>& cells, double rv)
+SurfacePressure::SurfacePressure(const char* name, const char* format) : Observer(name, format)
 {
-//    if (box.pbc)
-//    {
-//        return 0.0;
-//    }
-//    double ecw = box.ecw;
-//    double rvertex;
-//    Vector3D wallYZ, wallXZ, wallXY;
-//    Vector3D vertXYZ;
-//    double sgnx, sgny, sgnz;
-//    double bsx = box.getX();
-//    double bsy = box.getY();
-//    double bsz = box.getZ();
-//    double fx, fy, fz;
-//    Vector3D forceX(0, 0, 0);
-//    Vector3D forceY(0, 0, 0);
-//    Vector3D forceZ(0, 0, 0);
-//    int numOfCells = cells.size();
-//    double totalForce = 0.0;
-//    Vector3D djk;
-//    for (int i = 0; i < numOfCells; i++)
-//    {
-//        rvertex = cells[i].getVertexR();
-//        for (int j = 0; j < cells[i].numberOfVerts(); j++)
-//        {
-//            vertXYZ = cells[i].getVertexXYZ(j);
-//            sgnx = SIGN(vertXYZ.x);
-//            wallYZ.x = sgnx * bsx;
-//            wallYZ.y = vertXYZ.y;
-//            wallYZ.z = vertXYZ.z;
-//            djk = vertXYZ - wallYZ;
-//            forceX = HertzianRepulsion::calcForce(djk, rvertex, ecw);
-//            fx = forceX.length();
-//            sgny = SIGN(vertXYZ.y);
-//            wallXZ.x = vertXYZ.x;
-//            wallXZ.y = sgny * bsy;
-//            wallXZ.z = vertXYZ.z;
-//            djk = vertXYZ - wallXZ;
-//            forceY = HertzianRepulsion::calcForce(djk, rvertex, ecw);
-//            fy = forceY.length();
-//
-//            sgnz = SIGN(vertXYZ.z);
-//            wallXY.x = vertXYZ.x;
-//            wallXY.y = vertXYZ.y;
-//            wallXY.z = sgnz * bsz;
-//            djk = vertXYZ - wallXY;
-//            forceZ = HertzianRepulsion::calcForce(djk, rvertex, ecw);
-//            fz = forceZ.length();
-//
-//            totalForce +=  (fx + fy + fz);
-//        }
-//    }
-    //double area = box.getArea(rv);
-    //return totalForce / area;
+    std::cout << "SurfacePressure:Buduja mnie"<<std::endl;
+//    DerivedRegister<SurfacePressure> SurfacePressure::reg("SurfacePressure");
+//    rv=0.10;
+//    std::cout << "rv=" << rv << std::endl;
+}
+
+SurfacePressure::SurfacePressure(const SurfacePressure& orig) : Observer(orig.observer_name, orig.output_format)
+{std::cout << "SurfacePressure:Kopjuja mnie"<<std::endl;}
+
+SurfacePressure::~SurfacePressure() 
+{std::cout << "SurfacePressure:Niszcza mnie"<<std::endl;}
+
+double SurfacePressure::observe(Box& box, std::vector<Cell>& cells)
+{
     double totalForce = SurfaceForce::calcForces(box, cells) ;
     double area = box.getArea(rv);
+    //std::cout << "Moj rv=" << rv << std::endl;
     return totalForce / area;
 }
+
+void SurfacePressure::set_params(int num, ...)
+{
+    va_list arguments;
+    va_start (arguments, num);
+    rv = va_arg(arguments, double);
+    va_end( arguments );
+//    std::cout << "Moj rv=" << rv << std::endl;
+}
+
+DerivedRegister<SurfacePressure> SurfacePressure::reg("SurfacePressure");

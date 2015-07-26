@@ -6,17 +6,24 @@
 #include "Cell.h"
 #include "simulation/Box.h"
 #include "utils/observables/SurfaceForce.h"
-//#include "force/HertzianRepulsion.h"
+#include "utils/observables/Observer.h"
 
-class SurfacePressure
+
+class SurfacePressure : public Observer
 {
     public:
-        SurfacePressure();
+        SurfacePressure(const char*, const char*);
         SurfacePressure(const SurfacePressure& orig);
         virtual ~SurfacePressure();
+        void set_params(int, ...);
 
-        static double calcPressure(Box&, std::vector<Cell>&, double = 0.0);
+        double observe(Box&, std::vector<Cell>&);
+        
+//        static DerivedRegister<SurfacePressure> reg;
+        
     private:
+        static DerivedRegister<SurfacePressure> reg;
+        double rv;
 
 };
 
