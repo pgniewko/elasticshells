@@ -4,7 +4,9 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <memory>
+#include <cstring>
 
 #include "Cell.h"
 #include "simulation/Box.h"
@@ -39,8 +41,7 @@ class LogSimulation
         FILE* os;
         std::vector<Observer*> observers;
         
-        void readConfigFile();
-
+        std::vector<std::string> readConfigFile();
 };
 
 #endif	/* LOGSIMULATION_H */

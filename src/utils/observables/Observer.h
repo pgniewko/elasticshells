@@ -26,7 +26,6 @@ protected:
 
 template<typename T> Observer* createT(const char* n, const char* t) 
 { 
-//    std::cout << "inside createT; " << "n=" << n << " t=" << t  << std::endl;
     return new T (n,t);
 }
 
@@ -36,16 +35,10 @@ struct ObserverFactory
 
     static Observer * createInstance(std::string const& s, const char* n, const char* t) 
     {
-        std::cout << "n= " << n << " t=" << t << std::endl;
         map_type::iterator it = getMap()->find(s);
         if(it == getMap()->end())
             return 0;
         
-        //std::cout << "it->first=" << it->first << std::endl;
-        //std::cout << "it->second=" << it->second << std::endl;
-        //(*it->second)("A","B");
-        //return (*it->second);//("A","B");
-        //std::cout << it->second() << std::endl;
         return it->second(n,t);
     }
 
@@ -70,11 +63,7 @@ struct DerivedRegister : ObserverFactory
 { 
     DerivedRegister(std::string const& s)
     { 
-        //std::cout  << "DerivedRegister:jestem tutaj" << std::endl;
-        //std::cout  <<  &createT<T> << std::endl;
-        //std::cout  <<  &createT<T> << std::endl;
         getMap()->insert( std::make_pair(s, &createT<T>) );
-        //std::cout << "dodalem pare" << std::endl;
     }
 };
 
