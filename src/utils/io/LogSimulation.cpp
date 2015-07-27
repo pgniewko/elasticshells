@@ -34,7 +34,7 @@ void LogSimulation::readConfigFile()
     std::string line;
     while( std::getline (cfile, line) )
     {
-        //std::cout << line << '\n';
+        std::cout << line << '\n';
     }
     
     cfile.close();
@@ -44,13 +44,19 @@ void LogSimulation::registerObservers()
 {
     readConfigFile();
     
-    Observer* sp1 = new SurfacePressure("SurfacePressure1 ", "%10.5f ");
-    Observer* sp2 = new SurfacePressure("SurfacePressure2 ", "%6.3f ");
-    sp1->set_params(1,0.25);
-    sp2->set_params(1,0.123);
+    //SurfacePressure
+            
+    //std::string const s = "SurfacePressure";
+            
+    Observer* test_obj = ObserverFactory::createInstance("SurfacePressure","SP","%10.5f ");//("O1", "%10.5f ");
     
-    observers.push_back( sp1 );
-    observers.push_back( sp2 );
+    //Observer* sp1 = new SurfacePressure("SurfacePressure1 ", "%10.5f ");
+    //Observer* sp2 = new SurfacePressure("SurfacePressure2 ", "%6.3f ");
+    //sp1->set_params(1,0.25);
+    //sp2->set_params(1,0.123);
+    
+    //observers.push_back( sp1 );
+    //observers.push_back( sp2 );
     std::cout << "jestem po" << std::endl;
 }
 

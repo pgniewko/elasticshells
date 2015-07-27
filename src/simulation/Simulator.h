@@ -72,8 +72,8 @@ class Simulator
         void (Simulator::*integrator)();
         void shiftCell(const Vector3D&, int);
         void setIntegrator(void (Simulator::*functoall)());
-        void setIntegrator(char* token);
-        void setTriangulator(char* token);
+        void setIntegrator(char*);
+        void setTriangulator(char*);
         void diagnoseParams(arguments);
         void logParams();
 

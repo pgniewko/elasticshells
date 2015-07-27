@@ -2,7 +2,7 @@
 
 SurfacePressure::SurfacePressure(const char* name, const char* format) : Observer(name, format)
 {
-    std::cout << "SurfacePressure:Buduja mnie"<<std::endl;
+//    std::cout << "SurfacePressure:Buduja mnie"<<std::endl;
 //    DerivedRegister<SurfacePressure> SurfacePressure::reg("SurfacePressure");
 //    rv=0.10;
 //    std::cout << "rv=" << rv << std::endl;

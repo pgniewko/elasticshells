@@ -10,7 +10,7 @@ CXX      := g++
 # -Wall --Turn on all warnings
 # -D_USE_FIXED_PROTOTYPES_
 # --Force the compiler to use the correct headers
-# -ansi --Don't use GNU ext; do use ansi standard.
+# -ansi: In C++ mode, it is equivalent to -std=c++98
 # "-O3" - optimization level
 DEBUG    := -g
 

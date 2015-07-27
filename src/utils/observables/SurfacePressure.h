@@ -16,10 +16,7 @@ class SurfacePressure : public Observer
         SurfacePressure(const SurfacePressure& orig);
         virtual ~SurfacePressure();
         void set_params(int, ...);
-
         double observe(Box&, std::vector<Cell>&);
-        
-//        static DerivedRegister<SurfacePressure> reg;
         
     private:
         static DerivedRegister<SurfacePressure> reg;
