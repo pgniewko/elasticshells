@@ -15,6 +15,7 @@ public:
     virtual ~Observer();
     virtual double observe(Box&, std::vector<Cell>&) =0;
     virtual void set_params(int, ...) =0;
+    virtual void set_params(int, std::vector<std::string>) =0;
 
     const char* getFormat();
     const char* getName();

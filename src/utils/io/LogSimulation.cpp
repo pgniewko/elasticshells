@@ -32,7 +32,9 @@ LogSimulation::LogSimulation(const LogSimulation& orig) : logfile(orig.logfile),
 LogSimulation::~LogSimulation() 
 {
     for (uint i = 0; i < observers.size(); i++)
+    {
         delete observers[i];
+    }
 }
 
 void LogSimulation::open()
@@ -78,6 +80,7 @@ void LogSimulation::registerObservers()
         if (single_line.size() >= 3)
         {
             Observer* obs_obj = ObserverFactory::createInstance( single_line[0], single_line[1].c_str(), single_line[2].c_str() );
+            obs_obj->set_params(3, single_line);
             observers.push_back( obs_obj );
         }
     }
