@@ -13,19 +13,19 @@
 
 #include "utils/observables/Observer.h"
 
-#include "utils/observables/order/Aspherity.h"
-#include "utils/observables/order/QL.h"
-#include "utils/observables/order/WL.h"
+//#include "utils/observables/order/Aspherity.h"
+//#include "utils/observables/order/QL.h"
+//#include "utils/observables/order/WL.h"
 
-#include "utils/observables/SurfacePressure.h"
-#include "utils/observables/SurfaceForce.h"
-#include "utils/observables/VolumeFraction.h"
-#include "utils/observables/order/QL.h"
-#include "utils/observables/AverageContactStress.h"
-#include "utils/observables/WallCoverageFraction.h"
-#include "utils/observables/TotalCellsArea.h"
-#include "utils/observables/SurfaceStrainEnergy.h"
-#include "utils/observables/AverageTurgor.h"
+//#include "utils/observables/SurfacePressure.h"
+//#include "utils/observables/SurfaceForce.h"
+//#include "utils/observables/VolumeFraction.h"
+//#include "utils/observables/order/QL.h"
+//#include "utils/observables/AverageContactStress.h"
+//#include "utils/observables/WallCoverageFraction.h"
+//#include "utils/observables/TotalCellsArea.h"
+//#include "utils/observables/SurfaceStrainEnergy.h"
+//#include "utils/observables/AverageTurgor.h"
 
 class LogSimulation
 {
@@ -39,7 +39,6 @@ class LogSimulation
 
         void registerObservers();
         void printHeader();
-        //void dumpState(Box&, std::vector<Cell>&, double, int, int, int);
         void dumpState(Box&, std::vector<Cell>&);
 
     private:
@@ -47,7 +46,6 @@ class LogSimulation
         char* configfile;
         FILE* os;
         std::vector<Observer*> observers;
-
         std::vector<std::string> readConfigFile();
 };
 

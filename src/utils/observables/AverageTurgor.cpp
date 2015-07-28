@@ -3,7 +3,7 @@
 AverageTurgor::AverageTurgor(const char* name, const char* format) : Observer(name, format)
 {}
 
-AverageTurgor::AverageTurgor(const AverageTurgor& orig)  : Observer(orig.observer_name, orig.output_format)
+AverageTurgor::AverageTurgor(const AverageTurgor& orig) : Observer(orig)
 {}
 
 AverageTurgor::~AverageTurgor() 

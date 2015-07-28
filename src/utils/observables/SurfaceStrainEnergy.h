@@ -13,6 +13,7 @@ class SurfaceStrainEnergy : public Observer
         double observe(Box&, std::vector<Cell>&);
         void set_params(int, ...);
         void set_params(int, std::vector<std::string>);
+        
     private:
         static DerivedRegister<SurfaceStrainEnergy> reg;
 

@@ -1,10 +1,7 @@
 #ifndef SURFACEFORCE_H
 #define	SURFACEFORCE_H
 
-#include <vector>
-
 #include "force/HertzianRepulsion.h"
-
 #include "utils/observables/Observer.h"
 
 class SurfacePressure;
@@ -17,16 +14,10 @@ class SurfaceForce : public Observer
         SurfaceForce(const SurfaceForce& orig);
         virtual ~SurfaceForce();
 
+        void set_params(int, ...);
+        void set_params(int, std::vector<std::string>);
         double observe(Box&, std::vector<Cell>&);
-
-        void set_params(int, ...)
-        {
-            return;
-        };
-        void set_params(int, std::vector<std::string>)
-        {
-            return;
-        };
+        
     private:
         static double calcTotalForce(Box&, std::vector<Cell>&);
         static DerivedRegister<SurfaceForce> reg;

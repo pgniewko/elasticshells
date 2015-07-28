@@ -3,7 +3,7 @@
 SurfaceStrainEnergy::SurfaceStrainEnergy(const char* name, const char* format) : Observer(name, format)
 {}
 
-SurfaceStrainEnergy::SurfaceStrainEnergy(const SurfaceStrainEnergy& orig) : Observer(orig.observer_name, orig.output_format)
+SurfaceStrainEnergy::SurfaceStrainEnergy(const SurfaceStrainEnergy& orig) : Observer(orig)
 {}
 
 SurfaceStrainEnergy::~SurfaceStrainEnergy()

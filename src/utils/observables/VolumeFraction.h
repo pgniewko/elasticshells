@@ -19,7 +19,6 @@ class VolumeFraction : public Observer
         double calcCellsVolume(std::vector<Cell>&);
 
         static DerivedRegister<VolumeFraction> reg;
-        double rv;
 };
 
 #endif	/* VOLUMEFRACTION_H */

@@ -13,6 +13,7 @@ class AverageContactStress : public Observer
         void set_params(int, ...);
         void set_params(int, std::vector<std::string>);
         double observe(Box&, std::vector<Cell>&);
+        
     private:
         static DerivedRegister<AverageContactStress> reg;
 

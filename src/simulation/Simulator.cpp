@@ -442,6 +442,16 @@ void Simulator::rebuildDomainsList()
             domains.assignVertex(cells[i].vertices[j], i);
         }
     }
+    
+    //for (int i = 0; i < MAX_M*MAX_M*MAX_M; i++)
+    //{
+    //    if (domains.domains[i].numberOfVerts > 0)
+    //    {
+    //        std::cout << "I=" << i << " # verts=" << domains.domains[i].numberOfVerts << std::endl;
+    //    }
+    //}
+    
+    //std::cout << domains.numberofAssignedParticles() << std::endl;
 
     for (int i = 0; i < number_of_cells; i++)
     {

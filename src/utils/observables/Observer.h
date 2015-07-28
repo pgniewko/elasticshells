@@ -1,6 +1,8 @@
 #ifndef OBSERVER_H
 #define	OBSERVER_H
 
+#include <string.h>
+#include <stdio.h>
 #include <vector>
 #include <cstdarg>
 
@@ -14,16 +16,19 @@ class Observer
         Observer(const char*, const char*);
         Observer(const Observer& orig);
         virtual ~Observer();
-        virtual double observe(Box&, std::vector<Cell>&) = 0;
+        
         virtual void set_params(int, ...) = 0;
         virtual void set_params(int, std::vector<std::string>) = 0;
-
+        virtual double observe(Box&, std::vector<Cell>&) = 0;
+        
         const char* getFormat();
         const char* getName();
+        
     protected:
-        const char* observer_name;
-        const char* output_format;
-
+        const std::string observer_name;
+        const std::string output_format;
+        int i_param;
+        double d_param;
 };
 
 template<typename T> Observer* createT(const char* n, const char* t)

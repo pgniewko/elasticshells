@@ -3,7 +3,7 @@
 AverageContactStress::AverageContactStress(const char* name, const char* format) : Observer(name, format)
 {}
 
-AverageContactStress::AverageContactStress(const AverageContactStress& orig)  : Observer(orig.observer_name, orig.output_format)
+AverageContactStress::AverageContactStress(const AverageContactStress& orig) : Observer(orig)
 {}
 
 AverageContactStress::~AverageContactStress() 

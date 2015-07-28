@@ -10,9 +10,10 @@ class AverageTurgor : public Observer
         AverageTurgor(const AverageTurgor& orig);
         virtual ~AverageTurgor();
         
-        double observe(Box&, std::vector<Cell>&);
         void set_params(int, ...);
         void set_params(int, std::vector<std::string>);
+        double observe(Box&, std::vector<Cell>&);
+        
     private:
         static DerivedRegister<AverageTurgor> reg;
 };

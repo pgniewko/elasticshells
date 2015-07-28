@@ -11,11 +11,16 @@
 #include <stdlib.h>    /* atoi,  strtod */
 #include <math.h>      /* log, sqrt */
 
+#include <string>
+
 #include "Environment.h"
 #include "src/Timer.h"
 #include "src/arguments.h"
 #include "src/geometry/Vector3D.h"
 #include "src/simulation/Simulator.h"
+
+#include "simulation/DomainList.h"
+#include "simulation/Domain.h"
 
 #include "utils/Logger.h"
 #include "src/utils/LogManager.h"
@@ -356,6 +361,8 @@ Timer clocks[10];
 
 int main(int argc, char** argv)
 {
+    std::cout << "SIZE OF DOMAIN    =" << sizeof(Domain) << std::endl;
+    std::cout << "SIZE OF DOMAINLIST=" << sizeof(DomainList) << std::endl;
     print_time();
 
     if ( argc <= 1 )

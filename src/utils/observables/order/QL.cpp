@@ -3,7 +3,7 @@
 QL::QL(const char* name, const char* format) : Observer(name, format)
 {}
 
-QL::QL(const QL& orig) : Observer(orig.observer_name, orig.output_format), l(orig.l), rc(orig.rc)
+QL::QL(const QL& orig) : Observer(orig)
 {}
 
 QL::~QL() {}
@@ -12,15 +12,15 @@ void QL::set_params(int num, ...)
 {
     va_list arguments;
     va_start (arguments, num);
-    l = va_arg(arguments, int);
-    rc = va_arg(arguments, double);
+    i_param = va_arg(arguments, int);
+    d_param = va_arg(arguments, double);
     va_end( arguments );
 }
 
 void QL::set_params(int num, std::vector<std::string> args_)
 {
-    l = atoi(args_[ num + 0 ].c_str());
-    rc = strtod(args_[ num + 1 ].c_str(), NULL);
+    i_param = atoi(args_[ num + 0 ].c_str());
+    d_param = strtod(args_[ num + 1 ].c_str(), NULL);
 }
 
 double QL::observe(Box& boxs, std::vector<Cell>& cells)
@@ -58,14 +58,14 @@ double QL::calcQl(Cell& cell)
     }
 
     qlval = (double*) malloc ( sizeof (double) );
-    qlRe = (double*) malloc ((l + 1) * sizeof (double));
-    qlIm = (double*) malloc ((l + 1) * sizeof (double));
-    count = qlm (l, n, rc, x, y, z, qlRe, qlIm);
-    qss = qsum (l, qlRe, qlIm);
+    qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
+    qlIm = (double*) malloc ((i_param + 1) * sizeof (double));
+    count = qlm (i_param, n, d_param, x, y, z, qlRe, qlIm);
+    qss = qsum (i_param, qlRe, qlIm);
 
     if (qss > 1e-3)
     {
-        qlval[0] = Ql (l, count, qlRe, qlIm);
+        qlval[0] = Ql (i_param, count, qlRe, qlIm);
     }
     else
     {

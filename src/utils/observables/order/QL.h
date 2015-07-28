@@ -23,8 +23,6 @@ class QL : public Observer
         static DerivedRegister<QL> reg;
         
         double calcQl(Cell&);
-        double l;
-        double rc;
 
 };
 

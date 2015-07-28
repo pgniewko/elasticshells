@@ -3,10 +3,24 @@
 VolumeFraction::VolumeFraction(const char* name, const char* format) : Observer(name, format)
 {}
 
-VolumeFraction::VolumeFraction(const VolumeFraction& orig) : Observer(orig.observer_name, orig.output_format), rv(orig.rv)
+VolumeFraction::VolumeFraction(const VolumeFraction& orig) : Observer(orig)
 {}
 
-VolumeFraction::~VolumeFraction() {}
+VolumeFraction::~VolumeFraction() 
+{}
+
+void VolumeFraction::set_params(int num, ...)
+{
+    va_list arguments;
+    va_start (arguments, num);
+    d_param = va_arg(arguments, double);
+    va_end( arguments );
+}
+
+void VolumeFraction::set_params(int num, std::vector<std::string> args_)
+{
+    d_param = strtod(args_[ num + 0 ].c_str(), NULL);
+}
 
 double VolumeFraction::observe(Box& box, std::vector<Cell>& cells)
 {
@@ -22,23 +36,10 @@ double VolumeFraction::calcCellsVolume(std::vector<Cell>& cells)
 
     for (int i = 0; i < numofcells; i++)
     {
-        cellsVolume += cells[i].calcVolume(rv);
+        cellsVolume += cells[i].calcVolume(d_param);
     }
 
     return cellsVolume;
-}
-
-void VolumeFraction::set_params(int num, ...)
-{
-    va_list arguments;
-    va_start (arguments, num);
-    rv = va_arg(arguments, double);
-    va_end( arguments );
-}
-
-void VolumeFraction::set_params(int num, std::vector<std::string> args_)
-{
-    rv = strtod(args_[ num + 0 ].c_str(), NULL);
 }
 
 DerivedRegister<VolumeFraction> VolumeFraction::reg("VolumeFraction");

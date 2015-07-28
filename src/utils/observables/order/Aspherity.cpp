@@ -3,10 +3,21 @@
 Aspherity::Aspherity(const char* name, const char* format) : Observer(name, format)
 {}
 
-Aspherity::Aspherity(const Aspherity& orig) : Observer(orig.observer_name, orig.output_format)
+Aspherity::Aspherity(const Aspherity& orig) : Observer(orig)
 {}
 
-Aspherity::~Aspherity() {}
+Aspherity::~Aspherity() 
+{}
+
+void Aspherity::set_params(int num, ...)
+{
+    return;
+};
+
+void Aspherity::set_params(int num, std::vector<std::string> args_)
+{
+    return;
+};
 
 double Aspherity::observe(Box& box, std::vector<Cell>& cells)
 {

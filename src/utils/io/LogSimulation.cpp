@@ -13,14 +13,12 @@ std::vector<std::string> &split(const std::string& s, char delim, std::vector<st
     return elems;
 }
 
-
 std::vector<std::string> split(const std::string& s, char delim)
 {
     std::vector<std::string> elems;
     split(s, delim, elems);
     return elems;
 }
-
 
 LogSimulation::LogSimulation(char* lf, char* cf)
 {
@@ -29,8 +27,7 @@ LogSimulation::LogSimulation(char* lf, char* cf)
 }
 
 LogSimulation::LogSimulation(const LogSimulation& orig) : logfile(orig.logfile), configfile(orig.configfile)
-{
-}
+{}
 
 LogSimulation::~LogSimulation()
 {
@@ -73,7 +70,7 @@ void LogSimulation::registerObservers()
 {
     std::vector<std::string> list = readConfigFile();
     std::vector<std::string> single_line;
-
+    
     for (std::vector<std::string>::iterator it = list.begin(); it != list.end(); ++it)
     {
         single_line = split( *it, ' ');
@@ -84,39 +81,32 @@ void LogSimulation::registerObservers()
 
             if (single_line.size() > 3)
             {
-                //std::cout << single_line[0] <<std::endl;
                 obs_obj->set_params(3, single_line);
             }
-
-            std::cout << obs_obj->getName() << " " << obs_obj->getFormat() << std::endl;
             observers.push_back( obs_obj );
         }
     }
 }
 
 void LogSimulation::printHeader()
-{
-    fprintf(os, "#");
-
+{   
+    fprintf(os,"%s ", "#");
     for (std::vector<Observer*>::iterator it = observers.begin(); it != observers.end(); ++it)
     {
-        fprintf(os, std::strcat ( (*it)->getName(), " ") );
+        fprintf(os, "%s ", (*it)->getName());
     }
 
-    fprintf(os, "\n");
-    //fflush(os);
+    fprintf(os, "%s","\n");
+    fflush(os);
 }
 
 void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells)
 {
-    //std::cout << "dumpState" << std::endl;
     for (std::vector<Observer*>::iterator it = observers.begin(); it != observers.end(); ++it)
     {
-        std::cout << (*it)->getName() << " " << (*it)->getFormat() << "observe=" << (*it)->observe(box, cells) << std::endl;
         fprintf(os, (*it)->getFormat(), (*it)->observe(box, cells) );
-        fprintf(os, " ");
+        fprintf(os, "%s", " ");
     }
-
-    fprintf(os, "\n");
-    //fflush(os);
+    fprintf(os, "%s" ,"\n");
+    fflush(os);
 }

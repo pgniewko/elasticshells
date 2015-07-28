@@ -3,7 +3,7 @@
 TotalCellsArea::TotalCellsArea(const char* name, const char* format) : Observer(name, format)
 {}
 
-TotalCellsArea::TotalCellsArea(const TotalCellsArea& orig) : Observer(orig.observer_name, orig.output_format)
+TotalCellsArea::TotalCellsArea(const TotalCellsArea& orig) : Observer(orig)
 {}
 
 TotalCellsArea::~TotalCellsArea() 

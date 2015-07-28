@@ -20,12 +20,8 @@ class WL : public Observer
         void set_params(int, std::vector<std::string>);
         
     private:
-        static DerivedRegister<WL> reg;
-        
         double calcWl(Cell&);
-        double l;
-        double rc;
-
+        static DerivedRegister<WL> reg;
 };
 
 #endif	/* WL_H */

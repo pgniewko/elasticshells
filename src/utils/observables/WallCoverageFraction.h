@@ -16,7 +16,6 @@ class WallCoverageFraction : public Observer
         
     private:
         static DerivedRegister<WallCoverageFraction> reg;
-        double rv;
 };
 
 #endif	/* WALLCOVERAGEFRACTION_H */

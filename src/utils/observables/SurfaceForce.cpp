@@ -3,10 +3,21 @@
 SurfaceForce::SurfaceForce(const char* name, const char* format) : Observer(name, format)
 {}
 
-SurfaceForce::SurfaceForce(const SurfaceForce& orig) : Observer(orig.observer_name, orig.output_format)
+SurfaceForce::SurfaceForce(const SurfaceForce& orig) : Observer(orig)
 {}
 
-SurfaceForce::~SurfaceForce() {}
+SurfaceForce::~SurfaceForce() 
+{}
+
+void SurfaceForce::set_params(int num, ...)
+{
+    return;
+};
+
+void SurfaceForce::set_params(int num, std::vector<std::string> args_)
+{
+    return;
+};
 
 double SurfaceForce::observe(Box& box, std::vector<Cell>& cells)
 {
