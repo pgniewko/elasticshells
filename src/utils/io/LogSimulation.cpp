@@ -27,7 +27,9 @@ LogSimulation::LogSimulation(char* lf, char* cf)
     configfile = cf;
 }
 
-LogSimulation::LogSimulation(const LogSimulation& orig) : logfile(orig.logfile), configfile(orig.configfile) {std::cout << "LogSimulation: Kopjuja mnie"<<std::endl;}
+LogSimulation::LogSimulation(const LogSimulation& orig) : logfile(orig.logfile), configfile(orig.configfile)
+{
+}
 
 LogSimulation::~LogSimulation() 
 {
@@ -80,7 +82,14 @@ void LogSimulation::registerObservers()
         if (single_line.size() >= 3)
         {
             Observer* obs_obj = ObserverFactory::createInstance( single_line[0], single_line[1].c_str(), single_line[2].c_str() );
-            obs_obj->set_params(3, single_line);
+            
+            if (single_line.size() > 3)
+            {
+                //std::cout << single_line[0] <<std::endl;
+                obs_obj->set_params(3, single_line);
+            }
+            
+            std::cout << obs_obj->getName()<< " " << obs_obj->getFormat() << std::endl;
             observers.push_back( obs_obj );
         }
     }
@@ -96,15 +105,19 @@ void LogSimulation::printHeader()
     }
     
    fprintf(os,"\n");
+   //fflush(os);
 }
 
-void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, double rv, int simstep, int numV, int nbhandler)
+void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells)
 {
+    //std::cout << "dumpState" << std::endl;
     for(std::vector<Observer*>::iterator it = observers.begin(); it != observers.end(); ++it)
     {
-       fprintf(os, (*it)->getFormat(), (*it)->observe(box, cells) );
+       std::cout << (*it)->getName() << " "<< (*it)->getFormat()<< "observe="<< (*it)->observe(box, cells) << std::endl;
        
+       fprintf(os, (*it)->getFormat(), (*it)->observe(box, cells) );
+       fprintf(os," ");
     }
     fprintf(os, "\n");
+    //fflush(os);
 }
-

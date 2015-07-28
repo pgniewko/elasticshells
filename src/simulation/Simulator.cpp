@@ -308,7 +308,8 @@ void Simulator::simulate(int steps)
     log_sim.registerObservers();
     log_sim.open();
     log_sim.printHeader();
-    log_sim.dumpState(box, cells, params.r_vertex, 1, getTotalVertices(), params.nbhandler);
+    log_sim.dumpState(box, cells);
+    //log_sim.dumpState(box, cells, params.r_vertex, 1, getTotalVertices(), params.nbhandler);
 
     for (int i = 0; i <= steps; i++)
     {
@@ -341,7 +342,8 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % params.log_step == 0)
         {
-            log_sim.dumpState(box, cells, params.r_vertex, (i + 1), getTotalVertices(), params.nbhandler);
+            //log_sim.dumpState(box, cells, params.r_vertex, (i + 1), getTotalVertices(), params.nbhandler);
+            log_sim.dumpState(box, cells);
         }
 
         if ( (i + 1) % params.box_step == 0)
