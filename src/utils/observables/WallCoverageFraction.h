@@ -1,20 +1,22 @@
 #ifndef WALLCOVERAGEFRACTION_H
 #define	WALLCOVERAGEFRACTION_H
 
-#include <vector>
+#include "utils/observables/Observer.h"
 
-#include "Cell.h"
-#include "simulation/Box.h"
-
-class WallCoverageFraction
+class WallCoverageFraction : public Observer
 {
     public:
-        WallCoverageFraction();
+        WallCoverageFraction(const char*, const char*);
         WallCoverageFraction(const WallCoverageFraction& orig);
         virtual ~WallCoverageFraction();
-        static double wallsCoverage(Box&, std::vector<Cell>&, double = 0.0);
-    private:
 
+        double observe(Box&, std::vector<Cell>&);
+        void set_params(int, ...);
+        void set_params(int, std::vector<std::string>);
+        
+    private:
+        static DerivedRegister<WallCoverageFraction> reg;
+        double rv;
 };
 
 #endif	/* WALLCOVERAGEFRACTION_H */
