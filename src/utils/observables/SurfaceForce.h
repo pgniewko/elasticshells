@@ -11,16 +11,22 @@ class SurfacePressure;
 
 class SurfaceForce : public Observer
 {
-    friend class SurfacePressure;
+        friend class SurfacePressure;
     public:
         SurfaceForce(const char*, const char*);
         SurfaceForce(const SurfaceForce& orig);
         virtual ~SurfaceForce();
-        
+
         double observe(Box&, std::vector<Cell>&);
-        
-        void set_params(int, ...) {return;};
-        void set_params(int, std::vector<std::string>) {return;};
+
+        void set_params(int, ...)
+        {
+            return;
+        };
+        void set_params(int, std::vector<std::string>)
+        {
+            return;
+        };
     private:
         static double calcTotalForce(Box&, std::vector<Cell>&);
         static DerivedRegister<SurfaceForce> reg;

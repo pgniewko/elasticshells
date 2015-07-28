@@ -17,18 +17,18 @@ class QL : public Observer
         QL(const QL& orig);
         virtual ~QL();
 
-        double observe(Box&, std::vector<Cell>&);        
+        double observe(Box&, std::vector<Cell>&);
         void set_params(int, ...);
         void set_params(int, std::vector<std::string>);
-        
-        
+
+
 //        static double calcQl(std::vector<Cell>&, int, double);
-private:
-    double calcQl(Cell&);
-    
-    static DerivedRegister<QL> reg;
-    double l;
-    double rc;
+    private:
+        double calcQl(Cell&);
+
+        static DerivedRegister<QL> reg;
+        double l;
+        double rc;
 
 };
 

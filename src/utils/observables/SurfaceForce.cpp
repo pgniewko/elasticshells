@@ -33,18 +33,15 @@ double SurfaceForce::calcTotalForce(Box& box, std::vector<Cell>& cells)
     int numOfCells = cells.size();
     double totalForce = 0.0;
     Vector3D djk;
-
     double eb = box.getE();
-    double rb_= 0.0;
+    double rb_ = 0.0;
     double nub = box.getNu();
-
     double e1;
     double r1;
     double nu1;
 
     for (int i = 0; i < numOfCells; i++)
     {
-
         e1 = cells[i].getE();
         r1 = cells[i].getVertexR();
         nu1 = cells[i].getNu();
@@ -76,6 +73,7 @@ double SurfaceForce::calcTotalForce(Box& box, std::vector<Cell>& cells)
             totalForce +=  (fx + fy + fz);
         }
     }
+
     return totalForce;
 }
 

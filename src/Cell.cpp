@@ -158,7 +158,6 @@ void Cell::calcOsmoticForces()
     //double activeCellVolume = calcVolume() - V0 * OsmoticForce::getEpsilon();
     int iva, ivb, ivc;
     //double dp = params.dp;
-
     double turgor = getTurgor();
 
     for (int i = 0; i < number_t; i++)
@@ -166,11 +165,9 @@ void Cell::calcOsmoticForces()
         iva = triangles[i].ia;
         ivb = triangles[i].ib;
         ivc = triangles[i].ic;
-
         Vector3D fa = OsmoticForce::calcForce(vertices[iva].xyz, vertices[ivb].xyz, vertices[ivc].xyz, cm_m, turgor);
         Vector3D fb = OsmoticForce::calcForce(vertices[ivb].xyz, vertices[ivc].xyz, vertices[iva].xyz, cm_m, turgor);
         Vector3D fc = OsmoticForce::calcForce(vertices[ivc].xyz, vertices[iva].xyz, vertices[ivb].xyz, cm_m, turgor);
-
         vertices[iva].force += fa;
         vertices[ivb].force += fb;
         vertices[ivc].force += fc;
@@ -181,7 +178,6 @@ void Cell::calcNbForcesON2(const Cell& other_cell, Box& box)
 {
     int ocellid = other_cell.cell_id;
     Vector3D dij;
-
     double r1 = params.r_vertex;
     double r2 = other_cell.params.r_vertex;
     double e1 = params.ecc;
@@ -215,7 +211,6 @@ void Cell::calcNbForcesVL(const Cell& other_cell, Box& box)
     int ocellid = other_cell.cell_id;
     int vertid;
     Vector3D dij;
-
     double r1 = params.r_vertex;
     double r2 = other_cell.params.r_vertex;
     double e1 = params.ecc;
@@ -248,7 +243,6 @@ void Cell::calcBoxForces(Box& box)
     double eb  = box.getE();
     double nub = box.getNu();
     double rb_ = 0.0;
-
     double r1 = params.r_vertex;
     double e1 = params.ecc;
     double nu1 = params.nu;
@@ -704,7 +698,6 @@ double Cell::contactForce(const Cell& other_cell, Box& box)
     Vector3D dij;
     Vector3D force_collector(0, 0, 0);
     double contact_force = 0.0;
-
     double r1 = params.r_vertex;
     double r2 = other_cell.params.r_vertex;
     double e1 = params.ecc;
@@ -741,7 +734,6 @@ double Cell::contactArea(const Cell& other_cell, Box& box)
     double fc1, fc2, fc3;
     double contact_area = 0.0;
     calcCM();
-
     double r1 = params.r_vertex;
     double r2 = other_cell.params.r_vertex;
     double e1 = params.ecc;
@@ -760,7 +752,7 @@ double Cell::contactArea(const Cell& other_cell, Box& box)
             for (int j = 0; j < other_cell.number_v; j++)
             {
                 getDistance(dij, other_cell.vertices[j].xyz, vertices[idx1].xyz, box);
-                force_collector1 += HertzianRepulsion::calcForce(dij,r1, r2, e1, e2, nu1, nu2);
+                force_collector1 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
                 getDistance(dij, other_cell.vertices[j].xyz, vertices[idx2].xyz, box);
                 force_collector2 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
                 getDistance(dij, other_cell.vertices[j].xyz, vertices[idx3].xyz, box);
@@ -799,11 +791,9 @@ double Cell::contactArea(Box& box)
     double eb  = box.getE();
     double nub = box.getNu();
     double rb_ = 0.0;
-
     double r1 = params.r_vertex;
     double e1 = params.ecc;
     double nu1 = params.nu;
-
     Vector3D force_collector(0, 0, 0);
     double contact_area = 0.0;
     int idxset [3] = {0, 0, 0};
@@ -825,21 +815,18 @@ double Cell::contactArea(Box& box)
             wallYZ.z = vertices[idx].xyz.z;
             dij = vertices[idx].xyz - wallYZ;
             force_collector += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
-
             sgny = SIGN(vertices[idx].xyz.y);
             wallXZ.x = vertices[idx].xyz.x;
             wallXZ.y = sgny * bsy;
             wallXZ.z = vertices[idx].xyz.z;
             dij = vertices[idx].xyz - wallXZ;
             force_collector += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
-
             sgnz = SIGN(vertices[idx].xyz.z);
             wallXY.x = vertices[idx].xyz.x;
             wallXY.y = vertices[idx].xyz.y;
             wallXY.z = sgnz * bsz;
             dij = vertices[idx].xyz - wallXY;
             force_collector += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
-
             fc[j] = force_collector.length();
             force_collector = Vector3D(0, 0, 0);
         }

@@ -6,7 +6,7 @@ SurfacePressure::SurfacePressure(const char* name, const char* format) : Observe
 SurfacePressure::SurfacePressure(const SurfacePressure& orig) : Observer(orig.observer_name, orig.output_format), rv(orig.rv)
 {}
 
-SurfacePressure::~SurfacePressure() 
+SurfacePressure::~SurfacePressure()
 {}
 
 double SurfacePressure::observe(Box& box, std::vector<Cell>& cells)
@@ -26,7 +26,7 @@ void SurfacePressure::set_params(int num, ...)
 
 void SurfacePressure::set_params(int num, std::vector<std::string> args_)
 {
-    rv = strtod(args_[ num+0 ].c_str(), NULL);
+    rv = strtod(args_[ num + 0 ].c_str(), NULL);
 }
 
 DerivedRegister<SurfacePressure> SurfacePressure::reg("SurfacePressure");

@@ -24,7 +24,6 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
 {
     std::ofstream os;
     os.open(surfaceScript);
-
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
     os << "def compute_normal(x1, y1, z1, x2, y2, z2, x3, y3, z3):\n\n";
@@ -60,7 +59,6 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
     os << "  coor3 = cmd.get_model(atom3).atom[0].coord\n";
     os << "  draw_plane_cgo(name,coor1,coor2,coor3,color)\n\n";
     os << "cmd.extend(\"draw_plane\", draw_plane)\n\n\n";
-
     int lastCellIndex = 0;
     int faceCounter = 0;
     int idxa, idxb, idxc;
@@ -103,7 +101,6 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
 {
     std::ofstream os;
     os.open(script);
-
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
     os << "cmd.do(\"load " << trajfile << ", cells\")\n";
@@ -227,7 +224,6 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box)
 {
     std::ofstream os;
     os.open(stress_script);
-
     os << "from pymol.cgo import *\n";
     os << "from pymol import cmd \n\n";
     os << "class Line(object):\n";
@@ -241,7 +237,6 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box)
     os << "    END\n";
     os << "  ]\n\n";
     os << "cmd.do(\"hide spheres\")\n";
-
     int counter = 1;
     double maxforce = 0.0;
 

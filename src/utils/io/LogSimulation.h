@@ -36,7 +36,7 @@ class LogSimulation
 
         void open();
         void close();
-        
+
         void registerObservers();
         void printHeader();
         //void dumpState(Box&, std::vector<Cell>&, double, int, int, int);
@@ -47,7 +47,7 @@ class LogSimulation
         char* configfile;
         FILE* os;
         std::vector<Observer*> observers;
-        
+
         std::vector<std::string> readConfigFile();
 };
 

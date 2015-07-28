@@ -1,12 +1,12 @@
 #include "Observer.h"
 
-Observer::Observer(const char* name, const char* format) : observer_name(name), output_format(format) 
+Observer::Observer(const char* name, const char* format) : observer_name(name), output_format(format)
 {}
 
 Observer::Observer(const Observer& orig) : observer_name(orig.observer_name), output_format(orig.output_format)
 {}
 
-Observer::~Observer() 
+Observer::~Observer()
 {}
 
 const char* Observer::getFormat()

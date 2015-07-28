@@ -21,10 +21,10 @@ void QL::set_params(int num, ...)
 
 void QL::set_params(int num, std::vector<std::string> args_)
 {
-    l = atoi(args_[ num+0 ].c_str());
-    rc = strtod(args_[ num+1 ].c_str(), NULL);
-    std::cout << "l="<< l << std::endl;
-    std::cout << "rc="<< rc << std::endl;
+    l = atoi(args_[ num + 0 ].c_str());
+    rc = strtod(args_[ num + 1 ].c_str(), NULL);
+    std::cout << "l=" << l << std::endl;
+    std::cout << "rc=" << rc << std::endl;
 }
 
 double QL::observe(Box& boxs, std::vector<Cell>& cells)
@@ -38,9 +38,8 @@ double QL::observe(Box& boxs, std::vector<Cell>& cells)
         N += 1.0;
     }
 
-    
     qlsum /= N;
-    std::cout << qlsum<< std::endl;
+    std::cout << qlsum << std::endl;
     return qlsum;
 }
 

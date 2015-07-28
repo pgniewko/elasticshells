@@ -28,10 +28,8 @@ Vector3D HertzianRepulsion::calcForce(const Vector3D& dij, const double R1, cons
         h = r_eff - dij.length();
     }
 
-    e_eff = (1 - nu1*nu1)/ e1 + (1 - nu2*nu2)/ e2;
+    e_eff = (1 - nu1 * nu1) / e1 + (1 - nu2 * nu2) / e2;
     e_eff = 1.0 / e_eff;
-
-
 
     if (h > 0)
     {

@@ -59,7 +59,7 @@ static struct argp_option options[] =
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"vlist-step",408,   "INT", 0, "Verlet-list step interval [default: 100]"},
+    {"vlist-step", 408,   "INT", 0, "Verlet-list step interval [default: 100]"},
     {"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
@@ -357,6 +357,7 @@ Timer clocks[10];
 int main(int argc, char** argv)
 {
     print_time();
+
     if ( argc <= 1 )
     {
         argp_help(&argp, stdout, ARGP_HELP_SEE, argv[0]);
@@ -367,7 +368,6 @@ int main(int argc, char** argv)
        be reflected in arguments. */
     struct arguments arguments;
     argp_parse (&argp, argc, argv, 0, 0, &arguments);
-
 
     if (arguments.debug && !arguments.silent)
     {

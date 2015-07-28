@@ -38,7 +38,7 @@ void VolumeFraction::set_params(int num, ...)
 
 void VolumeFraction::set_params(int num, std::vector<std::string> args_)
 {
-    rv = strtod(args_[ num+0 ].c_str(), NULL);
+    rv = strtod(args_[ num + 0 ].c_str(), NULL);
 }
 
 DerivedRegister<VolumeFraction> VolumeFraction::reg("VolumeFraction");
