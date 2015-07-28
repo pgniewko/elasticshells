@@ -3,19 +3,27 @@
 
 #include <vector>
 
-#include "Cell.h"
-#include "simulation/Box.h"
 #include "force/HertzianRepulsion.h"
 
+#include "utils/observables/Observer.h"
 
-class SurfaceForce
+class SurfacePressure;
+
+class SurfaceForce : public Observer
 {
+    friend class SurfacePressure;
     public:
-        SurfaceForce();
+        SurfaceForce(const char*, const char*);
         SurfaceForce(const SurfaceForce& orig);
         virtual ~SurfaceForce();
-        static double calcForces(Box&, std::vector<Cell>&);
+        
+        double observe(Box&, std::vector<Cell>&);
+        
+        void set_params(int, ...) {return;};
+        void set_params(int, std::vector<std::string>) {return;};
     private:
+        static double calcTotalForce(Box&, std::vector<Cell>&);
+        static DerivedRegister<SurfaceForce> reg;
 
 };
 #endif	/* SURFACEFORCE_H */

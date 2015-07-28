@@ -1,20 +1,25 @@
 #include "SurfaceForce.h"
 
-SurfaceForce::SurfaceForce() {}
+SurfaceForce::SurfaceForce(const char* name, const char* format) : Observer(name, format)
+{}
 
-SurfaceForce::SurfaceForce(const SurfaceForce& orig) {}
+SurfaceForce::SurfaceForce(const SurfaceForce& orig) : Observer(orig.observer_name, orig.output_format)
+{}
 
 SurfaceForce::~SurfaceForce() {}
 
-double SurfaceForce::calcForces(Box& box, std::vector<Cell>& cells)
+double SurfaceForce::observe(Box& box, std::vector<Cell>& cells)
+{
+    return SurfaceForce::calcTotalForce(box, cells);
+}
+
+double SurfaceForce::calcTotalForce(Box& box, std::vector<Cell>& cells)
 {
     if (box.pbc)
     {
         return 0.0;
     }
 
-//    double ecw = box.E_box;
-//    double rvertex;
     Vector3D wallYZ, wallXZ, wallXY;
     Vector3D vertXYZ;
     double sgnx, sgny, sgnz;
@@ -39,7 +44,6 @@ double SurfaceForce::calcForces(Box& box, std::vector<Cell>& cells)
 
     for (int i = 0; i < numOfCells; i++)
     {
-        //rvertex = cells[i].getVertexR();
 
         e1 = cells[i].getE();
         r1 = cells[i].getVertexR();
@@ -53,7 +57,6 @@ double SurfaceForce::calcForces(Box& box, std::vector<Cell>& cells)
             wallYZ.y = vertXYZ.y;
             wallYZ.z = vertXYZ.z;
             djk = vertXYZ - wallYZ;
-            //forceX = HertzianRepulsion::calcForce(djk, rvertex, ecw);
             forceX = HertzianRepulsion::calcForce(djk, r1, rb_, e1, eb, nu1, nub);
             fx = forceX.length();
             sgny = SIGN(vertXYZ.y);
@@ -61,7 +64,6 @@ double SurfaceForce::calcForces(Box& box, std::vector<Cell>& cells)
             wallXZ.y = sgny * bsy;
             wallXZ.z = vertXYZ.z;
             djk = vertXYZ - wallXZ;
-            //forceY = HertzianRepulsion::calcForce(djk, rvertex, ecw);
             forceY = HertzianRepulsion::calcForce(djk, r1, rb_, e1, eb, nu1, nub);
             fy = forceY.length();
             sgnz = SIGN(vertXYZ.z);
@@ -69,12 +71,12 @@ double SurfaceForce::calcForces(Box& box, std::vector<Cell>& cells)
             wallXY.y = vertXYZ.y;
             wallXY.z = sgnz * bsz;
             djk = vertXYZ - wallXY;
-            //forceZ = HertzianRepulsion::calcForce(djk, rvertex, ecw);
             forceZ = HertzianRepulsion::calcForce(djk, r1, rb_, e1, eb, nu1, nub);
             fz = forceZ.length();
             totalForce +=  (fx + fy + fz);
         }
     }
-
     return totalForce;
 }
+
+DerivedRegister<SurfaceForce> SurfaceForce::reg("SurfaceForce");
