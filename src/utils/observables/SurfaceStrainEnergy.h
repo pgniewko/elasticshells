@@ -1,17 +1,20 @@
 #ifndef SURFACESTRAINENERGY_H
 #define	SURFACESTRAINENERGY_H
 
-#include <vector>
-#include "Cell.h"
+#include "utils/observables/Observer.h"
 
-class SurfaceStrainEnergy
+class SurfaceStrainEnergy : public Observer
 {
     public:
-        SurfaceStrainEnergy();
+        SurfaceStrainEnergy(const char*, const char*);
         SurfaceStrainEnergy(const SurfaceStrainEnergy& orig);
         virtual ~SurfaceStrainEnergy();
-        static double calcSurfaceEnergy(std::vector<Cell>&);
+        
+        double observe(Box&, std::vector<Cell>&);
+        void set_params(int, ...);
+        void set_params(int, std::vector<std::string>);
     private:
+        static DerivedRegister<SurfaceStrainEnergy> reg;
 
 };
 

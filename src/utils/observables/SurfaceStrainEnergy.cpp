@@ -1,12 +1,25 @@
 #include "SurfaceStrainEnergy.h"
 
-SurfaceStrainEnergy::SurfaceStrainEnergy() {}
+SurfaceStrainEnergy::SurfaceStrainEnergy(const char* name, const char* format) : Observer(name, format)
+{}
 
-SurfaceStrainEnergy::SurfaceStrainEnergy(const SurfaceStrainEnergy& orig) {}
+SurfaceStrainEnergy::SurfaceStrainEnergy(const SurfaceStrainEnergy& orig) : Observer(orig.observer_name, orig.output_format)
+{}
 
-SurfaceStrainEnergy::~SurfaceStrainEnergy() {}
+SurfaceStrainEnergy::~SurfaceStrainEnergy()
+{}
 
-double SurfaceStrainEnergy::calcSurfaceEnergy(std::vector<Cell>& cells)
+void SurfaceStrainEnergy::set_params(int num, ...)
+{
+    return;
+};
+
+void SurfaceStrainEnergy::set_params(int num, std::vector<std::string> args_)
+{
+    return;
+};
+
+double SurfaceStrainEnergy::observe(Box& box, std::vector<Cell>& cells)
 {
     double surf_energy = 0.0;
     int cellsnumber = cells.size();
@@ -18,3 +31,5 @@ double SurfaceStrainEnergy::calcSurfaceEnergy(std::vector<Cell>& cells)
 
     return surf_energy;
 }
+
+DerivedRegister<SurfaceStrainEnergy> SurfaceStrainEnergy::reg("SurfaceStrainEnergy");
