@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdarg>
 
+#include "Environment.h"
 #include "Cell.h"
 #include "simulation/Box.h"
 
