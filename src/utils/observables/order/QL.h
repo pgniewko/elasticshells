@@ -8,17 +8,27 @@
 
 #include "Environment.h"
 #include "Cell.h"
+#include "utils/observables/Observer.h"
 
-class QL
+class QL : public Observer
 {
     public:
-        QL();
+        QL(const char*, const char*);
         QL(const QL& orig);
         virtual ~QL();
 
-        static double calcQl(Cell&, int, double);
-        static double calcQl(std::vector<Cell>&, int, double);
-    private:
+        double observe(Box&, std::vector<Cell>&);        
+        void set_params(int, ...);
+        void set_params(int, std::vector<std::string>);
+        
+        
+//        static double calcQl(std::vector<Cell>&, int, double);
+private:
+    double calcQl(Cell&);
+    
+    static DerivedRegister<QL> reg;
+    double l;
+    double rc;
 
 };
 

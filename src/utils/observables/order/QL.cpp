@@ -1,27 +1,50 @@
 #include "QL.h"
 
-QL::QL() {}
+QL::QL(const char* name, const char* format) : Observer(name, format)
+{
+}
 
-QL::QL(const QL& orig) {}
+QL::QL(const QL& orig) : Observer(orig.observer_name, orig.output_format), l(orig.l), rc(orig.rc)
+{
+}
 
 QL::~QL() {}
 
-double QL::calcQl(std::vector<Cell>& cells, int l, double rc)
+void QL::set_params(int num, ...)
+{
+    va_list arguments;
+    va_start (arguments, num);
+    l = va_arg(arguments, int);
+    rc = va_arg(arguments, double);
+    va_end( arguments );
+}
+
+void QL::set_params(int num, std::vector<std::string> args_)
+{
+    l = atoi(args_[ num+0 ].c_str());
+    rc = strtod(args_[ num+1 ].c_str(), NULL);
+    std::cout << "l="<< l << std::endl;
+    std::cout << "rc="<< rc << std::endl;
+}
+
+double QL::observe(Box& boxs, std::vector<Cell>& cells)
 {
     double qlsum = 0.0;
     double N = 0.0;
 
     for (int i = 0; i < cells.size(); i++)
     {
-        qlsum += QL::calcQl(cells[i], l, rc);
+        qlsum += QL::calcQl(cells[i]);
         N += 1.0;
     }
 
+    
     qlsum /= N;
+    std::cout << qlsum<< std::endl;
     return qlsum;
 }
 
-double QL::calcQl(Cell& cell, int l, double rc)
+double QL::calcQl(Cell& cell)
 {
     int count;
     int n = cell.getNumberVertices();
@@ -62,3 +85,5 @@ double QL::calcQl(Cell& cell, int l, double rc)
     free (z);
     return qlval[0];
 }
+
+DerivedRegister<QL> QL::reg("QL");
