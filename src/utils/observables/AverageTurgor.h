@@ -1,17 +1,20 @@
 #ifndef AVERAGETURGOR_H
 #define	AVERAGETURGOR_H
 
-#include <vector>
-#include "Cell.h"
+#include "utils/observables/Observer.h"
 
-class AverageTurgor
+class AverageTurgor : public Observer
 {
     public:
-        AverageTurgor();
+        AverageTurgor(const char*, const char*);
         AverageTurgor(const AverageTurgor& orig);
         virtual ~AverageTurgor();
-        static double populationAverageTurgor(std::vector<Cell>&);
+        
+        double observe(Box&, std::vector<Cell>&);
+        void set_params(int, ...);
+        void set_params(int, std::vector<std::string>);
     private:
+        static DerivedRegister<AverageTurgor> reg;
 };
 
 #endif	/* AVERAGETURGOR_H */

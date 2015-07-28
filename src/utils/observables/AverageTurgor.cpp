@@ -1,12 +1,25 @@
 #include "AverageTurgor.h"
 
-AverageTurgor::AverageTurgor() {}
+AverageTurgor::AverageTurgor(const char* name, const char* format) : Observer(name, format)
+{}
 
-AverageTurgor::AverageTurgor(const AverageTurgor& orig) {}
+AverageTurgor::AverageTurgor(const AverageTurgor& orig)  : Observer(orig.observer_name, orig.output_format)
+{}
 
-AverageTurgor::~AverageTurgor() {}
+AverageTurgor::~AverageTurgor() 
+{}
 
-double AverageTurgor::populationAverageTurgor(std::vector<Cell>& cells)
+void AverageTurgor::set_params(int num, ...)
+{
+    return;
+};
+
+void AverageTurgor::set_params(int num, std::vector<std::string> args_)
+{
+    return;
+};
+
+double AverageTurgor::observe(Box& box, std::vector<Cell>& cells)
 {
     int N = cells.size();
     double av_turgor = 0.0;
@@ -19,3 +32,5 @@ double AverageTurgor::populationAverageTurgor(std::vector<Cell>& cells)
     av_turgor /= N;
     return av_turgor;
 }
+
+DerivedRegister<AverageTurgor> AverageTurgor::reg("AverageTurgor");
