@@ -1,20 +1,17 @@
 #include "SurfacePressure.h"
 
 SurfacePressure::SurfacePressure(const char* name, const char* format) : Observer(name, format)
-{
-}
+{}
 
-SurfacePressure::SurfacePressure(const SurfacePressure& orig) : Observer(orig.observer_name, orig.output_format)
-{
-}
+SurfacePressure::SurfacePressure(const SurfacePressure& orig) : Observer(orig.observer_name, orig.output_format), rv(orig.rv)
+{}
 
 SurfacePressure::~SurfacePressure() 
-{
-}
+{}
 
 double SurfacePressure::observe(Box& box, std::vector<Cell>& cells)
 {
-    double totalForce = SurfaceForce::calcForces(box, cells) ;
+    double totalForce = SurfaceForce::calcTotalForce(box, cells) ;
     double area = box.getArea(rv);
     return totalForce / area;
 }
