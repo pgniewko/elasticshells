@@ -6,19 +6,25 @@
 #include<malloc.h>
 #include<steinhardt.h>
 
-#include "Environment.h"
-#include "Cell.h"
+#include "utils/observables/Observer.h"
 
-class WL
+class WL : public Observer
 {
     public:
-        WL();
+        WL(const char*, const char*);
         WL(const WL& orig);
         virtual ~WL();
 
-        static double calcWl(Cell&, int, double);
-        static double calcWl(std::vector<Cell>&, int, double);
+        double observe(Box&, std::vector<Cell>&);
+        void set_params(int, ...);
+        void set_params(int, std::vector<std::string>);
+        
     private:
+        static DerivedRegister<WL> reg;
+        
+        double calcWl(Cell&);
+        double l;
+        double rc;
 
 };
 

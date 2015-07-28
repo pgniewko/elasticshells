@@ -6,8 +6,6 @@
 #include<malloc.h>
 #include<steinhardt.h>
 
-#include "Environment.h"
-#include "Cell.h"
 #include "utils/observables/Observer.h"
 
 class QL : public Observer
@@ -20,13 +18,11 @@ class QL : public Observer
         double observe(Box&, std::vector<Cell>&);
         void set_params(int, ...);
         void set_params(int, std::vector<std::string>);
-
-
-//        static double calcQl(std::vector<Cell>&, int, double);
+        
     private:
-        double calcQl(Cell&);
-
         static DerivedRegister<QL> reg;
+        
+        double calcQl(Cell&);
         double l;
         double rc;
 
