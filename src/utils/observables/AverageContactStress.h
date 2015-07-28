@@ -1,19 +1,20 @@
 #ifndef AVERAGECONTACTSTRESS_H
 #define	AVERAGECONTACTSTRESS_H
 
-#include <vector>
+#include "utils/observables/Observer.h"
 
-#include "Cell.h"
-#include "simulation/Box.h"
-
-class AverageContactStress
+class AverageContactStress : public Observer
 {
     public:
-        AverageContactStress();
+        AverageContactStress(const char*, const char*);
         AverageContactStress(const AverageContactStress& orig);
         virtual ~AverageContactStress();
-        static double caclContactStress(Box&, std::vector<Cell>&);
+        
+        void set_params(int, ...);
+        void set_params(int, std::vector<std::string>);
+        double observe(Box&, std::vector<Cell>&);
     private:
+        static DerivedRegister<AverageContactStress> reg;
 
 };
 

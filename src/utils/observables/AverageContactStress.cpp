@@ -1,12 +1,25 @@
 #include "AverageContactStress.h"
 
-AverageContactStress::AverageContactStress() {}
+AverageContactStress::AverageContactStress(const char* name, const char* format) : Observer(name, format)
+{}
 
-AverageContactStress::AverageContactStress(const AverageContactStress& orig) {}
+AverageContactStress::AverageContactStress(const AverageContactStress& orig)  : Observer(orig.observer_name, orig.output_format)
+{}
 
-AverageContactStress::~AverageContactStress() {}
+AverageContactStress::~AverageContactStress() 
+{}
 
-double AverageContactStress::caclContactStress(Box& box, std::vector<Cell>& cells)
+void AverageContactStress::set_params(int num, ...)
+{
+    return;
+};
+
+void AverageContactStress::set_params(int num, std::vector<std::string> args_)
+{
+    return;
+};
+
+double AverageContactStress::observe(Box& box, std::vector<Cell>& cells)
 {
     int cellsnumber = cells.size();
     double contact_force = 0.0;
@@ -43,3 +56,5 @@ double AverageContactStress::caclContactStress(Box& box, std::vector<Cell>& cell
 
     return average_stress;
 }
+
+DerivedRegister<AverageContactStress> AverageContactStress::reg("AverageContactStress");
