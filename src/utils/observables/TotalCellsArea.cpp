@@ -1,12 +1,25 @@
 #include "TotalCellsArea.h"
 
-TotalCellsArea::TotalCellsArea() {}
+TotalCellsArea::TotalCellsArea(const char* name, const char* format) : Observer(name, format)
+{}
 
-TotalCellsArea::TotalCellsArea(const TotalCellsArea& orig) {}
+TotalCellsArea::TotalCellsArea(const TotalCellsArea& orig) : Observer(orig.observer_name, orig.output_format)
+{}
 
-TotalCellsArea::~TotalCellsArea() {}
+TotalCellsArea::~TotalCellsArea() 
+{}
 
-double TotalCellsArea::totalCellArea(std::vector<Cell>& cells)
+void TotalCellsArea::set_params(int num, ...)
+{
+    return;
+};
+
+void TotalCellsArea::set_params(int num, std::vector<std::string> args_)
+{
+    return;
+};
+
+double TotalCellsArea::observe(Box& box, std::vector<Cell>& cells)
 {
     int cellsnumber = cells.size();
     double total_area = 0.0;
@@ -18,3 +31,5 @@ double TotalCellsArea::totalCellArea(std::vector<Cell>& cells)
 
     return total_area;
 }
+
+DerivedRegister<TotalCellsArea> TotalCellsArea::reg("TotalCellsArea");
