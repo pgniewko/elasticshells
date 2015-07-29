@@ -52,6 +52,7 @@ static struct argp_option options[] =
     {"xyz",         302, "FILE",  0, "Print trajectory to FILE [default: ... ]" },
     {"ss",          303, "FILE",  0, "Print stress to FILE [default: ... ]" },
     {"seed",        304, "LONG",  0, "Random generator seed [default: 0x123] " },
+    {"oc",          305, "FILE",  0, "Input file to configure observers [default: ./observers.config ]" },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0,             0,       0, 0, "Simulation Options:", 4},
@@ -206,6 +207,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 304:
             arguments->seed =  arg ? atol (arg) : 0x123;
             break;
+        case 305:
+            arguments->ob_config_file = arg;
+            break;    
         case 'n':
             arguments->n_cells = arg ? atoi (arg) : 1;
             break;

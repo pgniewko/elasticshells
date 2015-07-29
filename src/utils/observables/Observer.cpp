@@ -11,7 +11,7 @@ observer_name(orig.observer_name), output_format(orig.output_format), i_param(or
 Observer::~Observer()
 {}
 
-const char*Observer::getFormat()
+const char* Observer::getFormat()
 {
     return output_format.c_str();
 }

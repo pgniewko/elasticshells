@@ -9,6 +9,7 @@
 #include <cstring>
 
 #include "Cell.h"
+#include "utils/Logger.h"
 #include "simulation/Box.h"
 #include "utils/observables/Observer.h"
 
@@ -32,6 +33,8 @@ class LogSimulation
         FILE* os;
         std::vector<Observer*> observers;
         std::vector<std::string> readConfigFile();
+        
+        static utils::Logger log_logger;
 };
 
 #endif	/* LOGSIMULATION_H */

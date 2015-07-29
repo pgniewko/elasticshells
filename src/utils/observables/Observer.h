@@ -6,8 +6,9 @@
 #include <vector>
 #include <cstdarg>
 
-#include "Environment.h"
+
 #include "Cell.h"
+#include "Environment.h"
 #include "simulation/Box.h"
 
 class Observer

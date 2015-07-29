@@ -32,9 +32,8 @@ double VolumeFraction::observe(Box& box, std::vector<Cell>& cells)
 double VolumeFraction::calcCellsVolume(std::vector<Cell>& cells)
 {
     double cellsVolume = 0.0;
-    int numofcells = cells.size();
 
-    for (int i = 0; i < numofcells; i++)
+    for (uint i = 0; i < cells.size(); i++)
     {
         cellsVolume += cells[i].calcVolume(d_param);
     }

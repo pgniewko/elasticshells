@@ -1,5 +1,7 @@
 #include "LogSimulation.h"
 
+utils::Logger LogSimulation::log_logger("log_logger");
+
 std::vector<std::string> &split(const std::string& s, char delim, std::vector<std::string> &elems)
 {
     std::stringstream ss(s);
@@ -54,12 +56,20 @@ std::vector<std::string> LogSimulation::readConfigFile()
     std::vector<std::string> list;
     std::string line;
 
-    while ( std::getline (cfile, line) )
+    if ( cfile.is_open() )
     {
-        if ( !(line.at(0) == '#') && !(line.at(0) == ' ') )
+        while ( std::getline (cfile, line) )
         {
-            list.push_back(line);
+            if ( !(line.at(0) == '#') && !(line.at(0) == ' ') )
+            {
+                list.push_back(line);
+            }
         }
+    }
+    else
+    {
+        log_logger << utils::LogLevel::WARNING << "Observers configuration file COULD NOT BE FOUND" << "\n";
+        //exit(EXIT_FAILURE);
     }
 
     cfile.close();

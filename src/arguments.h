@@ -64,7 +64,7 @@ struct arguments
     bool scale_flag;
     int nb_flag;
 
-    long seed;
+    ulong seed;
 };
 
 #endif	/* ARGUMENTS_H */

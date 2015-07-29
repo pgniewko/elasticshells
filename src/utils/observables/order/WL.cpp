@@ -24,7 +24,7 @@ void WL::set_params(int num, std::vector<std::string> args_)
     d_param = strtod(args_[ num + 1 ].c_str(), NULL);
 }
 
-double WL::observe(Box& boxs, std::vector<Cell>& cells)
+double WL::observe(Box& box, std::vector<Cell>& cells)
 {
     double wlsum = 0.0;
     double N = 0.0;
