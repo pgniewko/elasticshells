@@ -1,5 +1,15 @@
 include config.mk
 
+DEBUG ?= 0
+ifeq ($(DEBUG), 1)
+    CXXFLAGS := $(CXXFLAGS) $(DBGFLAGS)
+endif
+
+TEST ?= 0
+ifeq ($(TEST), 1)
+    CXXFLAGS := $(CXXFLAGS) $(DFLAGS)
+endif
+
 TARGET       := $(BIN)/biofilm
 TEST_RUNNER  := $(TESTS)/testsrunner
 

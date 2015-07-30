@@ -12,14 +12,14 @@ CXX      := g++
 # --Force the compiler to use the correct headers
 # -ansi: In C++ mode, it is equivalent to -std=c++98
 # "-O3" - optimization level
-DEBUG    := -g
+DBGFLAGS := -DDEBUG -g
 
 # Relative include and library paths for compilation of the examples
 INCLUDE  := -I/usr/local/include -I$(CURDIR)/src
 LIB      := -L/usr/lib -L/usr/local/lib
-DFLAGS   := #-DTESTS
+DFLAGS   := -DTESTS
 
-CXXFLAGS := -lm -Wall -O3 -std=gnu++0x -fpermissive $(DEBUG) $(INCLUDE) $(DFLAGS)
+CXXFLAGS := -lm -Wall -O3 -std=gnu++0x -fpermissive $(INCLUDE)
 LDFLAGS  := $(LIB)
 LDLIBS   := -lcppunit -ldl -lsteinhardt -lgsl -lgslcblas
 
