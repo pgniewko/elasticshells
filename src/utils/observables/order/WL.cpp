@@ -46,7 +46,6 @@ double WL::calcWl(Cell& cell)
     double qss = 0.0;
     double* x, *y, *z;
     double* qlRe, *qlIm;
-    double* wlval;
     x = (double*) malloc (n * sizeof (double));
     y = (double*) malloc (n * sizeof (double));
     z = (double*) malloc (n * sizeof (double));
@@ -58,19 +57,15 @@ double WL::calcWl(Cell& cell)
         z[i] = cell.vertices[i].xyz.z;
     }
 
-    wlval = (double*) malloc ( sizeof (double) );
     qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
     qlIm = (double*) malloc ((i_param + 1) * sizeof (double));
     count = qlm (i_param, n, d_param, x, y, z, qlRe, qlIm);
     qss = qsum (i_param, qlRe, qlIm);
 
+    double wlval = 0.0;
     if (qss > 1e-3)
     {
-        wlval[0] = wl (i_param, qlRe, qlIm) / (qss * qss * qss);
-    }
-    else
-    {
-        wlval[0] = 0.0;
+        wlval = wl (i_param, qlRe, qlIm) / (qss * qss * qss);
     }
 
     free (qlRe);
@@ -78,7 +73,7 @@ double WL::calcWl(Cell& cell)
     free (x);
     free (y);
     free (z);
-    return wlval[0];
+    return wlval;
 }
 
 DerivedRegister<WL> WL::reg("WL");

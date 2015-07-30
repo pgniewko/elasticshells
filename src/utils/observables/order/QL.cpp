@@ -45,7 +45,6 @@ double QL::calcQl(Cell& cell)
     double qss = 0.0;
     double* x, *y, *z;
     double* qlRe, *qlIm;
-    double* qlval;
     x = (double*) malloc (n * sizeof (double));
     y = (double*) malloc (n * sizeof (double));
     z = (double*) malloc (n * sizeof (double));
@@ -57,19 +56,15 @@ double QL::calcQl(Cell& cell)
         z[i] = cell.vertices[i].xyz.z;
     }
 
-    qlval = (double*) malloc ( sizeof (double) );
     qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
     qlIm = (double*) malloc ((i_param + 1) * sizeof (double));
     count = qlm (i_param, n, d_param, x, y, z, qlRe, qlIm);
     qss = qsum (i_param, qlRe, qlIm);
 
+    double qlval = 0.0;
     if (qss > 1e-3)
     {
-        qlval[0] = Ql (i_param, count, qlRe, qlIm);
-    }
-    else
-    {
-        qlval[0] = 0.0;
+        qlval = Ql (i_param, count, qlRe, qlIm);
     }
 
     free (qlRe);
@@ -77,7 +72,7 @@ double QL::calcQl(Cell& cell)
     free (x);
     free (y);
     free (z);
-    return qlval[0];
+    return qlval;
 }
 
 DerivedRegister<QL> QL::reg("QL");
