@@ -29,7 +29,8 @@ Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.v
     r0av(orig.r0av), V0(orig.V0), vert_no_bud(orig.vert_no_bud)
 {}
 
-Cell::~Cell() {}
+Cell::~Cell() 
+{}
 
 void Cell::voidVerletLsit()
 {
@@ -155,9 +156,8 @@ void Cell::calcHarmonicForces()
 void Cell::calcOsmoticForces()
 {
     calcCM();
-    //double activeCellVolume = calcVolume() - V0 * OsmoticForce::getEpsilon();
+    
     int iva, ivb, ivc;
-    //double dp = params.dp;
     double turgor = getTurgor();
 
     for (int i = 0; i < number_t; i++)

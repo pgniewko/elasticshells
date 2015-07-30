@@ -74,6 +74,7 @@ Simulator::Simulator(const Simulator& orig) : number_of_cells(orig.number_of_cel
     box(orig.box), sb(orig.sb), traj(orig.traj),
     log_sim(orig.log_sim)
 {
+    exit(1);
     // throw an exception - disallowed behavior
 }
 
@@ -184,7 +185,7 @@ void Simulator::initCells(int N, double ra, double rb)
         nx = uniform(-box.getX() + r0 + rc, box.getX() - r0 - rc);
         ny = uniform(-box.getY() + r0 + rc, box.getY() - r0 - rc);
         nz = uniform(-box.getZ() + r0 + rc, box.getZ() - r0 - rc);
-
+        
         if (number_of_cells == 0)
         {
             nx = 0;
@@ -193,7 +194,7 @@ void Simulator::initCells(int N, double ra, double rb)
         }
 
         Vector3D shift(nx, ny, nz);
-
+         
         for (int i = 0; i < number_of_cells; i++)
         {
             Vector3D tmpcm = cells[i].getCm();
@@ -216,12 +217,13 @@ void Simulator::initCells(int N, double ra, double rb)
 
 void Simulator::addCell(const Cell& newCell)
 {
+
     try
     {
         if (cells.size() == MAX_CELLS)
             throw MaxSizeException("Maximum number of cells reached."
                                    "New cell will not be added !");
-
+;
         cells.push_back(newCell);
         number_of_cells = cells.size();
     }
@@ -230,11 +232,6 @@ void Simulator::addCell(const Cell& newCell)
         simulator_logs << utils::LogLevel::WARNING << e.what() << "\n";
         return;
     }
-}
-
-void Simulator::addCell()
-{
-    addCell(1.0);
 }
 
 void Simulator::addCell(double r0)
@@ -299,7 +296,6 @@ void Simulator::simulate(int steps)
         rebuildDomainsList();
     }
 
-//    sb.saveRenderScript(cells, box, params.draw_box, params.r_vertex);
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
     traj.open();
@@ -308,7 +304,6 @@ void Simulator::simulate(int steps)
     log_sim.open();
     log_sim.printHeader();
     log_sim.dumpState(box, cells);
-    //log_sim.dumpState(box, cells, params.r_vertex, 1, getTotalVertices(), params.nbhandler);
 
     for (int i = 0; i <= steps; i++)
     {
@@ -442,16 +437,6 @@ void Simulator::rebuildDomainsList()
             domains.assignVertex(cells[i].vertices[j], i);
         }
     }
-    
-    //for (int i = 0; i < MAX_M*MAX_M*MAX_M; i++)
-    //{
-    //    if (domains.domains[i].numberOfVerts > 0)
-    //    {
-    //        std::cout << "I=" << i << " # verts=" << domains.domains[i].numberOfVerts << std::endl;
-    //    }
-    //}
-    
-    //std::cout << domains.numberofAssignedParticles() << std::endl;
 
     for (int i = 0; i < number_of_cells; i++)
     {

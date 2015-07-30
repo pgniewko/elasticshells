@@ -5,15 +5,21 @@ utils::Logger DomainList::domainlist_logs("domainlist");
 DomainList::DomainList() : m(1), N(1), pbc(false), m_assigned(false), init_domains(false),
     x_min(0), y_min(0), z_min(0),
     x_max(0), y_max(0), z_max(0),
-    dx(0), dy(0), dz(0), rc_max(0) {}
+    dx(0), dy(0), dz(0), rc_max(0) 
+{
+}
 
 DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.pbc),
     m_assigned(orig.m_assigned), init_domains(orig.init_domains),
     x_min(0), y_min(0), z_min(0),
     x_max(0), y_max(0), z_max(0),
-    dx(0), dy(0), dz(0), rc_max(0) {}
+    dx(0), dy(0), dz(0), rc_max(0) 
+{
+}
 
-DomainList::~DomainList() {}
+DomainList::~DomainList() 
+{
+}
 
 void DomainList::setupDomainsList(double rcMax, Box& box)
 {
@@ -45,6 +51,7 @@ void DomainList::initDomains()
                     // ASSIGN INDEX
                     index = getDomainIndex(i, j, k);
                     domains[index].myid = index;
+                    //std::cout << "Assigned id=" << index << std::endl;
 
                     // EVERY DOMAIN IS ALSO ITS OWN NEIGHBOR
                     for (int l = -1; l <= 1; l++)
@@ -180,6 +187,7 @@ void DomainList::setM(Box& box)
     m = std::min(m, MAX_M);
     N = m * m * m;
     m_assigned = true;
+    domains.reserve(N);
     domainlist_logs << utils::LogLevel::INFO << "NUMBER OF LINKED DOMAINS N_DOMAINS=" << N << "\n";
 }
 

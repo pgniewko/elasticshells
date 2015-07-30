@@ -78,7 +78,7 @@ class Simulator
         void diagnoseParams(arguments);
         void logParams();
 
-        void addCell();
+        //void addCell();
         void addCell(const Cell&);
         void addCell(double);
 
@@ -95,11 +95,14 @@ class Simulator
         int getTotalVertices();
         double getMaxLengthScale();
 
+        
         int number_of_cells;
         char* triangulator;
         params_t params;
 
         std::vector<Cell> cells;
+        
+        
         Box box;
 
         ScriptBuilder sb;
@@ -107,7 +110,7 @@ class Simulator
         LogSimulation log_sim;
 
         DomainList domains;
-
+        
         static utils::Logger simulator_logs;
 };
 

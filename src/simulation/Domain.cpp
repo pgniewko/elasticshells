@@ -2,7 +2,9 @@
 
 utils::Logger Domain::domain_logs("domain");
 
-Domain::Domain() : myid(-1), numberOfNeighs(0), numberOfVerts(0) {}
+Domain::Domain() : myid(-1), numberOfNeighs(0), numberOfVerts(0) 
+{
+}
 
 Domain::Domain(const Domain& orig) : myid(orig.myid),  numberOfNeighs(orig.numberOfNeighs), numberOfVerts(orig.numberOfVerts)
 {
@@ -18,7 +20,9 @@ Domain::Domain(const Domain& orig) : myid(orig.myid),  numberOfNeighs(orig.numbe
     }
 }
 
-Domain::~Domain() {}
+Domain::~Domain() 
+{
+}
 
 void Domain::addVertex(int vid, int cellid)
 {
@@ -40,7 +44,6 @@ void Domain::addVertex(int vid, int cellid)
         domain_logs << utils::LogLevel::INFO << "TRYING_TO_ADD:VERTEX_ID=" << vid << " CELL_ID=" << cellid << "\n";
         domain_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(1);
-        //return;
     }
 }
 

@@ -365,8 +365,6 @@ Timer clocks[10];
 
 int main(int argc, char** argv)
 {
-    std::cout << "SIZE OF DOMAIN    =" << sizeof(Domain) << std::endl;
-    std::cout << "SIZE OF DOMAINLIST=" << sizeof(DomainList) << std::endl;
     print_time();
 
     if ( argc <= 1 )
@@ -408,11 +406,13 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = " << arguments.stress_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
+    
     clocks[0].tic();
     Simulator simulator(arguments);
     simulator.initCells(arguments.n_cells, arguments.init_radius, arguments.init_radius2);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
+    
     biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION TIME = " << clocks[0].time() << " [s] \n";
     return (EXIT_SUCCESS);
 }

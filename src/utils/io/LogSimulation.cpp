@@ -69,7 +69,6 @@ std::vector<std::string> LogSimulation::readConfigFile()
     else
     {
         log_logger << utils::LogLevel::WARNING << "Observers configuration file COULD NOT BE FOUND" << "\n";
-        //exit(EXIT_FAILURE);
     }
 
     cfile.close();

@@ -4,6 +4,11 @@
 #include "random.h"
 #include "utils/Logger.h"
 
+#define IMPLIES(x, y) (!(x) || (y))
+//void foo(int array[], int n) {
+//  assert(IMPLIES(n > 0, array != NULL));
+//  ...
+
 #define STRCMP(a,b) (!strcmp(a,b))
 #define SIGN(a) (a >= 0 ? 1 : -1)
 
@@ -13,8 +18,8 @@
 #define NEIGH_MAX 20
 #define TRIAN_MAX 40
 #define NBNEI_MAX 100
-#define MAX_IN_DOMAIN 50 // maximum number of particles in a domain
-#define MAX_M 20 // maximum number of linked-domains - in every direction
+#define MAX_IN_DOMAIN 10 // maximum number of particles in a domain
+#define MAX_M 50 // maximum number of linked-domains - in every direction
 #define MAX_D_NEIGH 27 // MUST BE 27 - ALWAYS !
 
 const double E       = 2.71828182845905;

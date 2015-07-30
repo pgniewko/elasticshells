@@ -46,7 +46,8 @@ class DomainList
         double dx, dy, dz;
         double rc_max;
 
-        Domain domains[MAX_M*MAX_M*MAX_M];
+        
+        std::vector<Domain> domains;
 
         static utils::Logger domainlist_logs;
 

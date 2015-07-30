@@ -17,7 +17,7 @@ class Domain
         void voidParticlesInDomain();
         int vertIds[MAX_IN_DOMAIN];
         int cellsIds[MAX_IN_DOMAIN];
-        int neighborDomainIdx[27];
+        int neighborDomainIdx[MAX_D_NEIGH];
 
         int myid;
         int numberOfNeighs;
