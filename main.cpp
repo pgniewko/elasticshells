@@ -13,6 +13,11 @@
 
 #include <string>
 
+#if defined (_OPENMP)
+#  include <omp.h>
+#endif
+
+
 #include "Environment.h"
 #include "src/Timer.h"
 #include "src/arguments.h"
@@ -365,8 +370,16 @@ Timer clocks[10];
 
 int main(int argc, char** argv)
 {
+   
+    
+    
     print_time();
 
+#ifdef _OPENMP
+    int g_threads = omp_get_max_threads();
+    printf( "OpenMP version, threads %d\n", g_threads );
+#endif
+    
     if ( argc <= 1 )
     {
         argp_help(&argp, stdout, ARGP_HELP_SEE, argv[0]);
