@@ -35,6 +35,10 @@ Please note that you must be root in order to install at `/usr/local`.
     + Run gprof tool in order to analyze the performance:
         `gprof ./bin/biofilm gmon.out | less`
 
+* Memory check with `valgrind`:
+    + Run the binary file:
+        `valgrind --leak-check=yes --show-leak-kinds=all biofilm [OPTIONS ...] 2> log`
+
 EXTERNAL LIBRARIES
 ================
 * For compiling and running tests [CppUnit](sourceforge.net/projects/cppunit) is needed.
