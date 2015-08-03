@@ -35,6 +35,12 @@ Please note that you must be root in order to install at `/usr/local`.
     + Run gprof tool in order to analyze the performance:
         `gprof ./bin/biofilm gmon.out | less`
 
+* Performance profiling with `valgrind`:
+    + Run the binary file with `valgrind --tool=callgrind`:
+        `valgrind --tool=callgrind ./bin/biofilm`
+    + Check the results with the `kcachegrind`:
+        ` kcachegrind callgrind.out.xxx`
+
 * Memory check with `valgrind`:
     + Run the binary file:
         `valgrind --leak-check=yes --show-leak-kinds=all biofilm [OPTIONS ...] 2> log`
