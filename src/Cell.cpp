@@ -448,7 +448,6 @@ void Cell::setDp(double dP)
 
 void Cell::setDp(double dP, double ddp)
 {
-    //double randu = uniform(0, ddp);
     double randu = uniform(-ddp, ddp);
     params.dp = dP + randu;
     V0 = calcVolume();
@@ -551,33 +550,6 @@ void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, Bo
     }
 }
 
-//void Cell::calcAverageR0()
-//{
-//    double totSum = 0.0;
-//
-//    for (int i = 0; i < number_v; i++)
-//    {
-//        for (int j = 0; j < vertices[i].numBonded; j++)
-//        {
-//            r0av += vertices[i].r0[j];
-//            totSum += 1.0;
-//        }
-//    }
-//
-//    r0av /= totSum;
-//}
-
-//void Cell::setR0AvForAll()
-//{
-//    for (int i = 0; i < number_v; i++)
-//    {
-//        for (int j = 0; j < vertices[i].numBonded; j++)
-//        {
-//            vertices[i].r0[j] = r0av;
-//        }
-//    }
-//}
-
 double Cell::sumL2()
 {
     double sum_l2 = 0.0;
@@ -593,14 +565,6 @@ double Cell::sumL2()
     sum_l2 /= 2.0;
     return sum_l2;
 }
-
-//double Cell::getPercLength(int i, int j)
-//{
-//    double r0 = vertices[i].r0[j];
-//    int k = vertices[i].bondedVerts[j];
-//    double r = (vertices[i].xyz - vertices[k].xyz).length();
-//    return 1.0 - r / r0;
-//}
 
 void Cell::randomRotate()
 {
@@ -865,23 +829,6 @@ void Cell::cellCycle(double dt)
             break;
         
     }
-//    if (my_phase == cell_phase_t::C_G0)
-//    {
-//        // check if need to switch to C_G1
-//        // DO NOTHING
-//    }
-//    else if (my_phase == cell_phase_t::C_G1)
-//    {
-//        grow();
-//    }
-//    else if (my_phase == cell_phase_t::C_SG2)
-//    {
-//        bud();
-//    }
-//    else if (my_phase == cell_phase_t::C_M)
-//    {
-//        divide();
-//    }
 }
 
 void Cell::grow(double dt)

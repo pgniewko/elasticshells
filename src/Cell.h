@@ -114,9 +114,6 @@ class Cell
         VertexTriangle triangles[MAX_T];
 
         int cell_id;
-
-        //void setR0AvForAll();
-        //double getPercLength(int, int);
         double contactForce(const Cell&, Box&);
         double contactArea(const Cell&, Box&);
         double contactArea(Box&);
@@ -130,15 +127,12 @@ class Cell
         void findBud();
         void randomRotate();
 
-        //void calcAverageR0();
         double sumL2();
         cell_params_t params;
         cell_phase_t my_phase;
         int number_v;
         int number_t;
         double nRT;
-
-        //double r0av;
         double V0;
 
         int bud_idx[MAX_V];

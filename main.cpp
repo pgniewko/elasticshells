@@ -24,15 +24,12 @@
 #include "src/geometry/Vector3D.h"
 #include "src/simulation/Simulator.h"
 
-//#include "simulation/DomainList.h"
-//#include "simulation/Domain.h"
-
 #include "utils/Logger.h"
 #include "src/utils/LogManager.h"
 
 utils::Logger biofilm_logs("biofilm");
 
-const char* argp_program_version = "biofilm 0.5.1";
+const char* argp_program_version = "biofilm 0.5";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
 
 static char doc[] =
@@ -151,7 +148,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ddp = 0.0;
             arguments->eps = 0.0;
             arguments->visc = 100.0;
-//            arguments->k = 1.0;
             arguments->mass = 60.0;
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;

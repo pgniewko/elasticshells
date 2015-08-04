@@ -11,7 +11,6 @@
 #include "geometry/VertexTriangle.h"
 
 class Cell;
-//class Vertex;
 
 class Tinker
 {

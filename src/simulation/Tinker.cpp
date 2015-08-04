@@ -383,7 +383,7 @@ int Tinker::getOldestVertex(Cell& cell)
     if (ptot == 0.0)
     {
         std::cerr << "ptot=0.0. Bug - FIX IT !" << std::endl;
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     double randn = uniform(0, 1.0);
@@ -435,7 +435,7 @@ int Tinker::validVertList(Cell& cell)
     else
     {
         std::cout << "ERROR. Cell not is G1 or G2 phases." << std::endl;
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     return vertexCounter;
