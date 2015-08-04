@@ -24,8 +24,8 @@
 #include "src/geometry/Vector3D.h"
 #include "src/simulation/Simulator.h"
 
-#include "simulation/DomainList.h"
-#include "simulation/Domain.h"
+//#include "simulation/DomainList.h"
+//#include "simulation/Domain.h"
 
 #include "utils/Logger.h"
 #include "src/utils/LogManager.h"
@@ -81,7 +81,6 @@ static struct argp_option options[] =
 
     {0,             0,       0, 0, "Cell Options:", 5},
     {"mass",      'm', "FLOAT", 0, "Total mass of a cell [default: 60.0]"},
-//    {"gamma",     'k', "FLOAT", 0, "Spring constant between vertices[default: 1.0]"},
     {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
     {"ecw",       501, "FLOAT", 0, "Box Young's modulus [UNIT=0.1 MPa] [default: 2000.0]"},
     {"ir",        502, "FLOAT", 0, "Cells size at the initialization - lower limit [default:2.5"},
@@ -89,10 +88,10 @@ static struct argp_option options[] =
     {"dp",        504, "FLOAT", 0, "Osmotic pressure [default: 0.0]"},
     {"osm",       505,       0, 0, "Volume dependent osmotic pressure [default:  false]"},
     {"rv",        506, "FLOAT", 0, "Radius of a single vertex [default: 0.25]"},
-    {"gr",        507, "FLOAT", 0, "Growth rate [default: 0.0]"},
-    {"vc",        508, "FLOAT", 0, "Volume at division [default: 20.0]"},
-    {"bud-d",     509, "FLOAT", 0, "Bud-neck diameter [default: 0.5]"},
-    {"div-ratio", 510, "FLOAT", 0, "Size ratio at cell division [default: 0.7]"},
+    {"gr",        507, "FLOAT", 0, "Cell growth rate [default: 0.0]"},
+    {"vc",        508, "FLOAT", 0, "Minimum volume for budding[default: 60.0]"},
+    {"bd",        509, "FLOAT", 0, "Bud-neck diameter [default: 0.5]"},
+    {"dr",        510, "FLOAT", 0, "Bud volume and Mother cell volume ratio at division [default: 0.7]"},
     {"ir2",       511, "FLOAT", 0, "Cells size at the initialization - upper limit [default:2.5]"},
     {"ddp",       512, "FLOAT", 0, "Variation in osmotic pressure [UNIT=0.1 MPa] [default: 0.0]"},
     {"eps",       513, "FLOAT", 0, "Non osmotic volume fraction [default: 0.0]"},
@@ -160,7 +159,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->init_radius = 2.5;
             arguments->init_radius2 = 2.5;
             arguments->growth_rate = 0.0;
-            arguments->vc = 20.0;
+            arguments->vc = 60.0;
             arguments->bud_d = 0.5;
             arguments->div_ratio = 0.7;
             arguments->bsx = 10.0;
@@ -297,7 +296,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->growth_rate = arg ?  strtod (arg, NULL) : 0.0;
             break;
         case 508:
-            arguments->vc = arg ?  strtod (arg, NULL) : 20.0;
+            arguments->vc = arg ?  strtod (arg, NULL) : 60.0;
             break;
         case 509:
             arguments->bud_d = arg ?  strtod (arg, NULL) : 0.5;

@@ -2,7 +2,7 @@
 
 utils::Logger Cell::cell_log("cell");
 
-Cell::Cell(int depth) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), nRT(0), r0av(0), V0(0),
+Cell::Cell(int depth) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), nRT(0), V0(0),
     vert_no_bud(0)
 {
     SimpleTriangulation sm(depth);
@@ -10,23 +10,21 @@ Cell::Cell(int depth) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), 
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
-    calcAverageR0();
     randomRotate();
 }
 
 Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), nRT(0),
-    r0av(0), V0(0), vert_no_bud(0)
+    V0(0), vert_no_bud(0)
 {
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
-    calcAverageR0();
     randomRotate();
 }
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles),
     cell_id(orig.cell_id), params(orig.params), my_phase(orig.my_phase), number_v(orig.number_v), number_t(orig.number_t), nRT(orig.nRT),
-    r0av(orig.r0av), V0(orig.V0), vert_no_bud(orig.vert_no_bud)
+    V0(orig.V0), vert_no_bud(orig.vert_no_bud)
 {}
 
 Cell::~Cell() 
@@ -85,7 +83,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
     int vertIdx, cellIdx;
     double r_cut = 2 * params.r_vertex + EPSILON;
 
-    int domain_i_numof;
+//    int domain_i_numof;
     
     for (int i = 0; i < number_v; i++)
     {
@@ -478,7 +476,7 @@ void Cell::setInitR(double rinit)
     params.init_r = rinit;
 }
 
-void Cell::setDivisionVol(double vc)
+void Cell::setBuddingVolume(double vc)
 {
     params.div_volume = vc;
 }
@@ -553,32 +551,32 @@ void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, Bo
     }
 }
 
-void Cell::calcAverageR0()
-{
-    double totSum = 0.0;
+//void Cell::calcAverageR0()
+//{
+//    double totSum = 0.0;
+//
+//    for (int i = 0; i < number_v; i++)
+//    {
+//        for (int j = 0; j < vertices[i].numBonded; j++)
+//        {
+//            r0av += vertices[i].r0[j];
+//            totSum += 1.0;
+//        }
+//    }
+//
+//    r0av /= totSum;
+//}
 
-    for (int i = 0; i < number_v; i++)
-    {
-        for (int j = 0; j < vertices[i].numBonded; j++)
-        {
-            r0av += vertices[i].r0[j];
-            totSum += 1.0;
-        }
-    }
-
-    r0av /= totSum;
-}
-
-void Cell::setR0AvForAll()
-{
-    for (int i = 0; i < number_v; i++)
-    {
-        for (int j = 0; j < vertices[i].numBonded; j++)
-        {
-            vertices[i].r0[j] = r0av;
-        }
-    }
-}
+//void Cell::setR0AvForAll()
+//{
+//    for (int i = 0; i < number_v; i++)
+//    {
+//        for (int j = 0; j < vertices[i].numBonded; j++)
+//        {
+//            vertices[i].r0[j] = r0av;
+//        }
+//    }
+//}
 
 double Cell::sumL2()
 {
@@ -596,13 +594,13 @@ double Cell::sumL2()
     return sum_l2;
 }
 
-double Cell::getPercLength(int i, int j)
-{
-    double r0 = vertices[i].r0[j];
-    int k = vertices[i].bondedVerts[j];
-    double r = (vertices[i].xyz - vertices[k].xyz).length();
-    return 1.0 - r / r0;
-}
+//double Cell::getPercLength(int i, int j)
+//{
+//    double r0 = vertices[i].r0[j];
+//    int k = vertices[i].bondedVerts[j];
+//    double r = (vertices[i].xyz - vertices[k].xyz).length();
+//    return 1.0 - r / r0;
+//}
 
 void Cell::randomRotate()
 {
@@ -855,10 +853,10 @@ void Cell::cellCycle(double dt)
     switch(my_phase)    
     {
         case cell_phase_t::C_G1:
-            grow();
+            grow(dt);
             break;
         case cell_phase_t::C_SG2:
-            bud();
+            bud(dt);
             break;
         case cell_phase_t::C_M:
             divide();
@@ -886,9 +884,9 @@ void Cell::cellCycle(double dt)
 //    }
 }
 
-void Cell::grow()
+void Cell::grow(double dt)
 {
-    if (uniform() > params.growth_rate)
+    if (uniform() > params.growth_rate * dt)
     {
         return;
     }
@@ -896,10 +894,14 @@ void Cell::grow()
     Tinker::grow(*this);
 }
 
-void Cell::bud()
+void Cell::bud(double dt)
 {
     findBud();
-    Tinker::bud(*this);
+    if (uniform() > params.growth_rate * dt)
+    {
+        
+        Tinker::bud(*this);
+    }
 }
 
 void Cell::divide()

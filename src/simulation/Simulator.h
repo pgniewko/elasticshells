@@ -23,7 +23,7 @@
 #include "utils/Logger.h"
 #include "force/OsmoticForce.h"
 #include "simulation/DomainList.h"
-#include "simulation/Domain.h"
+//#include "simulation/Domain.h"
 
 struct params_t
 {

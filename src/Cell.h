@@ -88,7 +88,7 @@ class Cell
         void setVerletR(double);
         void setInitR(double);
 
-        void setDivisionVol(double);
+        void setBuddingVolume(double);
         void setGrowthRate(double);
         void setBudDiameter(double);
         void setDivisionRatio(double);
@@ -115,8 +115,8 @@ class Cell
 
         int cell_id;
 
-        void setR0AvForAll();
-        double getPercLength(int, int);
+        //void setR0AvForAll();
+        //double getPercLength(int, int);
         double contactForce(const Cell&, Box&);
         double contactArea(const Cell&, Box&);
         double contactArea(Box&);
@@ -124,13 +124,13 @@ class Cell
         double getTurgor();
 
     private:
-        void grow();
-        void bud();
+        void grow(double);
+        void bud(double);
         void divide();
         void findBud();
         void randomRotate();
 
-        void calcAverageR0();
+        //void calcAverageR0();
         double sumL2();
         cell_params_t params;
         cell_phase_t my_phase;
@@ -138,9 +138,8 @@ class Cell
         int number_t;
         double nRT;
 
-        double r0av;
+        //double r0av;
         double V0;
-//        int vcounter; // remove - prawdopodobnie bezurzyteczny
 
         int bud_idx[MAX_V];
         int vert_no_bud;

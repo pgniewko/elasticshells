@@ -15,6 +15,8 @@ DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.
     x_max(0), y_max(0), z_max(0),
     dx(0), dy(0), dz(0), rc_max(0) 
 {
+    for (int i = 0; i < N; i++)
+        vertsInDomains[i] = orig.vertsInDomains[i];
 }
 
 DomainList::~DomainList() 

@@ -10,7 +10,7 @@
 
 struct domain_t
 {
-   int myid;
+    int myid;
     int numberOfNeighs;
     int vertIds[MAX_IN_DOMAIN];
     int cellsIds[MAX_IN_DOMAIN];

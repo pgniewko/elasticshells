@@ -37,7 +37,6 @@ struct arguments
     double ddp;
     double eps;
     double visc;
-//    double k;
     double mass;
     double ttime;
     double r_vertex;                   /* vertex radius */

@@ -268,7 +268,7 @@ void Simulator::addCell(double r0)
         newCell.setVisc(params.visc);
         newCell.setInitR(r0);
         newCell.setGrowthRate(params.growth_rate);
-        newCell.setDivisionVol(params.vc);
+        newCell.setBuddingVolume(params.vc);
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
         addCell(newCell);
