@@ -40,7 +40,7 @@ void DomainList::initDomains()
     if (!init_domains)
     {
         int index;
-        int neighix;
+        int neighix = -1;
 
         for (int k = 0; k < m; k++)
         {
@@ -51,7 +51,6 @@ void DomainList::initDomains()
                     // ASSIGN INDEX
                     index = getDomainIndex(i, j, k);
                     domains[index].myid = index;
-                    //std::cout << "Assigned id=" << index << std::endl;
 
                     // EVERY DOMAIN IS ALSO ITS OWN NEIGHBOR
                     for (int l = -1; l <= 1; l++)
@@ -62,7 +61,8 @@ void DomainList::initDomains()
 
                                 if (neighix != -1)
                                 {
-                                    domains[index].addNeighDomain(neighix);
+                                    addNeighDomain(index, neighix);
+                                    //domains[index].addNeighDomain(neighix);
                                 }
                             }
                 }
@@ -72,6 +72,13 @@ void DomainList::initDomains()
         init_domains = true;
         domainlist_logs << utils::LogLevel::FINEST << "Linked domains list has been initialized successfully." << "\n";
     }
+}
+
+void DomainList::addNeighDomain(int dix, int nidx)
+{
+//    int num_nieg = domains[dix].numberOfNeighs;
+    domains[dix].neighborDomainIdx[ domains[dix].numberOfNeighs ] = nidx;
+    domains[dix].numberOfNeighs++;
 }
 
 int DomainList::getDomainIndex(int i, int j, int k)
@@ -136,8 +143,30 @@ int DomainList::getDomainIndex(int i, int j, int k)
 void DomainList::assignVertex(Vertex& vertex, int cellid)
 {
     int index = getDomainIndex(vertex);
-    domains[index].addVertex(vertex.getId(), cellid);
-    vertex.domainIdx = index;
+//    domains[index].addVertex(vertex.getId(), cellid);
+//    vertex.domainIdx = index;
+    
+    try
+    {
+        if (vertsInDomains[index] >= MAX_IN_DOMAIN)
+            throw MaxSizeException("Trying to add more vertices than it's allowed.\n"
+                                   "This may significantly affect the simulation accuracy!\n"
+                                   "Simulation is about to end.");
+
+        domains[index].vertIds[ vertsInDomains[index] ] = vertex.getId();
+        domains[index].vertIds[ vertsInDomains[index] ] = cellid;
+        vertsInDomains[index]++;
+        vertex.domainIdx = index;
+    }
+    catch (MaxSizeException& e)
+    {
+        domainlist_logs << utils::LogLevel::INFO << "MY_ID=" << domains[index].myid << "\n";
+        domainlist_logs << utils::LogLevel::INFO << "NUMBER_OF_VERTICES=" << vertsInDomains[index] << "\n";
+        domainlist_logs << utils::LogLevel::INFO << "TRYING_TO_ADD:VERTEX_ID=" << vertex.getId() << " CELL_ID=" << cellid << "\n";
+        domainlist_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
+        exit(EXIT_FAILURE);
+    }
+    
 }
 
 int DomainList::getDomainIndex(Vertex& vertex)
@@ -225,9 +254,12 @@ void DomainList::setBoxDim(Box& box)
 void DomainList::voidDomains()
 {
     for (int i = 0; i < N; i++)
-    {
-        domains[i].voidParticlesInDomain();
-    }
+        vertsInDomains[i] = 0;
+    
+    //for (int i = 0; i < N; i++)
+    //{
+    //    domains[i].voidParticlesInDomain();
+    //}
 }
 int DomainList::getNumberOfNeigh(int dix)
 {
@@ -251,7 +283,8 @@ int DomainList::getCellIdx(int dix, int xpart)
 
 int DomainList::getNumOfParticles(int dix)
 {
-    return domains[dix].numberOfVerts;
+    //return domains[dix].numberOfVerts;
+    return vertsInDomains[dix];
 }
 
 int DomainList::numberofAssignedParticles()
@@ -259,9 +292,12 @@ int DomainList::numberofAssignedParticles()
     int sum = 0;
 
     for (int i = 0; i < N; i++)
-    {
-        sum += domains[i].numberOfVerts;
-    }
+        sum += vertsInDomains[i]; 
+    
+//    for (int i = 0; i < N; i++)
+//    {
+//        sum += domains[i].numberOfVerts;
+//    }
 
     return sum;
 }

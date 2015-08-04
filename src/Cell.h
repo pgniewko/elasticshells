@@ -39,7 +39,6 @@ struct cell_params_t
 
 enum class cell_phase_t
 {
-    C_G0,   // gap phase (resting)
     C_G1,   // mother cell growth
     C_SG2,  // S+G2 - i.e. bud creation and budding phase
     C_M     // cell division phase

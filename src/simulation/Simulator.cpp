@@ -74,7 +74,7 @@ Simulator::Simulator(const Simulator& orig) : number_of_cells(orig.number_of_cel
     box(orig.box), sb(orig.sb), traj(orig.traj),
     log_sim(orig.log_sim)
 {
-    exit(1);
+    exit(EXIT_FAILURE);
     // throw an exception - disallowed behavior
 }
 

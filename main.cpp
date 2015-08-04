@@ -377,13 +377,14 @@ int main(int argc, char** argv)
 
 #ifdef _OPENMP
     int g_threads = omp_get_max_threads();
-    printf( "OpenMP version, threads %d\n", g_threads );
+    int n_threads = omp_get_num_threads();
+    printf( "OpenMP version, Using %d out of %d threads \n", n_threads, g_threads );
 #endif
     
     if ( argc <= 1 )
     {
         argp_help(&argp, stdout, ARGP_HELP_SEE, argv[0]);
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     /* Parse our arguments; every option seen by parse_opt will
@@ -407,7 +408,7 @@ int main(int argc, char** argv)
     if (arguments.abort)
     {
         biofilm_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT*\n";
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     /* Initialize MT19937 Pseudo-random-number generator. */

@@ -85,15 +85,18 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
     int vertIdx, cellIdx;
     double r_cut = 2 * params.r_vertex + EPSILON;
 
+    int domain_i_numof;
+    
     for (int i = 0; i < number_v; i++)
     {
-        domainIdx = vertices[i].domainIdx;
+//        domainIdx = vertices[i].domainIdx;
         domainIdx = domains.getDomainIndex(vertices[i]);
 
         for (int j = 0; j < domains.getNumberOfNeigh(domainIdx); j++)
         {
             domainn = domains.getDomainNeighbor(domainIdx, j);
 
+            //std::cout << domains.getNumOfParticles(domainn) << std::endl;
             for (int k = 0; k < domains.getNumOfParticles(domainn); k++)
             {
                 vertIdx = domains.getVertexIdx(domainn, k);
@@ -550,53 +553,6 @@ void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, Bo
     }
 }
 
-void Cell::cellCycle(double dt)
-{
-    if (my_phase == cell_phase_t::C_G0)
-    {
-        // check if need to switch to C_G1
-        // DO NOTHING
-    }
-    else if (my_phase == cell_phase_t::C_G1)
-    {
-        grow();
-    }
-    else if (my_phase == cell_phase_t::C_SG2)
-    {
-        bud();
-    }
-    else if (my_phase == cell_phase_t::C_M)
-    {
-        divide();
-    }
-}
-
-void Cell::grow()
-{
-    if (uniform() > params.growth_rate)
-    {
-        return;
-    }
-
-    Tinker::grow(*this);
-}
-
-void Cell::bud()
-{
-    findBud();
-    Tinker::bud(*this);
-}
-
-void Cell::divide()
-{
-    Tinker::divide(*this);
-}
-
-void Cell::findBud()
-{
-    return;
-}
-
 void Cell::calcAverageR0()
 {
     double totSum = 0.0;
@@ -892,3 +848,68 @@ double Cell::getTurgor()
 
     return turgor;
 }
+
+// ********* CELL GROWTH 
+void Cell::cellCycle(double dt)
+{
+    switch(my_phase)    
+    {
+        case cell_phase_t::C_G1:
+            grow();
+            break;
+        case cell_phase_t::C_SG2:
+            bud();
+            break;
+        case cell_phase_t::C_M:
+            divide();
+            break;
+        default :
+            break;
+        
+    }
+//    if (my_phase == cell_phase_t::C_G0)
+//    {
+//        // check if need to switch to C_G1
+//        // DO NOTHING
+//    }
+//    else if (my_phase == cell_phase_t::C_G1)
+//    {
+//        grow();
+//    }
+//    else if (my_phase == cell_phase_t::C_SG2)
+//    {
+//        bud();
+//    }
+//    else if (my_phase == cell_phase_t::C_M)
+//    {
+//        divide();
+//    }
+}
+
+void Cell::grow()
+{
+    if (uniform() > params.growth_rate)
+    {
+        return;
+    }
+
+    Tinker::grow(*this);
+}
+
+void Cell::bud()
+{
+    findBud();
+    Tinker::bud(*this);
+}
+
+void Cell::divide()
+{
+    Tinker::divide(*this);
+}
+
+void Cell::findBud()
+{
+    return;
+}
+
+// ********* END OF CELL GROWTH  --- DON'T ADD ANYTHIN BELOW

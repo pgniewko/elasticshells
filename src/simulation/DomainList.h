@@ -6,8 +6,17 @@
 #include "Environment.h"
 #include "geometry/Vertex.h"
 #include "simulation/Box.h"
-#include "simulation/Domain.h"
+//#include "simulation/Domain.h"
 
+struct domain_t
+{
+   int myid;
+    int numberOfNeighs;
+    int vertIds[MAX_IN_DOMAIN];
+    int cellsIds[MAX_IN_DOMAIN];
+    int neighborDomainIdx[MAX_D_NEIGH];
+//    int numberOfVerts;
+};
 
 class DomainList
 {
@@ -45,11 +54,17 @@ class DomainList
         double x_max, y_max, z_max;
         double dx, dy, dz;
         double rc_max;
+        
+        short vertsInDomains[MAX_M*MAX_M*MAX_M];
 
         
-        std::vector<Domain> domains;
+        //std::vector<Domain> domains;
+        std::vector<domain_t> domains;
 
         static utils::Logger domainlist_logs;
+        
+        void addNeighDomain(int, int);
+        void addVertex(int, int);
 
 };
 
