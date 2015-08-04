@@ -68,6 +68,7 @@ struct ObserverFactory
 
     public:
         static map_type* map;
+        
 };
 
 template<typename T>

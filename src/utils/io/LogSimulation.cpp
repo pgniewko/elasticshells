@@ -2,25 +2,28 @@
 
 utils::Logger LogSimulation::log_logger("log_logger");
 
-std::vector<std::string> &split(const std::string& s, char delim, std::vector<std::string> &elems)
-{
-    std::stringstream ss(s);
-    std::string item;
+extern std::vector<std::string> &split(const std::string&, char , std::vector<std::string>&);
+extern std::vector<std::string> split(const std::string&, char);
 
-    while (std::getline(ss, item, delim))
-    {
-        elems.push_back(item);
-    }
-
-    return elems;
-}
-
-std::vector<std::string> split(const std::string& s, char delim)
-{
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
-}
+//std::vector<std::string> &split(const std::string& s, char delim, std::vector<std::string> &elems)
+//{
+//    std::stringstream ss(s);
+//    std::string item;
+//
+//    while (std::getline(ss, item, delim))
+//    {
+//        elems.push_back(item);
+//    }
+//
+//    return elems;
+//}
+//
+//std::vector<std::string> split(const std::string& s, char delim)
+//{
+//    std::vector<std::string> elems;
+//    split(s, delim, elems);
+//    return elems;
+//}
 
 LogSimulation::LogSimulation(char* lf, char* cf)
 {
@@ -118,4 +121,24 @@ void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells)
     }
     fprintf(os, "%s" ,"\n");
     fflush(os);
+}
+
+std::vector<std::string> &split(const std::string& s, char delim, std::vector<std::string> &elems)
+{
+    std::stringstream ss(s);
+    std::string item;
+
+    while (std::getline(ss, item, delim))
+    {
+        elems.push_back(item);
+    }
+
+    return elems;
+}
+
+std::vector<std::string> split(const std::string& s, char delim)
+{
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
 }
