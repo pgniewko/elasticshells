@@ -87,14 +87,16 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
     
     for (int i = 0; i < number_v; i++)
     {
-//        domainIdx = vertices[i].domainIdx;
+        //domainIdx = vertices[i].domainIdx;
         domainIdx = domains.getDomainIndex(vertices[i]);
+        //std::cout << vertices[i].domainIdx << " " <<domainIdx << " " << (vertices[i].domainIdx-domainIdx) << std::endl;
 
+        //std::cout << "num of neigh domains=" << domains.getNumberOfNeigh(domainIdx) << std::endl;
         for (int j = 0; j < domains.getNumberOfNeigh(domainIdx); j++)
         {
             domainn = domains.getDomainNeighbor(domainIdx, j);
 
-            //std::cout << domains.getNumOfParticles(domainn) << std::endl;
+            //std::cout << "domains.getNumOfParticles("<< domainn <<")="<<domains.getNumOfParticles(domainn) << std::endl;
             for (int k = 0; k < domains.getNumOfParticles(domainn); k++)
             {
                 vertIdx = domains.getVertexIdx(domainn, k);
@@ -143,6 +145,9 @@ void Cell::calcHarmonicForces()
     double R0ij;
     int idxj;
 
+//    #pragma omp parallel num_threads(2)
+//    {
+//    #pragma omp for
     for (int i = 0; i < number_v; i++)
     {
         for (int j = 0; j < vertices[i].numBonded; j++)
@@ -152,6 +157,8 @@ void Cell::calcHarmonicForces()
             vertices[i].force += HookeanForce::calcForce(vertices[i].xyz, vertices[idxj].xyz, R0ij, params.gamma);
         }
     }
+//    }
+    
 }
 
 void Cell::calcOsmoticForces()
@@ -209,6 +216,7 @@ void Cell::calcNbForcesON2(const Cell& other_cell, Box& box)
 
 void Cell::calcNbForcesVL(const Cell& other_cell, Box& box)
 {
+    //std::cout << "I'm in cell number=" <<this->cell_id << " and I'm doing nb vl forces" << std::endl;
     int ocellid = other_cell.cell_id;
     int vertid;
     Vector3D dij;

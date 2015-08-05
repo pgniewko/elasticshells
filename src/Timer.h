@@ -2,6 +2,7 @@
 #define TIMER_H
 
 #include <time.h>
+#include <sys/time.h>
 #include <iostream>
 
 #include "Environment.h"
@@ -30,5 +31,7 @@ inline void print_time()
     timeinfo = localtime ( &rawtime );
     std::cerr << std::endl << asctime(timeinfo) << std::endl;
 }
+
+double read_timer();
 
 #endif

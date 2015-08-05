@@ -3,6 +3,7 @@
 
 //#include <list>
 #include <vector>
+#include <omp.h>
 
 #include "Environment.h"
 #include "force/HookeanForce.h"

@@ -17,6 +17,9 @@ DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.
 {
     for (int i = 0; i < N; i++)
         vertsInDomains[i] = orig.vertsInDomains[i];
+    
+    std::cout << "SAFETY CHECK" << std::endl;
+    exit(EXIT_FAILURE);
 }
 
 DomainList::~DomainList() 
@@ -78,9 +81,28 @@ void DomainList::initDomains()
 
 void DomainList::addNeighDomain(int dix, int nidx)
 {
+    try
+    {
+        //std::cout << domains[dix].numberOfNeighs << " " << MAX_D_NEIGH << std::endl;
+        if (domains[dix].numberOfNeighs >= MAX_D_NEIGH)
+            throw MaxSizeException("Trying to add more domain neighbors than it's possible.\n"
+                                   "New neighbor will not be added!\n"
+                                   "The code will be terminated due to the bug!\n");
+
+        domains[dix].neighborDomainIdx[ domains[dix].numberOfNeighs ] = nidx;
+        domains[dix].numberOfNeighs++;
+      
+        //neighborDomainIdx[numberOfNeighs] = domId;
+        //numberOfNeighs++;
+    }
+    catch (MaxSizeException& e)
+    {
+        domainlist_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
+        exit(EXIT_FAILURE);
+    }    
 //    int num_nieg = domains[dix].numberOfNeighs;
-    domains[dix].neighborDomainIdx[ domains[dix].numberOfNeighs ] = nidx;
-    domains[dix].numberOfNeighs++;
+//    domains[dix].neighborDomainIdx[ domains[dix].numberOfNeighs ] = nidx;
+//    domains[dix].numberOfNeighs++;
 }
 
 int DomainList::getDomainIndex(int i, int j, int k)
@@ -155,10 +177,12 @@ void DomainList::assignVertex(Vertex& vertex, int cellid)
                                    "This may significantly affect the simulation accuracy!\n"
                                    "Simulation is about to end.");
 
+        
         domains[index].vertIds[ vertsInDomains[index] ] = vertex.getId();
-        domains[index].vertIds[ vertsInDomains[index] ] = cellid;
+        domains[index].cellsIds[ vertsInDomains[index] ] = cellid;
         vertsInDomains[index]++;
         vertex.domainIdx = index;
+        //std::cout << "Assiging a vertex="<<vertex.getId() << " cellid="<<cellid << " vertsInDomains["<<index<<"]="<<vertsInDomains[index]<< std::endl;
     }
     catch (MaxSizeException& e)
     {
