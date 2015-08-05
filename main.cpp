@@ -13,9 +13,9 @@
 
 #include <string>
 
-#if defined (_OPENMP)
-#  include <omp.h>
-#endif
+//#if defined (_OPENMP)
+#include <omp.h>
+//#endif
 
 
 #include "Environment.h"
@@ -372,11 +372,11 @@ int main(int argc, char** argv)
     
     print_time();
 
-#ifdef _OPENMP
+//#ifdef _OPENMP
     int g_threads = omp_get_max_threads();
     int n_threads = omp_get_num_threads();
     printf( "OpenMP version, Using %d out of %d threads \n", n_threads, g_threads );
-#endif
+//#endif
     
     if ( argc <= 1 )
     {
@@ -419,10 +419,14 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
     
     clocks[0].tic();
+    double simulation_time = read_timer( );
     Simulator simulator(arguments);
     simulator.initCells(arguments.n_cells, arguments.init_radius, arguments.init_radius2);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
+    simulation_time = read_timer( ) - simulation_time;
+
+    printf( "n = %d,threads = %d, simulation time = %g seconds\n", n_threads, g_threads, simulation_time);
     
     biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION TIME = " << clocks[0].time() << " [s] \n";
     return (EXIT_SUCCESS);
