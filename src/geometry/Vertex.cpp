@@ -62,13 +62,12 @@ void Vertex::addNeighbor(int idx, double k0n)
     catch (MaxSizeException& e)
     {
         std::cerr << e.what() << std::endl;
-        exit(1);
-        //return;
+        exit(EXIT_FAILURE);
     }
     catch (RunTimeError& e)
     {
         std::cerr << e.what() << std::endl;
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -125,13 +124,12 @@ void Vertex::addTriangle(int idx)
     catch (MaxSizeException& e)
     {
         std::cerr << e.what() << std::endl;
-        exit(1);
-        //return;
+        exit(EXIT_FAILURE);
     }
     catch (RunTimeError& e)
     {
         std::cerr << e.what() << std::endl;
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -185,13 +183,12 @@ void Vertex::addNbNeighbor(int vertIdx, int cellIdx)
     catch (MaxSizeException& e)
     {
         std::cerr << e.what() << std::endl;
-        exit(1);
-        //return;
+        exit(EXIT_FAILURE);
     }
     catch (RunTimeError& e)
     {
         std::cerr << e.what() << std::endl;
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }
 

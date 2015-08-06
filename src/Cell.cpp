@@ -145,9 +145,6 @@ void Cell::calcHarmonicForces()
     double R0ij;
     int idxj;
 
-//    #pragma omp parallel num_threads(2)
-//    {
-//    #pragma omp for
     for (int i = 0; i < number_v; i++)
     {
         for (int j = 0; j < vertices[i].numBonded; j++)
@@ -157,8 +154,6 @@ void Cell::calcHarmonicForces()
             vertices[i].force += HookeanForce::calcForce(vertices[i].xyz, vertices[idxj].xyz, R0ij, params.gamma);
         }
     }
-//    }
-    
 }
 
 void Cell::calcOsmoticForces()

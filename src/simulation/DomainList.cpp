@@ -18,7 +18,8 @@ DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.
     for (int i = 0; i < N; i++)
         vertsInDomains[i] = orig.vertsInDomains[i];
     
-    std::cout << "SAFETY CHECK" << std::endl;
+    //TODO: implement proper copying.
+    domainlist_logs << "PROGRAM TERMINATION FOR SAFETY REASONS!\n";
     exit(EXIT_FAILURE);
 }
 
@@ -67,7 +68,6 @@ void DomainList::initDomains()
                                 if (neighix != -1)
                                 {
                                     addNeighDomain(index, neighix);
-                                    //domains[index].addNeighDomain(neighix);
                                 }
                             }
                 }
@@ -83,7 +83,6 @@ void DomainList::addNeighDomain(int dix, int nidx)
 {
     try
     {
-        //std::cout << domains[dix].numberOfNeighs << " " << MAX_D_NEIGH << std::endl;
         if (domains[dix].numberOfNeighs >= MAX_D_NEIGH)
             throw MaxSizeException("Trying to add more domain neighbors than it's possible.\n"
                                    "New neighbor will not be added!\n"
@@ -91,18 +90,12 @@ void DomainList::addNeighDomain(int dix, int nidx)
 
         domains[dix].neighborDomainIdx[ domains[dix].numberOfNeighs ] = nidx;
         domains[dix].numberOfNeighs++;
-      
-        //neighborDomainIdx[numberOfNeighs] = domId;
-        //numberOfNeighs++;
     }
     catch (MaxSizeException& e)
     {
         domainlist_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(EXIT_FAILURE);
     }    
-//    int num_nieg = domains[dix].numberOfNeighs;
-//    domains[dix].neighborDomainIdx[ domains[dix].numberOfNeighs ] = nidx;
-//    domains[dix].numberOfNeighs++;
 }
 
 int DomainList::getDomainIndex(int i, int j, int k)
@@ -167,8 +160,6 @@ int DomainList::getDomainIndex(int i, int j, int k)
 void DomainList::assignVertex(Vertex& vertex, int cellid)
 {
     int index = getDomainIndex(vertex);
-//    domains[index].addVertex(vertex.getId(), cellid);
-//    vertex.domainIdx = index;
     
     try
     {
@@ -182,7 +173,6 @@ void DomainList::assignVertex(Vertex& vertex, int cellid)
         domains[index].cellsIds[ vertsInDomains[index] ] = cellid;
         vertsInDomains[index]++;
         vertex.domainIdx = index;
-        //std::cout << "Assiging a vertex="<<vertex.getId() << " cellid="<<cellid << " vertsInDomains["<<index<<"]="<<vertsInDomains[index]<< std::endl;
     }
     catch (MaxSizeException& e)
     {
@@ -281,11 +271,6 @@ void DomainList::voidDomains()
 {
     for (int i = 0; i < N; i++)
         vertsInDomains[i] = 0;
-    
-    //for (int i = 0; i < N; i++)
-    //{
-    //    domains[i].voidParticlesInDomain();
-    //}
 }
 int DomainList::getNumberOfNeigh(int dix)
 {
@@ -309,7 +294,6 @@ int DomainList::getCellIdx(int dix, int xpart)
 
 int DomainList::getNumOfParticles(int dix)
 {
-    //return domains[dix].numberOfVerts;
     return vertsInDomains[dix];
 }
 
@@ -319,11 +303,6 @@ int DomainList::numberofAssignedParticles()
 
     for (int i = 0; i < N; i++)
         sum += vertsInDomains[i]; 
-    
-//    for (int i = 0; i < N; i++)
-//    {
-//        sum += domains[i].numberOfVerts;
-//    }
 
     return sum;
 }
