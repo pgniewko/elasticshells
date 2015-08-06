@@ -336,7 +336,6 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % params.log_step == 0)
         {
-            //log_sim.dumpState(box, cells, params.r_vertex, (i + 1), getTotalVertices(), params.nbhandler);
             log_sim.dumpState(box, cells);
         }
 
@@ -364,19 +363,29 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
+
+#pragma omp parallel    
+{    
     // RESET FORCES
+#pragma omp for
     for (int i = 0 ; i < number_of_cells; i++)
     {
         cells[i].voidForces();
     }
+  
+#pragma omp barrier    
 
     // CALCULATE INTRA-CELLULAR FORCES
+#pragma omp for schedule(guided)
     for (int i = 0 ; i < number_of_cells; i++)
     {
         cells[i].calcBondedForces();
     }
 
+#pragma omp barrier   
+
     // CALCULATE INTER-CELLULAR FORCES
+#pragma omp for schedule(guided)
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < number_of_cells; j++)
@@ -400,13 +409,18 @@ void Simulator::calcForces()
         }
     }
 
+#pragma omp barrier
     // CALCULATE FORCES BETWEEN CELLS AND BOX
     if (!box.pbc)
     {
+#pragma omp for schedule(guided)
         for (int i = 0 ; i < number_of_cells; i++)
         {
             cells[i].calcBoxForces(box);
         }
+    }
+    
+    
     }
 }
 

@@ -1,9 +1,11 @@
 #ifndef CELL_H
 #define	CELL_H
 
-//#include <list>
 #include <vector>
+
+#if defined (_OPENMP)
 #include <omp.h>
+#endif
 
 #include "Environment.h"
 #include "force/HookeanForce.h"
