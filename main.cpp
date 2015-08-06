@@ -10,12 +10,7 @@
 #include <argp.h>      /* argp_parse */
 #include <stdlib.h>    /* atoi,  strtod */
 #include <math.h>      /* log, sqrt */
-
 #include <string>
-
-#if defined (_OPENMP)
-#include <omp.h>
-#endif
 
 
 #include "Environment.h"
@@ -408,7 +403,7 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
     
     clocks[0].tic();
-    simulation_time = read_timer( );
+    simulation_time = read_timer();
     Simulator simulator(arguments);
     simulator.initCells(arguments.n_cells, arguments.init_radius, arguments.init_radius2);
     simulator.simulate(arguments.nsteps);
@@ -417,8 +412,9 @@ int main(int argc, char** argv)
     
 #ifdef _OPENMP
     int gt = omp_get_max_threads();
+    int ncpu = omp_get_num_procs();
     biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << simulation_time << " [s] \n";
-    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION CPU(#"<< gt <<")-TIME = " << clocks[0].time() << " [s] \n";
+    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION CPU-TIME[" << gt << "(n_th)/" << ncpu <<"(n_pcu)] = " << clocks[0].time() << " [s] \n";
 #else
     biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << clocks[0].time() << " [s] \n";
 #endif  

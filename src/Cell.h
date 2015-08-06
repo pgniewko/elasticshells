@@ -3,10 +3,6 @@
 
 #include <vector>
 
-#if defined (_OPENMP)
-#include <omp.h>
-#endif
-
 #include "Environment.h"
 #include "force/HookeanForce.h"
 #include "force/OsmoticForce.h"

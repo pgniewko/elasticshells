@@ -364,7 +364,7 @@ void Simulator::simulate(int steps)
 void Simulator::calcForces()
 {
 
-#pragma omp parallel    
+#pragma omp parallel
 {    
     // RESET FORCES
 #pragma omp for
@@ -373,7 +373,7 @@ void Simulator::calcForces()
         cells[i].voidForces();
     }
   
-#pragma omp barrier    
+//#pragma omp barrier    
 
     // CALCULATE INTRA-CELLULAR FORCES
 #pragma omp for schedule(guided)
@@ -382,7 +382,7 @@ void Simulator::calcForces()
         cells[i].calcBondedForces();
     }
 
-#pragma omp barrier   
+//#pragma omp barrier   
 
     // CALCULATE INTER-CELLULAR FORCES
 #pragma omp for schedule(guided)
@@ -409,7 +409,7 @@ void Simulator::calcForces()
         }
     }
 
-#pragma omp barrier
+//#pragma omp barrier
     // CALCULATE FORCES BETWEEN CELLS AND BOX
     if (!box.pbc)
     {

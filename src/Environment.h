@@ -1,6 +1,10 @@
 #ifndef ENVIRONMENT_H
 #define	ENVIRONMENT_H
 
+#if defined (_OPENMP)
+#include <omp.h>
+#endif
+
 #include "random.h"
 #include "utils/Logger.h"
 
