@@ -12,7 +12,6 @@
 #include <math.h>      /* log, sqrt */
 #include <string>
 
-
 #include "Environment.h"
 #include "src/Timer.h"
 #include "src/arguments.h"

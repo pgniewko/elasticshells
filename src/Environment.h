@@ -9,6 +9,7 @@
 #include "utils/Logger.h"
 
 #define IMPLIES(x, y) (!(x) || (y))
+//#include <assert.h>
 //void foo(int array[], int n) {
 //  assert(IMPLIES(n > 0, array != NULL));
 //  ...
