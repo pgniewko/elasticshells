@@ -36,6 +36,7 @@ DEPS         := $(OBJECTS:.o=.d)
 #Linking commands:
 $(TARGET): $(OBJECTS)
 	@echo LINKING ...
+	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 	@echo BUILDING IS DONE
 
