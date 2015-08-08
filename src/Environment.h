@@ -27,6 +27,9 @@
 #define MAX_M 50 // maximum number of linked-domains - in every direction
 #define MAX_D_NEIGH 27 // MUST BE 27 - ALWAYS !
 
+//TODO: moze warto przerowbic ten plik tak jak tutaj sugeruja:
+// http://www.learncpp.com/cpp-tutorial/42-global-variables/
+
 const double E       = 2.71828182845905;
 const double PI      = 3.14159265358979;
 const double SQRT2   = 1.41421356237310;
