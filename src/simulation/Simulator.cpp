@@ -69,14 +69,14 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     logParams();
 }
 
-Simulator::Simulator(const Simulator& orig) : number_of_cells(orig.number_of_cells),
-    params(orig.params),
-    box(orig.box), sb(orig.sb), traj(orig.traj),
-    log_sim(orig.log_sim)
-{
-    exit(EXIT_FAILURE);
-    // throw an exception - disallowed behavior
-}
+//Simulator::Simulator(const Simulator& orig) : number_of_cells(orig.number_of_cells),
+//    params(orig.params),
+//    box(orig.box), sb(orig.sb), traj(orig.traj),
+//    log_sim(orig.log_sim)
+//{
+//    exit(EXIT_FAILURE);
+//    // throw an exception - disallowed behavior
+//}
 
 Simulator::~Simulator() {}
 

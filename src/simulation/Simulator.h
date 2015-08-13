@@ -58,7 +58,7 @@ class Simulator
 {
     public:
         Simulator(const arguments&);
-        Simulator(const Simulator& orig);
+        Simulator(const Simulator& orig) = delete;
         virtual ~Simulator();
 
         void simulate();
