@@ -33,6 +33,7 @@ Vector3D Triangle::normal() const
     Vector3D AC = c - a;
     Vector3D norm = cross(AB, AC);
     norm /= norm.length();
+    return norm;
 }
 
 void Triangle::printTriangle() {}
