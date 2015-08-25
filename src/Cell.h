@@ -3,10 +3,6 @@
 
 #include <vector>
 
-#if defined (_OPENMP)
-#include <omp.h>
-#endif
-
 #include "Environment.h"
 #include "force/HookeanForce.h"
 #include "force/OsmoticForce.h"
@@ -118,6 +114,7 @@ class Cell
 
         int cell_id;
         double contactForce(const Cell&, Box&);
+        double contactForceNew(const Cell&, Box&);
         double contactArea(const Cell&, Box&);
         double contactArea(Box&);
         double surfaceStrainEnergy();
@@ -129,6 +126,8 @@ class Cell
         void divide();
         void findBud();
         void randomRotate();
+        
+        bool isInContact(int, const Cell& , Box&);
 
         double sumL2();
         cell_params_t params;

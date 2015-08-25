@@ -644,17 +644,13 @@ double Cell::contactForce(const Cell& other_cell, Box& box)
     return contact_force;
 }
 
-double Cell::contactArea(const Cell& other_cell, Box& box)
+double Cell::contactForceNew(const Cell& other_cell, Box& box)
 {
+    calcCM();
     int ocellid = other_cell.cell_id;
     Vector3D dij;
-    Vector3D force_collector1(0, 0, 0);
-    Vector3D force_collector2(0, 0, 0);
-    Vector3D force_collector3(0, 0, 0);
-    int idx1, idx2, idx3;
-    double fc1, fc2, fc3;
-    double contact_area = 0.0;
-    calcCM();
+    Vector3D force_collector(0, 0, 0);
+    double contact_force = 0.0;
     double r1 = params.r_vertex;
     double r2 = other_cell.params.r_vertex;
     double e1 = params.ecc;
@@ -662,40 +658,165 @@ double Cell::contactArea(const Cell& other_cell, Box& box)
     double nu1 = params.nu;
     double nu2 = other_cell.params.nu;
 
-    for (int i = 0; i < number_t; i++)
+    int tj;
+    double fi;
+    
+    Vector3D nj;
+    double nj_fi;
+    double totAi;
+    double Aj;
+    for (int i = 0; i < number_v; i++)
     {
-        idx1 = triangles[i].ia;
-        idx2 = triangles[i].ib;
-        idx3 = triangles[i].ic;
-
-        if (cell_id != ocellid)
+        fi = 0.0;
+        totAi = 0.0;
+        nj_fi = 0.0;
+        Aj = 0.0;
+        
+        for (int j = 0; j < other_cell.number_v; j++)
         {
-            for (int j = 0; j < other_cell.number_v; j++)
+            if (cell_id != ocellid)
             {
-                getDistance(dij, other_cell.vertices[j].xyz, vertices[idx1].xyz, box);
-                force_collector1 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-                getDistance(dij, other_cell.vertices[j].xyz, vertices[idx2].xyz, box);
-                force_collector2 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-                getDistance(dij, other_cell.vertices[j].xyz, vertices[idx3].xyz, box);
-                force_collector3 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+                getDistance(dij, other_cell.vertices[j].xyz, vertices[i].xyz, box);
+                force_collector += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
             }
         }
 
-        fc1 = force_collector1.length();
-        fc2 = force_collector2.length();
-        fc3 = force_collector3.length();
+        // NEW CODE GOES HERE
+        for (int j = 0; j < vertices[i].numTris; j++)
+        {
+            tj = vertices[i].getTriangleId(j);
+            if ( isInContact(tj, other_cell, box) )
+            {
+                nj = triangles[tj].normal(vertices);
+                nj_fi = nj.x * force_collector.x + nj.y * force_collector.y + nj.z * force_collector.z;
+                Aj = triangles[tj].area(vertices, cm_m, params.r_vertex);
+                
+                totAi += Aj;
+                
+                fi += ( abs(nj_fi)*Aj );
+                
+            }
+        }
+        
+        if (totAi > 0)
+            fi /= totAi;
+        else
+            fi = 0.0;
+        
+        contact_force += fi;//force_collector.length();
+        
+        
+        force_collector = Vector3D(0, 0, 0);
+    }
 
-        if (fc1 * fc2 * fc3 > 0)
+    return contact_force;    
+}
+
+bool Cell::isInContact(int t_idx, const Cell& other_cell, Box& box)
+{
+    int idx1, idx2, idx3;
+    double fc1, fc2, fc3;
+    
+    int ocellid = other_cell.cell_id;
+    
+    Vector3D dij;
+    Vector3D force_collector1(0, 0, 0);
+    Vector3D force_collector2(0, 0, 0);
+    Vector3D force_collector3(0, 0, 0);
+    
+    idx1 = triangles[t_idx].ia;
+    idx2 = triangles[t_idx].ib;
+    idx3 = triangles[t_idx].ic;
+
+    double r1 = params.r_vertex;
+    double r2 = other_cell.params.r_vertex;
+    double e1 = params.ecc;
+    double e2 = other_cell.params.ecc;
+    double nu1 = params.nu;
+    double nu2 = other_cell.params.nu;
+        
+    if (cell_id != ocellid)
+    {
+        for (int j = 0; j < other_cell.number_v; j++)
+        {
+            getDistance(dij, other_cell.vertices[j].xyz, vertices[idx1].xyz, box);
+            force_collector1 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+            getDistance(dij, other_cell.vertices[j].xyz, vertices[idx2].xyz, box);
+            force_collector2 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+            getDistance(dij, other_cell.vertices[j].xyz, vertices[idx3].xyz, box);
+            force_collector3 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+        }
+    }
+
+    fc1 = force_collector1.length();
+    fc2 = force_collector2.length();
+    fc3 = force_collector3.length();
+
+    if (fc1 * fc2 * fc3 > 0)
+        return true;
+        
+        
+    return false;
+}
+
+double Cell::contactArea(const Cell& other_cell, Box& box)
+{
+//    int ocellid = other_cell.cell_id;
+//    Vector3D dij;
+//    Vector3D force_collector1(0, 0, 0);
+//    Vector3D force_collector2(0, 0, 0);
+//    Vector3D force_collector3(0, 0, 0);
+//    int idx1, idx2, idx3;
+//    double fc1, fc2, fc3;
+    double contact_area = 0.0;
+    calcCM();
+//    double r1 = params.r_vertex;
+//    double r2 = other_cell.params.r_vertex;
+//    double e1 = params.ecc;
+//    double e2 = other_cell.params.ecc;
+//    double nu1 = params.nu;
+//    double nu2 = other_cell.params.nu;
+
+    for (int i = 0; i < number_t; i++)
+    {
+        if ( isInContact(i, other_cell, box) )
         {
             contact_area += triangles[i].area(vertices, cm_m, params.r_vertex);
         }
-
-        force_collector1 = Vector3D(0, 0, 0);
-        force_collector2 = Vector3D(0, 0, 0);
-        force_collector3 = Vector3D(0, 0, 0);
-        fc1 = 0;
-        fc2 = 0;
-        fc3 = 0;
+        
+//        idx1 = triangles[i].ia;
+//        idx2 = triangles[i].ib;
+//        idx3 = triangles[i].ic;
+//
+//        if (cell_id != ocellid)
+//        {
+//            for (int j = 0; j < other_cell.number_v; j++)
+//            {
+//                getDistance(dij, other_cell.vertices[j].xyz, vertices[idx1].xyz, box);
+//                force_collector1 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+//                getDistance(dij, other_cell.vertices[j].xyz, vertices[idx2].xyz, box);
+//                force_collector2 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+//                getDistance(dij, other_cell.vertices[j].xyz, vertices[idx3].xyz, box);
+//                force_collector3 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+//            }
+//        }
+//
+//        fc1 = force_collector1.length();
+//        fc2 = force_collector2.length();
+//        fc3 = force_collector3.length();
+//
+//        if (fc1 * fc2 * fc3 > 0)
+//        {
+//            contact_area += triangles[i].area(vertices, cm_m, params.r_vertex);
+//        }
+//        
+//
+//        force_collector1 = Vector3D(0, 0, 0);
+//        force_collector2 = Vector3D(0, 0, 0);
+//        force_collector3 = Vector3D(0, 0, 0);
+//        fc1 = 0;
+//        fc2 = 0;
+//        fc3 = 0;
     }
 
     return contact_area;

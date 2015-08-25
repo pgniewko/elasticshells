@@ -15,7 +15,7 @@ struct nblist_t
     int cell_id;
     int vertex_id;
 
-    bool operator > (const nblist_t& rhs)
+    bool operator > (const nblist_t& rhs) const
     {
         if (cell_id == rhs.cell_id)
         {
@@ -27,7 +27,7 @@ struct nblist_t
         }
     }
 
-    bool operator < (const nblist_t& rhs)
+    bool operator < (const nblist_t& rhs) const
     {
         if (cell_id == rhs.cell_id)
         {

@@ -2,8 +2,8 @@
 
 utils::Logger LogSimulation::log_logger("log_logger");
 
-extern std::vector<std::string> &split(const std::string&, char , std::vector<std::string>&);
-extern std::vector<std::string> split(const std::string&, char);
+std::vector<std::string> &split(const std::string&, char , std::vector<std::string>&);
+std::vector<std::string> split(const std::string&, char);
 
 LogSimulation::LogSimulation(char* lf, char* cf)
 {

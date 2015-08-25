@@ -12,6 +12,7 @@ class Triangle
         Triangle(const Triangle& orig);
         virtual ~Triangle();
         double area() const;
+        Vector3D normal() const;
         void printTriangle();
         Vector3D a, b, c;
 

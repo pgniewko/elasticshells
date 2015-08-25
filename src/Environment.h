@@ -1,10 +1,15 @@
 #ifndef ENVIRONMENT_H
 #define	ENVIRONMENT_H
 
+#if defined (_OPENMP)
+#include <omp.h>
+#endif
+
 #include "random.h"
 #include "utils/Logger.h"
 
 #define IMPLIES(x, y) (!(x) || (y))
+//#include <assert.h>
 //void foo(int array[], int n) {
 //  assert(IMPLIES(n > 0, array != NULL));
 //  ...
@@ -21,6 +26,9 @@
 #define MAX_IN_DOMAIN 20 // maximum number of particles in a domain
 #define MAX_M 50 // maximum number of linked-domains - in every direction
 #define MAX_D_NEIGH 27 // MUST BE 27 - ALWAYS !
+
+//TODO: moze warto przerowbic ten plik tak jak tutaj sugeruja:
+// http://www.learncpp.com/cpp-tutorial/42-global-variables/
 
 const double E       = 2.71828182845905;
 const double PI      = 3.14159265358979;

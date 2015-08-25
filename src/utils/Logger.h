@@ -62,7 +62,7 @@ namespace utils
         INFO = 4,
         FINE = 5,
         FINER = 6,
-        FINEST = 7,
+        FINEST = 7
     };
 
     static const std::pair<LogLevel, std::string> pairs[] =   //
