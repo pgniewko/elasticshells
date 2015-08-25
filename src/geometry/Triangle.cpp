@@ -27,6 +27,14 @@ double Triangle::area() const
     }
 }
 
+Vector3D Triangle::normal() const
+{
+    Vector3D AB = b - a;
+    Vector3D AC = c - a;
+    Vector3D norm = cross(AB, AC);
+    norm /= norm.length();
+}
+
 void Triangle::printTriangle() {}
 
 Vector3D Triangle::getVertexA()

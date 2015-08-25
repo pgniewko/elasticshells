@@ -19,6 +19,8 @@ class VertexTriangle
         int getId();
         double area(const Vertex[]);
         double area(const Vertex[], const Vector3D, double);
+        
+        Vector3D normal(const Vertex[]);
 
         void printVertexTriangle();
         void subsVertex(int, int);

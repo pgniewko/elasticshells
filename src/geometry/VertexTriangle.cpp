@@ -79,3 +79,13 @@ double VertexTriangle::area(const Vertex vs[], const Vector3D cm, double eps)
         return 0.0;
     }
 }
+
+Vector3D VertexTriangle::normal(const Vertex vs[])
+{
+    Vector3D ta = vs[ia].xyz;
+    Vector3D tb = vs[ib].xyz;
+    Vector3D tc = vs[ic].xyz;
+    Triangle t(ta, tb, tc);
+    Vector3D normal = t.normal();
+    return normal;
+}
