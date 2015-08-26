@@ -107,6 +107,7 @@ void Tinker::constructTopology(Cell& cell)
         double acl = ac.length();
         double bcl = bc.length();
         int tid = cell.triangles[i].myindex;
+        //std::cout << "cell.triangles[i].myindex= " << tid << std::endl;
         cell.vertices[aid].addNeighbor(bid, abl);
         cell.vertices[aid].addNeighbor(cid, acl);
         cell.vertices[bid].addNeighbor(aid, abl);

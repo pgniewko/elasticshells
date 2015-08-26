@@ -147,6 +147,13 @@ void Cell::calcHarmonicForces()
 
     for (int i = 0; i < number_v; i++)
     {
+       // std::cout << "vertices[i].numTris = " << vertices[i].numTris << std::endl;
+        
+        //for(int ikx = 0; ikx < vertices[i].numTris; ikx++)
+        //{
+        //    std::cout << "vertices["<< i<<"].bondedTris["<<ikx<<"]=" << vertices[i].bondedTris[ikx] << std::endl;
+        //}
+        
         for (int j = 0; j < vertices[i].numBonded; j++)
         {
             R0ij = vertices[i].r0[j];
@@ -693,7 +700,7 @@ double Cell::contactForceNew(const Cell& other_cell, Box& box)
                 
                 totAi += Aj;
                 
-                fi += ( abs(nj_fi)*Aj );
+                fi += ( fabs(nj_fi)*Aj );
                 
             }
         }
