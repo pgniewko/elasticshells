@@ -53,7 +53,7 @@ class Cell
         Cell(const Cell& orig);
         virtual ~Cell();
         double calcSurfaceArea();
-        double calcVolume();
+        double calcVolume(); // remove this function and define default parameter
         double calcVolume(double);
         double getMass();
         void calcCM();

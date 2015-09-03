@@ -754,21 +754,8 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, Box& box)
 
 double Cell::contactArea(const Cell& other_cell, Box& box)
 {
-//    int ocellid = other_cell.cell_id;
-//    Vector3D dij;
-//    Vector3D force_collector1(0, 0, 0);
-//    Vector3D force_collector2(0, 0, 0);
-//    Vector3D force_collector3(0, 0, 0);
-//    int idx1, idx2, idx3;
-//    double fc1, fc2, fc3;
     double contact_area = 0.0;
     calcCM();
-//    double r1 = params.r_vertex;
-//    double r2 = other_cell.params.r_vertex;
-//    double e1 = params.ecc;
-//    double e2 = other_cell.params.ecc;
-//    double nu1 = params.nu;
-//    double nu2 = other_cell.params.nu;
 
     for (int i = 0; i < number_t; i++)
     {
@@ -776,40 +763,6 @@ double Cell::contactArea(const Cell& other_cell, Box& box)
         {
             contact_area += triangles[i].area(vertices, cm_m, params.r_vertex);
         }
-        
-//        idx1 = triangles[i].ia;
-//        idx2 = triangles[i].ib;
-//        idx3 = triangles[i].ic;
-//
-//        if (cell_id != ocellid)
-//        {
-//            for (int j = 0; j < other_cell.number_v; j++)
-//            {
-//                getDistance(dij, other_cell.vertices[j].xyz, vertices[idx1].xyz, box);
-//                force_collector1 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-//                getDistance(dij, other_cell.vertices[j].xyz, vertices[idx2].xyz, box);
-//                force_collector2 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-//                getDistance(dij, other_cell.vertices[j].xyz, vertices[idx3].xyz, box);
-//                force_collector3 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-//            }
-//        }
-//
-//        fc1 = force_collector1.length();
-//        fc2 = force_collector2.length();
-//        fc3 = force_collector3.length();
-//
-//        if (fc1 * fc2 * fc3 > 0)
-//        {
-//            contact_area += triangles[i].area(vertices, cm_m, params.r_vertex);
-//        }
-//        
-//
-//        force_collector1 = Vector3D(0, 0, 0);
-//        force_collector2 = Vector3D(0, 0, 0);
-//        force_collector3 = Vector3D(0, 0, 0);
-//        fc1 = 0;
-//        fc2 = 0;
-//        fc3 = 0;
     }
 
     return contact_area;
