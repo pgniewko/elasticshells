@@ -1,13 +1,10 @@
 #include "AverageContactStress.h"
 
-AverageContactStress::AverageContactStress(const char* name, const char* format) : Observer(name, format)
-{}
+AverageContactStress::AverageContactStress(const char* name, const char* format) : Observer(name, format) {}
 
-AverageContactStress::AverageContactStress(const AverageContactStress& orig) : Observer(orig)
-{}
+AverageContactStress::AverageContactStress(const AverageContactStress& orig) : Observer(orig) {}
 
-AverageContactStress::~AverageContactStress() 
-{}
+AverageContactStress::~AverageContactStress() {}
 
 void AverageContactStress::set_params(int num, ...)
 {

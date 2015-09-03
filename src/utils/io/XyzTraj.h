@@ -7,6 +7,7 @@
 #include "Cell.h"
 #include "Environment.h"
 #include "simulation/Box.h"
+#include "../utils.h"
 
 class XyzTraj
 {
@@ -21,9 +22,10 @@ class XyzTraj
         void save(std::vector<Cell>&, int, double, double, double);
 
     private:
+        
         char* trajfile;
         FILE* os;
-        //char names[10];
+        //std::string atomIndex(int, int=26);
 };
 
 #endif	/* XYZTRAJ_H */

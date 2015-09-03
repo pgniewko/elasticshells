@@ -5,7 +5,9 @@
 #include <vector>
 
 #include "Cell.h"
+#include "../utils.h"
 #include "simulation/Box.h"
+
 
 class ScriptBuilder
 {
@@ -27,6 +29,9 @@ class ScriptBuilder
         char* surfaceScript;
         char* trajfile;
         bool drawBox;
+        
+        //std::string atomIndex(int);
+        //std::string atomIndex(int, int=26);
 
 };
 

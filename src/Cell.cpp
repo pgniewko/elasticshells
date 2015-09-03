@@ -82,21 +82,13 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
     Vector3D distance_ik;
     int vertIdx, cellIdx;
     double r_cut = 2 * params.r_vertex + EPSILON;
-
-//    int domain_i_numof;
     
     for (int i = 0; i < number_v; i++)
     {
-        //domainIdx = vertices[i].domainIdx;
         domainIdx = domains.getDomainIndex(vertices[i]);
-        //std::cout << vertices[i].domainIdx << " " <<domainIdx << " " << (vertices[i].domainIdx-domainIdx) << std::endl;
-
-        //std::cout << "num of neigh domains=" << domains.getNumberOfNeigh(domainIdx) << std::endl;
         for (int j = 0; j < domains.getNumberOfNeigh(domainIdx); j++)
         {
             domainn = domains.getDomainNeighbor(domainIdx, j);
-
-            //std::cout << "domains.getNumOfParticles("<< domainn <<")="<<domains.getNumOfParticles(domainn) << std::endl;
             for (int k = 0; k < domains.getNumOfParticles(domainn); k++)
             {
                 vertIdx = domains.getVertexIdx(domainn, k);
@@ -147,13 +139,6 @@ void Cell::calcHarmonicForces()
 
     for (int i = 0; i < number_v; i++)
     {
-       // std::cout << "vertices[i].numTris = " << vertices[i].numTris << std::endl;
-        
-        //for(int ikx = 0; ikx < vertices[i].numTris; ikx++)
-        //{
-        //    std::cout << "vertices["<< i<<"].bondedTris["<<ikx<<"]=" << vertices[i].bondedTris[ikx] << std::endl;
-        //}
-        
         for (int j = 0; j < vertices[i].numBonded; j++)
         {
             R0ij = vertices[i].r0[j];
@@ -218,7 +203,6 @@ void Cell::calcNbForcesON2(const Cell& other_cell, Box& box)
 
 void Cell::calcNbForcesVL(const Cell& other_cell, Box& box)
 {
-    //std::cout << "I'm in cell number=" <<this->cell_id << " and I'm doing nb vl forces" << std::endl;
     int ocellid = other_cell.cell_id;
     int vertid;
     Vector3D dij;
@@ -673,12 +657,7 @@ double Cell::contactForceNew(const Cell& other_cell, Box& box)
     double totAi;
     double Aj;
     for (int i = 0; i < number_v; i++)
-    {
-        fi = 0.0;
-        totAi = 0.0;
-        nj_fi = 0.0;
-        Aj = 0.0;
-        
+    {   
         for (int j = 0; j < other_cell.number_v; j++)
         {
             if (cell_id != ocellid)
@@ -688,6 +667,11 @@ double Cell::contactForceNew(const Cell& other_cell, Box& box)
             }
         }
 
+        fi = 0.0;
+        totAi = 0.0;
+        nj_fi = 0.0;
+        Aj = 0.0;
+        
         // NEW CODE GOES HERE
         for (int j = 0; j < vertices[i].numTris; j++)
         {
@@ -700,7 +684,7 @@ double Cell::contactForceNew(const Cell& other_cell, Box& box)
                 
                 totAi += Aj;
                 
-                fi += ( fabs(nj_fi)*Aj );
+                fi += fabs( nj_fi*Aj ); 
                 
             }
         }
@@ -748,8 +732,10 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, Box& box)
         {
             getDistance(dij, other_cell.vertices[j].xyz, vertices[idx1].xyz, box);
             force_collector1 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+            
             getDistance(dij, other_cell.vertices[j].xyz, vertices[idx2].xyz, box);
             force_collector2 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+            
             getDistance(dij, other_cell.vertices[j].xyz, vertices[idx3].xyz, box);
             force_collector3 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
         }
