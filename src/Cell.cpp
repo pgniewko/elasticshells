@@ -38,7 +38,7 @@ void Cell::voidVerletLsit()
     }
 }
 
-void Cell::builtVerletList(const Cell& other_cell, Box& box)
+void Cell::builtVerletList(const Cell& other_cell, const Box& box)
 {
     Vector3D distance_jk;
     double r_cut = 2 * params.r_vertex;
@@ -75,7 +75,7 @@ void Cell::builtVerletList(const Cell& other_cell, Box& box)
     }
 }
 
-void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, Box& box)
+void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box& box)
 {
     int domainIdx;
     int domainn;
@@ -169,7 +169,7 @@ void Cell::calcOsmoticForces()
     }
 }
 
-void Cell::calcNbForcesON2(const Cell& other_cell, Box& box)
+void Cell::calcNbForcesON2(const Cell& other_cell, const Box& box)
 {
     int ocellid = other_cell.cell_id;
     Vector3D dij;
@@ -201,7 +201,7 @@ void Cell::calcNbForcesON2(const Cell& other_cell, Box& box)
     }
 }
 
-void Cell::calcNbForcesVL(const Cell& other_cell, Box& box)
+void Cell::calcNbForcesVL(const Cell& other_cell, const Box& box)
 {
     int ocellid = other_cell.cell_id;
     int vertid;
@@ -227,7 +227,7 @@ void Cell::calcNbForcesVL(const Cell& other_cell, Box& box)
     }
 }
 
-void Cell::calcBoxForces(Box& box)
+void Cell::calcBoxForces(const Box& box)
 {
     Vector3D wallYZ, wallXZ, wallXY;
     Vector3D dij;
@@ -525,7 +525,7 @@ Vector3D& Cell::getVertexForce(int idx)
     return vertices[idx].force;
 }
 
-void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, Box& box)
+void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box)
 {
     dkj = vk - vj;
 
@@ -636,7 +636,7 @@ void Cell::randomRotate()
 //}
 
 //double Cell::contactForceNew(const Cell& other_cell, Box& box)
-double Cell::contactForce(const Cell& other_cell, Box& box)
+double Cell::contactForce(const Cell& other_cell, const Box& box)
 {
     calcCM();
     int ocellid = other_cell.cell_id;
@@ -704,7 +704,7 @@ double Cell::contactForce(const Cell& other_cell, Box& box)
     return contact_force;    
 }
 
-double Cell::contactForce(Box& box)
+double Cell::contactForce(const Box& box)
 {
     if (box.pbc)
     {
@@ -769,7 +769,7 @@ double Cell::contactForce(Box& box)
     return totalForce;    
 }
 
-bool Cell::isInContact(int t_idx, const Cell& other_cell, Box& box)
+bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box)
 {
     int idx1, idx2, idx3;
     double fc1, fc2, fc3;
@@ -818,7 +818,7 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, Box& box)
     return false;
 }
 
-double Cell::contactArea(const Cell& other_cell, Box& box)
+double Cell::contactArea(const Cell& other_cell, const Box& box)
 {
     double contact_area = 0.0;
     calcCM();
@@ -834,7 +834,7 @@ double Cell::contactArea(const Cell& other_cell, Box& box)
     return contact_area;
 }
 
-double Cell::contactArea(Box& box, double d_param=0.0)
+double Cell::contactArea(const Box& box, double d_param)
 {
     calcCM();
     Vector3D wallYZ, wallXZ, wallXY;
