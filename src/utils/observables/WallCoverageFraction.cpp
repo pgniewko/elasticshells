@@ -1,13 +1,10 @@
 #include "WallCoverageFraction.h"
 
-WallCoverageFraction::WallCoverageFraction(const char* name, const char* format) : Observer(name, format)
-{}
+WallCoverageFraction::WallCoverageFraction(const char* name, const char* format) : Observer(name, format) {}
 
-WallCoverageFraction::WallCoverageFraction(const WallCoverageFraction& orig) : Observer(orig)
-{}
+WallCoverageFraction::WallCoverageFraction(const WallCoverageFraction& orig) : Observer(orig) {}
 
-WallCoverageFraction::~WallCoverageFraction() 
-{}
+WallCoverageFraction::~WallCoverageFraction() {}
 
 void WallCoverageFraction::set_params(int num, ...)
 {
@@ -25,12 +22,12 @@ void WallCoverageFraction::set_params(int num, std::vector<std::string> args_)
 double WallCoverageFraction::observe(Box& box, std::vector<Cell>& cells)
 {
     double box_area = box.getArea(d_param);
-    int cells_number = cells.size();
+    uint cells_number = cells.size();
     double coverage = 0.0;
 
-    for (int i = 0; i < cells_number; i++)
+    for (uint i = 0; i < cells_number; i++)
     {
-        coverage += cells[i].contactArea(box);
+        coverage += cells[i].contactArea(box, d_param);
     }
 
     coverage /= box_area;

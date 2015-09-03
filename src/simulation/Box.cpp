@@ -54,12 +54,12 @@ void Box::resize()
     }
 }
 
-double Box::getVolume(double rv)
+double Box::getVolume(const double rv) const
 {
     return 2.0 * (x - rv) * 2.0 * (y - rv) * 2.0 * (z - rv);
 }
 
-double Box::getArea(double rv)
+double Box::getArea(const double rv) const
 {
     double xc = x - rv;
     double yc = y - rv;
@@ -82,7 +82,7 @@ void Box::setX(const double newx)
     x = newx;
 }
 
-double Box::getX()
+double Box::getX() const
 {
     return x;
 }
@@ -92,7 +92,7 @@ void Box::setY(const double newy)
     y = newy;
 }
 
-double Box::getY()
+double Box::getY() const
 {
     return y;
 }
@@ -102,7 +102,7 @@ void Box::setZ(const double newz)
     z = newz;
 }
 
-double Box::getZ()
+double Box::getZ() const
 {
     return z;
 }
@@ -112,7 +112,7 @@ void Box::setDx(const double newdx)
     dx = newdx;
 }
 
-double Box::getDx()
+double Box::getDx() const
 {
     return dx;
 }
@@ -122,7 +122,7 @@ void Box::setDy(const double newdy)
     dy = newdy;
 }
 
-double Box::getDy()
+double Box::getDy() const
 {
     return dy;
 }
@@ -132,7 +132,7 @@ void Box::setDz(const double newdz)
     dz = newdz;
 }
 
-double Box::getDz()
+double Box::getDz() const
 {
     return dz;
 }
@@ -167,55 +167,55 @@ void Box::setZend(const double zend)
     ze = zend;
 }
 
-double Box::getXstart()
+double Box::getXstart() const
 {
     return xs;
 }
-double Box::getYstart()
+double Box::getYstart() const
 {
     return ys;
 }
 
-double Box::getZstart()
+double Box::getZstart() const
 {
     return zs;
 }
 
-double Box::getXend()
+double Box::getXend() const
 {
     return xe;
 }
-double Box::getYend()
+double Box::getYend() const
 {
     return ye;
 }
 
-double Box::getZend()
+double Box::getZend() const
 {
     return ze;
 }
 
-double Box::getXEdge(double rv)
+double Box::getXEdge(const double rv) const
 {
     return 2 * (x - rv);
 }
 
-double Box::getYEdge(double rv)
+double Box::getYEdge(const double rv) const
 {
     return 2 * (y - rv);
 }
 
-double Box::getZEdge(double rv)
+double Box::getZEdge(const double rv) const
 {
     return 2 * (z - rv);
 }
 
-double Box::getE()
+double Box::getE() const
 {
     return E_box;
 }
 
-double Box::getNu()
+double Box::getNu() const
 {
     return nu;
 }

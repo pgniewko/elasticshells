@@ -12,6 +12,7 @@ CXX      := g++-4.9
 # --Force the compiler to use the correct headers
 # -ansi: In C++ mode, it is equivalent to -std=c++98
 # "-O3" - optimization level
+# -march=native - optimize for the particular architecture
 DBGFLAGS := -DDEBUG -g
 
 # Relative include and library paths for compilation of the examples

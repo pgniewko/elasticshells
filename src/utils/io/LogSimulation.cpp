@@ -11,8 +11,7 @@ LogSimulation::LogSimulation(char* lf, char* cf)
     configfile = cf;
 }
 
-LogSimulation::LogSimulation(const LogSimulation& orig) : logfile(orig.logfile), configfile(orig.configfile)
-{}
+LogSimulation::LogSimulation(const LogSimulation& orig) : logfile(orig.logfile), configfile(orig.configfile) {}
 
 LogSimulation::~LogSimulation()
 {

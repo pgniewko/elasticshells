@@ -14,39 +14,39 @@ class Box
         virtual ~Box();
 
         void setX(const double);
-        double getX();
+        double getX() const;
         void setY(const double);
-        double getY();
+        double getY() const;
         void setZ(const double);
-        double getZ();
+        double getZ() const;
 
         void setDx(const double);
-        double getDx();
+        double getDx() const;
         void setDy(const double);
-        double getDy();
+        double getDy() const;
         void setDz(const double);
-        double getDz();
+        double getDz() const;
 
-        void setXstart(double);
-        void setYstart(double);
-        void setZstart(double);
-        void setXend(double);
-        void setYend(double);
-        void setZend(double);
+        void setXstart(const double);
+        void setYstart(const double);
+        void setZstart(const double);
+        void setXend(const double);
+        void setYend(const double);
+        void setZend(const double);
 
-        double getXstart();
-        double getYstart();
-        double getZstart();
-        double getXend();
-        double getYend();
-        double getZend();
+        double getXstart() const;
+        double getYstart() const;
+        double getZstart() const;
+        double getXend() const;
+        double getYend() const;
+        double getZend() const;
 
         void resize();
 
         //double getVolume();
         //double getArea();
-        double getVolume(double = 0.0);
-        double getArea(double = 0.0);
+        double getVolume(const double = 0.0) const;
+        double getArea(const double = 0.0) const;
 
         void setPbc(bool);
         void setEwall(double);
@@ -54,11 +54,11 @@ class Box
         bool pbc;
 //        double E_box;
 //        double r_;
-        double getXEdge(double = 0.0);
-        double getYEdge(double = 0.0);
-        double getZEdge(double = 0.0);
-        double getNu();
-        double getE();
+        double getXEdge(const double = 0.0) const;
+        double getYEdge(const double = 0.0) const;
+        double getZEdge(const double = 0.0) const;
+        double getNu() const;
+        double getE() const;
 
     private:
         double x;

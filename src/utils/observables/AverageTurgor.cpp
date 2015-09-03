@@ -1,13 +1,10 @@
 #include "AverageTurgor.h"
 
-AverageTurgor::AverageTurgor(const char* name, const char* format) : Observer(name, format)
-{}
+AverageTurgor::AverageTurgor(const char* name, const char* format) : Observer(name, format) {}
 
-AverageTurgor::AverageTurgor(const AverageTurgor& orig) : Observer(orig)
-{}
+AverageTurgor::AverageTurgor(const AverageTurgor& orig) : Observer(orig) {}
 
-AverageTurgor::~AverageTurgor() 
-{}
+AverageTurgor::~AverageTurgor() {}
 
 void AverageTurgor::set_params(int num, ...)
 {

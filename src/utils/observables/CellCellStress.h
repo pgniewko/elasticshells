@@ -3,19 +3,19 @@
 
 #include "utils/observables/Observer.h"
 
-class AverageContactStressNew : public Observer
+class CellCellStress : public Observer
 {
     public:
-        AverageContactStressNew(const char*, const char*);
-        AverageContactStressNew(const AverageContactStressNew& orig);
-        virtual ~AverageContactStressNew();
+        CellCellStress(const char*, const char*);
+        CellCellStress(const CellCellStress& orig);
+        virtual ~CellCellStress();
         
         void set_params(int, ...);
         void set_params(int, std::vector<std::string>);
         double observe(Box&, std::vector<Cell>&);
         
     private:
-        static DerivedRegister<AverageContactStressNew> reg;
+        static DerivedRegister<CellCellStress> reg;
 
 };
 

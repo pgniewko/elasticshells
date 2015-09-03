@@ -53,7 +53,7 @@ class Cell
         Cell(const Cell& orig);
         virtual ~Cell();
         double calcSurfaceArea();
-        double calcVolume();
+        double calcVolume(); // remove this function and define default parameter
         double calcVolume(double);
         double getMass();
         void calcCM();
@@ -63,13 +63,13 @@ class Cell
         void calcBondedForces();
         void calcHarmonicForces();
         void calcOsmoticForces();
-        void calcNbForcesON2(const Cell&, Box&);
-        void calcNbForcesVL(const Cell&, Box&);
-        void calcBoxForces(Box&);
+        void calcNbForcesON2(const Cell&, const Box&);
+        void calcNbForcesVL(const Cell&,const Box&);
+        void calcBoxForces(const Box&);
 
         void voidVerletLsit();
-        void builtVerletList(const Cell&, Box&);
-        void builtNbList(std::vector<Cell>&, DomainList&, Box&);
+        void builtVerletList(const Cell&, const Box&);
+        void builtNbList(std::vector<Cell>&, DomainList&, const Box&);
 
         void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
@@ -103,7 +103,7 @@ class Cell
         Vector3D& getVertexForce(int);
 
         void voidForces();
-        void getDistance(Vector3D&, const Vector3D&, const Vector3D&, Box&);
+        void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&);
 
         void cellCycle(double);
 
@@ -113,10 +113,12 @@ class Cell
         VertexTriangle triangles[MAX_T];
 
         int cell_id;
-        double contactForce(const Cell&, Box&);
-        double contactForceNew(const Cell&, Box&);
-        double contactArea(const Cell&, Box&);
-        double contactArea(Box&);
+        double contactForce(const Cell&, const Box&);
+        double contactForce(const Box&);
+        //double contactForceNew(const Cell&, Box&);
+        double contactArea(const Cell&, const Box&);
+        //double contactArea(Box&);
+        double contactArea(const Box&, double=0.0);
         double surfaceStrainEnergy();
         double getTurgor();
 
@@ -127,7 +129,7 @@ class Cell
         void findBud();
         void randomRotate();
         
-        bool isInContact(int, const Cell& , Box&);
+        bool isInContact(int, const Cell& , const Box&);
 
         double sumL2();
         cell_params_t params;
