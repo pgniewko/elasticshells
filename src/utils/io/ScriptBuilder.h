@@ -29,10 +29,6 @@ class ScriptBuilder
         char* surfaceScript;
         char* trajfile;
         bool drawBox;
-        
-        //std::string atomIndex(int);
-        //std::string atomIndex(int, int=26);
-
 };
 
 #endif	/* SCRIPTBUILDER_H */

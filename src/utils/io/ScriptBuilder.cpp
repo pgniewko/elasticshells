@@ -62,31 +62,11 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
     int lastCellIndex = 0;
     int faceCounter = 0;
     int idxa, idxb, idxc;
-    int name1Ix;
-    int atom1Ix;
-    int name2Ix;
-    int atom2Ix;
-    int name3Ix;
-    int atom3Ix;
-    char cA, cB, cC;
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberTriangles(); j++)
         {
-            idxa = cells[i].triangles[j].ia + 1 + lastCellIndex;
-            idxb = cells[i].triangles[j].ib + 1 + lastCellIndex;
-            idxc = cells[i].triangles[j].ic + 1 + lastCellIndex;
-            name1Ix = (int) idxa / 1000;
-            atom1Ix = idxa % 1000;
-            name2Ix = (int) idxb / 1000;
-            atom2Ix = idxb % 1000;
-            name3Ix = (int) idxc / 1000;;
-            atom3Ix = idxc % 1000;
-            cA = names[name1Ix];
-            cB = names[name2Ix];
-            cC = names[name3Ix];
-            
             idxa = lastCellIndex + cells[i].triangles[j].ia;
             idxb = lastCellIndex + cells[i].triangles[j].ib;
             idxc = lastCellIndex + cells[i].triangles[j].ic;
@@ -94,7 +74,6 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
             std::string strindex2 = new_base_index( idxb );
             std::string strindex3 = new_base_index( idxc );
             
-            //os << "cmd.do(\"draw_plane \\\"face" << faceCounter << "\\\", " << cA << "_" << atom1Ix << ", " << cB << "_" << atom2Ix << ", " << cC << "_" << atom3Ix << ", (0.8, 0.8, 0.8) \")\n";
             os << "cmd.do(\"draw_plane \\\"face" << faceCounter << "\\\", " << strindex1 << ", " <<  strindex2 << ", " << strindex3 << ", (0.8, 0.8, 0.8) \")\n";
             faceCounter++;
         }
@@ -120,16 +99,6 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
     os << "cmd.do(\"set line_color, marine\")\n";
     os << "cmd.do(\"show spheres\")\n";
     os << "cmd.do(\"alter cells, vdw=" << rv << "\")\n";
-    //os << "cmd.do(\"alter elem a, vdw=" << rv << "\")\n";
-    //os << "cmd.do(\"alter elem b, vdw=" << rv << "\")\n";
-    //os << "cmd.do(\"alter elem c, vdw=" << rv << "\")\n";
-    //os << "cmd.do(\"alter elem d, vdw=" << rv << "\")\n";
-    //os << "cmd.do(\"alter elem e, vdw=" << rv << "\")\n";
-    //os << "cmd.do(\"alter elem f, vdw=" << rv << "\")\n";
-    //os << "cmd.do(\"alter elem g, vdw=" << rv << "\")\n";
-    //os << "cmd.do(\"alter elem h, vdw=" << rv << "\")\n";
-    //os << "cmd.do(\"alter elem i, vdw=" << rv << "\")\n";
-    //os << "cmd.do(\"alter elem j, vdw=" << rv << "\")\n";
     os << "cmd.do(\"rebuild\")\n\n";
 
     if (boxFlag)
@@ -137,22 +106,12 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
         printBox(os, box);
     }
 
-    int name1Ix;
-    int atom1Ix;
-    int name2Ix;
-    int atom2Ix;
-    int iidx, jidx;
     int lastCellIndex = 0;
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            //iidx = cells[i].vertices[j].getId() + lastCellIndex;
-            //name1Ix = (int) iidx / 1000;
-            //atom1Ix = iidx % 1000;
-            //os << "cmd.do(\"select " << names[name1Ix] << " " << atom1Ix << ", name " << names[name1Ix] << atom1Ix << "\")\n";
-            
             std::string strindex = new_base_index( lastCellIndex +  cells[i].vertices[j].getId());
             os << "cmd.do(\"select " << strindex << ", name " << strindex << "\")\n";
         }
@@ -166,17 +125,8 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            iidx = cells[i].vertices[j].getId() + 1 + lastCellIndex;
-
             for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
             {
-                //jidx = cells[i].vertices[j].bondedVerts[k] + 1 + lastCellIndex;
-                //name1Ix = (int) iidx / 1000;
-                //atom1Ix = iidx % 1000;
-                //name2Ix = (int) jidx / 1000;
-                //atom2Ix = jidx % 1000;
-                //os << "cmd.do(\"bond " << names[name1Ix] << "_" << atom1Ix << ", " << names[name2Ix] << "_" << atom2Ix << "\")\n";
-                
                 std::string strindex1 = new_base_index( lastCellIndex +  cells[i].vertices[j].getId());
                 std::string strindex2 = new_base_index( lastCellIndex +  cells[i].vertices[j].bondedVerts[k]);
                 os << "cmd.do(\"bond " << strindex1 << ", " << strindex2 << "\")\n";
@@ -303,26 +253,3 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box)
 
     os.close();
 }
-
-//std::string ScriptBuilder::atomIndex(int vindex, int base)
-//{
-//    std::vector<char> number;
-//    int i = 0, r;
-//    
-//    do {
-//        r = vindex % base;
-//        number.push_back( names[r] );
-//        vindex /= base;
-//        i++;
-//    } while(vindex != 0);
-//    
-//    while (number.size() < 4)
-//    {
-//        number.push_back( names[0] );
-//    }
-//    
-//    std::reverse(number.begin(), number.end());
-//    std::string strnumber(number.begin(), number.end());
-//    
-//    return strnumber;
-//}

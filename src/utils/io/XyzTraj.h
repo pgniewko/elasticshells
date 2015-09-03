@@ -18,14 +18,13 @@ class XyzTraj
 
         void open();
         void close();
-        void save(std::vector<Cell>&, int);
-        void save(std::vector<Cell>&, int, double, double, double);
+//        void save(std::vector<Cell>&, int);
+        void save(std::vector<Cell>&, int, double=1.0, double=1.0, double=1.0);
 
     private:
         
         char* trajfile;
         FILE* os;
-        //std::string atomIndex(int, int=26);
 };
 
 #endif	/* XYZTRAJ_H */
