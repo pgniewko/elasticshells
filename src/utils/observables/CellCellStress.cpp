@@ -1,8 +1,8 @@
 #include "CellCellStress.h"
 
-CellCellStress::CellCellStress(const char* name, const char* format) : Observer(name, format){}
+CellCellStress::CellCellStress(const char* name, const char* format) : Observer(name, format) {}
 
-CellCellStress::CellCellStress(const CellCellStress& orig) : Observer(orig){}
+CellCellStress::CellCellStress(const CellCellStress& orig) : Observer(orig) {}
 
 CellCellStress::~CellCellStress() {}
 
@@ -18,19 +18,20 @@ void CellCellStress::set_params(int num, std::vector<std::string> args_)
 
 double CellCellStress::observe(Box& box, std::vector<Cell>& cells)
 {
-    int cellsnumber = cells.size();
+    uint cellsnumber = cells.size();
     double contact_force = 0.0;
     double contact_area = 0.0;
     double average_stress = 0.0;
     int counter = 0;
 
-    for (int i = 0; i < cellsnumber; i++)
+    for (uint i = 0; i < cellsnumber; i++)
     {
-        for (int j = 0; j < cellsnumber; j++)
+        for (uint j = 0; j < cellsnumber; j++)
         {
             if (i != j)
             {
-                contact_force = cells[i].contactForceNew(cells[j], box);
+                //contact_force = cells[i].contactForceNew(cells[j], box);
+                contact_force = cells[i].contactForce(cells[j], box);
                 contact_area = cells[i].contactArea(cells[j], box);
 
                 if (contact_force > 0 && contact_area > 0)
@@ -44,7 +45,7 @@ double CellCellStress::observe(Box& box, std::vector<Cell>& cells)
 
     if (counter > 0)
     {
-        average_stress /= counter;
+        average_stress /= (double)counter;
     }
     else
     {
@@ -55,4 +56,3 @@ double CellCellStress::observe(Box& box, std::vector<Cell>& cells)
 }
 
 DerivedRegister<CellCellStress> CellCellStress::reg("CellCellStress");
-

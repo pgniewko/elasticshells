@@ -19,9 +19,9 @@ class Observer
         virtual ~Observer();
         
         // Set params may cause problems if the params are provided incorrectly
-        virtual void set_params(int, ...) = 0;
-        virtual void set_params(int, std::vector<std::string>) = 0;
-        virtual double observe(Box&, std::vector<Cell>&) = 0;
+        virtual void set_params(int, ...) =0;
+        virtual void set_params(int, std::vector<std::string>) =0;
+        virtual double observe(Box&, std::vector<Cell>&) =0;
         
         const char* getFormat();
         const char* getName();

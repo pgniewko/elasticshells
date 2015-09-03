@@ -114,9 +114,11 @@ class Cell
 
         int cell_id;
         double contactForce(const Cell&, Box&);
-        double contactForceNew(const Cell&, Box&);
+        double contactForce(Box&);
+        //double contactForceNew(const Cell&, Box&);
         double contactArea(const Cell&, Box&);
-        double contactArea(Box&);
+        //double contactArea(Box&);
+        double contactArea(Box&, double=0.0);
         double surfaceStrainEnergy();
         double getTurgor();
 
