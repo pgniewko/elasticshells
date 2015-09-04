@@ -1,13 +1,10 @@
 #include "SurfacePressure.h"
 
-SurfacePressure::SurfacePressure(const char* name, const char* format) : Observer(name, format)
-{}
+SurfacePressure::SurfacePressure(const char* name, const char* format) : Observer(name, format) {}
 
-SurfacePressure::SurfacePressure(const SurfacePressure& orig) : Observer(orig)
-{}
+SurfacePressure::SurfacePressure(const SurfacePressure& orig) : Observer(orig) {}
 
-SurfacePressure::~SurfacePressure()
-{}
+SurfacePressure::~SurfacePressure() {}
 
 void SurfacePressure::set_params(int num, ...)
 {
