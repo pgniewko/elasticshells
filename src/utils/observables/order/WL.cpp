@@ -1,13 +1,10 @@
 #include "WL.h"
 
-WL::WL(const char* name, const char* format) : Observer(name, format)
-{}
+WL::WL(const char* name, const char* format) : Observer(name, format) {}
 
-WL::WL(const WL& orig) : Observer(orig)
-{}
+WL::WL(const WL& orig) : Observer(orig) {}
 
-WL::~WL() 
-{}
+WL::~WL() {}
 
 void WL::set_params(int num, ...)
 {
@@ -63,6 +60,7 @@ double WL::calcWl(Cell& cell)
     qss = qsum (i_param, qlRe, qlIm);
 
     double wlval = 0.0;
+
     if (qss > 1e-3)
     {
         wlval = wl (i_param, qlRe, qlIm) / (qss * qss * qss);

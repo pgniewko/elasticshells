@@ -29,7 +29,7 @@
 
 //TODO: moze warto przerowbic ten plik tak jak tutaj sugeruja:
 // http://www.learncpp.com/cpp-tutorial/42-global-variables/
- //http://www.learncpp.com/cpp-tutorial/2-9-symbolic-constants-and-the-const-keyword/
+//http://www.learncpp.com/cpp-tutorial/2-9-symbolic-constants-and-the-const-keyword/
 
 const double E       = 2.71828182845905;
 const double PI      = 3.14159265358979;
@@ -43,7 +43,8 @@ const double P3ROOT2 = 1.25992104989487;
 const double D4_3    = 1.33333333333333;
 
 const char names[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+                        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+                       };
 
 #endif	/* ENVIRONMENT_H */
 

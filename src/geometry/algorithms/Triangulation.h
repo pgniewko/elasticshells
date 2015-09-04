@@ -1,7 +1,7 @@
 #ifndef TRIANGULATION_H
 #define	TRIANGULATION_H
 
-#include <list>
+#include <list>         /* list*/
 #include <iostream>
 
 #include "Environment.h"

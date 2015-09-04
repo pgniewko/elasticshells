@@ -13,7 +13,7 @@ class WallCoverageFraction : public Observer
         double observe(Box&, std::vector<Cell>&);
         void set_params(int, ...);
         void set_params(int, std::vector<std::string>);
-        
+
     private:
         static DerivedRegister<WallCoverageFraction> reg;
 };

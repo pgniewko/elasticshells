@@ -96,7 +96,7 @@ namespace utils
      * @return the reference to the vector of converted data
      */
     template<typename T>
-    std::vector<T> & split(const std::string& s, std::vector<T> &tokens, const char delim = ' ')
+    std::vector<T>& split(const std::string& s, std::vector<T>& tokens, const char delim = ' ')
     {
         std::string s_copy(s);
         trim(s_copy);
@@ -128,7 +128,7 @@ namespace utils
      * @return the reference to the vector of tokens
      */
     template<>
-    std::vector<std::string> & split<std::string>(const std::string& s, std::vector<std::string> &tokens, const char delim);
+    std::vector<std::string>& split<std::string>(const std::string& s, std::vector<std::string>& tokens, const char delim);
 
     /** @brief Converts any data to a string
      *
@@ -151,11 +151,11 @@ namespace utils
      * @return the string representing the input data
      */
     template<class T>
-    const std::string to_string(const std::vector<T> & data, const std::string& separator)
+    const std::string to_string(const std::vector<T>& data, const std::string& separator)
     {
         std::stringstream ss;
 
-    for (const std::string d : data)
+        for (const std::string d : data)
         {
             ss << d << separator;
         }
@@ -223,7 +223,7 @@ namespace utils
      * @param line_pad - string that is used as a prefix for every line, except the very first line in a paragraph
      * @return a string with \n characters that breaks the string into a paragraph.
      */
-    std::string format_paragraph(std::vector<std::string> & words, const std::string& paragraph_pad,
+    std::string format_paragraph(std::vector<std::string>& words, const std::string& paragraph_pad,
                                  const std::string& line_pad, const int max_line_width);
 
     /** \brief Converts long strings into nice paragraphs.
@@ -239,7 +239,7 @@ namespace utils
      * @param line_pad - string that is used as a prefix for every line, except the very first line in a paragraph
      * @return a string with \n characters that breaks the string into a paragraph.
      */
-    std::string format_paragraph(std::vector<std::string> & words, const std::string& paragraph_pad,
+    std::string format_paragraph(std::vector<std::string>& words, const std::string& paragraph_pad,
                                  const std::string& line_pad, const int max_line_width, const int max_first_line_width);
 
     template<class T>
@@ -259,7 +259,7 @@ namespace utils
     }
 
     template<class T>
-    std::vector<T> & from_string(const std::string& token, const core::index2 n_tokens, std::vector<T> & destination)
+    std::vector<T>& from_string(const std::string& token, const core::index2 n_tokens, std::vector<T>& destination)
     {
         std::stringstream ss(token);
 
@@ -311,7 +311,7 @@ namespace utils
     {
         std::ostringstream s;
 
-    for (const auto & i : v)
+        for (const auto & i : v)
         {
             if (&i != &v[0])
             {

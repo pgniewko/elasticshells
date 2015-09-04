@@ -1,10 +1,9 @@
 #ifndef WL_H
 #define	WL_H
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<malloc.h>
-#include<steinhardt.h>
+#include<stdio.h>       /* printf, */
+#include<stdlib.h>      /* malloc */
+#include<steinhardt.h>  /* */
 
 #include "utils/observables/Observer.h"
 
@@ -18,7 +17,7 @@ class WL : public Observer
         double observe(Box&, std::vector<Cell>&);
         void set_params(int, ...);
         void set_params(int, std::vector<std::string>);
-        
+
     private:
         double calcWl(Cell&);
         static DerivedRegister<WL> reg;

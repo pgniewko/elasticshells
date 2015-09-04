@@ -185,7 +185,7 @@ void Simulator::initCells(int N, double ra, double rb)
         nx = uniform(-box.getX() + r0 + rc, box.getX() - r0 - rc);
         ny = uniform(-box.getY() + r0 + rc, box.getY() - r0 - rc);
         nz = uniform(-box.getZ() + r0 + rc, box.getZ() - r0 - rc);
-        
+
         if (number_of_cells == 0)
         {
             nx = 0;
@@ -194,7 +194,7 @@ void Simulator::initCells(int N, double ra, double rb)
         }
 
         Vector3D shift(nx, ny, nz);
-         
+
         for (int i = 0; i < number_of_cells; i++)
         {
             Vector3D tmpcm = cells[i].getCm();
@@ -223,7 +223,8 @@ void Simulator::addCell(const Cell& newCell)
         if (cells.size() == MAX_CELLS)
             throw MaxSizeException("Maximum number of cells reached."
                                    "New cell will not be added !");
-;
+
+        ;
         cells.push_back(newCell);
         number_of_cells = cells.size();
     }
@@ -364,63 +365,66 @@ void Simulator::simulate(int steps)
 void Simulator::calcForces()
 {
 
-#pragma omp parallel
-{    
-    // RESET FORCES
-#pragma omp for
-    for (int i = 0 ; i < number_of_cells; i++)
+    #pragma omp parallel
     {
-        cells[i].voidForces();
-    }
-  
-//#pragma omp barrier    
-
-    // CALCULATE INTRA-CELLULAR FORCES
-#pragma omp for schedule(guided)
-    for (int i = 0 ; i < number_of_cells; i++)
-    {
-        cells[i].calcBondedForces();
-    }
-
-//#pragma omp barrier   
-
-    // CALCULATE INTER-CELLULAR FORCES
-#pragma omp for schedule(guided)
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < number_of_cells; j++)
-        {
-            if (params.nbhandler == 0)
-            {
-                cells[i].calcNbForcesON2(cells[j], box);
-            }
-            else if (params.nbhandler == 1)
-            {
-                cells[i].calcNbForcesVL(cells[j], box);
-            }
-            else if (params.nbhandler == 2)
-            {
-                cells[i].calcNbForcesVL(cells[j], box);
-            }
-            else
-            {
-                cells[i].calcNbForcesON2(cells[j], box);
-            }
-        }
-    }
-
-//#pragma omp barrier
-    // CALCULATE FORCES BETWEEN CELLS AND BOX
-    if (!box.pbc)
-    {
-#pragma omp for schedule(guided)
+        // RESET FORCES
+        #pragma omp for
         for (int i = 0 ; i < number_of_cells; i++)
         {
-            cells[i].calcBoxForces(box);
+            cells[i].voidForces();
         }
-    }
-    
-    
+
+//#pragma omp barrier
+
+        // CALCULATE INTRA-CELLULAR FORCES
+        #pragma omp for schedule(guided)
+
+        for (int i = 0 ; i < number_of_cells; i++)
+        {
+            cells[i].calcBondedForces();
+        }
+
+//#pragma omp barrier
+
+        // CALCULATE INTER-CELLULAR FORCES
+        #pragma omp for schedule(guided)
+
+        for (int i = 0; i < number_of_cells; i++)
+        {
+            for (int j = 0; j < number_of_cells; j++)
+            {
+                if (params.nbhandler == 0)
+                {
+                    cells[i].calcNbForcesON2(cells[j], box);
+                }
+                else if (params.nbhandler == 1)
+                {
+                    cells[i].calcNbForcesVL(cells[j], box);
+                }
+                else if (params.nbhandler == 2)
+                {
+                    cells[i].calcNbForcesVL(cells[j], box);
+                }
+                else
+                {
+                    cells[i].calcNbForcesON2(cells[j], box);
+                }
+            }
+        }
+
+//#pragma omp barrier
+        // CALCULATE FORCES BETWEEN CELLS AND BOX
+        if (!box.pbc)
+        {
+            #pragma omp for schedule(guided)
+
+            for (int i = 0 ; i < number_of_cells; i++)
+            {
+                cells[i].calcBoxForces(box);
+            }
+        }
+
+
     }
 }
 

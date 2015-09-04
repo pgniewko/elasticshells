@@ -6,7 +6,7 @@ Aspherity::Aspherity(const char* name, const char* format) : Observer(name, form
 Aspherity::Aspherity(const Aspherity& orig) : Observer(orig)
 {}
 
-Aspherity::~Aspherity() 
+Aspherity::~Aspherity()
 {}
 
 void Aspherity::set_params(int num, ...)

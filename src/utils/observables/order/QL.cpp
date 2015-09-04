@@ -62,6 +62,7 @@ double QL::calcQl(Cell& cell)
     qss = qsum (i_param, qlRe, qlIm);
 
     double qlval = 0.0;
+
     if (qss > 1e-3)
     {
         qlval = Ql (i_param, count, qlRe, qlIm);

@@ -64,7 +64,7 @@ class Cell
         void calcHarmonicForces();
         void calcOsmoticForces();
         void calcNbForcesON2(const Cell&, const Box&);
-        void calcNbForcesVL(const Cell&,const Box&);
+        void calcNbForcesVL(const Cell&, const Box&);
         void calcBoxForces(const Box&);
 
         void voidVerletLsit();
@@ -115,10 +115,9 @@ class Cell
         int cell_id;
         double contactForce(const Cell&, const Box&);
         double contactForce(const Box&);
-        //double contactForceNew(const Cell&, Box&);
+        double contactForceSF(const Box&); // for Surface Force use
         double contactArea(const Cell&, const Box&);
-        //double contactArea(Box&);
-        double contactArea(const Box&, double=0.0);
+        double contactArea(const Box&, double = 0.0);
         double surfaceStrainEnergy();
         double getTurgor();
 
@@ -128,8 +127,12 @@ class Cell
         void divide();
         void findBud();
         void randomRotate();
-        
-        bool isInContact(int, const Cell& , const Box&);
+
+        bool isInContact(const int, const Cell&, const Box&);
+        bool isInContact(const int, const Box&);
+        double project_force(const Cell&, const Box&, const Vector3D&, const int);
+        double project_force(const Box&, const Vector3D&, const int);
+        Vector3D box_force(const Box&, const int);
 
         double sumL2();
         cell_params_t params;

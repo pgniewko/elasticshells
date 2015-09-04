@@ -61,7 +61,7 @@ static struct argp_option options[] =
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"vlist-step",408,   "INT", 0, "Verlet-list step interval [default: 100]"},
+    {"vlist-step", 408,   "INT", 0, "Verlet-list step interval [default: 100]"},
     {"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
@@ -107,7 +107,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 {
     /* Get the input argument from argp_parse, which
      * is a pointer to our arguments structure. */
-    
+
     //struct arguments* arguments = (struct arguments*) state->input;
     struct arguments* arguments = static_cast<struct arguments*>(state->input);
 
@@ -170,181 +170,238 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->nb_flag = 0;
             arguments->seed = 0x123;
             break;
+
         case 'q':
         case 's':
             arguments->silent = arg ? atoi (arg) : 1;
             arguments->verbose = 0;
             break;
+
         case 'v':
             arguments->verbose = arg ? atoi (arg) : 1;
             arguments->silent = 0;
             break;
+
         case 'd':
             arguments->debug = arg ? atoi (arg) : 1;
             arguments->silent = 0;
             break;
+
         case 'i':
             break;
+
         case 'r':
             arguments->render_file = arg;
             break;
+
         case 'o':
             arguments->output_file = arg;
             break;
+
         case 301:
             arguments->surface_file = arg;
             break;
+
         case 302:
             arguments->traj_file = arg;
             break;
+
         case 303:
             arguments->stress_file = arg;
             break;
+
         case 304:
             arguments->seed =  arg ? atol (arg) : 0x123;
             break;
+
         case 305:
             arguments->ob_config_file = arg;
-            break;    
+            break;
+
         case 'n':
             arguments->n_cells = arg ? atoi (arg) : 1;
             break;
+
         case 't':
             arguments->ttime = arg ? strtod (arg, NULL) : 1.0;
             break;
+
         case 401:
             arguments->nsteps = arg ? atoi (arg) : 100;
             break;
+
         case 402:
             arguments->dt = arg ? strtod (arg, NULL) : 0.001;
             break;
+
         case 403:
             arguments->integrator_a = arg;
             break;
+
         case 404:
             arguments->nb_flag = arg ? atoi (arg) : 0;
             break;
+
         case 405:
             arguments->log_step = arg ? atoi (arg) : 10;
             break;
+
         case 406:
             arguments->save_step = arg ? atoi (arg) : 1;
             break;
+
         case 407:
             arguments->box_step = arg ? atoi (arg) : 10;
             break;
+
         case 408:
             arguments->vlist_step = arg ? atoi (arg) : 100;
             break;
+
         case 409:
             arguments->verlet_r = arg ?  strtod (arg, NULL) : 3.0;
             break;
+
         case 410:
             arguments->pbc = true;
             break;
+
         case 411:
             arguments->draw_box = false;
             break;
+
         case 412:
             arguments->tritype = arg;
             break;
+
         case 413:
             arguments->d = arg ? atoi (arg) : 3;
             break;
+
         case 414:
             arguments->platotype = arg ? atoi (arg) : 0;
             break;
+
         case 415:
             arguments->scale_flag = true;
             break;
+
         case 'm':
             arguments->mass = arg ? strtod (arg, NULL) : 1.0;
             break;
+
         case 500:
             arguments->E_cell = arg ? strtod (arg, NULL) : 1500.0;
             break;
+
         case 501:
             arguments->E_wall = arg ? strtod (arg, NULL) : 2000.0;
             break;
+
         case 502:
             arguments->init_radius = arg ?  strtod (arg, NULL) : 2.5;
             break;
+
         case 503:
             arguments->visc = arg ? strtod (arg, NULL) : 100.0;
             break;
+
         case 504:
             arguments->dp = arg ? strtod (arg, NULL) : 0.0;
             break;
+
         case 505:
             arguments->osmotic_flag = true;
             break;
+
         case 506:
             arguments->r_vertex = arg ?  strtod (arg, NULL) : 0.25;
             break;
+
         case 507:
             arguments->growth_rate = arg ?  strtod (arg, NULL) : 0.0;
             break;
+
         case 508:
             arguments->vc = arg ?  strtod (arg, NULL) : 60.0;
             break;
+
         case 509:
             arguments->bud_d = arg ?  strtod (arg, NULL) : 0.5;
             break;
+
         case 510:
             arguments->div_ratio = arg ?  strtod (arg, NULL) : 0.7;
             break;
+
         case 511:
             arguments->init_radius2 = arg ?  strtod (arg, NULL) : 2.5;
             arguments->init_radius2 = std::max(arguments->init_radius, arguments->init_radius2);
             break;
+
         case 512:
             arguments->ddp = arg ?  strtod (arg, NULL) : 0.0;
             break;
+
         case 513:
             arguments->eps = arg ?  strtod (arg, NULL) : 0.0;
             break;
+
         case 514:
             arguments->nu = arg ?  strtod (arg, NULL) : 0.5;
             break;
+
         case 515:
             arguments->thickness = arg ?  strtod (arg, NULL) : 0.1;
             break;
+
         case 601:
             arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;
             break;
+
         case 602:
             arguments->bsy = arg ?  strtod (arg, NULL) : 10.0;
             break;
+
         case 603:
             arguments->bsz = arg ?  strtod (arg, NULL) : 10.0;
             break;
+
         case 604:
             arguments->bsdx = arg ?  strtod (arg, NULL) : 0.0;
             break;
+
         case 605:
             arguments->bsdy = arg ?  strtod (arg, NULL) : 0.0;
             break;
+
         case 606:
             arguments->bsdz = arg ?  strtod (arg, NULL) : 0.0;
             break;
+
         case 607:
             arguments->bsxe = arg ?  strtod (arg, NULL) : 10.0;
             break;
+
         case 608:
             arguments->bsye = arg ?  strtod (arg, NULL) : 10.0;
             break;
+
         case 609:
             arguments->bsze = arg ?  strtod (arg, NULL) : 10.0;
             break;
+
         case OPT_ABORT:
             arguments->abort = 1;
             break;
+
 //      case ARGP_KEY_NO_ARGS:
 //          argp_usage (state);
         case ARGP_KEY_ARG:
             arguments->strings = &state->argv[state->next];
             state->next = state->argc;
             break;
+
         default:
             return ARGP_ERR_UNKNOWN;
     }
@@ -360,7 +417,7 @@ double simulation_time;
 int main(int argc, char** argv)
 {
     print_time();
-    
+
     if ( argc <= 1 )
     {
         argp_help(&argp, stdout, ARGP_HELP_SEE, argv[0]);
@@ -400,7 +457,7 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = " << arguments.stress_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
-    
+
     clocks[0].tic();
     simulation_time = read_timer();
     Simulator simulator(arguments);
@@ -408,16 +465,16 @@ int main(int argc, char** argv)
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
     simulation_time = read_timer( ) - simulation_time;
-    
+
 #ifdef _OPENMP
     int gt = omp_get_max_threads();
     int ncpu = omp_get_num_procs();
     biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << simulation_time << " [s] \n";
-    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION CPU-TIME[" << gt << "(n_th)/" << ncpu <<"(n_pcu)] = " << clocks[0].time() << " [s] \n";
+    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION CPU-TIME[" << gt << "(n_th)/" << ncpu << "(n_pcu)] = " << clocks[0].time() << " [s] \n";
 #else
     biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << clocks[0].time() << " [s] \n";
-#endif  
-    
-    
+#endif
+
+
     return (EXIT_SUCCESS);
 }

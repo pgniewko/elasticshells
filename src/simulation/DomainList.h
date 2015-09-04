@@ -1,7 +1,7 @@
 #ifndef DOMAINLIST_H
 #define	DOMAINLIST_H
 
-#include <math.h>
+#include <cmath>
 
 #include "Environment.h"
 #include "geometry/Vertex.h"
@@ -42,7 +42,7 @@ class DomainList
         int getCellIdx(int, int);
         int getNumOfParticles(int);
 
-    //private:
+        //private:
         int m;
         int N;
         bool pbc;
@@ -52,13 +52,13 @@ class DomainList
         double x_max, y_max, z_max;
         double dx, dy, dz;
         double rc_max;
-        
-        short vertsInDomains[MAX_M*MAX_M*MAX_M];
+
+        short vertsInDomains[MAX_M* MAX_M* MAX_M];
 
         std::vector<domain_t> domains;
 
         static utils::Logger domainlist_logs;
-        
+
         void addNeighDomain(int, int);
         void addVertex(int, int);
 

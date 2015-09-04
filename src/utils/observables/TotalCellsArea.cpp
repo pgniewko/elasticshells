@@ -6,7 +6,7 @@ TotalCellsArea::TotalCellsArea(const char* name, const char* format) : Observer(
 TotalCellsArea::TotalCellsArea(const TotalCellsArea& orig) : Observer(orig)
 {}
 
-TotalCellsArea::~TotalCellsArea() 
+TotalCellsArea::~TotalCellsArea()
 {}
 
 void TotalCellsArea::set_params(int num, ...)

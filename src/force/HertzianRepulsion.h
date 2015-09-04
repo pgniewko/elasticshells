@@ -1,7 +1,7 @@
 #ifndef HERTZIANREPULSION_H
 #define	HERTZIANREPULSION_H
 
-#include <math.h>
+#include <cmath>
 
 #include "Environment.h"
 #include "geometry/Vector3D.h"

@@ -7,7 +7,6 @@
 class Triangle
 {
     public:
-//    Triangle();
         Triangle(Vector3D, Vector3D, Vector3D);
         Triangle(const Triangle& orig);
         virtual ~Triangle();

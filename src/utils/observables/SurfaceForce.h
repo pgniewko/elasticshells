@@ -17,7 +17,7 @@ class SurfaceForce : public Observer
         void set_params(int, ...);
         void set_params(int, std::vector<std::string>);
         double observe(Box&, std::vector<Cell>&);
-        
+
     private:
         static double calcTotalForce(Box&, std::vector<Cell>&);
         static DerivedRegister<SurfaceForce> reg;

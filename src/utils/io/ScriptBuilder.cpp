@@ -73,7 +73,7 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
             std::string strindex1 = new_base_index( idxa );
             std::string strindex2 = new_base_index( idxb );
             std::string strindex3 = new_base_index( idxc );
-            
+
             os << "cmd.do(\"draw_plane \\\"face" << faceCounter << "\\\", " << strindex1 << ", " <<  strindex2 << ", " << strindex3 << ", (0.8, 0.8, 0.8) \")\n";
             faceCounter++;
         }
@@ -228,7 +228,7 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box)
             Vector3D cmi = cells[i].getCm();
             cells[j].calcCM();
             Vector3D cmj = cells[j].getCm();
-            
+
             if (forceij > 0 and i > j)
             {
                 double xi = cmi.x * box.getXstart() / box.getX();

@@ -33,7 +33,7 @@ class LogSimulation
         FILE* os;
         std::vector<Observer*> observers;
         std::vector<std::string> readConfigFile();
-        
+
         static utils::Logger log_logger;
 };
 
