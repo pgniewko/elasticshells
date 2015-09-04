@@ -129,7 +129,11 @@ class Cell
         void findBud();
         void randomRotate();
 
-        bool isInContact(int, const Cell& , const Box&);
+        bool isInContact(const int, const Cell&, const Box&);
+        bool isInContact(const int, const Box&);
+        double project_force(const Cell&, const Box&, const Vector3D&, const int);
+        double project_force(const Box&, const Vector3D&, const int);
+        Vector3D box_force(const Box&, const int);
 
         double sumL2();
         cell_params_t params;
