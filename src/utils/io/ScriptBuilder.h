@@ -1,11 +1,10 @@
 #ifndef SCRIPTBUILDER_H
 #define	SCRIPTBUILDER_H
 
-#include <fstream>
 #include <vector>
 
 #include "Cell.h"
-#include "../utils.h"
+#include "utils/utils.h"
 #include "simulation/Box.h"
 
 

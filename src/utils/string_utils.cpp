@@ -90,7 +90,7 @@ namespace utils
     }
 
     template<>
-    std::vector<std::string> & split<std::string>(const std::string& s, std::vector<std::string> &tokens,
+    std::vector<std::string>& split<std::string>(const std::string& s, std::vector<std::string>& tokens,
             const char delim)
     {
         std::string s_copy(s);
@@ -229,14 +229,14 @@ namespace utils
         return r;
     }
 
-    std::string format_paragraph(std::vector<std::string> & words,
+    std::string format_paragraph(std::vector<std::string>& words,
                                  const std::string& paragraph_pad, const std::string& line_pad, const core::index2 max_line_width)
     {
         std::string out = paragraph_pad;
         core::index2 lineLength = paragraph_pad.length();
         size_t pos = 0;
 
-    for (std::string & w : words)
+        for (std::string & w : words)
         {
             w = utils::trim(w);
 
@@ -289,7 +289,7 @@ namespace utils
         return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
     }
 
-    std::string format_paragraph(std::vector<std::string> & words,
+    std::string format_paragraph(std::vector<std::string>& words,
                                  const std::string& paragraph_pad, const std::string& line_pad, const int max_line_width, const int max_first_line_width)
     {
         std::string out = paragraph_pad;
@@ -297,7 +297,7 @@ namespace utils
         size_t pos = 0;
         bool is_first_line = true;
 
-    for (std::string & w : words)
+        for (std::string & w : words)
         {
             w = utils::trim(w);
 

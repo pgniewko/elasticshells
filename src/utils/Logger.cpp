@@ -142,10 +142,12 @@ namespace utils
                     color = TEXT_RED;
                     logger << "\n";
                     break;
+
                 case LogLevel::WARNING:
                 case LogLevel::INFO:
                     color = TEXT_YELLOW;
                     break;
+
                 case LogLevel::FILE:
                 case LogLevel::FINE:
                 case LogLevel::FINER:

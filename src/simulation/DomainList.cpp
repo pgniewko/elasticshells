@@ -5,7 +5,7 @@ utils::Logger DomainList::domainlist_logs("domainlist");
 DomainList::DomainList() : m(1), N(1), pbc(false), m_assigned(false), init_domains(false),
     x_min(0), y_min(0), z_min(0),
     x_max(0), y_max(0), z_max(0),
-    dx(0), dy(0), dz(0), rc_max(0) 
+    dx(0), dy(0), dz(0), rc_max(0)
 {
 }
 
@@ -13,17 +13,19 @@ DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.
     m_assigned(orig.m_assigned), init_domains(orig.init_domains),
     x_min(0), y_min(0), z_min(0),
     x_max(0), y_max(0), z_max(0),
-    dx(0), dy(0), dz(0), rc_max(0) 
+    dx(0), dy(0), dz(0), rc_max(0)
 {
     for (int i = 0; i < N; i++)
+    {
         vertsInDomains[i] = orig.vertsInDomains[i];
-    
+    }
+
     //TODO: implement proper copying.
     domainlist_logs << "PROGRAM TERMINATION FOR SAFETY REASONS!\n";
     exit(EXIT_FAILURE);
 }
 
-DomainList::~DomainList() 
+DomainList::~DomainList()
 {
 }
 
@@ -95,7 +97,7 @@ void DomainList::addNeighDomain(int dix, int nidx)
     {
         domainlist_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(EXIT_FAILURE);
-    }    
+    }
 }
 
 int DomainList::getDomainIndex(int i, int j, int k)
@@ -160,7 +162,7 @@ int DomainList::getDomainIndex(int i, int j, int k)
 void DomainList::assignVertex(Vertex& vertex, int cellid)
 {
     int index = getDomainIndex(vertex);
-    
+
     try
     {
         if (vertsInDomains[index] >= MAX_IN_DOMAIN)
@@ -168,7 +170,7 @@ void DomainList::assignVertex(Vertex& vertex, int cellid)
                                    "This may significantly affect the simulation accuracy!\n"
                                    "Simulation is about to end.");
 
-        
+
         domains[index].vertIds[ vertsInDomains[index] ] = vertex.getId();
         domains[index].cellsIds[ vertsInDomains[index] ] = cellid;
         vertsInDomains[index]++;
@@ -182,7 +184,7 @@ void DomainList::assignVertex(Vertex& vertex, int cellid)
         domainlist_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(EXIT_FAILURE);
     }
-    
+
 }
 
 int DomainList::getDomainIndex(Vertex& vertex)
@@ -270,7 +272,9 @@ void DomainList::setBoxDim(Box& box)
 void DomainList::voidDomains()
 {
     for (int i = 0; i < N; i++)
+    {
         vertsInDomains[i] = 0;
+    }
 }
 int DomainList::getNumberOfNeigh(int dix)
 {
@@ -302,7 +306,9 @@ int DomainList::numberofAssignedParticles()
     int sum = 0;
 
     for (int i = 0; i < N; i++)
-        sum += vertsInDomains[i]; 
+    {
+        sum += vertsInDomains[i];
+    }
 
     return sum;
 }

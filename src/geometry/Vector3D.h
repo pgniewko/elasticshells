@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <math.h>
+#include <cmath>
 
 #include "Environment.h"
 #include "exceptions/DataException.h"

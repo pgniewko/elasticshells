@@ -1,7 +1,7 @@
 #ifndef RANDOM_H
 #define	RANDOM_H
 
-#include <math.h>      /* log, sqrt */
+#include <cmath>      /* log, sqrt */
 
 
 extern  void init_genrand(unsigned long s);

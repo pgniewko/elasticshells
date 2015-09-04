@@ -6,7 +6,7 @@ VolumeFraction::VolumeFraction(const char* name, const char* format) : Observer(
 VolumeFraction::VolumeFraction(const VolumeFraction& orig) : Observer(orig)
 {}
 
-VolumeFraction::~VolumeFraction() 
+VolumeFraction::~VolumeFraction()
 {}
 
 void VolumeFraction::set_params(int num, ...)

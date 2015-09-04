@@ -2,7 +2,7 @@
 
 utils::Logger LogSimulation::log_logger("log_logger");
 
-std::vector<std::string> &split(const std::string&, char , std::vector<std::string>&);
+std::vector<std::string>& split(const std::string&, char , std::vector<std::string>&);
 std::vector<std::string> split(const std::string&, char);
 
 LogSimulation::LogSimulation(char* lf, char* cf)
@@ -61,7 +61,7 @@ void LogSimulation::registerObservers()
 {
     std::vector<std::string> list = readConfigFile();
     std::vector<std::string> single_line;
-    
+
     for (std::vector<std::string>::iterator it = list.begin(); it != list.end(); ++it)
     {
         single_line = split( *it, ' ');
@@ -74,20 +74,22 @@ void LogSimulation::registerObservers()
             {
                 obs_obj->set_params(3, single_line);
             }
+
             observers.push_back( obs_obj );
         }
     }
 }
 
 void LogSimulation::printHeader()
-{   
-    fprintf(os,"%s ", "#");
+{
+    fprintf(os, "%s ", "#");
+
     for (std::vector<Observer*>::iterator it = observers.begin(); it != observers.end(); ++it)
     {
         fprintf(os, "%s ", (*it)->getName());
     }
 
-    fprintf(os, "%s","\n");
+    fprintf(os, "%s", "\n");
     fflush(os);
 }
 
@@ -98,11 +100,12 @@ void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells)
         fprintf(os, (*it)->getFormat(), (*it)->observe(box, cells) );
         fprintf(os, "%s", " ");
     }
-    fprintf(os, "%s" ,"\n");
+
+    fprintf(os, "%s" , "\n");
     fflush(os);
 }
 
-std::vector<std::string> &split(const std::string& s, char delim, std::vector<std::string> &elems)
+std::vector<std::string>& split(const std::string& s, char delim, std::vector<std::string>& elems)
 {
     std::stringstream ss(s);
     std::string item;

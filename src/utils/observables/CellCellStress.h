@@ -9,11 +9,11 @@ class CellCellStress : public Observer
         CellCellStress(const char*, const char*);
         CellCellStress(const CellCellStress& orig);
         virtual ~CellCellStress();
-        
+
         void set_params(int, ...);
         void set_params(int, std::vector<std::string>);
         double observe(Box&, std::vector<Cell>&);
-        
+
     private:
         static DerivedRegister<CellCellStress> reg;
 

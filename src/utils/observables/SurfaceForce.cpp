@@ -6,7 +6,7 @@ SurfaceForce::SurfaceForce(const char* name, const char* format) : Observer(name
 SurfaceForce::SurfaceForce(const SurfaceForce& orig) : Observer(orig)
 {}
 
-SurfaceForce::~SurfaceForce() 
+SurfaceForce::~SurfaceForce()
 {}
 
 void SurfaceForce::set_params(int num, ...)

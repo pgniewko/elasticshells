@@ -35,7 +35,7 @@ void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, dou
         {
             std::string strindex = new_base_index ( lastCellIndex +  cells[i].vertices[j].getId() );
             fprintf(os, "%s %10.5f %10.5f %10.5f \n", strindex.c_str(), sx * cells[i].vertices[j].xyz.x, sy * cells[i].vertices[j].xyz.y, sz * cells[i].vertices[j].xyz.z);
-            
+
         }
 
         lastCellIndex += cells[i].getNumberVertices();

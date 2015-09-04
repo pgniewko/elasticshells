@@ -27,7 +27,7 @@ Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.v
     V0(orig.V0), vert_no_bud(orig.vert_no_bud)
 {}
 
-Cell::~Cell() 
+Cell::~Cell()
 {}
 
 void Cell::voidVerletLsit()
@@ -82,13 +82,15 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
     Vector3D distance_ik;
     int vertIdx, cellIdx;
     double r_cut = 2 * params.r_vertex + EPSILON;
-    
+
     for (int i = 0; i < number_v; i++)
     {
         domainIdx = domains.getDomainIndex(vertices[i]);
+
         for (int j = 0; j < domains.getNumberOfNeigh(domainIdx); j++)
         {
             domainn = domains.getDomainNeighbor(domainIdx, j);
+
             for (int k = 0; k < domains.getNumOfParticles(domainn); k++)
             {
                 vertIdx = domains.getVertexIdx(domainn, k);
@@ -151,7 +153,7 @@ void Cell::calcHarmonicForces()
 void Cell::calcOsmoticForces()
 {
     calcCM();
-    
+
     int iva, ivb, ivc;
     double turgor = getTurgor();
 
@@ -652,13 +654,14 @@ double Cell::contactForce(const Cell& other_cell, const Box& box)
 
     int tj;
     double fi;
-    
+
     Vector3D nj;
     double nj_fi;
     double totAi;
     double Aj;
+
     for (int i = 0; i < number_v; i++)
-    {   
+    {
         for (int j = 0; j < other_cell.number_v; j++)
         {
             if (cell_id != ocellid)
@@ -672,36 +675,41 @@ double Cell::contactForce(const Cell& other_cell, const Box& box)
         totAi = 0.0;
         nj_fi = 0.0;
         Aj = 0.0;
-        
+
         // NEW CODE GOES HERE
         for (int j = 0; j < vertices[i].numTris; j++)
         {
             tj = vertices[i].getTriangleId(j);
+
             if ( isInContact(tj, other_cell, box) )
             {
                 nj = triangles[tj].normal(vertices);
                 nj_fi = nj.x * force_collector.x + nj.y * force_collector.y + nj.z * force_collector.z;
                 Aj = triangles[tj].area(vertices, cm_m, params.r_vertex);
-                
+
                 totAi += Aj;
-                
-                fi += fabs( nj_fi*Aj ); 
-                
+
+                fi += fabs( nj_fi * Aj );
+
             }
         }
-        
+
         if (totAi > 0)
+        {
             fi /= totAi;
+        }
         else
+        {
             fi = 0.0;
-        
+        }
+
         contact_force += fi;//force_collector.length();
-        
-        
+
+
         force_collector = Vector3D(0, 0, 0);
     }
 
-    return contact_force;    
+    return contact_force;
 }
 
 double Cell::contactForce(const Box& box)
@@ -746,7 +754,7 @@ double Cell::contactForce(const Box& box)
         djk = vertXYZ - wallYZ;
         forceX = HertzianRepulsion::calcForce(djk, r1, rb_, e1, eb, nu1, nub);
         fx = forceX.length();
-            
+
         sgny = SIGN(vertXYZ.y);
         wallXZ.x = vertXYZ.x;
         wallXZ.y = sgny * bsy;
@@ -754,7 +762,7 @@ double Cell::contactForce(const Box& box)
         djk = vertXYZ - wallXZ;
         forceY = HertzianRepulsion::calcForce(djk, r1, rb_, e1, eb, nu1, nub);
         fy = forceY.length();
-            
+
         sgnz = SIGN(vertXYZ.z);
         wallXY.x = vertXYZ.x;
         wallXY.y = vertXYZ.y;
@@ -762,25 +770,25 @@ double Cell::contactForce(const Box& box)
         djk = vertXYZ - wallXY;
         forceZ = HertzianRepulsion::calcForce(djk, r1, rb_, e1, eb, nu1, nub);
         fz = forceZ.length();
-            
+
         totalForce +=  (fx + fy + fz);
     }
-    
-    return totalForce;    
+
+    return totalForce;
 }
 
 bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box)
 {
     int idx1, idx2, idx3;
     double fc1, fc2, fc3;
-    
+
     int ocellid = other_cell.cell_id;
-    
+
     Vector3D dij;
     Vector3D force_collector1(0, 0, 0);
     Vector3D force_collector2(0, 0, 0);
     Vector3D force_collector3(0, 0, 0);
-    
+
     idx1 = triangles[t_idx].ia;
     idx2 = triangles[t_idx].ib;
     idx3 = triangles[t_idx].ic;
@@ -791,17 +799,17 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box)
     double e2 = other_cell.params.ecc;
     double nu1 = params.nu;
     double nu2 = other_cell.params.nu;
-        
+
     if (cell_id != ocellid)
     {
         for (int j = 0; j < other_cell.number_v; j++)
         {
             getDistance(dij, other_cell.vertices[j].xyz, vertices[idx1].xyz, box);
             force_collector1 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-            
+
             getDistance(dij, other_cell.vertices[j].xyz, vertices[idx2].xyz, box);
             force_collector2 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-            
+
             getDistance(dij, other_cell.vertices[j].xyz, vertices[idx3].xyz, box);
             force_collector3 += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
         }
@@ -812,9 +820,11 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box)
     fc3 = force_collector3.length();
 
     if (fc1 * fc2 * fc3 > 0)
+    {
         return true;
-        
-        
+    }
+
+
     return false;
 }
 
@@ -955,23 +965,26 @@ double Cell::getTurgor()
     return turgor;
 }
 
-// ********* CELL GROWTH 
+// ********* CELL GROWTH
 void Cell::cellCycle(double dt)
 {
-    switch(my_phase)    
+    switch (my_phase)
     {
         case cell_phase_t::C_G1:
             grow(dt);
             break;
+
         case cell_phase_t::C_SG2:
             bud(dt);
             break;
+
         case cell_phase_t::C_M:
             divide();
             break;
+
         default :
             break;
-        
+
     }
 }
 
@@ -988,9 +1001,10 @@ void Cell::grow(double dt)
 void Cell::bud(double dt)
 {
     findBud();
+
     if (uniform() > params.growth_rate * dt)
     {
-        
+
         Tinker::bud(*this);
     }
 }

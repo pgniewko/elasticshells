@@ -7,7 +7,7 @@
 
 #include "Environment.h"
 
-extern std::string new_base_index(int, int=26);
+extern std::string new_base_index(int, int = 26);
 
 
 #endif	/* COMMONS_H */

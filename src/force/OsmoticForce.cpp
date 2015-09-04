@@ -12,7 +12,7 @@ Vector3D OsmoticForce::calcForce(const Vector3D& va, const Vector3D& vb, const V
     Vector3D CD = vc - vd;
     Vector3D f = cross(BD, CD) / 6;
     f *= turgor;
-    
+
     Tetrahedron tetra(va, vb, vc, vd);
     return tetra.volumeSgn() * f;
 }

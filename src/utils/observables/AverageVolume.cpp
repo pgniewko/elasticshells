@@ -1,8 +1,8 @@
 #include "AverageVolume.h"
 
-AverageVolume::AverageVolume(const char* name, const char* format) : Observer(name, format){}
+AverageVolume::AverageVolume(const char* name, const char* format) : Observer(name, format) {}
 
-AverageVolume::AverageVolume(const AverageVolume& orig) : Observer(orig){}
+AverageVolume::AverageVolume(const AverageVolume& orig) : Observer(orig) {}
 
 AverageVolume::~AverageVolume() {}
 

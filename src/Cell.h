@@ -64,7 +64,7 @@ class Cell
         void calcHarmonicForces();
         void calcOsmoticForces();
         void calcNbForcesON2(const Cell&, const Box&);
-        void calcNbForcesVL(const Cell&,const Box&);
+        void calcNbForcesVL(const Cell&, const Box&);
         void calcBoxForces(const Box&);
 
         void voidVerletLsit();
@@ -118,7 +118,7 @@ class Cell
         //double contactForceNew(const Cell&, Box&);
         double contactArea(const Cell&, const Box&);
         //double contactArea(Box&);
-        double contactArea(const Box&, double=0.0);
+        double contactArea(const Box&, double = 0.0);
         double surfaceStrainEnergy();
         double getTurgor();
 
@@ -128,7 +128,7 @@ class Cell
         void divide();
         void findBud();
         void randomRotate();
-        
+
         bool isInContact(int, const Cell& , const Box&);
 
         double sumL2();
