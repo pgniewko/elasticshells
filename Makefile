@@ -83,8 +83,8 @@ uninstall:
 	@echo '$(PREFIX)/bin/biofilm' uninstalled!
 	
 indent:
-	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.cpp"
-	@astyle --style=allman -r -xl -C -xG -SKNL -wfpHj -k1 "*.h"
+	@astyle --style=allman -r -C -xL -SKNL -wfpHj -k1 "*.cpp"
+	@astyle --style=allman -r -C -xL -SKNL -wfpHj -k1 "*.h"
 	@./astyle-clean.sh
 
 -include $(DEPS)
