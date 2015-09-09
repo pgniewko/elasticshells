@@ -6,17 +6,12 @@ AverageTurgor::AverageTurgor(const AverageTurgor& orig) : Observer(orig) {}
 
 AverageTurgor::~AverageTurgor() {}
 
-void AverageTurgor::set_params(int num, ...)
+void AverageTurgor::set_params(const int num, std::vector<std::string> args_)
 {
     return;
 };
 
-void AverageTurgor::set_params(int num, std::vector<std::string> args_)
-{
-    return;
-};
-
-double AverageTurgor::observe(Box& box, std::vector<Cell>& cells)
+double AverageTurgor::observe(const Box& box, std::vector<Cell>& cells)
 {
     int N = cells.size();
     double av_turgor = 0.0;

@@ -1,25 +1,17 @@
 #include "Aspherity.h"
 
-Aspherity::Aspherity(const char* name, const char* format) : Observer(name, format)
-{}
+Aspherity::Aspherity(const char* name, const char* format) : Observer(name, format) {}
 
-Aspherity::Aspherity(const Aspherity& orig) : Observer(orig)
-{}
+Aspherity::Aspherity(const Aspherity& orig) : Observer(orig) {}
 
-Aspherity::~Aspherity()
-{}
+Aspherity::~Aspherity() {}
 
-void Aspherity::set_params(int num, ...)
+void Aspherity::set_params(const int num, std::vector<std::string> args_)
 {
     return;
 };
 
-void Aspherity::set_params(int num, std::vector<std::string> args_)
-{
-    return;
-};
-
-double Aspherity::observe(Box& box, std::vector<Cell>& cells)
+double Aspherity::observe(const Box& box, std::vector<Cell>& cells)
 {
     double av_radius = 0.0;
     double sq_av_radius = 0.0;

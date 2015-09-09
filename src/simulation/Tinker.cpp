@@ -367,7 +367,8 @@ int Tinker::getOldestVertex(Cell& cell)
     }
 
     double ptot = 0.0;
-    int I, J;
+    int I;
+//    int J;
 
     for (int i = 0; i < vertexCounter; i++)
     {

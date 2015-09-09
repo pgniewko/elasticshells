@@ -19,7 +19,7 @@ double Tetrahedron::volume() const
     return volume;
 }
 
-double Tetrahedron::volume(double eps) const
+double Tetrahedron::volume(const double eps) const
 {
     Vector3D AD = a - d;
     Vector3D BD = b - d;

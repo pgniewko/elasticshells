@@ -12,7 +12,7 @@ class Tetrahedron
         Tetrahedron(const Tetrahedron& orig);
         virtual ~Tetrahedron();
         double volume() const;
-        double volume(double) const;
+        double volume(const double) const;
         double volumeSgn() const;
         Vector3D a, b, c, d;
     private:

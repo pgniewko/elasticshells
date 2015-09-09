@@ -6,20 +6,12 @@ CellBoxStress::CellBoxStress(const CellBoxStress& orig) : Observer(orig) {}
 
 CellBoxStress::~CellBoxStress() {}
 
-void CellBoxStress::set_params(int num, ...)
-{
-    va_list arguments;
-    va_start (arguments, num);
-    d_param = va_arg(arguments, double);
-    va_end( arguments );
-};
-
-void CellBoxStress::set_params(int num, std::vector<std::string> args_)
+void CellBoxStress::set_params(const int num, std::vector<std::string> args_)
 {
     d_param = strtod(args_[ num + 0 ].c_str(), NULL);
 };
 
-double CellBoxStress::observe(Box& box, std::vector<Cell>& cells)
+double CellBoxStress::observe(const Box& box, std::vector<Cell>& cells)
 {
     uint cellsnumber = cells.size();
     double contact_force = 0.0;
