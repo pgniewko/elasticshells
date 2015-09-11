@@ -895,6 +895,10 @@ double Cell::contactArea(const Box& box, double d_param)
     {
         if ( isInContact(t_idx, box) )
         {
+            //TODO: this condition is confusing. 
+            // It should be rather the other way around.
+            // When changing be careful about changing observables.config parameters
+            // Two classes are influenced by this code: CellBoxStress and WallCoverageFraction.
             if (d_param > 0.0)
             {
                 contact_area += triangles[t_idx].area(vertices);
@@ -909,21 +913,24 @@ double Cell::contactArea(const Box& box, double d_param)
     return contact_area;
 }
 
-double Cell::surfaceStrainEnergy()
+double Cell::strainEnergy(const Box& box)
 {
     double deps = 0.0;
-    double R0ij, R;
-    int idxj;
+    double r0, r;
+    int neigh_idx;
 
+//    Vector3D dR;
     for (int i = 0; i < number_v; i++)
     {
         for (int j = 0; j < vertices[i].numBonded; j++)
         {
-            R0ij = vertices[i].r0[j];
-            idxj = vertices[i].bondedVerts[j];
-            Vector3D dR = vertices[idxj].xyz - vertices[i].xyz;
-            R = dR.length();
-            deps += 0.5 * params.gamma * (R0ij - R) * (R0ij - R);
+            r0 = vertices[i].r0[j];
+            neigh_idx = vertices[i].bondedVerts[j];
+            Vector3D dR = vertices[neigh_idx].xyz - vertices[i].xyz;          
+//            getDistance(dR, vertices[idxj].xyz, vertices[i].xyz, box);
+            
+            r = dR.length();
+            deps += 0.5 * params.gamma * (r0 - r) * (r0 - r);
         }
     }
 

@@ -118,7 +118,7 @@ class Cell
         double contactForceSF(const Box&); // for Surface Force use
         double contactArea(const Cell&, const Box&);
         double contactArea(const Box&, double = 0.0);
-        double surfaceStrainEnergy();
+        double strainEnergy(const Box&);
         double getTurgor();
 
     private:

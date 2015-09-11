@@ -3,18 +3,18 @@
 
 #include "utils/observables/Observer.h"
 
-class SurfaceStrainEnergy : public Observer
+class TotalStrainEnergy : public Observer
 {
     public:
-        SurfaceStrainEnergy(const char*, const char*);
-        SurfaceStrainEnergy(const SurfaceStrainEnergy& orig);
-        virtual ~SurfaceStrainEnergy();
+        TotalStrainEnergy(const char*, const char*);
+        TotalStrainEnergy(const TotalStrainEnergy& orig);
+        virtual ~TotalStrainEnergy();
 
         double observe(const Box&, std::vector<Cell>&);
         void set_params(const int, std::vector<std::string>);
 
     private:
-        static DerivedRegister<SurfaceStrainEnergy> reg;
+        static DerivedRegister<TotalStrainEnergy> reg;
 
 };
 
