@@ -48,6 +48,11 @@ Please note that you must be root in order to install at `/usr/local`.
 EXTERNAL LIBRARIES
 ================
 * For compiling and running tests [CppUnit](sourceforge.net/projects/cppunit) is needed.
+* ```argp.h``` library is needed for command line parsing. On Mac OS X it can be easily installed with:
+```
+brew install argp-standalone
+```
+
 
 * GNU Scientific Library ([GSL](http://www.gnu.org/software/gsl/)).
 On Ubuntu you can install it by running:
