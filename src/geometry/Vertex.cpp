@@ -247,7 +247,7 @@ int Vertex::setId(int idx)
     return myid;
 }
 
-int Vertex::getId()
+int Vertex::getId() const
 {
     return myid;
 }

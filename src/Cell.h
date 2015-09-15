@@ -57,8 +57,8 @@ class Cell
         double calcVolume(double);
         double getMass();
         void calcCM();
-        int getNumberTriangles();
-        int getNumberVertices();
+        int getNumberTriangles() const;
+        int getNumberVertices() const;
 
         void calcBondedForces();
         void calcHarmonicForces();

@@ -20,7 +20,7 @@ void ScriptBuilder::setDrawBox(bool db)
 }
 
 
-void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
+void ScriptBuilder::saveSurfaceScript(const std::vector<Cell>& cells)
 {
     std::ofstream os;
     os.open(surfaceScript);
@@ -85,7 +85,7 @@ void ScriptBuilder::saveSurfaceScript(std::vector<Cell>& cells)
 }
 
 
-void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool boxFlag, double rv)
+void ScriptBuilder::saveRenderScript(const std::vector<Cell>& cells, const Box& box, bool boxFlag, double rv)
 {
     std::ofstream os;
     os.open(script);
@@ -141,7 +141,7 @@ void ScriptBuilder::saveRenderScript(std::vector<Cell>& cells, Box& box, bool bo
     os.close();
 }
 
-void ScriptBuilder::printBox(std::ofstream& os,  Box& box)
+void ScriptBuilder::printBox(std::ofstream& os, const Box& box)
 {
     os << "class Box(object):\n";
     os << "  def __init__ (self, x, y, z, linewidth, color):\n";
@@ -187,7 +187,7 @@ void ScriptBuilder::printBox(std::ofstream& os,  Box& box)
     os << "cmd.load_cgo(obj, \"box\", 1)\n\n\n";
 }
 
-void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box)
+void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, const Box& box)
 {
     std::ofstream os;
     os.open(stress_script);
@@ -224,9 +224,9 @@ void ScriptBuilder::saveStressScript(std::vector<Cell>& cells, Box& box)
         {
             double forceij = 0.0;
             //double forceij = cells[i].contactForceNew(cells[j], box);
-            cells[i].calcCM();
+            //cells[i].calcCM();
             Vector3D cmi = cells[i].getCm();
-            cells[j].calcCM();
+            //cells[j].calcCM();
             Vector3D cmj = cells[j].getCm();
 
             if (forceij > 0 and i > j)

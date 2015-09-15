@@ -1,3 +1,5 @@
+#include <c++/4.6/iosfwd>
+
 #include "LogSimulation.h"
 
 utils::Logger LogSimulation::log_logger("log_logger");
@@ -23,7 +25,14 @@ LogSimulation::~LogSimulation()
 
 void LogSimulation::open()
 {
-    os = fopen(logfile, "w");
+    //os = fopen(logfile, "w");
+    os = fopen(logfile, "a");
+    if( os == NULL )
+        os = fopen(logfile, "w");
+    if( os == NULL )
+        log_logger << utils::LogLevel::CRITICAL << "Can not open <<" << logfile << "for writing.\n";
+    
+    return;
 }
 
 void LogSimulation::close()
@@ -34,7 +43,7 @@ void LogSimulation::close()
 std::vector<std::string> LogSimulation::readConfigFile()
 {
     std::ifstream cfile;
-    cfile.open(configfile);
+    cfile.open(configfile, std::ifstream::in);
     std::vector<std::string> list;
     std::string line;
 

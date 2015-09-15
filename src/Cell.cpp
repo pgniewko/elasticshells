@@ -412,12 +412,12 @@ void Cell::addXYZ(const Vector3D& nxyz)
     }
 }
 
-int Cell::getNumberTriangles()
+int Cell::getNumberTriangles() const
 {
     return number_t;
 }
 
-int Cell::getNumberVertices()
+int Cell::getNumberVertices() const
 {
     return number_v;
 }

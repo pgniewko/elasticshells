@@ -57,7 +57,7 @@ class Vertex
         Vertex(const Vertex& orig);
         virtual ~Vertex();
         int setId(int);
-        int getId();
+        int getId() const;
         double setMass(double);
         double getMass();
         double setVisc(double);
