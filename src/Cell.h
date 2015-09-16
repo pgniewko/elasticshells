@@ -53,7 +53,6 @@ class Cell
         Cell(const Cell& orig);
         virtual ~Cell();
         double calcSurfaceArea() const;
-//        double calcVolume() const; // remove this function and define default parameter
         double calcVolume(double=0.0) const;
         double getMass() const;
         void calcCM();
@@ -98,9 +97,6 @@ class Cell
         double getVertexR() const;
         double getE() const;
         double getNu() const;
-
-        //Vector3D& getVertexXYZ(int) const;
-        //Vector3D& getVertexForce(int) const;
 
         void voidForces();
         void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&) const;

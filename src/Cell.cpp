@@ -152,8 +152,6 @@ void Cell::calcHarmonicForces()
 
 void Cell::calcOsmoticForces()
 {
-//    calcCM();
-
     int iva, ivb, ivc;
     double turgor = getTurgor();
 
@@ -287,16 +285,10 @@ double Cell::calcSurfaceArea() const
     return surface;
 }
 
-//double Cell::calcVolume()
-//{
-//    return calcVolume(0.0);
-//}
-
 double Cell::calcVolume(double eps) const
 {
     double volume = 0.0;
     int va, vb, vc;
-//    calcCM();
 
     for (int i = 0; i < number_t; i++)
     {
@@ -517,16 +509,6 @@ double Cell::getNu() const
     return params.nu;
 }
 
-//Vector3D& Cell::getVertexXYZ(int idx) const
-//{
-//    return vertices[idx].xyz;
-//}
-
-//Vector3D& Cell::getVertexForce(int idx) const
-//{
-//    return vertices[idx].force;
-//}
-
 void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box) const
 {
     dkj = vk - vj;
@@ -681,7 +663,6 @@ double Cell::project_force(const Box& box, const Vector3D& force_collector, cons
 
 double Cell::contactForce(const Cell& other_cell, const Box& box) const
 {
-//    calcCM();
     int ocellid = other_cell.cell_id;
     Vector3D dij;
     Vector3D force_collector(0, 0, 0);
@@ -732,7 +713,7 @@ Vector3D Cell::box_force(const Box& box, const int vix) const
     double r1 = getVertexR();
     double nu1 = getNu();
     
-    Vector3D vertXYZ = vertices[vix].xyz; //getVertexXYZ(vix);
+    Vector3D vertXYZ = vertices[vix].xyz;
     
     sgnx = SIGN(vertXYZ.x);
     wallYZ.x = sgnx * bsx;
@@ -874,7 +855,6 @@ bool Cell::isInContact(int t_idx, const Box& box) const
 double Cell::contactArea(const Cell& other_cell, const Box& box) const
 {
     double contact_area = 0.0;
-//    calcCM();
 
     for (int i = 0; i < number_t; i++)
     {
@@ -889,7 +869,6 @@ double Cell::contactArea(const Cell& other_cell, const Box& box) const
 
 double Cell::contactArea(const Box& box, double d_param) const
 {
-//    calcCM();
     double contact_area = 0.0;
 
     for (int t_idx = 0; t_idx < number_t; t_idx++)
@@ -920,15 +899,13 @@ double Cell::strainEnergy(const Box& box) const
     double r0, r;
     int neigh_idx;
 
-//    Vector3D dR;
     for (int i = 0; i < number_v; i++)
     {
         for (int j = 0; j < vertices[i].numBonded; j++)
         {
             r0 = vertices[i].r0[j];
             neigh_idx = vertices[i].bondedVerts[j];
-            Vector3D dR = vertices[neigh_idx].xyz - vertices[i].xyz;          
-//            getDistance(dR, vertices[idxj].xyz, vertices[i].xyz, box);
+            Vector3D dR = vertices[neigh_idx].xyz - vertices[i].xyz;
             
             r = dR.length();
             deps += 0.5 * params.gamma * (r0 - r) * (r0 - r);
