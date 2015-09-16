@@ -288,6 +288,8 @@ void Simulator::simulate()
 
 void Simulator::simulate(int steps)
 {
+    updateCells();
+    
     if (params.nbhandler == 1)
     {
         rebuildVerletLists();
@@ -470,6 +472,7 @@ void Simulator::rebuildDomainsList()
 void Simulator::shiftCell(const Vector3D& v3d, int cellid)
 {
     cells[cellid].addXYZ(v3d);
+    cells[cellid].update();
 }
 
 int Simulator::getTotalVertices()
@@ -537,6 +540,12 @@ void Simulator::setTriangulator(char* token)
     }
 }
 
+void Simulator::updateCells()
+{
+    for (uint i = 0; i < cells.size(); i++)
+        cells[i].update();
+}
+
 /*
  * INTEGRATORS
  */
@@ -544,6 +553,7 @@ void Simulator::setTriangulator(char* token)
 void Simulator::integrate()
 {
     (*this.*integrator)();
+    updateCells();
 //    makeVertsOlder(); // function's temporary location
 }
 

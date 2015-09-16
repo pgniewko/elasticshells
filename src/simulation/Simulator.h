@@ -93,6 +93,7 @@ class Simulator
         int getTotalVertices();
         double getMaxLengthScale();
 
+        void updateCells();
 
         int number_of_cells;
         char* triangulator;

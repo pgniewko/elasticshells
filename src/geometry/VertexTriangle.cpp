@@ -13,12 +13,12 @@ void VertexTriangle::setId(int idx)
     myindex = idx;
 }
 
-int VertexTriangle::getId()
+int VertexTriangle::getId() const
 {
     return myindex;
 }
 
-void VertexTriangle::printVertexTriangle()
+void VertexTriangle::printVertexTriangle() const
 {
     std::cout << "my id=" << myindex << " ";
     std::cout << " ia =" << ia << " ib =" << ib << " ic =" << ic << std::endl;
@@ -45,7 +45,7 @@ void VertexTriangle::subsVertex(int ix_old, int ix_new)
     return;
 }
 
-double VertexTriangle::area(const Vertex vs[])
+double VertexTriangle::area(const Vertex vs[]) const
 {
     if (ia != -1 && ib != -1 && ic != -1)
     {
@@ -58,7 +58,7 @@ double VertexTriangle::area(const Vertex vs[])
     }
 }
 
-double VertexTriangle::area(const Vertex vs[], const Vector3D cm, double eps)
+double VertexTriangle::area(const Vertex vs[], const Vector3D cm, double eps) const
 {
     if (ia != -1 && ib != -1 && ic != -1)
     {
@@ -80,7 +80,7 @@ double VertexTriangle::area(const Vertex vs[], const Vector3D cm, double eps)
     }
 }
 
-Vector3D VertexTriangle::normal(const Vertex vs[])
+Vector3D VertexTriangle::normal(const Vertex vs[]) const
 {
     Vector3D ta = vs[ia].xyz;
     Vector3D tb = vs[ib].xyz;

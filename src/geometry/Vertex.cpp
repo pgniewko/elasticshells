@@ -193,7 +193,7 @@ void Vertex::addNbNeighbor(int vertIdx, int cellIdx)
 }
 
 
-bool Vertex::isNeighbor(int vidx)
+bool Vertex::isNeighbor(int vidx) const
 {
     for (int i = 0; i < numBonded; i++)
     {
@@ -252,27 +252,27 @@ int Vertex::getId() const
     return myid;
 }
 
-int Vertex::getNumNeighs()
+int Vertex::getNumNeighs() const
 {
     return numBonded;
 }
 
-int Vertex::getNumTris()
+int Vertex::getNumTris() const
 {
     return numTris;
 }
 
-int Vertex::getNeighborId(int idx)
+int Vertex::getNeighborId(int idx) const
 {
     return bondedVerts[idx];
 }
 
-int Vertex::getTriangleId(int idx)
+int Vertex::getTriangleId(int idx) const
 {
     return bondedTris[idx];
 }
 
-double Vertex::getNeighborR0(int idx)
+double Vertex::getNeighborR0(int idx) const
 {
     return r0[idx];
 }
@@ -283,7 +283,7 @@ double Vertex::setMass(double m)
     return mass;
 }
 
-double Vertex::getMass()
+double Vertex::getMass() const
 {
     return mass;
 }
@@ -294,7 +294,7 @@ double Vertex::setVisc(double v)
     return visc;
 }
 
-double Vertex::getVisc()
+double Vertex::getVisc() const
 {
     return visc;
 }
@@ -329,7 +329,7 @@ void Vertex::normalizedR0(double newR0)
     }
 }
 
-const vertex_t& Vertex::getMyType()
+const vertex_t& Vertex::getMyType() const
 {
     return my_type;
 }

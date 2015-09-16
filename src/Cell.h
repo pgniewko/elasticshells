@@ -52,10 +52,10 @@ class Cell
         Cell(std::list<Triangle>);
         Cell(const Cell& orig);
         virtual ~Cell();
-        double calcSurfaceArea();
-        double calcVolume(); // remove this function and define default parameter
-        double calcVolume(double);
-        double getMass();
+        double calcSurfaceArea() const;
+//        double calcVolume() const; // remove this function and define default parameter
+        double calcVolume(double=0.0) const;
+        double getMass() const;
         void calcCM();
         int getNumberTriangles() const;
         int getNumberVertices() const;
@@ -92,18 +92,18 @@ class Cell
         void setBudDiameter(double);
         void setDivisionRatio(double);
 
-        double getInitR();
-        double getCellViscosity();
-        Vector3D getCm();
-        double getVertexR();
-        double getE();
-        double getNu();
+        double getInitR() const;
+        double getCellViscosity() const;
+        Vector3D getCm() const;
+        double getVertexR() const;
+        double getE() const;
+        double getNu() const;
 
-        Vector3D& getVertexXYZ(int);
-        Vector3D& getVertexForce(int);
+        //Vector3D& getVertexXYZ(int) const;
+        //Vector3D& getVertexForce(int) const;
 
         void voidForces();
-        void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&);
+        void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&) const;
 
         void cellCycle(double);
 
@@ -113,13 +113,14 @@ class Cell
         VertexTriangle triangles[MAX_T];
 
         int cell_id;
-        double contactForce(const Cell&, const Box&);
-        double contactForce(const Box&);
-        double contactForceSF(const Box&); // for Surface Force use
-        double contactArea(const Cell&, const Box&);
-        double contactArea(const Box&, double = 0.0);
-        double strainEnergy(const Box&);
-        double getTurgor();
+        double contactForce(const Cell&, const Box&) const;
+        double contactForce(const Box&) const;
+        double contactForceSF(const Box&) const; // for Surface Force use
+        double contactArea(const Cell&, const Box&) const;
+        double contactArea(const Box&, double = 0.0) const;
+        double strainEnergy(const Box&) const;
+        double getTurgor() const;
+        void update(double=0.0);
 
     private:
         void grow(double);
@@ -128,13 +129,14 @@ class Cell
         void findBud();
         void randomRotate();
 
-        bool isInContact(const int, const Cell&, const Box&);
-        bool isInContact(const int, const Box&);
-        double project_force(const Cell&, const Box&, const Vector3D&, const int);
-        double project_force(const Box&, const Vector3D&, const int);
-        Vector3D box_force(const Box&, const int);
+        bool isInContact(const int, const Cell&, const Box&) const;
+        bool isInContact(const int, const Box&) const;
+        double project_force(const Cell&, const Box&, const Vector3D&, const int) const;
+        double project_force(const Box&, const Vector3D&, const int) const;
+        Vector3D box_force(const Box&, const int) const;
 
-        double sumL2();
+        double sumL2() const;
+        
         cell_params_t params;
         cell_phase_t my_phase;
         int number_v;

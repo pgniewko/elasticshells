@@ -152,7 +152,7 @@ void Cell::calcHarmonicForces()
 
 void Cell::calcOsmoticForces()
 {
-    calcCM();
+//    calcCM();
 
     int iva, ivb, ivc;
     double turgor = getTurgor();
@@ -275,7 +275,7 @@ void Cell::voidForces()
     }
 }
 
-double Cell::calcSurfaceArea()
+double Cell::calcSurfaceArea() const
 {
     double surface = 0.0;
 
@@ -287,16 +287,16 @@ double Cell::calcSurfaceArea()
     return surface;
 }
 
-double Cell::calcVolume()
-{
-    return calcVolume(0.0);
-}
+//double Cell::calcVolume()
+//{
+//    return calcVolume(0.0);
+//}
 
-double Cell::calcVolume(double eps)
+double Cell::calcVolume(double eps) const
 {
     double volume = 0.0;
     int va, vb, vc;
-    calcCM();
+//    calcCM();
 
     for (int i = 0; i < number_t; i++)
     {
@@ -360,7 +360,7 @@ void Cell::setVisc(double mu)
     params.totalVisc = getCellViscosity();
 }
 
-double Cell::getCellViscosity()
+double Cell::getCellViscosity() const
 {
     double v = 0;
 
@@ -372,7 +372,7 @@ double Cell::getCellViscosity()
     return v;
 }
 
-double Cell::getMass()
+double Cell::getMass() const
 {
     double totalMass = 0.0;
 
@@ -491,43 +491,43 @@ void Cell::setDivisionRatio(double ds)
     params.div_ratio = ds;
 }
 
-double Cell::getInitR()
+double Cell::getInitR() const
 {
     return params.init_r;
 }
 
-Vector3D Cell::getCm()
+Vector3D Cell::getCm() const
 {
-    calcCM();
+//    calcCM();
     return cm_m;
 }
 
-double Cell::getVertexR()
+double Cell::getVertexR() const
 {
     return params.r_vertex;
 }
 
-double Cell::getE()
+double Cell::getE() const
 {
     return params.ecc;
 }
 
-double Cell::getNu()
+double Cell::getNu() const
 {
     return params.nu;
 }
 
-Vector3D& Cell::getVertexXYZ(int idx)
-{
-    return vertices[idx].xyz;
-}
+//Vector3D& Cell::getVertexXYZ(int idx) const
+//{
+//    return vertices[idx].xyz;
+//}
 
-Vector3D& Cell::getVertexForce(int idx)
-{
-    return vertices[idx].force;
-}
+//Vector3D& Cell::getVertexForce(int idx) const
+//{
+//    return vertices[idx].force;
+//}
 
-void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box)
+void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box) const
 {
     dkj = vk - vj;
 
@@ -546,7 +546,7 @@ void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, co
     }
 }
 
-double Cell::sumL2()
+double Cell::sumL2() const
 {
     double sum_l2 = 0.0;
 
@@ -564,6 +564,8 @@ double Cell::sumL2()
 
 void Cell::randomRotate()
 {
+    calcCM();
+    //  
     double u1 = uniform();
     double u2 = uniform();
     double u3 = uniform();
@@ -581,7 +583,6 @@ void Cell::randomRotate()
     A[2][0] = 2 * (q1 * q3 + q0 * q2);
     A[2][1] = 2 * (q2 * q3 - q0 * q1);
     A[2][2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
-    calcCM();
     double xnew = 0.0;
     double ynew = 0.0;
     double znew = 0.0;
@@ -606,7 +607,7 @@ void Cell::randomRotate()
     }
 }
 
-double Cell::project_force(const Cell& other_cell, const Box& box, const Vector3D& force_collector, const int vidx)
+double Cell::project_force(const Cell& other_cell, const Box& box, const Vector3D& force_collector, const int vidx) const
 {
     double fi = 0.0;
     double totAi = 0.0;
@@ -642,7 +643,7 @@ double Cell::project_force(const Cell& other_cell, const Box& box, const Vector3
     return fi;
 }
 
-double Cell::project_force(const Box& box, const Vector3D& force_collector, const int vidx)
+double Cell::project_force(const Box& box, const Vector3D& force_collector, const int vidx) const
 {
     double fi = 0.0;
     double totAi = 0.0;
@@ -678,9 +679,9 @@ double Cell::project_force(const Box& box, const Vector3D& force_collector, cons
     return fi;
 }
 
-double Cell::contactForce(const Cell& other_cell, const Box& box)
+double Cell::contactForce(const Cell& other_cell, const Box& box) const
 {
-    calcCM();
+//    calcCM();
     int ocellid = other_cell.cell_id;
     Vector3D dij;
     Vector3D force_collector(0, 0, 0);
@@ -712,7 +713,7 @@ double Cell::contactForce(const Cell& other_cell, const Box& box)
     return contact_force;
 }
 
-Vector3D Cell::box_force(const Box& box, const int vix)
+Vector3D Cell::box_force(const Box& box, const int vix) const
 {
     Vector3D wallYZ(0, 0, 0);
     Vector3D wallXZ(0, 0, 0);
@@ -731,7 +732,7 @@ Vector3D Cell::box_force(const Box& box, const int vix)
     double r1 = getVertexR();
     double nu1 = getNu();
     
-    Vector3D vertXYZ = getVertexXYZ(vix);
+    Vector3D vertXYZ = vertices[vix].xyz; //getVertexXYZ(vix);
     
     sgnx = SIGN(vertXYZ.x);
     wallYZ.x = sgnx * bsx;
@@ -757,7 +758,7 @@ Vector3D Cell::box_force(const Box& box, const int vix)
     return force_collector;
 }
 
-double Cell::contactForce(const Box& box)
+double Cell::contactForce(const Box& box) const
 {
     if (box.pbc)
     {
@@ -776,7 +777,7 @@ double Cell::contactForce(const Box& box)
     return contact_force;
 }
 
-double Cell::contactForceSF(const Box& box)
+double Cell::contactForceSF(const Box& box) const
 {
     if (box.pbc)
     {
@@ -796,7 +797,7 @@ double Cell::contactForceSF(const Box& box)
     return contact_force;
 }
 
-bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box)
+bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box) const
 {
     int idx1, idx2, idx3;
     double fc1, fc2, fc3;
@@ -847,7 +848,7 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box)
     return false;
 }
 
-bool Cell::isInContact(int t_idx, const Box& box)
+bool Cell::isInContact(int t_idx, const Box& box) const
 {
     if (box.pbc)
     {
@@ -870,10 +871,10 @@ bool Cell::isInContact(int t_idx, const Box& box)
     return false;
 }
 
-double Cell::contactArea(const Cell& other_cell, const Box& box)
+double Cell::contactArea(const Cell& other_cell, const Box& box) const
 {
     double contact_area = 0.0;
-    calcCM();
+//    calcCM();
 
     for (int i = 0; i < number_t; i++)
     {
@@ -886,9 +887,9 @@ double Cell::contactArea(const Cell& other_cell, const Box& box)
     return contact_area;
 }
 
-double Cell::contactArea(const Box& box, double d_param)
+double Cell::contactArea(const Box& box, double d_param) const
 {
-    calcCM();
+//    calcCM();
     double contact_area = 0.0;
 
     for (int t_idx = 0; t_idx < number_t; t_idx++)
@@ -913,7 +914,7 @@ double Cell::contactArea(const Box& box, double d_param)
     return contact_area;
 }
 
-double Cell::strainEnergy(const Box& box)
+double Cell::strainEnergy(const Box& box) const
 {
     double deps = 0.0;
     double r0, r;
@@ -937,7 +938,7 @@ double Cell::strainEnergy(const Box& box)
     return deps;
 }
 
-double Cell::getTurgor()
+double Cell::getTurgor() const
 {
     double turgor;
 
@@ -962,6 +963,11 @@ double Cell::getTurgor()
     }
 
     return turgor;
+}
+
+void Cell::update(double d)
+{
+    calcCM();
 }
 
 // ********* CELL GROWTH
