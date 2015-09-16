@@ -43,8 +43,6 @@ class Box
 
         void resize();
 
-        //double getVolume();
-        //double getArea();
         double getVolume(const double = 0.0) const;
         double getArea(const double = 0.0) const;
 
@@ -52,8 +50,6 @@ class Box
         void setEwall(double);
         void setNu(double);
         bool pbc;
-//        double E_box;
-//        double r_;
         double getXEdge(const double = 0.0) const;
         double getYEdge(const double = 0.0) const;
         double getZEdge(const double = 0.0) const;
