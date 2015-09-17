@@ -1,6 +1,6 @@
 #include "ScriptBuilder.h"
 
-extern const char names[];
+//extern const char names[];
 
 utils::Logger ScriptBuilder::scriptbuilder_logs("scriptbuilder");
 
@@ -16,7 +16,6 @@ void ScriptBuilder::setDrawBox(bool db)
 {
     drawBox = db;
 }
-
 
 void ScriptBuilder::saveSurfaceScript(const std::vector<Cell>& cells)
 {
@@ -84,7 +83,7 @@ void ScriptBuilder::saveSurfaceScript(const std::vector<Cell>& cells)
     }
     else
     {
-        scriptbuilder_logs << utils::LogLevel::WARNING << "File:" << surfaceScript << " failed to open." << "\n";
+        scriptbuilder_logs << utils::LogLevel::WARNING << "Can not open file:" << surfaceScript << "\n";
     }
 }
 
@@ -148,7 +147,7 @@ void ScriptBuilder::saveRenderScript(const std::vector<Cell>& cells, const Box& 
     }
     else
     {
-        scriptbuilder_logs << utils::LogLevel::WARNING << "File:" << script << " failed to open." << "\n";
+        scriptbuilder_logs << utils::LogLevel::WARNING << "Can not open file:" <<  script << "\n";
     }
 }
 
@@ -237,9 +236,7 @@ void ScriptBuilder::saveStressScript(const std::vector<Cell>& cells, const Box& 
             {
                 double forceij = 0.0;
                 //double forceij = cells[i].contactForceNew(cells[j], box);
-                //cells[i].calcCM();
                 Vector3D cmi = cells[i].getCm();
-                //cells[j].calcCM();
                 Vector3D cmj = cells[j].getCm();
 
                 if (forceij > 0 and i > j)
@@ -268,6 +265,6 @@ void ScriptBuilder::saveStressScript(const std::vector<Cell>& cells, const Box& 
     }
     else
     {
-        scriptbuilder_logs << utils::LogLevel::WARNING << "File:" << stress_script << " failed to open." << "\n";
+        scriptbuilder_logs << utils::LogLevel::WARNING << "Can not open file:" <<  stress_script << "\n";
     }
 }

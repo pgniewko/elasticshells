@@ -2,6 +2,7 @@
 #define	XYZTRAJ_H
 
 #include <vector>
+#include <string>
 
 #include "Cell.h"
 #include "Environment.h"
@@ -21,8 +22,11 @@ class XyzTraj
 
     private:
 
-        char* trajfile;
+//        char* trajfile;
+        std::string trajfile;
         FILE* os;
+        
+        static utils::Logger xyztraj_logs;
 };
 
 #endif	/* XYZTRAJ_H */

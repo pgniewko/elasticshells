@@ -1,9 +1,8 @@
 #include "XyzTraj.h"
 
-XyzTraj::XyzTraj(char* tf)
-{
-    trajfile = tf;
-}
+utils::Logger XyzTraj::xyztraj_logs("xyztraj");
+
+XyzTraj::XyzTraj(char* tf) : trajfile(tf) {}
 
 XyzTraj::XyzTraj(const XyzTraj& orig) : trajfile(orig.trajfile) {}
 
@@ -11,18 +10,20 @@ XyzTraj::~XyzTraj() {}
 
 void XyzTraj::open()
 {
-    os = fopen(trajfile, "w");
+    os = fopen(trajfile.c_str(), "w");
+    if ( os == NULL )
+    {
+       xyztraj_logs << utils::LogLevel::WARNING << "Can not open file:" <<  trajfile << "\n";
+    }
 }
 
 void XyzTraj::close()
 {
-    fclose(os);
+    if ( os != NULL )
+    {
+        fclose(os);
+    }
 }
-
-//void XyzTraj::save(std::vector<Cell>& cells, int totV)
-//{
-//    save(cells, totV, 1.0, 1.0, 1.0);
-//}
 
 void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, double sz)
 {

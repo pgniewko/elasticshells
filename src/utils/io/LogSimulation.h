@@ -28,8 +28,10 @@ class LogSimulation
         void dumpState(Box&, std::vector<Cell>&);
 
     private:
-        char* logfile;
-        char* configfile;
+        //char* logfile;
+        //char* configfile;
+        std::string logfile;
+        std::string configfile;
         FILE* os;
         std::vector<Observer*> observers;
         std::vector<std::string> readConfigFile();
