@@ -523,6 +523,12 @@ void Simulator::setIntegrator(char* token)
         this->setIntegrator(&Simulator::integrateEuler);
         simulator_logs << utils::LogLevel::FINE  << "DEFAULT FORWARD EULER IS USED\n";
     }
+    
+    if (integrator == NULL)
+    {
+        simulator_logs << utils::LogLevel::CRITICAL << "integrator == NULL";
+        exit(EXIT_FAILURE);
+    }
 }
 
 void Simulator::setTriangulator(char* token)
