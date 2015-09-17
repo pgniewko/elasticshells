@@ -246,12 +246,14 @@ void Simulator::addCell(double r0)
 
         std::list<Triangle> tris;
 
-        if (STRCMP (triangulator, "plato"))
+        //if (STRCMP (triangulator, "plato"))
+        if ( !triangulator.compare("plato") )
         {
             PlatonicTriangulatoin tio(params.d, params.platotype);
             tris = tio.triangulate(r0);
         }
-        else if (STRCMP (triangulator, "simple"))
+        //else if (STRCMP (triangulator, "simple"))
+        else if ( !triangulator.compare("simple") )
         {
             SimpleTriangulation sm(params.d);
             tris = sm.triangulate(r0);
@@ -527,15 +529,18 @@ void Simulator::setTriangulator(char* token)
 {
     if (STRCMP (token, "simple"))
     {
-        triangulator = token;
+        //triangulator = token;
+        triangulator = std::string(token);
     }
     else if (STRCMP (token, "plato"))
     {
-        triangulator = token;
+        //triangulator = token;
+        triangulator = std::string(token);
     }
     else
     {
-        triangulator = (char*)& "simple";
+        //triangulator = (char*)& "simple";
+        triangulator = std::string("simple");
         simulator_logs << utils::LogLevel::FINE  << "SIMPLE TRIANGULATION IS APPLIED\n";
     }
 }

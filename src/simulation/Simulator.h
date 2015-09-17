@@ -96,7 +96,8 @@ class Simulator
         void updateCells();
 
         int number_of_cells;
-        char* triangulator;
+        //char* triangulator;
+        std::string triangulator;
         params_t params;
 
         std::vector<Cell> cells;
