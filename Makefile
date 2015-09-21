@@ -1,8 +1,15 @@
 include config.mk
 
+RM          := rm -f
+MKDIR	    := mkdir -p
+
 DEBUG ?= 0
 ifeq ($(DEBUG), 1)
-    CXXFLAGS := $(CXXFLAGS) $(DBGFLAGS)
+    CXXFLAGS := $(CXXFLAGS) $(DBGFLAGS)	
+else
+ifneq ($(DEBUG), 0)
+    CXXFLAGS := $(CXXFLAGS) $(DEBUG)	
+endif
 endif
 
 TEST ?= 0
@@ -30,18 +37,17 @@ OBJECTS      := $(SOURCES:.cpp=.o)
 
 TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
-#DEPS         := $(SOURCES:.cpp=.d)
 DEPS         := $(OBJECTS:.o=.d)
 
 #Linking commands:
 $(TARGET): $(OBJECTS)
 	@echo LINKING ...
-	@mkdir -p $(@D)
+	$(MKDIR) $(@D)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 	@echo BUILDING IS DONE
 
 $(TEST_RUNNER): $(TEST_OBJECTS) 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ -lcppunit $(LDLIBS)
 
 #Compilation commands:
 main.o: $(SOURCES) $(HEADERS) #main.cpp 
@@ -62,7 +68,7 @@ build: $(TARGET)
 
 clean:
 	@echo Cleaning...
-	rm -f $(TARGET) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS) $(DEPS)
+	$(RM) $(TARGET) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS) $(DEPS)
 	
 tests: $(TEST_RUNNER)
 	@$(TEST_RUNNER)
