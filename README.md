@@ -1,4 +1,7 @@
 DESCRIPTION
+Biofilm simulator is written in C/C++ and uses modern computer
+architectures and technologies: OpenMP for shared-memory systems, 
+SSE vectorization for x86_64 CPU.
 ==================================================
 COMPILING AND INSTALLATION - LINUX
 ==================================================
