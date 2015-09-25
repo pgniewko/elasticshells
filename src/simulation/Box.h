@@ -5,6 +5,18 @@
 
 #include "Environment.h"
 
+struct schedule_t
+{
+    double dx;
+    double dy;
+    double dz;
+    double delta;
+    int life_time;
+    int boxs;
+    int counter;
+};
+
+
 class Box
 {
     public:
@@ -71,6 +83,20 @@ class Box
         double dz;
         double E_box;
         double nu;
+        
+        class Scheduler
+        {
+            public:
+                void readSchedule();
+                void registerSchedules();
+                void checkSchedule();
+                void changeSchedule();
+                int total_time;
+                int recent_time;
+                    
+                
+                
+        };
 };
 
 #endif	/* BOX_H */
