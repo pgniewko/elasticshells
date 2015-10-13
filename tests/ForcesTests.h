@@ -6,7 +6,6 @@
 #include "Environment.h"
 #include "force/HertzianRepulsion.h"
 #include "force/HookeanForce.h"
-#include "force/NbRepulsiveForce.h"
 #include "force/OsmoticForce.h"
 #include "geometry/Vector3D.h"
 #include "geometry/Vertex.h"
