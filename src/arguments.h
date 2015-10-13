@@ -15,6 +15,7 @@ struct arguments
     char* surface_file;
     char* stress_file;
     char* ob_config_file;
+    char* sch_config_file;
 
     char* integrator_a;
     char* tritype;

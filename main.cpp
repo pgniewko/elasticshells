@@ -49,6 +49,7 @@ static struct argp_option options[] =
     {"ss",          303, "FILE",  0, "Print stress to FILE [default: ... ]" },
     {"seed",        304, "LONG",  0, "Random generator seed [default: 0x123] " },
     {"oc",          305, "FILE",  0, "Input file to configure observers [default: ./observers.config ]" },
+    {"sch",         306, "FILE",  0, "Input file to configure compression schedule [default: ./schedule.config ]" },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0,             0,       0, 0, "Simulation Options:", 4},
@@ -125,6 +126,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->surface_file = (char*)&"./data/surf.py";
             arguments->stress_file = (char*)&"./data/stress.py";
             arguments->ob_config_file = (char*)&"./observers.config";
+            arguments->sch_config_file = (char*)&"./schedule.config";
             arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
             arguments->d = 3;
@@ -217,6 +219,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 305:
             arguments->ob_config_file = arg;
             break;
+        case 306:
+            arguments->sch_config_file = arg;
+            break;    
 
         case 'n':
             arguments->n_cells = arg ? atoi (arg) : 1;
