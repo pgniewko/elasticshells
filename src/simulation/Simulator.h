@@ -27,7 +27,6 @@ struct params_t
 {
     int log_step;
     int save_step;
-    int box_step;
     int vlist_step;
     int nsteps;
     int d;

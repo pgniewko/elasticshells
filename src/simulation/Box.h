@@ -4,18 +4,8 @@
 #include <iostream>
 
 #include "Environment.h"
-
-struct schedule_t
-{
-    double dx;
-    double dy;
-    double dz;
-    double delta;
-    int life_time;
-    int boxs;
-    int counter;
-};
-
+#include "utils/Logger.h"
+#include "simulation/Scheduler.h"
 
 class Box
 {
@@ -32,28 +22,28 @@ class Box
         void setZ(const double);
         double getZ() const;
 
-        void setDx(const double);
-        double getDx() const;
-        void setDy(const double);
-        double getDy() const;
-        void setDz(const double);
-        double getDz() const;
+        //void setDx(const double);
+        //double getDx() const;
+        //void setDy(const double);
+        //double getDy() const;
+        //void setDz(const double);
+        //double getDz() const;
 
-        void setXstart(const double);
-        void setYstart(const double);
-        void setZstart(const double);
-        void setXend(const double);
-        void setYend(const double);
-        void setZend(const double);
+        void setXmax(const double);
+        void setYmax(const double);
+        void setZmax(const double);
+        void setXmin(const double);
+        void setYmin(const double);
+        void setZmin(const double);
 
-        double getXstart() const;
-        double getYstart() const;
-        double getZstart() const;
-        double getXend() const;
-        double getYend() const;
-        double getZend() const;
+        double getXmax() const;
+        double getYmax() const;
+        double getZmax() const;
+        double getXmin() const;
+        double getYmin() const;
+        double getZmin() const;
 
-        void resize();
+        bool resize();
 
         double getVolume(const double = 0.0) const;
         double getArea(const double = 0.0) const;
@@ -67,36 +57,29 @@ class Box
         double getZEdge(const double = 0.0) const;
         double getNu() const;
         double getE() const;
+        
+        void configureScheduler(char*);
+        void setDefaultSchedule(int, int, double, double, double, double, double, double);
 
     private:
         double x;
         double y;
         double z;
-        double xs;
-        double ys;
-        double zs;
-        double xe;
-        double ye;
-        double ze;
-        double dx;
-        double dy;
-        double dz;
+        double x_max;
+        double y_max;
+        double z_max;
+        double x_min;
+        double y_min;
+        double z_min;
+        //double dx;
+        //double dy;
+        //double dz;
         double E_box;
         double nu;
         
-        class Scheduler
-        {
-            public:
-                void readSchedule();
-                void registerSchedules();
-                void checkSchedule();
-                void changeSchedule();
-                int total_time;
-                int recent_time;
-                    
-                
-                
-        };
+        static utils::Logger box_logger;
+        
+        Scheduler my_schedule;
 };
 
 #endif	/* BOX_H */

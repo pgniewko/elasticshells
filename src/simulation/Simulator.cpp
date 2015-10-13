@@ -23,7 +23,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
 
     params.log_step = args.log_step;
     params.save_step = args.save_step;
-    params.box_step = args.box_step;
+    //params.box_step = args.box_step;
     params.vlist_step = args.vlist_step;
     params.d = args.d;
     params.nbhandler = args.nb_flag;
@@ -51,18 +51,21 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
-    box.setDx(args.bsdx);
-    box.setDy(args.bsdy);
-    box.setDz(args.bsdz);
-    box.setXstart(args.bsx);
-    box.setYstart(args.bsy);
-    box.setZstart(args.bsz);
-    box.setXend(args.bsxe);
-    box.setYend(args.bsye);
-    box.setZend(args.bsze);
+    //box.setDx(args.bsdx);
+    //box.setDy(args.bsdy);
+    //box.setDz(args.bsdz);
+    box.setXmax(args.bsx);
+    box.setYmax(args.bsy);
+    box.setZmax(args.bsz);
+    box.setXmin(args.bsxe);
+    box.setYmin(args.bsye);
+    box.setZmin(args.bsze);
     box.setPbc(args.pbc);
     box.setEwall(args.E_wall);
     box.setNu(args.nu);
+    std::cout << args.sch_config_file << std::endl;
+    box.configureScheduler(args.sch_config_file);
+    box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0, 0, 0);
     domains.setupDomainsList(getMaxLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
@@ -124,7 +127,7 @@ void Simulator::diagnoseParams(arguments args)
 void Simulator::logParams()
 {
     simulator_logs << utils::LogLevel::INFO  << "SIM_STEPS=" << params.nsteps << "\n";
-    simulator_logs << utils::LogLevel::INFO  << "BOX_STEP="  << params.box_step << "\n";
+    //simulator_logs << utils::LogLevel::INFO  << "BOX_STEP="  << params.box_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "SAVE_STEP=" << params.save_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "VERLET_STEP="  << params.vlist_step << "\n";
@@ -151,12 +154,12 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getY() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDx() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDy() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.DZ=" << box.getDz() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.XE=" << box.getXend() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.YE=" << box.getYend() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZend() << "\n";
+    //simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDx() << "\n";
+    //simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDy() << "\n";
+    //simulator_logs << utils::LogLevel::FINER << "BOX.DZ=" << box.getDz() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.XE=" << box.getXmin() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.YE=" << box.getYmin() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZmin() << "\n";
 }
 
 void Simulator::initCells(int N, double r0)
@@ -224,7 +227,6 @@ void Simulator::addCell(const Cell& newCell)
             throw MaxSizeException("Maximum number of cells reached."
                                    "New cell will not be added !");
 
-        ;
         cells.push_back(newCell);
         number_of_cells = cells.size();
     }
@@ -310,6 +312,7 @@ void Simulator::simulate(int steps)
     log_sim.printHeader();
     log_sim.dumpState(box, cells);
 
+    bool resized = false;
     for (int i = 0; i <= steps; i++)
     {
         if (params.nbhandler == 1)
@@ -334,8 +337,8 @@ void Simulator::simulate(int steps)
             }
             else
             {
-                traj.save(cells, getTotalVertices(), box.getXstart() / box.getX(),
-                          box.getYstart() / box.getY(), box.getZstart() / box.getZ());
+                traj.save(cells, getTotalVertices(), box.getXmax() / box.getX(),
+                          box.getYmax() / box.getY(), box.getZmax() / box.getZ());
             }
         }
 
@@ -344,11 +347,14 @@ void Simulator::simulate(int steps)
             log_sim.dumpState(box, cells);
         }
 
-        if ( (i + 1) % params.box_step == 0)
+        //if ( (i + 1) % params.box_step == 0)
+        //{
+        resized = box.resize();
+        if (resized)
         {
-            box.resize();
             domains.setBoxDim(box);
         }
+        //}
 
         for (int i = 0; i < number_of_cells; i++)
         {
@@ -361,6 +367,7 @@ void Simulator::simulate(int steps)
         }
     }
 
+    log_sim.dumpState(box, cells);
     sb.saveStressScript(cells, box);
     traj.close();
     log_sim.close();
