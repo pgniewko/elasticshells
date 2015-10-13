@@ -10,6 +10,7 @@
 
 #include "Cell.h"
 #include "utils/Logger.h"
+#include "utils/utils.h"
 #include "simulation/Box.h"
 #include "utils/observables/Observer.h"
 
