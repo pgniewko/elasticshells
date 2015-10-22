@@ -236,7 +236,7 @@ void Box::configureScheduler(char* schf)
     //my_schedule.readScheduleFile();
     my_schedule.registerSchedules();
     my_schedule.configureSchedule();
-    my_schedule.printSchedule();
+    //my_schedule.printSchedule();
 }
 
 void Box::setDefaultSchedule(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)

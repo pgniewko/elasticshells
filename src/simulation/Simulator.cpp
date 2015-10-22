@@ -63,9 +63,10 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setPbc(args.pbc);
     box.setEwall(args.E_wall);
     box.setNu(args.nu);
-    std::cout << args.sch_config_file << std::endl;
+    //std::cout << args.sch_config_file << std::endl;
+    box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configureScheduler(args.sch_config_file);
-    box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0, 0, 0);
+    
     domains.setupDomainsList(getMaxLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);

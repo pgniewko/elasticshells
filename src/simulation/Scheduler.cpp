@@ -6,18 +6,21 @@ utils::Logger Scheduler::schedule_logger("schedule_logger");
 //std::vector<std::string> split(const std::string&, char);
 
 Scheduler::Scheduler()
-{
-    
-}
+{}
 
 //Scheduler::Scheduler(char* schf) : schedulefile(schf)
 //{
 //    
 //}
 
-Scheduler::Scheduler(const Scheduler& orig) : schedulefile(orig.schedulefile)
+Scheduler::Scheduler(const Scheduler& orig) : 
+schedulefile(orig.schedulefile), default_schedule(orig.default_schedule), current_schedule(orig.current_schedule)
 {
-    
+    for(uint i = 0; i < orig.schedules.size(); i++)
+    {
+        //schedule_t schedule_copy = orig.schedules[i];
+        schedules.push_back(orig.schedules[i]);
+    }
 }
 
 Scheduler::~Scheduler() {}
@@ -59,8 +62,8 @@ void Scheduler::registerSchedules()
 
         if (single_line.size() >= 8)
         {
-            int ns = std::stoi(single_line[ 0 ].c_str(), NULL,10);
-            int i = std::stoi(single_line[ 1 ].c_str(), NULL,10);
+            int ns = std::stoi(single_line[ 0 ].c_str(), NULL, 10);
+            int i = std::stoi(single_line[ 1 ].c_str(), NULL, 10);
             double v1 = strtod(single_line[ 2 ].c_str(), NULL);
             double v2 = strtod(single_line[ 3 ].c_str(), NULL);
             double v3 = strtod(single_line[ 4 ].c_str(), NULL);
@@ -76,7 +79,7 @@ void Scheduler::registerSchedules()
 void Scheduler::setFileName(char* schf)
 {
     schedulefile = std::string(schf);
-    std::cout << "Set file=" <<  schedulefile << std::endl;
+    //std::cout << "Set file=" <<  schedulefile << std::endl;
 }
 
 void Scheduler::configureSchedule()
@@ -109,7 +112,7 @@ void Scheduler::execute(double& dx, double& dy, double& dz)
 {
     if (schedules.size() > 0)
     {
-        if(current_schedule.counter % current_schedule.interval == 0)
+        if((current_schedule.counter+1) % current_schedule.interval == 0)
         {
             dx = current_schedule.dx + uniform(-current_schedule.rx, current_schedule.rx);
             dy = current_schedule.dy + uniform(-current_schedule.ry, current_schedule.ry);
@@ -131,7 +134,7 @@ void Scheduler::execute(double& dx, double& dy, double& dz)
     }
     else
     {
-        if(default_schedule.counter % default_schedule.interval == 0)
+        if((default_schedule.counter+1) % default_schedule.interval == 0)
         {
             dx = default_schedule.dx + uniform(-default_schedule.rx, default_schedule.rx);
             dy = default_schedule.dy + uniform(-default_schedule.ry, default_schedule.ry);

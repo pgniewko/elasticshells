@@ -22,6 +22,7 @@ struct schedule_t
     int counter;
     
     schedule_t() : n_steps(0), interval(0), dx(0), dy(0), dz(0), rx(0), ry(0), rz(0), counter(0) {}
+    
     schedule_t(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz) :
     n_steps(ns), interval(in), dx(_dx), dy(_dy), dz(_dz), rx(_rx), ry(_ry), rz(_rz), counter(0) {}
     
@@ -43,8 +44,8 @@ class Scheduler
         void printSchedule();
         void setDefault(int, int, double, double, double, double, double, double);
         void execute(double&, double&, double&);
-        int total_time;
-        int recent_time;
+        //int total_time;
+        //int recent_time;
                    
     protected:
         std::string schedulefile;
