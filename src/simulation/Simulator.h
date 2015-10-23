@@ -88,7 +88,6 @@ class Simulator
         void integrateVv();
         void heunMethod();
         void midpointRungeKutta();
-        void gear();
 
         int getTotalVertices();
         double getMaxLengthScale();

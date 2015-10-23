@@ -91,14 +91,10 @@ class Vertex
 
         Vector3D r_c;
         Vector3D v_c;
-        Vector3D a_c;
-        Vector3D b_c;
         Vector3D f_c;
         
         Vector3D r_p;           // make it private
         Vector3D v_p;           // make it private
-        Vector3D a_p;
-        Vector3D b_p;
         Vector3D f_p;
         
         

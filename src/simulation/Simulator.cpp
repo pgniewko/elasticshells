@@ -48,6 +48,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.platotype = args.platotype;
     setIntegrator(args.integrator_a);
     setTriangulator(args.tritype);
+    std::cout << args.bsx << " " << args.bsy << " " << args.bsz << " " << args.bsxe << " " << args.bsye << " " << args.bsze << std::endl; 
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
@@ -153,7 +154,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_EPS=" << OsmoticForce::getEpsilon() << "\n";
     simulator_logs << utils::LogLevel::FINER << "MAX_SCALE=" << domains.getMaxScale() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getY() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.Y="  << box.getY() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
     //simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDx() << "\n";
     //simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDy() << "\n";
@@ -668,54 +669,6 @@ void Simulator::midpointRungeKutta()
         {
             visc = cells[i].vertices[j].getVisc();
             cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c / visc;
-        }
-    }
-}
-
-void Simulator::gear()
-{
-    calcForces();
-    double visc;
-    double dt = params.dt;
-
-    double c1 = dt;
-    double c2 = c1 * dt / 2.0;
-    double c3 = c2 * dt / 3.0;
-    
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c + c1 * cells[i].vertices[j].v_c + c2 * cells[i].vertices[j].a_c + c3 * cells[i].vertices[j].b_c;
-            cells[i].vertices[j].v_p = cells[i].vertices[j].v_c + c1 * cells[i].vertices[j].a_c + c2 * cells[i].vertices[j].b_c;
-            cells[i].vertices[j].a_p = cells[i].vertices[j].a_c + c1 * cells[i].vertices[j].b_c;
-            cells[i].vertices[j].b_p = cells[i].vertices[j].b_c;
-        }
-    }
-    
-    calcForces();
-    
-    double gear0 = 3.0 / 8.0;
-    //double gear1 = 1.0;
-    double gear2 = 3.0 / 4.0; 
-    double gear3 = 1.0 / 6.0;
-    
-    double cg0 = gear0 * c1;
-    double cg2 = gear2 * c1 / c2;
-    double cg3 = gear3 * c1 / c3;
-   
-    Vector3D dv;
-    Vector3D v;
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            v = cells[i].vertices[j].f_c / visc;
-            dv = v - cells[i].vertices[j].v_p;
-            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + cg0 * dv;
-            cells[i].vertices[j].v_c = cells[i].vertices[j].v_p + ;
-            cells[i].vertices[j].a_c = cells[i].vertices[j].a_p + cg2 * dv;
-            cells[i].vertices[j].b_c = cells[i].vertices[j].b_p + cg3 * dv;
         }
     }
 }
