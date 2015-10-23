@@ -97,9 +97,9 @@ static struct argp_option options[] =
     {"bsdx",      604, "FLOAT", 0, "dx of Box size [default: 0.0]"},
     {"bsdy",      605, "FLOAT", 0, "dy of Box size [default: 0.0]"},
     {"bsdz",      606, "FLOAT", 0, "dz of Box size [default: 0.0]"},
-    {"bsxe",      607, "FLOAT", 0, "X end of Box size [default: 0.0]"},
-    {"bsye",      608, "FLOAT", 0, "Y end of Box size [default: 0.0]"},
-    {"bsze",      609, "FLOAT", 0, "Z end of Box size [default: 0.0]"},
+    {"bsxe",      607, "FLOAT", 0, "X end of Box size [default: 10.0]"},
+    {"bsye",      608, "FLOAT", 0, "Y end of Box size [default: 10.0]"},
+    {"bsze",      609, "FLOAT", 0, "Z end of Box size [default: 10.0]"},
     {0}
 };
 
@@ -120,11 +120,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->verbose = 1;
             arguments->debug = 0;
             arguments->abort = 0;
-            arguments->render_file = (char*)&"./data/render.py";
-            arguments->traj_file = (char*)&"./data/traj.xyz";
-            arguments->output_file = (char*)&"./data/biofilm.out";
-            arguments->surface_file = (char*)&"./data/surf.py";
-            arguments->stress_file = (char*)&"./data/stress.py";
+            arguments->render_file = (char*)&"./output/render.py";
+            arguments->traj_file = (char*)&"./output/traj.xyz";
+            arguments->output_file = (char*)&"./output/biofilm.out";
+            arguments->surface_file = (char*)&"./output/surf.py";
+            arguments->stress_file = (char*)&"./output/stress.py";
             arguments->ob_config_file = (char*)&"./observers.config";
             arguments->sch_config_file = (char*)&"./schedule.config";
             arguments->integrator_a = (char*)&"fe";
