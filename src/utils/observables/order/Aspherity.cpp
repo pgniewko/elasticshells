@@ -25,7 +25,7 @@ double Aspherity::observe(const Box& box, std::vector<Cell>& cells)
 
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            av_radius += (cells[i].vertices[j].xyz - cell_cm).length();
+            av_radius += (cells[i].vertices[j].r_c - cell_cm).length();
         }
 
         av_radius /= cells[i].getNumberVertices();
@@ -34,7 +34,7 @@ double Aspherity::observe(const Box& box, std::vector<Cell>& cells)
 
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            res = (cells[i].vertices[j].xyz - cell_cm).length() - av_radius;
+            res = (cells[i].vertices[j].r_c - cell_cm).length() - av_radius;
             sq_sum += res * res;
         }
 

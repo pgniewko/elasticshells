@@ -592,7 +592,7 @@ void Simulator::integrateEuler()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / visc;
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c / visc;
         }
     }
 }
@@ -607,8 +607,8 @@ void Simulator::heunMethod()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            cells[i].vertices[j].tmp_xyz = cells[i].vertices[j].xyz;
-            cells[i].vertices[j].tmp_force = cells[i].vertices[j].force;
+            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c;
+            cells[i].vertices[j].f_p = cells[i].vertices[j].f_c;
         }
     }
 
@@ -618,7 +618,7 @@ void Simulator::heunMethod()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / visc;
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c / visc;
         }
     }
 
@@ -630,7 +630,7 @@ void Simulator::heunMethod()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + 0.5 * dt * ( cells[i].vertices[j].tmp_force + cells[i].vertices[j].force) / visc;
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + 0.5 * dt * ( cells[i].vertices[j].f_p + cells[i].vertices[j].f_c) / visc;
         }
     }
 }
@@ -645,7 +645,7 @@ void Simulator::midpointRungeKutta()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            cells[i].vertices[j].tmp_xyz = cells[i].vertices[j].xyz;
+            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c;
         }
     }
 
@@ -655,7 +655,7 @@ void Simulator::midpointRungeKutta()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].xyz += 0.5 * dt * cells[i].vertices[j].force / visc;
+            cells[i].vertices[j].r_c += 0.5 * dt * cells[i].vertices[j].f_c / visc;
         }
     }
 
@@ -667,7 +667,55 @@ void Simulator::midpointRungeKutta()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + dt * cells[i].vertices[j].force / visc;
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c / visc;
+        }
+    }
+}
+
+void Simulator::gear()
+{
+    calcForces();
+    double visc;
+    double dt = params.dt;
+
+    double c1 = dt;
+    double c2 = c1 * dt / 2.0;
+    double c3 = c2 * dt / 3.0;
+    
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c + c1 * cells[i].vertices[j].v_c + c2 * cells[i].vertices[j].a_c + c3 * cells[i].vertices[j].b_c;
+            cells[i].vertices[j].v_p = cells[i].vertices[j].v_c + c1 * cells[i].vertices[j].a_c + c2 * cells[i].vertices[j].b_c;
+            cells[i].vertices[j].a_p = cells[i].vertices[j].a_c + c1 * cells[i].vertices[j].b_c;
+            cells[i].vertices[j].b_p = cells[i].vertices[j].b_c;
+        }
+    }
+    
+    calcForces();
+    
+    double gear0 = 3.0 / 8.0;
+    //double gear1 = 1.0;
+    double gear2 = 3.0 / 4.0; 
+    double gear3 = 1.0 / 6.0;
+    
+    double cg0 = gear0 * c1;
+    double cg2 = gear2 * c1 / c2;
+    double cg3 = gear3 * c1 / c3;
+   
+    Vector3D dv;
+    Vector3D v;
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            v = cells[i].vertices[j].f_c / visc;
+            dv = v - cells[i].vertices[j].v_p;
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + cg0 * dv;
+            cells[i].vertices[j].v_c = cells[i].vertices[j].v_p + ;
+            cells[i].vertices[j].a_c = cells[i].vertices[j].a_p + cg2 * dv;
+            cells[i].vertices[j].b_c = cells[i].vertices[j].b_p + cg3 * dv;
         }
     }
 }
@@ -683,9 +731,9 @@ void Simulator::integrateVv()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].velocity; // x(t+1)_a = x(t) + v(t)*dt
-            cells[i].vertices[j].xyz += 0.5 * dt * dt * cells[i].vertices[j].force / m; // x(t+1) = x(t+1)_a + 0.5*dt*dt* a(t)
-            cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; //v(t+1)_1 = v(t) + 0.5 * dt * a(t)
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c; // x(t+1)_a = x(t) + v(t)*dt
+            cells[i].vertices[j].r_c += 0.5 * dt * dt * cells[i].vertices[j].f_c / m; // x(t+1) = x(t+1)_a + 0.5*dt*dt* a(t)
+            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c / m; //v(t+1)_1 = v(t) + 0.5 * dt * a(t)
         }
     }
 
@@ -696,7 +744,7 @@ void Simulator::integrateVv()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
+            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
         }
     }
 }

@@ -49,7 +49,7 @@ double VertexTriangle::area(const Vertex vs[]) const
 {
     if (ia != -1 && ib != -1 && ic != -1)
     {
-        Triangle t(vs[ia].xyz, vs[ib].xyz, vs[ic].xyz);
+        Triangle t(vs[ia].r_c, vs[ib].r_c, vs[ic].r_c);
         return t.area();
     }
     else
@@ -62,9 +62,9 @@ double VertexTriangle::area(const Vertex vs[], const Vector3D cm, double eps) co
 {
     if (ia != -1 && ib != -1 && ic != -1)
     {
-        Vector3D ta = vs[ia].xyz - cm;
-        Vector3D tb = vs[ib].xyz - cm;
-        Vector3D tc = vs[ic].xyz - cm;
+        Vector3D ta = vs[ia].r_c - cm;
+        Vector3D tb = vs[ib].r_c - cm;
+        Vector3D tc = vs[ic].r_c - cm;
         double n_ta = ta.length() + eps;
         double n_tb = tb.length() + eps;
         double n_tc = tc.length() + eps;
@@ -82,9 +82,9 @@ double VertexTriangle::area(const Vertex vs[], const Vector3D cm, double eps) co
 
 Vector3D VertexTriangle::normal(const Vertex vs[]) const
 {
-    Vector3D ta = vs[ia].xyz;
-    Vector3D tb = vs[ib].xyz;
-    Vector3D tc = vs[ic].xyz;
+    Vector3D ta = vs[ia].r_c;
+    Vector3D tb = vs[ib].r_c;
+    Vector3D tc = vs[ic].r_c;
     Triangle t(ta, tb, tc);
     Vector3D normal = t.normal();
     return normal;

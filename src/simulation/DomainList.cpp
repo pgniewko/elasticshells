@@ -190,9 +190,9 @@ void DomainList::assignVertex(Vertex& vertex, int cellid)
 int DomainList::getDomainIndex(Vertex& vertex)
 {
     int xix, yix, zix;
-    double delx = vertex.xyz.x - x_min;
-    double dely = vertex.xyz.y - y_min;
-    double delz = vertex.xyz.z - z_min;
+    double delx = vertex.r_c.x - x_min;
+    double dely = vertex.r_c.y - y_min;
+    double delz = vertex.r_c.z - z_min;
     xix = floor(delx / dx);
     yix = floor(dely / dy);
     zix = floor(delz / dz);

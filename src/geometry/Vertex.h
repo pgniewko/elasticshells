@@ -89,14 +89,19 @@ class Vertex
 
         const vertex_t& getMyType() const;
 
-        Vector3D xyz;
-        Vector3D force;
-        Vector3D velocity;
-
-        Vector3D tmp_xyz;           // make it private
-        Vector3D tmp_force;         // make it private
-        Vector3D tmp_velocity;      // make it private
-
+        Vector3D r_c;
+        Vector3D v_c;
+        Vector3D a_c;
+        Vector3D b_c;
+        Vector3D f_c;
+        
+        Vector3D r_p;           // make it private
+        Vector3D v_p;           // make it private
+        Vector3D a_p;
+        Vector3D b_p;
+        Vector3D f_p;
+        
+        
         int bondedVerts[NEIGH_MAX];
         double r0[NEIGH_MAX];
 

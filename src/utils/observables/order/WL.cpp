@@ -40,9 +40,9 @@ double WL::calcWl(Cell& cell)
 
     for (int i = 0; i < n ; i++)
     {
-        x[i] = cell.vertices[i].xyz.x;
-        y[i] = cell.vertices[i].xyz.y;
-        z[i] = cell.vertices[i].xyz.z;
+        x[i] = cell.vertices[i].r_c.x;
+        y[i] = cell.vertices[i].r_c.y;
+        z[i] = cell.vertices[i].r_c.z;
     }
 
     qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
