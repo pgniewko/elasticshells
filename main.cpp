@@ -124,8 +124,8 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->output_file = (char*)&"./output/biofilm.out";
             arguments->surface_file = (char*)&"./output/surf.py";
             arguments->stress_file = (char*)&"./output/stress.py";
-            arguments->ob_config_file = (char*)&"./observers.config";
-            arguments->sch_config_file = (char*)&"./schedule.config";
+            arguments->ob_config_file = (char*)&"./input/observers.config";
+            arguments->sch_config_file = (char*)&"./input/schedule.config";
             arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
             arguments->d = 3;
