@@ -40,7 +40,6 @@ struct params_t
     double dp;
     double ddp;
     double visc;
-    double mass;
     double ttime;
     double r_vertex;
     double verlet_r;
@@ -85,7 +84,6 @@ class Simulator
         void rebuildDomainsList();
 
         void integrateEuler();
-        void integrateVv();
         void heunMethod();
         void midpointRungeKutta();
 

@@ -38,7 +38,6 @@ struct arguments
     double ddp;
     double eps;
     double visc;
-    double mass;
     double ttime;
     double r_vertex;                   /* vertex radius */
     double verlet_r;

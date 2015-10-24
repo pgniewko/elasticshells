@@ -57,7 +57,7 @@ static struct argp_option options[] =
     {"time",      't', "FLOAT", 0, "Total simulation time [default: 1.0]"},
     {"ns",        401,   "INT", 0, "Number of simulation steps [default: 10]"},
     {"dt",        402, "FLOAT", 0, "Time step [default: 0.001]"},
-    {"int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], Velocity-Verlet[vv] [default: fe]"},
+    {"int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk] [default: fe]"},
     {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Verlet-list[1], Linked-domains[2] [default: 0]"},
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
@@ -72,7 +72,6 @@ static struct argp_option options[] =
     {"scale",     415,       0, 0, "Scale the saved coordinates upon compression [default: false]"},
 
     {0,             0,       0, 0, "Cell Options:", 5},
-    {"mass",      'm', "FLOAT", 0, "Total mass of a cell [default: 60.0]"},
     {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
     {"ecw",       501, "FLOAT", 0, "Box Young's modulus [UNIT=0.1 MPa] [default: 2000.0]"},
     {"ir",        502, "FLOAT", 0, "Cells size at the initialization - lower limit [default:2.5"},
@@ -146,7 +145,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ddp = 0.0;
             arguments->eps = 0.0;
             arguments->visc = 100.0;
-            arguments->mass = 60.0;
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
             arguments->verlet_r = 2.0;
@@ -289,10 +287,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 415:
             arguments->scale_flag = true;
-            break;
-
-        case 'm':
-            arguments->mass = arg ? strtod (arg, NULL) : 1.0;
             break;
 
         case 500:

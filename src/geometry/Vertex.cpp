@@ -9,8 +9,7 @@ Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), numBonded(0), numTr
 Vertex::Vertex(Vector3D v) : r_c(v), numBonded(0), numTris(0),
     numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
-Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), v_c(orig.v_c),
-    r_p(orig.r_p), v_p(orig.v_p), f_p(orig.f_p),
+Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p), f_p(orig.f_p),
     numBonded(orig.numBonded), numTris(orig.numTris), numNbNeighs(orig.numNbNeighs), domainIdx(orig.domainIdx),
     myid(orig.myid), mass( orig.mass ), visc(orig.visc), gtimer(0.0), my_type(orig.my_type)
 {
@@ -232,13 +231,6 @@ void Vertex::voidForce()
     f_c.x = 0.0;
     f_c.y = 0.0;
     f_c.z = 0.0;
-}
-
-void Vertex::voidVelocity()
-{
-    v_c.x = 0.0;
-    v_c.y = 0.0;
-    v_c.z = 0.0;
 }
 
 int Vertex::setId(int idx)

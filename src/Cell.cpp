@@ -364,38 +364,6 @@ double Cell::getCellViscosity() const
     return v;
 }
 
-double Cell::getMass() const
-{
-    double totalMass = 0.0;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        totalMass += vertices[i].getMass();
-    }
-
-    return totalMass;
-}
-
-void Cell::setMass(double totm)
-{
-    params.vertexMass = totm / number_v;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        vertices[i].setMass(params.vertexMass);
-    }
-
-    params.totalMass = getMass();
-}
-
-void Cell::addVelocity(const Vector3D& nv)
-{
-    for (int i = 0; i < number_v; i++)
-    {
-        vertices[i].v_c += nv;
-    }
-}
-
 void Cell::addXYZ(const Vector3D& nxyz)
 {
     for (int i = 0; i < number_v; i++)

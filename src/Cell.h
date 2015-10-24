@@ -27,9 +27,7 @@ struct cell_params_t
     double verletR;
     double init_r;
     double vertexVisc;
-    double vertexMass;
     double totalVisc;
-    double totalMass;
     double growth_rate;
     double div_volume;
     double bud_d;
@@ -54,7 +52,6 @@ class Cell
         virtual ~Cell();
         double calcSurfaceArea() const;
         double calcVolume(double=0.0) const;
-        double getMass() const;
         void calcCM();
         int getNumberTriangles() const;
         int getNumberVertices() const;
@@ -70,7 +67,6 @@ class Cell
         void builtVerletList(const Cell&, const Box&);
         void builtNbList(std::vector<Cell>&, DomainList&, const Box&);
 
-        void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
 
         void setVertexR(double);
@@ -79,7 +75,6 @@ class Cell
         void setDp(double, double);
         void setSpringConst(double);
         void setVisc(double);
-        void setMass(double);
         void setCellId(int);
         void setNu(double);
 

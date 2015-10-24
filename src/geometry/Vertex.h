@@ -90,11 +90,9 @@ class Vertex
         const vertex_t& getMyType() const;
 
         Vector3D r_c;
-        Vector3D v_c;
         Vector3D f_c;
         
         Vector3D r_p;           // make it private
-        Vector3D v_p;           // make it private
         Vector3D f_p;
         
         

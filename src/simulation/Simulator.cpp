@@ -34,7 +34,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.dp = args.dp;
     params.ddp = args.ddp;
     params.visc = args.visc;
-    params.mass = args.mass;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     params.verlet_r = args.verlet_r;
@@ -271,7 +270,6 @@ void Simulator::addCell(double r0)
         newCell.setVertexR(params.r_vertex);
         newCell.setVerletR(params.verlet_r);
         newCell.setCellId(number_of_cells);
-        newCell.setMass(params.mass);
         newCell.setVisc(params.visc);
         newCell.setInitR(r0);
         newCell.setGrowthRate(params.growth_rate);
@@ -523,10 +521,6 @@ void Simulator::setIntegrator(char* token)
     {
         this->setIntegrator(&Simulator::midpointRungeKutta);
     }
-    else if (STRCMP (token, "vv"))
-    {
-        this->setIntegrator(&Simulator::integrateVv);
-    }
     else
     {
         this->setIntegrator(&Simulator::integrateEuler);
@@ -638,7 +632,6 @@ void Simulator::heunMethod()
 
 void Simulator::midpointRungeKutta()
 {
-    calcForces();
     double visc;
     double dt = params.dt;
 
@@ -650,6 +643,7 @@ void Simulator::midpointRungeKutta()
         }
     }
 
+    calcForces();
     //move half time-step and calculate  forces
     for (int i = 0; i < number_of_cells; i++)
     {
@@ -669,35 +663,6 @@ void Simulator::midpointRungeKutta()
         {
             visc = cells[i].vertices[j].getVisc();
             cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c / visc;
-        }
-    }
-}
-
-void Simulator::integrateVv()
-{
-    calcForces();
-    double m;
-    double dt = params.dt;
-
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c; // x(t+1)_a = x(t) + v(t)*dt
-            cells[i].vertices[j].r_c += 0.5 * dt * dt * cells[i].vertices[j].f_c / m; // x(t+1) = x(t+1)_a + 0.5*dt*dt* a(t)
-            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c / m; //v(t+1)_1 = v(t) + 0.5 * dt * a(t)
-        }
-    }
-
-    calcForces();
-
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
         }
     }
 }
