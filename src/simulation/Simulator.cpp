@@ -47,7 +47,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.platotype = args.platotype;
     setIntegrator(args.integrator_a);
     setTriangulator(args.tritype);
-    std::cout << args.bsx << " " << args.bsy << " " << args.bsz << " " << args.bsxe << " " << args.bsye << " " << args.bsze << std::endl; 
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
@@ -91,7 +90,7 @@ void Simulator::diagnoseParams(arguments args)
                                       "Single point representation is not implemented yet. "
                                       "Simulator is about to terminate !");
 
-    if (args.d > 7)
+    if (args.d > 8)
         throw DataException("DataException:\n"
                             "Depth of a triangulation too large ! "
                             "For machine's safety Simulator is about to terminate !");

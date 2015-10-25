@@ -32,7 +32,6 @@ class Scheduler
 {
     public:
         Scheduler();
-        //Scheduler(char*);
         Scheduler(const Scheduler& orig);
         virtual ~Scheduler();
         std::vector<std::string> readScheduleFile();
@@ -44,8 +43,6 @@ class Scheduler
         void printSchedule();
         void setDefault(int, int, double, double, double, double, double, double);
         void execute(double&, double&, double&);
-        //int total_time;
-        //int recent_time;
                    
     protected:
         std::string schedulefile;
