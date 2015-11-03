@@ -886,6 +886,86 @@ double Cell::strainEnergy(const Box& box) const
     return deps;
 }
 
+double Cell::maxStrain() const
+{
+    double max_strain = -10.0;
+    double eps = 0.0;
+    double r0, r;
+    int neigh_idx;
+
+    for (int i = 0; i < number_v; i++)
+    {
+        for (int j = 0; j < vertices[i].numBonded; j++)
+        {
+            r0 = vertices[i].r0[j];
+            neigh_idx = vertices[i].bondedVerts[j];
+            Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
+
+            r = dR.length();
+            eps = (r - r0) / r0;
+            
+            max_strain = std::max(max_strain, eps );
+            
+        }
+    }
+
+    return max_strain;
+}
+
+double Cell::minStrain() const
+{
+    double max_strain = 10.0;
+    double eps = 0.0;
+    double r0, r;
+    int neigh_idx;
+
+    for (int i = 0; i < number_v; i++)
+    {
+        for (int j = 0; j < vertices[i].numBonded; j++)
+        {
+            r0 = vertices[i].r0[j];
+            neigh_idx = vertices[i].bondedVerts[j];
+            Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
+
+            r = dR.length();
+            eps = (r - r0) / r0;
+            
+            max_strain = std::min(max_strain, eps);
+            
+        }
+    }
+
+    return max_strain;
+}
+
+double Cell::nbIntra(const Box& box) const
+{
+    Vector3D dij;
+    Vector3D fij;
+    double r1 = params.r_vertex;
+    double e1 = params.ecc;
+    double nu1 = params.nu;
+
+    double nb_energy = 0.0;
+    
+    for (int i = 0; i < number_v; i++)
+    {
+        for (int j = (i+1); j < number_v; j++)
+        {
+            getDistance(dij, vertices[j].r_c, vertices[i].r_c, box);
+            fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
+         
+            if ( fij.length() > 0.0 )
+            {
+                dij.setLength( 2 * r1 - dij.length() );
+                nb_energy += fabs( fij.x * dij.x + fij.y * dij.y + fij.z * dij.z );
+            }
+        }
+    }    
+    
+    return nb_energy;
+}
+
 double Cell::getTurgor() const
 {
     double turgor;

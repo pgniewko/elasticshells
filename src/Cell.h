@@ -110,6 +110,9 @@ class Cell
         double contactArea(const Cell&, const Box&) const;
         double contactArea(const Box&, double = 0.0) const;
         double strainEnergy(const Box&) const;
+        double maxStrain() const;
+        double minStrain() const;
+        double nbIntra(const Box&) const;
         double getTurgor() const;
         void update(double = 0.0);
 
