@@ -4,7 +4,7 @@ utils::Logger Simulator::simulator_logs("simulator");
 
 Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
-    traj(args.traj_file), log_sim(args.output_file, args.ob_config_file)
+    traj(args.traj_file, args.box_file), log_sim(args.output_file, args.ob_config_file)
 {
     try
     {
@@ -320,6 +320,7 @@ void Simulator::simulate(int steps)
                 traj.save(cells, getTotalVertices(), box.getXmax() / box.getX(),
                           box.getYmax() / box.getY(), box.getZmax() / box.getZ());
             }
+            traj.save_box(box, (i+1) * params.dt);
         }
 
         if ( (i + 1) % params.log_step == 0)

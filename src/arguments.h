@@ -7,8 +7,9 @@
 struct arguments
 {
     std::string render_file;            /* file arg to ‘--output’ */
-    std::string traj_file;              /* file arg to ‘--traj’ */
-    std::string output_file;            /* file arg to ‘--log’ */
+    std::string traj_file;
+    std::string box_file;
+    std::string output_file;
     std::string surface_file;
     std::string stress_file;
 

@@ -12,17 +12,20 @@
 class XyzTraj
 {
     public:
-        XyzTraj(std::string);
+        XyzTraj(std::string, std::string);
         XyzTraj(const XyzTraj& orig);
         virtual ~XyzTraj();
 
         void open();
         void close();
         void save(std::vector<Cell>&, int, double = 1.0, double = 1.0, double = 1.0);
+        void save_box(Box&, double);
 
     private:
         std::string trajfile;
+        std::string boxfile;
         FILE* os;
+        FILE* osb;
 
         static utils::Logger xyztraj_logs;
 };
