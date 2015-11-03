@@ -42,11 +42,9 @@ static struct argp_option options[] =
     {"quiet",       'q',  "INT",  OPTION_ARG_OPTIONAL, "Don't produce any output [default: 1]" },
     {"silent",      's',      0,  OPTION_ALIAS},
     {"input",       'i', "FILE",  0, "Input from FILE [default: ...]" },
-    {"render",      'r', "FILE",  0, "Output to FILE instead of standard output [default: ... ]" },
-    {"surf",        301, "FILE",  0, "Output to SURFACE-FILE instead of standard output [default: ... ]" },
-    {"out",         'o', "FILE",  0, "Print log to FILE instead of standard output [default: ... ]" },
-    {"xyz",         302, "FILE",  0, "Print trajectory to FILE [default: ... ]" },
-    {"ss",          303, "FILE",  0, "Print stress to FILE [default: ... ]" },
+    {"out-dir",     301, "FILE",  0, "... [default: ./output]" },
+    {"in-dir",      302,  "STR",  0, "... [default: ./input]" },
+    {"prefix",      303,  "STR",  0, "... [default: biofilm]" },
     {"seed",        304, "LONG",  0, "Random generator seed [default: 0x123] " },
     {"oc",          305, "FILE",  0, "Input file to configure observers [default: ./observers.config ]" },
     {"sch",         306, "FILE",  0, "Input file to configure compression schedule [default: ./schedule.config ]" },
@@ -62,7 +60,7 @@ static struct argp_option options[] =
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"vlist-step", 408,   "INT", 0, "Verlet-list step interval [default: 100]"},
+    {"vlist-step",408,   "INT", 0, "Verlet-list step interval [default: 100]"},
     {"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
@@ -119,11 +117,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->verbose = 1;
             arguments->debug = 0;
             arguments->abort = 0;
-            arguments->render_file = (char*)&"./output/render.py";
-            arguments->traj_file = (char*)&"./output/traj.xyz";
-            arguments->output_file = (char*)&"./output/biofilm.out";
-            arguments->surface_file = (char*)&"./output/surf.py";
-            arguments->stress_file = (char*)&"./output/stress.py";
+            arguments->files_prefix = (char*)&"biofilm";
+            arguments->output_dir = (char*)&"./output/";
+            arguments->input_dir  = (char*)&"./input/";
             arguments->ob_config_file = (char*)&"./input/observers.config";
             arguments->sch_config_file = (char*)&"./input/schedule.config";
             arguments->integrator_a = (char*)&"fe";
@@ -190,30 +186,18 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 'i':
             break;
 
-        case 'r':
-            arguments->render_file = arg;
-            break;
-
-        case 'o':
-            arguments->output_file = arg;
-            break;
-
         case 301:
-            arguments->surface_file = arg;
+            arguments->output_dir =  arg;
             break;
-
         case 302:
-            arguments->traj_file = arg;
+            arguments->input_dir  =  arg;
             break;
-
         case 303:
-            arguments->stress_file = arg;
+            arguments->files_prefix =  arg;
             break;
-
         case 304:
             arguments->seed =  arg ? atol (arg) : 0x123;
             break;
-
         case 305:
             arguments->ob_config_file = arg;
             break;
@@ -447,14 +431,20 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
+    arguments.render_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix)+ std::string(".py");
+    arguments.traj_file    = std::string(arguments.output_dir) + std::string(arguments.files_prefix)+ std::string(".xyz");
+    arguments.output_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix)+ std::string(".out");
+    arguments.surface_file = std::string(arguments.output_dir) + std::string(arguments.files_prefix)+ std::string(".surface.py");
+    arguments.stress_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix)+ std::string(".stress.py");
+    
     /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {arguments.seed, 0x234, 0x345, 0x456}, length = 4;
     init_by_array(init, length);
-    biofilm_logs << utils::LogLevel::FILE << "RENDER_FILE = " << arguments.render_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = " << arguments.traj_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = " << arguments.output_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = " << arguments.stress_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "RENDER_FILE = "      << arguments.render_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = "        << arguments.traj_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = "      << arguments.output_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = "     << arguments.surface_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
 
     clocks[0].tic();

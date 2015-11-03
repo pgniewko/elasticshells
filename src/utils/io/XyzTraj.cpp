@@ -2,7 +2,7 @@
 
 utils::Logger XyzTraj::xyztraj_logs("xyztraj");
 
-XyzTraj::XyzTraj(char* tf) : trajfile(tf) {}
+XyzTraj::XyzTraj(std::string tf) : trajfile(tf) {}
 
 XyzTraj::XyzTraj(const XyzTraj& orig) : trajfile(orig.trajfile) {}
 

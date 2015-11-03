@@ -17,7 +17,7 @@
 class LogSimulation
 {
     public:
-        LogSimulation(char*, char*);
+        LogSimulation(std::string, std::string);
         LogSimulation(const LogSimulation& orig);
         virtual ~LogSimulation();
 

@@ -4,7 +4,7 @@
 
 utils::Logger ScriptBuilder::scriptbuilder_logs("scriptbuilder");
 
-ScriptBuilder::ScriptBuilder(char* rs, char* ss, char* tf, char* sx) : 
+ScriptBuilder::ScriptBuilder(std::string rs, std::string ss, std::string tf, std::string sx) : 
 script(rs), surfaceScript(ss), trajfile(tf), stress_script(sx), drawBox(true) {}
 
 ScriptBuilder::ScriptBuilder(const ScriptBuilder& orig) : 

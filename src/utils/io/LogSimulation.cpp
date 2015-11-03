@@ -7,7 +7,7 @@ utils::Logger LogSimulation::log_logger("log_logger");
 //std::vector<std::string>& split(const std::string&, char , std::vector<std::string>&);
 //std::vector<std::string> split(const std::string&, char);
 
-LogSimulation::LogSimulation(char* lf, char* cf) : logfile(lf), configfile(cf) {}
+LogSimulation::LogSimulation(std::string lf, std::string cf) : logfile(lf), configfile(cf) {}
 
 LogSimulation::LogSimulation(const LogSimulation& orig) : logfile(orig.logfile), configfile(orig.configfile) {}
 

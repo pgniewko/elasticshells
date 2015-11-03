@@ -12,7 +12,7 @@
 class ScriptBuilder
 {
     public:
-        ScriptBuilder(char*, char*, char*, char*);
+        ScriptBuilder(std::string, std::string, std::string, std::string);
         ScriptBuilder(const ScriptBuilder& orig);
         virtual ~ScriptBuilder();
 

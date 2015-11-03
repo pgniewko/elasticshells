@@ -12,7 +12,7 @@
 class XyzTraj
 {
     public:
-        XyzTraj(char*);
+        XyzTraj(std::string);
         XyzTraj(const XyzTraj& orig);
         virtual ~XyzTraj();
 
