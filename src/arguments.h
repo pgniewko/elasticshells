@@ -11,21 +11,14 @@ struct arguments
     std::string output_file;            /* file arg to ‘--log’ */
     std::string surface_file;
     std::string stress_file;
-    
+
     char** strings;               /* [string...] */
 
     int silent, verbose, debug, abort;   /* '-s', '-v', '-d','--abort' */
 
-    char* files_prefix; 
+    char* files_prefix;
     char* output_dir;
     char* input_dir;
-    
-//    char* render_file;            /* file arg to ‘--output’ */
-//    char* traj_file;              /* file arg to ‘--traj’ */
-//    char* output_file;            /* file arg to ‘--log’ */
-//    char* surface_file;
-//    char* stress_file;
-    
     char* ob_config_file;
     char* sch_config_file;
 

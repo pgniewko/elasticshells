@@ -4,10 +4,10 @@ utils::Logger Scheduler::schedule_logger("schedule_logger");
 
 Scheduler::Scheduler() {}
 
-Scheduler::Scheduler(const Scheduler& orig) : 
-schedulefile(orig.schedulefile), default_schedule(orig.default_schedule), current_schedule(orig.current_schedule)
+Scheduler::Scheduler(const Scheduler& orig) :
+    schedulefile(orig.schedulefile), default_schedule(orig.default_schedule), current_schedule(orig.current_schedule)
 {
-    for(uint i = 0; i < orig.schedules.size(); i++)
+    for (uint i = 0; i < orig.schedules.size(); i++)
     {
         schedules.push_back(orig.schedules[i]);
     }
@@ -38,7 +38,7 @@ std::vector<std::string> Scheduler::readScheduleFile()
     }
 
     cfile.close();
-    return list;    
+    return list;
 }
 
 void Scheduler::registerSchedules()
@@ -82,12 +82,12 @@ void Scheduler::configureSchedule()
 
 void Scheduler::printSchedule()
 {
-    for (uint i= 0; i < schedules.size(); i++)
+    for (uint i = 0; i < schedules.size(); i++)
     {
         schedule_t s = schedules[i];
         std::cout << s.n_steps << " " << s.interval << " " << s.dx << " " << s.dy << " " << s.dz << " " << s.rx << " " << s.ry << " " << s.rz << std::endl;
     }
-    
+
     std::cout << "DEFAULT" << std::endl;
     std::cout << default_schedule.n_steps << " " << default_schedule.interval << " " << default_schedule.dx << " " << default_schedule.dy << " " << default_schedule.dz << " " << default_schedule.rx << " " << default_schedule.ry << " " << default_schedule.rz << std::endl;
 }
@@ -101,35 +101,38 @@ void Scheduler::execute(double& dx, double& dy, double& dz)
 {
     if (schedules.size() > 0)
     {
-        if((current_schedule.counter+1) % current_schedule.interval == 0)
+        if ((current_schedule.counter + 1) % current_schedule.interval == 0)
         {
             dx = current_schedule.dx + uniform(-current_schedule.rx, current_schedule.rx);
             dy = current_schedule.dy + uniform(-current_schedule.ry, current_schedule.ry);
             dz = current_schedule.dz + uniform(-current_schedule.rz, current_schedule.rz);
         }
-        
+
         current_schedule.counter++;
+
         if (current_schedule.counter > current_schedule.n_steps)
         {
-           
+
             schedules.erase(schedules.begin());
+
             if ( !schedules.empty() )
             {
                 current_schedule = schedules[0];
             }
-            
+
             schedule_logger << utils::LogLevel::FINEST << "NEW SCHEDULE ON THE STACK\n";
         }
     }
     else
     {
-        if((default_schedule.counter+1) % default_schedule.interval == 0)
+        if ((default_schedule.counter + 1) % default_schedule.interval == 0)
         {
             dx = default_schedule.dx + uniform(-default_schedule.rx, default_schedule.rx);
             dy = default_schedule.dy + uniform(-default_schedule.ry, default_schedule.ry);
             dz = default_schedule.dz + uniform(-default_schedule.rz, default_schedule.rz);
         }
+
         default_schedule.counter++;
     }
-        
+
 }

@@ -23,7 +23,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
 
     params.log_step = args.log_step;
     params.save_step = args.save_step;
-    //params.box_step = args.box_step;
     params.vlist_step = args.vlist_step;
     params.d = args.d;
     params.nbhandler = args.nb_flag;
@@ -50,9 +49,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
-    //box.setDx(args.bsdx);
-    //box.setDy(args.bsdy);
-    //box.setDz(args.bsdz);
     box.setXmax(args.bsx);
     box.setYmax(args.bsy);
     box.setZmax(args.bsz);
@@ -62,24 +58,14 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setPbc(args.pbc);
     box.setEwall(args.E_wall);
     box.setNu(args.nu);
-    //std::cout << args.sch_config_file << std::endl;
     box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configureScheduler(args.sch_config_file);
-    
+
     domains.setupDomainsList(getMaxLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     logParams();
 }
-
-//Simulator::Simulator(const Simulator& orig) : number_of_cells(orig.number_of_cells),
-//    params(orig.params),
-//    box(orig.box), sb(orig.sb), traj(orig.traj),
-//    log_sim(orig.log_sim)
-//{
-//    exit(EXIT_FAILURE);
-//    // throw an exception - disallowed behavior
-//}
 
 Simulator::~Simulator() {}
 
@@ -127,7 +113,6 @@ void Simulator::diagnoseParams(arguments args)
 void Simulator::logParams()
 {
     simulator_logs << utils::LogLevel::INFO  << "SIM_STEPS=" << params.nsteps << "\n";
-    //simulator_logs << utils::LogLevel::INFO  << "BOX_STEP="  << params.box_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "SAVE_STEP=" << params.save_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "VERLET_STEP="  << params.vlist_step << "\n";
@@ -154,9 +139,6 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Y="  << box.getY() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
-    //simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDx() << "\n";
-    //simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDy() << "\n";
-    //simulator_logs << utils::LogLevel::FINER << "BOX.DZ=" << box.getDz() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.XE=" << box.getXmin() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.YE=" << box.getYmin() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZmin() << "\n";
@@ -248,13 +230,11 @@ void Simulator::addCell(double r0)
 
         std::list<Triangle> tris;
 
-        //if (STRCMP (triangulator, "plato"))
         if ( !triangulator.compare("plato") )
         {
             PlatonicTriangulatoin tio(params.d, params.platotype);
             tris = tio.triangulate(r0);
         }
-        //else if (STRCMP (triangulator, "simple"))
         else if ( !triangulator.compare("simple") )
         {
             SimpleTriangulation sm(params.d);
@@ -292,7 +272,7 @@ void Simulator::simulate()
 void Simulator::simulate(int steps)
 {
     updateCells();
-    
+
     if (params.nbhandler == 1)
     {
         rebuildVerletLists();
@@ -312,6 +292,7 @@ void Simulator::simulate(int steps)
     log_sim.dumpState(box, cells);
 
     bool resized = false;
+
     for (int i = 0; i <= steps; i++)
     {
         if (params.nbhandler == 1)
@@ -349,10 +330,12 @@ void Simulator::simulate(int steps)
         //if ( (i + 1) % params.box_step == 0)
         //{
         resized = box.resize();
+
         if (resized)
         {
             domains.setBoxDim(box);
         }
+
         //}
 
         for (int i = 0; i < number_of_cells; i++)
@@ -525,7 +508,7 @@ void Simulator::setIntegrator(char* token)
         this->setIntegrator(&Simulator::integrateEuler);
         simulator_logs << utils::LogLevel::FINE  << "DEFAULT FORWARD EULER IS USED\n";
     }
-    
+
     if (integrator == NULL)
     {
         simulator_logs << utils::LogLevel::CRITICAL << "integrator == NULL";
@@ -556,7 +539,9 @@ void Simulator::setTriangulator(char* token)
 void Simulator::updateCells()
 {
     for (uint i = 0; i < cells.size(); i++)
+    {
         cells[i].update();
+    }
 }
 
 /*
@@ -643,6 +628,7 @@ void Simulator::midpointRungeKutta()
     }
 
     calcForces();
+
     //move half time-step and calculate  forces
     for (int i = 0; i < number_of_cells; i++)
     {

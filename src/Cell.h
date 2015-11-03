@@ -51,7 +51,7 @@ class Cell
         Cell(const Cell& orig);
         virtual ~Cell();
         double calcSurfaceArea() const;
-        double calcVolume(double=0.0) const;
+        double calcVolume(double = 0.0) const;
         void calcCM();
         int getNumberTriangles() const;
         int getNumberVertices() const;
@@ -111,7 +111,7 @@ class Cell
         double contactArea(const Box&, double = 0.0) const;
         double strainEnergy(const Box&) const;
         double getTurgor() const;
-        void update(double=0.0);
+        void update(double = 0.0);
 
     private:
         void grow(double);
@@ -127,7 +127,7 @@ class Cell
         Vector3D box_force(const Box&, const int) const;
 
         double sumL2() const;
-        
+
         cell_params_t params;
         cell_phase_t my_phase;
         int number_v;

@@ -91,11 +91,11 @@ class Vertex
 
         Vector3D r_c;
         Vector3D f_c;
-        
+
         Vector3D r_p;           // make it private
         Vector3D f_p;
-        
-        
+
+
         int bondedVerts[NEIGH_MAX];
         double r0[NEIGH_MAX];
 

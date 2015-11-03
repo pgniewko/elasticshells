@@ -57,7 +57,7 @@ class Box
         double getZEdge(const double = 0.0) const;
         double getNu() const;
         double getE() const;
-        
+
         void configureScheduler(char*);
         void setDefaultSchedule(int, int, double, double, double, double, double, double);
 
@@ -76,9 +76,9 @@ class Box
         //double dz;
         double E_box;
         double nu;
-        
+
         static utils::Logger box_logger;
-        
+
         Scheduler my_schedule;
 };
 

@@ -4,11 +4,11 @@
 
 utils::Logger ScriptBuilder::scriptbuilder_logs("scriptbuilder");
 
-ScriptBuilder::ScriptBuilder(std::string rs, std::string ss, std::string tf, std::string sx) : 
-script(rs), surfaceScript(ss), trajfile(tf), stress_script(sx), drawBox(true) {}
+ScriptBuilder::ScriptBuilder(std::string rs, std::string ss, std::string tf, std::string sx) :
+    script(rs), surfaceScript(ss), trajfile(tf), stress_script(sx), drawBox(true) {}
 
-ScriptBuilder::ScriptBuilder(const ScriptBuilder& orig) : 
-script(orig.script), surfaceScript(orig.surfaceScript), trajfile(orig.trajfile), stress_script(orig.stress_script), drawBox(orig.drawBox) {}
+ScriptBuilder::ScriptBuilder(const ScriptBuilder& orig) :
+    script(orig.script), surfaceScript(orig.surfaceScript), trajfile(orig.trajfile), stress_script(orig.stress_script), drawBox(orig.drawBox) {}
 
 ScriptBuilder::~ScriptBuilder() {}
 
@@ -21,6 +21,7 @@ void ScriptBuilder::saveSurfaceScript(const std::vector<Cell>& cells)
 {
     std::ofstream os;
     os.open(surfaceScript);
+
     if ( os.is_open() )
     {
         os << "from pymol.cgo import *\n";
@@ -77,8 +78,9 @@ void ScriptBuilder::saveSurfaceScript(const std::vector<Cell>& cells)
                 faceCounter++;
             }
 
-           lastCellIndex += cells[i].getNumberVertices();
+            lastCellIndex += cells[i].getNumberVertices();
         }
+
         os.close();
     }
     else
@@ -92,6 +94,7 @@ void ScriptBuilder::saveRenderScript(const std::vector<Cell>& cells, const Box& 
 {
     std::ofstream os;
     os.open(script);
+
     if ( os.is_open() )
     {
         os << "from pymol.cgo import *\n";
@@ -201,6 +204,7 @@ void ScriptBuilder::saveStressScript(const std::vector<Cell>& cells, const Box& 
 {
     std::ofstream os;
     os.open(stress_script);
+
     if ( os.is_open() )
     {
         os << "from pymol.cgo import *\n";

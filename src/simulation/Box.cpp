@@ -40,9 +40,9 @@ bool Box::resize()
     double dx = 0.0;
     double dy = 0.0;
     double dz = 0.0;
-    
+
     my_schedule.execute(dx, dy, dz);
-    
+
     if (x + dx >= x_min && x + dx <= x_max)
     {
         x += dx;
@@ -57,11 +57,15 @@ bool Box::resize()
     {
         z += dz;
     }
-    
+
     if (dx == 0 && dy == 0 && dz == 0)
+    {
         return false;
+    }
     else
+    {
         return true;
+    }
 }
 
 double Box::getVolume(const double rv) const

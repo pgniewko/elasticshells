@@ -21,11 +21,9 @@ class XyzTraj
         void save(std::vector<Cell>&, int, double = 1.0, double = 1.0, double = 1.0);
 
     private:
-
-//        char* trajfile;
         std::string trajfile;
         FILE* os;
-        
+
         static utils::Logger xyztraj_logs;
 };
 

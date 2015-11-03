@@ -515,7 +515,7 @@ double Cell::sumL2() const
 void Cell::randomRotate()
 {
     calcCM();
-    //  
+    //
     double u1 = uniform();
     double u2 = uniform();
     double u3 = uniform();
@@ -563,12 +563,13 @@ double Cell::project_force(const Cell& other_cell, const Box& box, const Vector3
     double totAi = 0.0;
     double nj_fi = 0.0;
     double Aj = 0.0;
-    Vector3D nj(0,0,0);
+    Vector3D nj(0, 0, 0);
     int tj;
 
     for (int j = 0; j < vertices[vidx].numTris; j++)
     {
         tj = vertices[vidx].getTriangleId(j);
+
         if ( isInContact(tj, other_cell, box) )
         {
             nj = triangles[tj].normal(vertices);
@@ -589,7 +590,7 @@ double Cell::project_force(const Cell& other_cell, const Box& box, const Vector3
     {
         fi = 0.0;
     }
-    
+
     return fi;
 }
 
@@ -605,6 +606,7 @@ double Cell::project_force(const Box& box, const Vector3D& force_collector, cons
     for (int j = 0; j < vertices[vidx].numTris; j++)
     {
         tj = vertices[vidx].getTriangleId(j);
+
         if ( isInContact(tj, box) )
         {
             nj = triangles[tj].normal(vertices);
@@ -625,7 +627,7 @@ double Cell::project_force(const Box& box, const Vector3D& force_collector, cons
     {
         fi = 0.0;
     }
-    
+
     return fi;
 }
 
@@ -641,7 +643,7 @@ double Cell::contactForce(const Cell& other_cell, const Box& box) const
     double e2 = other_cell.params.ecc;
     double nu1 = params.nu;
     double nu2 = other_cell.params.nu;
-    
+
     double fi;
 
     for (int i = 0; i < number_v; i++)
@@ -654,11 +656,12 @@ double Cell::contactForce(const Cell& other_cell, const Box& box) const
                 force_collector += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
             }
         }
-        
+
         fi = project_force(other_cell, box, force_collector, i);
         contact_force += fi;
         force_collector = Vector3D(0, 0, 0);
     }
+
     return contact_force;
 }
 
@@ -669,7 +672,7 @@ Vector3D Cell::box_force(const Box& box, const int vix) const
     Vector3D wallXY(0, 0, 0);
     Vector3D force_collector(0, 0, 0);
     Vector3D djk(0, 0, 0);
-    
+
     double sgnx, sgny, sgnz;
     double bsx = box.getX();
     double bsy = box.getY();
@@ -680,9 +683,9 @@ Vector3D Cell::box_force(const Box& box, const int vix) const
     double e1 = getE();
     double r1 = getVertexR();
     double nu1 = getNu();
-    
+
     Vector3D vertXYZ = vertices[vix].r_c;
-    
+
     sgnx = SIGN(vertXYZ.x);
     wallYZ.x = sgnx * bsx;
     wallYZ.y = vertXYZ.y;
@@ -703,7 +706,7 @@ Vector3D Cell::box_force(const Box& box, const int vix) const
     wallXY.z = sgnz * bsz;
     djk = vertXYZ - wallXY;
     force_collector += HertzianRepulsion::calcForce(djk, r1, rb_, e1, eb, nu1, nub);
-        
+
     return force_collector;
 }
 
@@ -716,7 +719,7 @@ double Cell::contactForce(const Box& box) const
 
     Vector3D force_collector(0, 0, 0);
     double contact_force = 0.0;
-    
+
     for (int i = 0; i < number_v; i++)
     {
         force_collector = box_force(box, i);
@@ -732,7 +735,7 @@ double Cell::contactForceSF(const Box& box) const
     {
         return 0.0;
     }
-    
+
     Vector3D force_collector(0, 0, 0);
 
     double contact_force = 0.0;
@@ -811,7 +814,7 @@ bool Cell::isInContact(int t_idx, const Box& box) const
     Vector3D fc1 = box_force(box, idx1);
     Vector3D fc2 = box_force(box, idx2);
     Vector3D fc3 = box_force(box, idx3);
-    
+
     if ( (fc1.length() * fc2.length()* fc3.length()) > 0)
     {
         return true;
@@ -843,7 +846,7 @@ double Cell::contactArea(const Box& box, double d_param) const
     {
         if ( isInContact(t_idx, box) )
         {
-            //TODO: this condition is confusing. 
+            //TODO: this condition is confusing.
             // It should be rather the other way around.
             // When changing be careful about changing observables.config parameters
             // Two classes are influenced by this code: CellBoxStress and WallCoverageFraction.
@@ -854,7 +857,7 @@ double Cell::contactArea(const Box& box, double d_param) const
             else
             {
                 contact_area += triangles[t_idx].area(vertices, cm_m, params.r_vertex);
-            }            
+            }
         }
     }
 
@@ -874,7 +877,7 @@ double Cell::strainEnergy(const Box& box) const
             r0 = vertices[i].r0[j];
             neigh_idx = vertices[i].bondedVerts[j];
             Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
-            
+
             r = dR.length();
             deps += 0.5 * params.gamma * (r0 - r) * (r0 - r);
         }

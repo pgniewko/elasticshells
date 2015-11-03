@@ -11,9 +11,10 @@ XyzTraj::~XyzTraj() {}
 void XyzTraj::open()
 {
     os = fopen(trajfile.c_str(), "w");
+
     if ( os == NULL )
     {
-       xyztraj_logs << utils::LogLevel::WARNING << "Can not open file:" <<  trajfile << "\n";
+        xyztraj_logs << utils::LogLevel::WARNING << "Can not open file:" <<  trajfile << "\n";
     }
 }
 

@@ -60,7 +60,7 @@ static struct argp_option options[] =
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"vlist-step",408,   "INT", 0, "Verlet-list step interval [default: 100]"},
+    {"vlist-step", 408,   "INT", 0, "Verlet-list step interval [default: 100]"},
     {"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
@@ -189,21 +189,26 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 301:
             arguments->output_dir =  arg;
             break;
+
         case 302:
             arguments->input_dir  =  arg;
             break;
+
         case 303:
             arguments->files_prefix =  arg;
             break;
+
         case 304:
             arguments->seed =  arg ? atol (arg) : 0x123;
             break;
+
         case 305:
             arguments->ob_config_file = arg;
             break;
+
         case 306:
             arguments->sch_config_file = arg;
-            break;    
+            break;
 
         case 'n':
             arguments->n_cells = arg ? atoi (arg) : 1;
@@ -431,12 +436,12 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
-    arguments.render_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix)+ std::string(".py");
-    arguments.traj_file    = std::string(arguments.output_dir) + std::string(arguments.files_prefix)+ std::string(".xyz");
-    arguments.output_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix)+ std::string(".out");
-    arguments.surface_file = std::string(arguments.output_dir) + std::string(arguments.files_prefix)+ std::string(".surface.py");
-    arguments.stress_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix)+ std::string(".stress.py");
-    
+    arguments.render_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".py");
+    arguments.traj_file    = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".xyz");
+    arguments.output_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".out");
+    arguments.surface_file = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".surface.py");
+    arguments.stress_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".stress.py");
+
     /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {arguments.seed, 0x234, 0x345, 0x456}, length = 4;
     init_by_array(init, length);

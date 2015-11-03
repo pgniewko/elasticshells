@@ -24,17 +24,12 @@ class ScriptBuilder
         void setDrawBox(bool);
     private:
         void printBox(std::ofstream&, const Box&);
-        //char* script;
-        //char* stress_script;
-        //char* surfaceScript;
-        //char* trajfile;
-        
         std::string script;
         std::string surfaceScript;
         std::string trajfile;
         std::string stress_script;
         bool drawBox;
-        
+
         static utils::Logger scriptbuilder_logs;
 };
 
