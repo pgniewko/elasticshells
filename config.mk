@@ -25,7 +25,7 @@ DFLAGS   := -DTESTS
 
 CXXFLAGS := -lm -Wall -O3 -std=gnu++0x -fopenmp -fpermissive $(INCLUDE) -Duint="unsigned int" -Dulong="unsigned long"
 LDFLAGS  := $(LIB)
-LDLIBS   := -lm -lsteinhardt -lgsl -lgslcblas
+LDLIBS   := -largp -lcppunit -ldl -lsteinhardt -lgsl -lgslcblas
 
 
 # Local dirs 
