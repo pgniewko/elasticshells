@@ -948,17 +948,23 @@ double Cell::nbIntra(const Box& box) const
 
     double nb_energy = 0.0;
     
+    int vertid;
+    
     for (int i = 0; i < number_v; i++)
     {
-        for (int j = (i+1); j < number_v; j++)
+        for (int j = 0; j < vertices[i].numNbNeighs; j++)
         {
-            getDistance(dij, vertices[j].r_c, vertices[i].r_c, box);
-            fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
-         
-            if ( fij.length() > 0.0 )
+            if (vertices[i].nbCellsIdx[j] == cell_id)
             {
-                dij.setLength( 2 * r1 - dij.length() );
-                nb_energy += fabs( fij.x * dij.x + fij.y * dij.y + fij.z * dij.z );
+                vertid = vertices[i].nbVerts[j];
+                getDistance(dij, vertices[vertid].r_c, vertices[i].r_c, box);
+                fij += HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
+                
+                if ( fij.length() > 0.0 )
+                {
+                    dij.setLength( 2 * r1 - dij.length() );
+                    nb_energy += fabs( fij.x * dij.x + fij.y * dij.y + fij.z * dij.z );
+                }
             }
         }
     }    

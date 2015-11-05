@@ -1,5 +1,3 @@
-#include <c++/4.6/iosfwd>
-
 #include "LogSimulation.h"
 
 utils::Logger LogSimulation::log_logger("log_logger");
