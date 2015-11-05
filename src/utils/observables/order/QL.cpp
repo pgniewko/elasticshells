@@ -8,22 +8,13 @@ QL::QL(const QL& orig) : Observer(orig)
 
 QL::~QL() {}
 
-void QL::set_params(int num, ...)
-{
-    va_list arguments;
-    va_start (arguments, num);
-    i_param = va_arg(arguments, int);
-    d_param = va_arg(arguments, double);
-    va_end( arguments );
-}
-
-void QL::set_params(int num, std::vector<std::string> args_)
+void QL::set_params(const int num, std::vector<std::string> args_)
 {
     i_param = atoi(args_[ num + 0 ].c_str());
     d_param = strtod(args_[ num + 1 ].c_str(), NULL);
 }
 
-double QL::observe(Box& box, std::vector<Cell>& cells)
+double QL::observe(const Box& box, std::vector<Cell>& cells)
 {
     double qlsum = 0.0;
     double N = 0.0;
@@ -51,9 +42,9 @@ double QL::calcQl(Cell& cell)
 
     for (int i = 0; i < n ; i++)
     {
-        x[i] = cell.vertices[i].xyz.x;
-        y[i] = cell.vertices[i].xyz.y;
-        z[i] = cell.vertices[i].xyz.z;
+        x[i] = cell.vertices[i].r_c.x;
+        y[i] = cell.vertices[i].r_c.y;
+        z[i] = cell.vertices[i].r_c.z;
     }
 
     qlRe = (double*) malloc ((i_param + 1) * sizeof (double));

@@ -27,7 +27,6 @@ struct params_t
 {
     int log_step;
     int save_step;
-    int box_step;
     int vlist_step;
     int nsteps;
     int d;
@@ -41,7 +40,6 @@ struct params_t
     double dp;
     double ddp;
     double visc;
-    double mass;
     double ttime;
     double r_vertex;
     double verlet_r;
@@ -86,16 +84,17 @@ class Simulator
         void rebuildDomainsList();
 
         void integrateEuler();
-        void integrateVv();
         void heunMethod();
         void midpointRungeKutta();
 
         int getTotalVertices();
         double getMaxLengthScale();
 
+        void updateCells();
 
         int number_of_cells;
-        char* triangulator;
+        //char* triangulator;
+        std::string triangulator;
         params_t params;
 
         std::vector<Cell> cells;

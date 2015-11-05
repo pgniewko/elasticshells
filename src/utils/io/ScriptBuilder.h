@@ -2,6 +2,7 @@
 #define	SCRIPTBUILDER_H
 
 #include <vector>
+#include <string>
 
 #include "Cell.h"
 #include "utils/utils.h"
@@ -11,23 +12,25 @@
 class ScriptBuilder
 {
     public:
-        ScriptBuilder(char*, char*, char*, char*);
+        ScriptBuilder(std::string, std::string, std::string, std::string);
         ScriptBuilder(const ScriptBuilder& orig);
         virtual ~ScriptBuilder();
 
-        void printBox(std::ofstream&, Box&);
-        void saveRenderScript(std::vector<Cell>&, Box&, bool = false, double = 0.1);
-        void saveSurfaceScript(std::vector<Cell>&);
+        void saveRenderScript(const std::vector<Cell>&, const Box&, bool = false, double = 0.1);
+        void saveSurfaceScript(const std::vector<Cell>&);
 
-        void saveStressScript(std::vector<Cell>&, Box&);
+        void saveStressScript(const std::vector<Cell>&, const Box&);
         void saveBfactors();
         void setDrawBox(bool);
     private:
-        char* script;
-        char* stress_script;
-        char* surfaceScript;
-        char* trajfile;
+        void printBox(std::ofstream&, const Box&);
+        std::string script;
+        std::string surfaceScript;
+        std::string trajfile;
+        std::string stress_script;
         bool drawBox;
+
+        static utils::Logger scriptbuilder_logs;
 };
 
 #endif	/* SCRIPTBUILDER_H */

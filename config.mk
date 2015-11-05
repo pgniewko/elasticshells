@@ -2,6 +2,9 @@
 # Email  : pawel.gniewek@berkeley.edu
 # License: BSD
 
+# C compiler
+CC	 := gcc
+
 # C++ compiler
 CXX      := g++-4.9
 
@@ -20,13 +23,9 @@ INCLUDE  := -I/usr/local/include -I$(CURDIR)/src
 LIB      := -L/usr/lib -L/usr/local/lib
 DFLAGS   := -DTESTS
 
-#<<<<<<< HEAD
 CXXFLAGS := -lm -Wall -O3 -std=gnu++0x -fopenmp -fpermissive $(INCLUDE) -Duint="unsigned int" -Dulong="unsigned long"
-#=======
-#CXXFLAGS := -lm -Wall -O3 -std=gnu++0x -fopenmp $(INCLUDE)
-#>>>>>>> 7fd32f655f3629f28f09debd2cb0341a0aedcb0c
 LDFLAGS  := $(LIB)
-LDLIBS   := -largp -lcppunit -ldl -lsteinhardt -lgsl -lgslcblas
+LDLIBS   := -lm -lsteinhardt -lgsl -lgslcblas
 
 
 # Local dirs 

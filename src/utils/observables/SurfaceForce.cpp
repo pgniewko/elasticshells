@@ -6,22 +6,17 @@ SurfaceForce::SurfaceForce(const SurfaceForce& orig) : Observer(orig) {}
 
 SurfaceForce::~SurfaceForce() {}
 
-void SurfaceForce::set_params(int num, ...)
+void SurfaceForce::set_params(const int num, std::vector<std::string> args_)
 {
     return;
 };
 
-void SurfaceForce::set_params(int num, std::vector<std::string> args_)
-{
-    return;
-};
-
-double SurfaceForce::observe(Box& box, std::vector<Cell>& cells)
+double SurfaceForce::observe(const Box& box, std::vector<Cell>& cells)
 {
     return SurfaceForce::calcTotalForce(box, cells);
 }
 
-double SurfaceForce::calcTotalForce(Box& box, std::vector<Cell>& cells)
+double SurfaceForce::calcTotalForce(const Box& box, std::vector<Cell>& cells)
 {
     if (box.pbc)
     {

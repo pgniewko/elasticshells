@@ -84,7 +84,7 @@ int Tinker::getVertex(Cell& cell, const Vector3D& v)
 {
     for (int i = 0; i < cell.number_v; i++)
     {
-        if (cell.vertices[i].xyz.x == v.x && cell.vertices[i].xyz.y == v.y && cell.vertices[i].xyz.z == v.z)
+        if (cell.vertices[i].r_c.x == v.x && cell.vertices[i].r_c.y == v.y && cell.vertices[i].r_c.z == v.z)
         {
             return cell.vertices[i].getId();
         }
@@ -100,9 +100,9 @@ void Tinker::constructTopology(Cell& cell)
         int aid = cell.triangles[i].ia;
         int bid = cell.triangles[i].ib;
         int cid = cell.triangles[i].ic;
-        Vector3D ab = cell.vertices[aid].xyz - cell.vertices[bid].xyz;
-        Vector3D ac = cell.vertices[aid].xyz - cell.vertices[cid].xyz;
-        Vector3D bc = cell.vertices[bid].xyz - cell.vertices[cid].xyz;
+        Vector3D ab = cell.vertices[aid].r_c - cell.vertices[bid].r_c;
+        Vector3D ac = cell.vertices[aid].r_c - cell.vertices[cid].r_c;
+        Vector3D bc = cell.vertices[bid].r_c - cell.vertices[cid].r_c;
         double abl = ab.length();
         double acl = ac.length();
         double bcl = bc.length();
@@ -175,7 +175,7 @@ void Tinker::grow(Cell& cell)
         }
     }
 
-    Vector3D newcoor = 0.5 * (cell.vertices[vert1].xyz + cell.vertices[vert2].xyz);
+    Vector3D newcoor = 0.5 * (cell.vertices[vert1].r_c + cell.vertices[vert2].r_c);
     cell.vertices[cell.number_v] = Vertex(newcoor.x, newcoor.y, newcoor.z);
     cell.vertices[cell.number_v].setId(cell.number_v);
     cell.vertices[cell.number_v].setMass(cell.vertices[vertexId].getMass());
@@ -226,16 +226,16 @@ void Tinker::grow(Cell& cell)
     // CREATE NEW BONDS
     Vector3D ab;
     // /*
-    ab = cell.vertices[newid].xyz - cell.vertices[vert1].xyz;
+    ab = cell.vertices[newid].r_c - cell.vertices[vert1].r_c;
     cell.vertices[newid].addNeighbor(vert1, ab.length() );
     cell.vertices[vert1].addNeighbor(newid, ab.length() );
-    ab = cell.vertices[newid].xyz - cell.vertices[vert2].xyz;
+    ab = cell.vertices[newid].r_c - cell.vertices[vert2].r_c;
     cell.vertices[newid].addNeighbor(vert2, ab.length() );
     cell.vertices[vert2].addNeighbor(newid, ab.length() );
-    ab = cell.vertices[newid].xyz - cell.vertices[vertexId].xyz;
+    ab = cell.vertices[newid].r_c - cell.vertices[vertexId].r_c;
     cell.vertices[newid].addNeighbor(vertexId, ab.length() );
     cell.vertices[vertexId].addNeighbor(newid, ab.length() );
-    ab = cell.vertices[newid].xyz - cell.vertices[vert3].xyz;
+    ab = cell.vertices[newid].r_c - cell.vertices[vert3].r_c;
     cell.vertices[newid].addNeighbor(vert3, ab.length() );
     cell.vertices[vert3].addNeighbor(newid, ab.length() );
     //*/
@@ -312,7 +312,7 @@ int Tinker::getLonelyVertex(Cell& cell)
         {
             I = vidx[i];
             J = vidx[j];
-            double r = (cell.vertices[J].xyz - cell.vertices[I].xyz).length() ;
+            double r = (cell.vertices[J].r_c - cell.vertices[I].r_c).length() ;
 
             if (r <= cutoff && J != I)
             {
@@ -367,7 +367,8 @@ int Tinker::getOldestVertex(Cell& cell)
     }
 
     double ptot = 0.0;
-    int I, J;
+    int I;
+//    int J;
 
     for (int i = 0; i < vertexCounter; i++)
     {

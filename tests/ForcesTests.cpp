@@ -63,9 +63,9 @@ void ForcesTests::testHookeanForce()
 void ForcesTests::testHertzianForce()
 {
     Vector3D f;
-    f = HertzianRepulsion::calcForce(*v2 - *v1, 1.0, 100.0);
+    f = HertzianRepulsion::calcForce(*v2 - *v1, 1.0, 100.0, 1.0, 1.0, 0.5, 0.5);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, f.length(), DELTA14);
-    f = HertzianRepulsion::calcForce(0.5 * (*v2 - *v1), 1.0 , 100.0);
+    f = HertzianRepulsion::calcForce(0.5 * (*v2 - *v1), 1.0 , 100.0, 1.0, 1.0, 0.5, 0.5);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(47.140452079103173, f.length(), DELTA7);
 }
 

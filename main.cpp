@@ -42,13 +42,12 @@ static struct argp_option options[] =
     {"quiet",       'q',  "INT",  OPTION_ARG_OPTIONAL, "Don't produce any output [default: 1]" },
     {"silent",      's',      0,  OPTION_ALIAS},
     {"input",       'i', "FILE",  0, "Input from FILE [default: ...]" },
-    {"render",      'r', "FILE",  0, "Output to FILE instead of standard output [default: ... ]" },
-    {"surf",        301, "FILE",  0, "Output to SURFACE-FILE instead of standard output [default: ... ]" },
-    {"out",         'o', "FILE",  0, "Print log to FILE instead of standard output [default: ... ]" },
-    {"xyz",         302, "FILE",  0, "Print trajectory to FILE [default: ... ]" },
-    {"ss",          303, "FILE",  0, "Print stress to FILE [default: ... ]" },
+    {"out-dir",     301, "FILE",  0, "... [default: ./output]" },
+    {"in-dir",      302,  "STR",  0, "... [default: ./input]" },
+    {"prefix",      303,  "STR",  0, "... [default: biofilm]" },
     {"seed",        304, "LONG",  0, "Random generator seed [default: 0x123] " },
     {"oc",          305, "FILE",  0, "Input file to configure observers [default: ./observers.config ]" },
+    {"sch",         306, "FILE",  0, "Input file to configure compression schedule [default: ./schedule.config ]" },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0,             0,       0, 0, "Simulation Options:", 4},
@@ -56,7 +55,7 @@ static struct argp_option options[] =
     {"time",      't', "FLOAT", 0, "Total simulation time [default: 1.0]"},
     {"ns",        401,   "INT", 0, "Number of simulation steps [default: 10]"},
     {"dt",        402, "FLOAT", 0, "Time step [default: 0.001]"},
-    {"int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], Velocity-Verlet[vv] [default: fe]"},
+    {"int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk] [default: fe]"},
     {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Verlet-list[1], Linked-domains[2] [default: 0]"},
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
@@ -71,7 +70,6 @@ static struct argp_option options[] =
     {"scale",     415,       0, 0, "Scale the saved coordinates upon compression [default: false]"},
 
     {0,             0,       0, 0, "Cell Options:", 5},
-    {"mass",      'm', "FLOAT", 0, "Total mass of a cell [default: 60.0]"},
     {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
     {"ecw",       501, "FLOAT", 0, "Box Young's modulus [UNIT=0.1 MPa] [default: 2000.0]"},
     {"ir",        502, "FLOAT", 0, "Cells size at the initialization - lower limit [default:2.5"},
@@ -96,9 +94,9 @@ static struct argp_option options[] =
     {"bsdx",      604, "FLOAT", 0, "dx of Box size [default: 0.0]"},
     {"bsdy",      605, "FLOAT", 0, "dy of Box size [default: 0.0]"},
     {"bsdz",      606, "FLOAT", 0, "dz of Box size [default: 0.0]"},
-    {"bsxe",      607, "FLOAT", 0, "X end of Box size [default: 0.0]"},
-    {"bsye",      608, "FLOAT", 0, "Y end of Box size [default: 0.0]"},
-    {"bsze",      609, "FLOAT", 0, "Z end of Box size [default: 0.0]"},
+    {"bsxe",      607, "FLOAT", 0, "X end of Box size [default: 10.0]"},
+    {"bsye",      608, "FLOAT", 0, "Y end of Box size [default: 10.0]"},
+    {"bsze",      609, "FLOAT", 0, "Z end of Box size [default: 10.0]"},
     {0}
 };
 
@@ -119,12 +117,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->verbose = 1;
             arguments->debug = 0;
             arguments->abort = 0;
-            arguments->render_file = (char*)&"./data/render.py";
-            arguments->traj_file = (char*)&"./data/traj.xyz";
-            arguments->output_file = (char*)&"./data/biofilm.out";
-            arguments->surface_file = (char*)&"./data/surf.py";
-            arguments->stress_file = (char*)&"./data/stress.py";
-            arguments->ob_config_file = (char*)&"./observers.config";
+            arguments->files_prefix = (char*)&"biofilm";
+            arguments->output_dir = (char*)&"./output/";
+            arguments->input_dir  = (char*)&"./input/";
+            arguments->ob_config_file = (char*)&"./input/observers.config";
+            arguments->sch_config_file = (char*)&"./input/schedule.config";
             arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
             arguments->d = 3;
@@ -144,7 +141,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ddp = 0.0;
             arguments->eps = 0.0;
             arguments->visc = 100.0;
-            arguments->mass = 60.0;
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
             arguments->verlet_r = 2.0;
@@ -190,24 +186,16 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 'i':
             break;
 
-        case 'r':
-            arguments->render_file = arg;
-            break;
-
-        case 'o':
-            arguments->output_file = arg;
-            break;
-
         case 301:
-            arguments->surface_file = arg;
+            arguments->output_dir =  arg;
             break;
 
         case 302:
-            arguments->traj_file = arg;
+            arguments->input_dir  =  arg;
             break;
 
         case 303:
-            arguments->stress_file = arg;
+            arguments->files_prefix =  arg;
             break;
 
         case 304:
@@ -216,6 +204,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 305:
             arguments->ob_config_file = arg;
+            break;
+
+        case 306:
+            arguments->sch_config_file = arg;
             break;
 
         case 'n':
@@ -284,10 +276,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 415:
             arguments->scale_flag = true;
-            break;
-
-        case 'm':
-            arguments->mass = arg ? strtod (arg, NULL) : 1.0;
             break;
 
         case 500:
@@ -448,14 +436,22 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
+    arguments.render_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".py");
+    arguments.traj_file    = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".xyz");
+    arguments.box_file     = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".box.xyz");
+    arguments.output_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".out");
+    arguments.surface_file = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".surface.py");
+    arguments.stress_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".stress.py");
+
     /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {arguments.seed, 0x234, 0x345, 0x456}, length = 4;
     init_by_array(init, length);
-    biofilm_logs << utils::LogLevel::FILE << "RENDER_FILE = " << arguments.render_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = " << arguments.traj_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = " << arguments.output_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = " << arguments.surface_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = " << arguments.stress_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "RENDER_FILE = "      << arguments.render_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = "        << arguments.traj_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "BOX_FILE = "         << arguments.box_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = "      << arguments.output_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = "     << arguments.surface_file << "\n";
+    biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
 
     clocks[0].tic();

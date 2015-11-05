@@ -1,16 +1,15 @@
 #include "Vertex.h"
 
-Vertex::Vertex() : xyz(0, 0, 0), numBonded(0), numTris(0), numNbNeighs(0),
+Vertex::Vertex() : r_c(0, 0, 0), numBonded(0), numTris(0), numNbNeighs(0),
     domainIdx(-1), myid(-1), mass(1.0), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
-Vertex::Vertex(double x, double y, double z) : xyz(x, y, z), numBonded(0), numTris(0),
+Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), numBonded(0), numTris(0),
     numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
-Vertex::Vertex(Vector3D v) : xyz(v), numBonded(0), numTris(0),
+Vertex::Vertex(Vector3D v) : r_c(v), numBonded(0), numTris(0),
     numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
-Vertex::Vertex(const Vertex& orig) : xyz(orig.xyz), force(orig.force), velocity(orig.velocity),
-    tmp_xyz(orig.tmp_xyz), tmp_force(orig.tmp_force), tmp_velocity(orig.tmp_velocity),
+Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p), f_p(orig.f_p),
     numBonded(orig.numBonded), numTris(orig.numTris), numNbNeighs(orig.numNbNeighs), domainIdx(orig.domainIdx),
     myid(orig.myid), mass( orig.mass ), visc(orig.visc), gtimer(0.0), my_type(orig.my_type)
 {
@@ -193,7 +192,7 @@ void Vertex::addNbNeighbor(int vertIdx, int cellIdx)
 }
 
 
-bool Vertex::isNeighbor(int vidx)
+bool Vertex::isNeighbor(int vidx) const
 {
     for (int i = 0; i < numBonded; i++)
     {
@@ -229,16 +228,9 @@ void Vertex::sortNbList()
 
 void Vertex::voidForce()
 {
-    force.x = 0.0;
-    force.y = 0.0;
-    force.z = 0.0;
-}
-
-void Vertex::voidVelocity()
-{
-    velocity.x = 0.0;
-    velocity.y = 0.0;
-    velocity.z = 0.0;
+    f_c.x = 0.0;
+    f_c.y = 0.0;
+    f_c.z = 0.0;
 }
 
 int Vertex::setId(int idx)
@@ -247,32 +239,32 @@ int Vertex::setId(int idx)
     return myid;
 }
 
-int Vertex::getId()
+int Vertex::getId() const
 {
     return myid;
 }
 
-int Vertex::getNumNeighs()
+int Vertex::getNumNeighs() const
 {
     return numBonded;
 }
 
-int Vertex::getNumTris()
+int Vertex::getNumTris() const
 {
     return numTris;
 }
 
-int Vertex::getNeighborId(int idx)
+int Vertex::getNeighborId(int idx) const
 {
     return bondedVerts[idx];
 }
 
-int Vertex::getTriangleId(int idx)
+int Vertex::getTriangleId(int idx) const
 {
     return bondedTris[idx];
 }
 
-double Vertex::getNeighborR0(int idx)
+double Vertex::getNeighborR0(int idx) const
 {
     return r0[idx];
 }
@@ -283,7 +275,7 @@ double Vertex::setMass(double m)
     return mass;
 }
 
-double Vertex::getMass()
+double Vertex::getMass() const
 {
     return mass;
 }
@@ -294,7 +286,7 @@ double Vertex::setVisc(double v)
     return visc;
 }
 
-double Vertex::getVisc()
+double Vertex::getVisc() const
 {
     return visc;
 }
@@ -303,8 +295,8 @@ void Vertex::printVertex()
 {
     std::cout << "myid=" << myid << " ";
     std::cout << "nneigh= " << numBonded << " ntrian=" << numTris << " ";
-    std::cout << " x=" << xyz.x << " y=" << xyz.y << " z=" << xyz.z << " : ";
-    std::cout << " x=" << force.x << " y=" << force.y << " z=" << force.z << " : ";
+    std::cout << " x=" << r_c.x << " y=" << r_c.y << " z=" << r_c.z << " : ";
+    std::cout << " x=" << f_c.x << " y=" << f_c.y << " z=" << f_c.z << " : ";
 
     for (int i = 0; i < numBonded; i++)
     {
@@ -329,7 +321,7 @@ void Vertex::normalizedR0(double newR0)
     }
 }
 
-const vertex_t& Vertex::getMyType()
+const vertex_t& Vertex::getMyType() const
 {
     return my_type;
 }

@@ -27,9 +27,7 @@ struct cell_params_t
     double verletR;
     double init_r;
     double vertexVisc;
-    double vertexMass;
     double totalVisc;
-    double totalMass;
     double growth_rate;
     double div_volume;
     double bud_d;
@@ -52,13 +50,11 @@ class Cell
         Cell(std::list<Triangle>);
         Cell(const Cell& orig);
         virtual ~Cell();
-        double calcSurfaceArea();
-        double calcVolume(); // remove this function and define default parameter
-        double calcVolume(double);
-        double getMass();
+        double calcSurfaceArea() const;
+        double calcVolume(double = 0.0) const;
         void calcCM();
-        int getNumberTriangles();
-        int getNumberVertices();
+        int getNumberTriangles() const;
+        int getNumberVertices() const;
 
         void calcBondedForces();
         void calcHarmonicForces();
@@ -71,7 +67,6 @@ class Cell
         void builtVerletList(const Cell&, const Box&);
         void builtNbList(std::vector<Cell>&, DomainList&, const Box&);
 
-        void addVelocity(const Vector3D&);
         void addXYZ(const Vector3D&);
 
         void setVertexR(double);
@@ -80,7 +75,6 @@ class Cell
         void setDp(double, double);
         void setSpringConst(double);
         void setVisc(double);
-        void setMass(double);
         void setCellId(int);
         void setNu(double);
 
@@ -92,18 +86,15 @@ class Cell
         void setBudDiameter(double);
         void setDivisionRatio(double);
 
-        double getInitR();
-        double getCellViscosity();
-        Vector3D getCm();
-        double getVertexR();
-        double getE();
-        double getNu();
-
-        Vector3D& getVertexXYZ(int);
-        Vector3D& getVertexForce(int);
+        double getInitR() const;
+        double getCellViscosity() const;
+        Vector3D getCm() const;
+        double getVertexR() const;
+        double getE() const;
+        double getNu() const;
 
         void voidForces();
-        void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&);
+        void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&) const;
 
         void cellCycle(double);
 
@@ -113,13 +104,17 @@ class Cell
         VertexTriangle triangles[MAX_T];
 
         int cell_id;
-        double contactForce(const Cell&, const Box&);
-        double contactForce(const Box&);
-        double contactForceSF(const Box&); // for Surface Force use
-        double contactArea(const Cell&, const Box&);
-        double contactArea(const Box&, double = 0.0);
-        double surfaceStrainEnergy();
-        double getTurgor();
+        double contactForce(const Cell&, const Box&) const;
+        double contactForce(const Box&) const;
+        double contactForceSF(const Box&) const; // for Surface Force use
+        double contactArea(const Cell&, const Box&) const;
+        double contactArea(const Box&, double = 0.0) const;
+        double strainEnergy(const Box&) const;
+        double maxStrain() const;
+        double minStrain() const;
+        double nbIntra(const Box&) const;
+        double getTurgor() const;
+        void update(double = 0.0);
 
     private:
         void grow(double);
@@ -128,13 +123,14 @@ class Cell
         void findBud();
         void randomRotate();
 
-        bool isInContact(const int, const Cell&, const Box&);
-        bool isInContact(const int, const Box&);
-        double project_force(const Cell&, const Box&, const Vector3D&, const int);
-        double project_force(const Box&, const Vector3D&, const int);
-        Vector3D box_force(const Box&, const int);
+        bool isInContact(const int, const Cell&, const Box&) const;
+        bool isInContact(const int, const Box&) const;
+        double project_force(const Cell&, const Box&, const Vector3D&, const int) const;
+        double project_force(const Box&, const Vector3D&, const int) const;
+        Vector3D box_force(const Box&, const int) const;
 
-        double sumL2();
+        double sumL2() const;
+
         cell_params_t params;
         cell_phase_t my_phase;
         int number_v;

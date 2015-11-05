@@ -57,29 +57,29 @@ class Vertex
         Vertex(const Vertex& orig);
         virtual ~Vertex();
         int setId(int);
-        int getId();
+        int getId() const;
         double setMass(double);
-        double getMass();
+        double getMass() const;
         double setVisc(double);
-        double getVisc();
+        double getVisc() const;
 
         void printVertex();
 
         void addNeighbor(int, double);
         void removeNeighbor(int);
         void addNbNeighbor(int, int);
-        bool isNeighbor(int);
+        bool isNeighbor(int) const;
         void addTriangle(int);
         void removeTriangle(int);
 
         void voidForce();
         void voidVelocity();
 
-        int getNumNeighs();
-        int getNumTris();
-        int getNeighborId(int);
-        int getTriangleId(int);
-        double getNeighborR0(int);
+        int getNumNeighs() const;
+        int getNumTris() const;
+        int getNeighborId(int) const;
+        int getTriangleId(int) const;
+        double getNeighborR0(int) const;
 
         void sortNbList();
         void normalizedR0(double);
@@ -87,15 +87,14 @@ class Vertex
         void addTime(double);
         void voidTime();
 
-        const vertex_t& getMyType();
+        const vertex_t& getMyType() const;
 
-        Vector3D xyz;
-        Vector3D force;
-        Vector3D velocity;
+        Vector3D r_c;
+        Vector3D f_c;
 
-        Vector3D tmp_xyz;           // make it private
-        Vector3D tmp_force;         // make it private
-        Vector3D tmp_velocity;      // make it private
+        Vector3D r_p;           // make it private
+        Vector3D f_p;
+
 
         int bondedVerts[NEIGH_MAX];
         double r0[NEIGH_MAX];

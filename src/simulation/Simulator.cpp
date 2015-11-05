@@ -4,7 +4,7 @@ utils::Logger Simulator::simulator_logs("simulator");
 
 Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
-    traj(args.traj_file), log_sim(args.output_file, args.ob_config_file)
+    traj(args.traj_file, args.box_file), log_sim(args.output_file, args.ob_config_file)
 {
     try
     {
@@ -23,7 +23,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
 
     params.log_step = args.log_step;
     params.save_step = args.save_step;
-    params.box_step = args.box_step;
     params.vlist_step = args.vlist_step;
     params.d = args.d;
     params.nbhandler = args.nb_flag;
@@ -34,7 +33,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.dp = args.dp;
     params.ddp = args.ddp;
     params.visc = args.visc;
-    params.mass = args.mass;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     params.verlet_r = args.verlet_r;
@@ -51,32 +49,23 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
-    box.setDx(args.bsdx);
-    box.setDy(args.bsdy);
-    box.setDz(args.bsdz);
-    box.setXstart(args.bsx);
-    box.setYstart(args.bsy);
-    box.setZstart(args.bsz);
-    box.setXend(args.bsxe);
-    box.setYend(args.bsye);
-    box.setZend(args.bsze);
+    box.setXmax(args.bsx);
+    box.setYmax(args.bsy);
+    box.setZmax(args.bsz);
+    box.setXmin(args.bsxe);
+    box.setYmin(args.bsye);
+    box.setZmin(args.bsze);
     box.setPbc(args.pbc);
     box.setEwall(args.E_wall);
     box.setNu(args.nu);
+    box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
+    box.configureScheduler(args.sch_config_file);
+
     domains.setupDomainsList(getMaxLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     logParams();
 }
-
-//Simulator::Simulator(const Simulator& orig) : number_of_cells(orig.number_of_cells),
-//    params(orig.params),
-//    box(orig.box), sb(orig.sb), traj(orig.traj),
-//    log_sim(orig.log_sim)
-//{
-//    exit(EXIT_FAILURE);
-//    // throw an exception - disallowed behavior
-//}
 
 Simulator::~Simulator() {}
 
@@ -87,7 +76,7 @@ void Simulator::diagnoseParams(arguments args)
                                       "Single point representation is not implemented yet. "
                                       "Simulator is about to terminate !");
 
-    if (args.d > 7)
+    if (args.d > 8)
         throw DataException("DataException:\n"
                             "Depth of a triangulation too large ! "
                             "For machine's safety Simulator is about to terminate !");
@@ -124,7 +113,6 @@ void Simulator::diagnoseParams(arguments args)
 void Simulator::logParams()
 {
     simulator_logs << utils::LogLevel::INFO  << "SIM_STEPS=" << params.nsteps << "\n";
-    simulator_logs << utils::LogLevel::INFO  << "BOX_STEP="  << params.box_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "SAVE_STEP=" << params.save_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "VERLET_STEP="  << params.vlist_step << "\n";
@@ -149,14 +137,11 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_EPS=" << OsmoticForce::getEpsilon() << "\n";
     simulator_logs << utils::LogLevel::FINER << "MAX_SCALE=" << domains.getMaxScale() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getY() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.Y="  << box.getY() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDx() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.DX=" << box.getDy() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.DZ=" << box.getDz() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.XE=" << box.getXend() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.YE=" << box.getYend() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZend() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.XE=" << box.getXmin() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.YE=" << box.getYmin() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZmin() << "\n";
 }
 
 void Simulator::initCells(int N, double r0)
@@ -224,7 +209,6 @@ void Simulator::addCell(const Cell& newCell)
             throw MaxSizeException("Maximum number of cells reached."
                                    "New cell will not be added !");
 
-        ;
         cells.push_back(newCell);
         number_of_cells = cells.size();
     }
@@ -246,12 +230,12 @@ void Simulator::addCell(double r0)
 
         std::list<Triangle> tris;
 
-        if (STRCMP (triangulator, "plato"))
+        if ( !triangulator.compare("plato") )
         {
             PlatonicTriangulatoin tio(params.d, params.platotype);
             tris = tio.triangulate(r0);
         }
-        else if (STRCMP (triangulator, "simple"))
+        else if ( !triangulator.compare("simple") )
         {
             SimpleTriangulation sm(params.d);
             tris = sm.triangulate(r0);
@@ -265,7 +249,6 @@ void Simulator::addCell(double r0)
         newCell.setVertexR(params.r_vertex);
         newCell.setVerletR(params.verlet_r);
         newCell.setCellId(number_of_cells);
-        newCell.setMass(params.mass);
         newCell.setVisc(params.visc);
         newCell.setInitR(r0);
         newCell.setGrowthRate(params.growth_rate);
@@ -288,6 +271,8 @@ void Simulator::simulate()
 
 void Simulator::simulate(int steps)
 {
+    updateCells();
+
     if (params.nbhandler == 1)
     {
         rebuildVerletLists();
@@ -305,6 +290,8 @@ void Simulator::simulate(int steps)
     log_sim.open();
     log_sim.printHeader();
     log_sim.dumpState(box, cells);
+
+    bool resized = false;
 
     for (int i = 0; i <= steps; i++)
     {
@@ -330,9 +317,10 @@ void Simulator::simulate(int steps)
             }
             else
             {
-                traj.save(cells, getTotalVertices(), box.getXstart() / box.getX(),
-                          box.getYstart() / box.getY(), box.getZstart() / box.getZ());
+                traj.save(cells, getTotalVertices(), box.getXmax() / box.getX(),
+                          box.getYmax() / box.getY(), box.getZmax() / box.getZ());
             }
+            traj.save_box(box, (i+1) * params.dt);
         }
 
         if ( (i + 1) % params.log_step == 0)
@@ -340,11 +328,16 @@ void Simulator::simulate(int steps)
             log_sim.dumpState(box, cells);
         }
 
-        if ( (i + 1) % params.box_step == 0)
+        //if ( (i + 1) % params.box_step == 0)
+        //{
+        resized = box.resize();
+
+        if (resized)
         {
-            box.resize();
             domains.setBoxDim(box);
         }
+
+        //}
 
         for (int i = 0; i < number_of_cells; i++)
         {
@@ -357,6 +350,7 @@ void Simulator::simulate(int steps)
         }
     }
 
+    log_sim.dumpState(box, cells);
     sb.saveStressScript(cells, box);
     traj.close();
     log_sim.close();
@@ -470,6 +464,7 @@ void Simulator::rebuildDomainsList()
 void Simulator::shiftCell(const Vector3D& v3d, int cellid)
 {
     cells[cellid].addXYZ(v3d);
+    cells[cellid].update();
 }
 
 int Simulator::getTotalVertices()
@@ -509,14 +504,16 @@ void Simulator::setIntegrator(char* token)
     {
         this->setIntegrator(&Simulator::midpointRungeKutta);
     }
-    else if (STRCMP (token, "vv"))
-    {
-        this->setIntegrator(&Simulator::integrateVv);
-    }
     else
     {
         this->setIntegrator(&Simulator::integrateEuler);
         simulator_logs << utils::LogLevel::FINE  << "DEFAULT FORWARD EULER IS USED\n";
+    }
+
+    if (integrator == NULL)
+    {
+        simulator_logs << utils::LogLevel::CRITICAL << "integrator == NULL";
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -524,16 +521,27 @@ void Simulator::setTriangulator(char* token)
 {
     if (STRCMP (token, "simple"))
     {
-        triangulator = token;
+        //triangulator = token;
+        triangulator = std::string(token);
     }
     else if (STRCMP (token, "plato"))
     {
-        triangulator = token;
+        //triangulator = token;
+        triangulator = std::string(token);
     }
     else
     {
-        triangulator = (char*)& "simple";
+        //triangulator = (char*)& "simple";
+        triangulator = std::string("simple");
         simulator_logs << utils::LogLevel::FINE  << "SIMPLE TRIANGULATION IS APPLIED\n";
+    }
+}
+
+void Simulator::updateCells()
+{
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        cells[i].update();
     }
 }
 
@@ -544,6 +552,7 @@ void Simulator::setTriangulator(char* token)
 void Simulator::integrate()
 {
     (*this.*integrator)();
+    updateCells();
 //    makeVertsOlder(); // function's temporary location
 }
 
@@ -563,7 +572,7 @@ void Simulator::integrateEuler()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / visc;
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c / visc;
         }
     }
 }
@@ -578,8 +587,8 @@ void Simulator::heunMethod()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            cells[i].vertices[j].tmp_xyz = cells[i].vertices[j].xyz;
-            cells[i].vertices[j].tmp_force = cells[i].vertices[j].force;
+            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c;
+            cells[i].vertices[j].f_p = cells[i].vertices[j].f_c;
         }
     }
 
@@ -589,7 +598,7 @@ void Simulator::heunMethod()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].force / visc;
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c / visc;
         }
     }
 
@@ -601,14 +610,13 @@ void Simulator::heunMethod()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + 0.5 * dt * ( cells[i].vertices[j].tmp_force + cells[i].vertices[j].force) / visc;
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + 0.5 * dt * ( cells[i].vertices[j].f_p + cells[i].vertices[j].f_c) / visc;
         }
     }
 }
 
 void Simulator::midpointRungeKutta()
 {
-    calcForces();
     double visc;
     double dt = params.dt;
 
@@ -616,9 +624,11 @@ void Simulator::midpointRungeKutta()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            cells[i].vertices[j].tmp_xyz = cells[i].vertices[j].xyz;
+            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c;
         }
     }
+
+    calcForces();
 
     //move half time-step and calculate  forces
     for (int i = 0; i < number_of_cells; i++)
@@ -626,7 +636,7 @@ void Simulator::midpointRungeKutta()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].xyz += 0.5 * dt * cells[i].vertices[j].force / visc;
+            cells[i].vertices[j].r_c += 0.5 * dt * cells[i].vertices[j].f_c / visc;
         }
     }
 
@@ -638,36 +648,7 @@ void Simulator::midpointRungeKutta()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].xyz = cells[i].vertices[j].tmp_xyz + dt * cells[i].vertices[j].force / visc;
-        }
-    }
-}
-
-void Simulator::integrateVv()
-{
-    calcForces();
-    double m;
-    double dt = params.dt;
-
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].xyz += dt * cells[i].vertices[j].velocity; // x(t+1)_a = x(t) + v(t)*dt
-            cells[i].vertices[j].xyz += 0.5 * dt * dt * cells[i].vertices[j].force / m; // x(t+1) = x(t+1)_a + 0.5*dt*dt* a(t)
-            cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; //v(t+1)_1 = v(t) + 0.5 * dt * a(t)
-        }
-    }
-
-    calcForces();
-
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            m = cells[i].vertices[j].getMass();
-            cells[i].vertices[j].velocity += 0.5 * dt * cells[i].vertices[j].force / m; // v(t+1) = v(t+1)_1 + 0.5 * dt * a(t+1)
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c / visc;
         }
     }
 }

@@ -1,28 +1,43 @@
 #include "XyzTraj.h"
 
-XyzTraj::XyzTraj(char* tf)
-{
-    trajfile = tf;
-}
+utils::Logger XyzTraj::xyztraj_logs("xyztraj");
 
-XyzTraj::XyzTraj(const XyzTraj& orig) : trajfile(orig.trajfile) {}
+XyzTraj::XyzTraj(std::string tf, std::string bf) : trajfile(tf), boxfile(bf) {}
+
+XyzTraj::XyzTraj(const XyzTraj& orig) : trajfile(orig.trajfile), boxfile(orig.boxfile) {}
 
 XyzTraj::~XyzTraj() {}
 
 void XyzTraj::open()
 {
-    os = fopen(trajfile, "w");
+    os = fopen(trajfile.c_str(), "w");
+
+    if ( os == NULL )
+    {
+        xyztraj_logs << utils::LogLevel::WARNING << "Can not open file:" <<  trajfile << "\n";
+    }
+    
+    osb = fopen(boxfile.c_str(), "w");
+
+    if ( osb == NULL )
+    {
+        xyztraj_logs << utils::LogLevel::WARNING << "Can not open file:" <<  boxfile << "\n";
+    }
+    
 }
 
 void XyzTraj::close()
 {
-    fclose(os);
+    if ( os != NULL )
+    {
+        fclose(os);
+    }
+    
+    if ( osb != NULL )
+    {
+        fclose(osb);
+    }
 }
-
-//void XyzTraj::save(std::vector<Cell>& cells, int totV)
-//{
-//    save(cells, totV, 1.0, 1.0, 1.0);
-//}
 
 void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, double sz)
 {
@@ -34,7 +49,7 @@ void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, dou
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             std::string strindex = new_base_index ( lastCellIndex +  cells[i].vertices[j].getId() );
-            fprintf(os, "%s %10.5f %10.5f %10.5f \n", strindex.c_str(), sx * cells[i].vertices[j].xyz.x, sy * cells[i].vertices[j].xyz.y, sz * cells[i].vertices[j].xyz.z);
+            fprintf(os, "%s %10.5f %10.5f %10.5f \n", strindex.c_str(), sx * cells[i].vertices[j].r_c.x, sy * cells[i].vertices[j].r_c.y, sz * cells[i].vertices[j].r_c.z);
 
         }
 
@@ -42,4 +57,10 @@ void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, dou
     }
 
     fflush(os);
+}
+
+void XyzTraj::save_box(Box& box, double t)
+{   
+    fprintf(osb, "%12.6f %6.4f %6.4f %6.4f \n", t, box.getX(), box.getY(), box.getZ());   
+    fflush(osb);
 }

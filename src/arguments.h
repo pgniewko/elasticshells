@@ -1,20 +1,27 @@
 #ifndef ARGUMENTS_H
 #define	ARGUMENTS_H
 
+//#include <string>
 //using namespace std;
 
 struct arguments
 {
+    std::string render_file;            /* file arg to ‘--output’ */
+    std::string traj_file;
+    std::string box_file;
+    std::string output_file;
+    std::string surface_file;
+    std::string stress_file;
+
     char** strings;               /* [string...] */
 
     int silent, verbose, debug, abort;   /* '-s', '-v', '-d','--abort' */
 
-    char* render_file;            /* file arg to ‘--output’ */
-    char* traj_file;              /* file arg to ‘--traj’ */
-    char* output_file;            /* file arg to ‘--log’ */
-    char* surface_file;
-    char* stress_file;
+    char* files_prefix;
+    char* output_dir;
+    char* input_dir;
     char* ob_config_file;
+    char* sch_config_file;
 
     char* integrator_a;
     char* tritype;
@@ -37,7 +44,6 @@ struct arguments
     double ddp;
     double eps;
     double visc;
-    double mass;
     double ttime;
     double r_vertex;                   /* vertex radius */
     double verlet_r;

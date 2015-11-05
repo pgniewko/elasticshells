@@ -16,13 +16,13 @@ class VertexTriangle
         VertexTriangle(const VertexTriangle& orig);
         virtual ~VertexTriangle();
         void setId(int);
-        int getId();
-        double area(const Vertex[]);
-        double area(const Vertex[], const Vector3D, double);
+        int getId() const;
+        double area(const Vertex[]) const;
+        double area(const Vertex[], const Vector3D, double) const;
 
-        Vector3D normal(const Vertex[]);
+        Vector3D normal(const Vertex[]) const;
 
-        void printVertexTriangle();
+        void printVertexTriangle() const;
         void subsVertex(int, int);
 
         int ia, ib, ic;

@@ -190,9 +190,9 @@ void DomainList::assignVertex(Vertex& vertex, int cellid)
 int DomainList::getDomainIndex(Vertex& vertex)
 {
     int xix, yix, zix;
-    double delx = vertex.xyz.x - x_min;
-    double dely = vertex.xyz.y - y_min;
-    double delz = vertex.xyz.z - z_min;
+    double delx = vertex.r_c.x - x_min;
+    double dely = vertex.r_c.y - y_min;
+    double delz = vertex.r_c.z - z_min;
     xix = floor(delx / dx);
     yix = floor(dely / dy);
     zix = floor(delz / dz);
@@ -207,21 +207,21 @@ void DomainList::setM(Box& box)
     if (pbc)
     {
         // MAKE SURE THAT AT THE END of SIM. DOMAINS ARE NOT TOO SMALL !!!
-        xmin = -box.getXend();
-        ymin = -box.getYend();
-        zmin = -box.getZend();
-        xmax =  box.getXend();
-        ymax =  box.getYend();
-        zmax =  box.getZend();
+        xmin = -box.getXmin();
+        ymin = -box.getYmin();
+        zmin = -box.getZmin();
+        xmax =  box.getXmin();
+        ymax =  box.getYmin();
+        zmax =  box.getZmin();
     }
     else
     {
-        xmin = -(box.getXend() + rc_max);
-        ymin = -(box.getYend() + rc_max);
-        zmin = -(box.getZend() + rc_max);
-        xmax =   box.getXend() + rc_max;
-        ymax =   box.getYend() + rc_max;
-        zmax =   box.getZend() + rc_max;
+        xmin = -(box.getXmin() + rc_max);
+        ymin = -(box.getYmin() + rc_max);
+        zmin = -(box.getZmin() + rc_max);
+        xmax =   box.getXmin() + rc_max;
+        ymax =   box.getYmin() + rc_max;
+        zmax =   box.getZmin() + rc_max;
     }
 
     lx = xmax - xmin;

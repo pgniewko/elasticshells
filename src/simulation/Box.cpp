@@ -1,23 +1,22 @@
 #include "Box.h"
 
+utils::Logger Box::box_logger("box_logger");
+
 Box::Box(double bsx, double bsy, double bsz) : pbc(false),
-    x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
-    xe(bsx), ye(bsy), ze(bsz), dx(0), dy(0), dz(0), E_box(0.0), nu(0.0)
-{
-}
+    x(bsx), y(bsy), z(bsz), x_max(bsx), y_max(bsy), z_max(bsz),
+    x_min(bsx), y_min(bsy), z_min(bsz), E_box(0.0), nu(0.0)
+{}
 
 Box::Box(double bsx, double bsy, double bsz, double dbs) : pbc(false),
-    x(bsx), y(bsy), z(bsz), xs(bsx), ys(bsy), zs(bsz),
-    xe(bsx), ye(bsy), ze(bsz), dx(dbs), dy(dbs), dz(dbs), E_box(0.0), nu(0.0)
-{
-}
+    x(bsx), y(bsy), z(bsz), x_max(bsx), y_max(bsy), z_max(bsz),
+    x_min(bsx), y_min(bsy), z_min(bsz), E_box(0.0), nu(0.0)
+{}
 
 Box::Box(const Box& orig) : pbc(orig.pbc),
-    x(orig.x), y(orig.y), z(orig.z), xs(orig.xs), ys(orig.ys), zs(orig.zs),
-    xe(orig.xe), ye(orig.ye), ze(orig.ze),
-    dx(orig.dx), dy(orig.dy), dz(orig.dz), E_box(orig.E_box), nu(orig.nu)
-{
-}
+    x(orig.x), y(orig.y), z(orig.z), x_max(orig.x_max), y_max(orig.y_max), z_max(orig.z_max),
+    x_min(orig.x_min), y_min(orig.y_min), z_min(orig.z_min),
+    E_box(orig.E_box), nu(orig.nu), my_schedule(orig.my_schedule)
+{}
 
 Box::~Box() {}
 
@@ -36,21 +35,36 @@ void Box::setNu(double n)
     nu = n;
 }
 
-void Box::resize()
+bool Box::resize()
 {
-    if (x + dx >= xe)
+    double dx = 0.0;
+    double dy = 0.0;
+    double dz = 0.0;
+
+    my_schedule.execute(dx, dy, dz);
+
+    if (x + dx >= x_min && x + dx <= x_max)
     {
         x += dx;
     }
 
-    if (y + dy >= ye)
+    if (y + dy >= y_min && y + dy <= y_max)
     {
         y += dy;
     }
 
-    if (z + dz >= ze)
+    if (z + dz >= z_min && z + dz <= z_max)
     {
         z += dz;
+    }
+
+    if (dx == 0 && dy == 0 && dz == 0)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
     }
 }
 
@@ -107,92 +121,92 @@ double Box::getZ() const
     return z;
 }
 
-void Box::setDx(const double newdx)
+//void Box::setDx(const double newdx)
+//{
+//    dx = newdx;
+//}
+
+//double Box::getDx() const
+//{
+//    return dx;
+//}
+
+//void Box::setDy(const double newdy)
+//{
+//    dy = newdy;
+//}
+
+//double Box::getDy() const
+//{
+//    return dy;
+//}
+
+//void Box::setDz(const double newdz)
+//{
+//    dz = newdz;
+//}
+
+//double Box::getDz() const
+//{
+//    return dz;
+//}
+
+void Box::setXmax(const double xst)
 {
-    dx = newdx;
+    x_max = xst;
 }
 
-double Box::getDx() const
+void Box::setYmax(const double yst)
 {
-    return dx;
+    y_max = yst;
 }
 
-void Box::setDy(const double newdy)
+void Box::setZmax(const double zst)
 {
-    dy = newdy;
+    z_max = zst;
 }
 
-double Box::getDy() const
+void Box::setXmin(const double xend)
 {
-    return dy;
+    x_min = xend;
 }
 
-void Box::setDz(const double newdz)
+void Box::setYmin(const double yend)
 {
-    dz = newdz;
+    y_min = yend;
 }
 
-double Box::getDz() const
+void Box::setZmin(const double zend)
 {
-    return dz;
+    z_min = zend;
 }
 
-void Box::setXstart(const double xst)
+double Box::getXmax() const
 {
-    xs = xst;
+    return x_max;
+}
+double Box::getYmax() const
+{
+    return y_max;
 }
 
-void Box::setYstart(const double yst)
+double Box::getZmax() const
 {
-    ys = yst;
+    return z_max;
 }
 
-void Box::setZstart(const double zst)
+double Box::getXmin() const
 {
-    zs = zst;
+    return x_min;
+}
+double Box::getYmin() const
+{
+    return y_min;
 }
 
-void Box::setXend(const double xend)
+double Box::getZmin() const
 {
-    xe = xend;
-}
-
-void Box::setYend(const double yend)
-{
-    ye = yend;
-}
-
-void Box::setZend(const double zend)
-{
-    ze = zend;
-}
-
-double Box::getXstart() const
-{
-    return xs;
-}
-double Box::getYstart() const
-{
-    return ys;
-}
-
-double Box::getZstart() const
-{
-    return zs;
-}
-
-double Box::getXend() const
-{
-    return xe;
-}
-double Box::getYend() const
-{
-    return ye;
-}
-
-double Box::getZend() const
-{
-    return ze;
+    return z_min;
 }
 
 double Box::getXEdge(const double rv) const
@@ -218,4 +232,18 @@ double Box::getE() const
 double Box::getNu() const
 {
     return nu;
+}
+
+void Box::configureScheduler(char* schf)
+{
+    my_schedule.setFileName(schf);
+    //my_schedule.readScheduleFile();
+    my_schedule.registerSchedules();
+    my_schedule.configureSchedule();
+    //my_schedule.printSchedule();
+}
+
+void Box::setDefaultSchedule(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
+{
+    my_schedule.setDefault(ns, in, _dx, _dy, _dz, _rx, _ry, _rz);
 }

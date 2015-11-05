@@ -1,15 +1,10 @@
+#include <c++/4.6/iosfwd>
+
 #include "LogSimulation.h"
 
 utils::Logger LogSimulation::log_logger("log_logger");
 
-std::vector<std::string>& split(const std::string&, char , std::vector<std::string>&);
-std::vector<std::string> split(const std::string&, char);
-
-LogSimulation::LogSimulation(char* lf, char* cf)
-{
-    logfile = lf;
-    configfile = cf;
-}
+LogSimulation::LogSimulation(std::string lf, std::string cf) : logfile(lf), configfile(cf) {}
 
 LogSimulation::LogSimulation(const LogSimulation& orig) : logfile(orig.logfile), configfile(orig.configfile) {}
 
@@ -23,18 +18,33 @@ LogSimulation::~LogSimulation()
 
 void LogSimulation::open()
 {
-    os = fopen(logfile, "w");
+    os = fopen(logfile.c_str(), "a");
+
+    if ( os == NULL )
+    {
+        os = fopen(logfile.c_str(), "w");
+    }
+
+    if ( os == NULL )
+    {
+        log_logger << utils::LogLevel::WARNING << "Can not open file:<<" << logfile << "for writing.\n";
+    }
+
+    return;
 }
 
 void LogSimulation::close()
 {
-    fclose(os);
+    if ( os != NULL )
+    {
+        fclose(os);
+    }
 }
 
 std::vector<std::string> LogSimulation::readConfigFile()
 {
     std::ifstream cfile;
-    cfile.open(configfile);
+    cfile.open(configfile, std::ifstream::in);
     std::vector<std::string> list;
     std::string line;
 
@@ -103,24 +113,4 @@ void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells)
 
     fprintf(os, "%s" , "\n");
     fflush(os);
-}
-
-std::vector<std::string>& split(const std::string& s, char delim, std::vector<std::string>& elems)
-{
-    std::stringstream ss(s);
-    std::string item;
-
-    while (std::getline(ss, item, delim))
-    {
-        elems.push_back(item);
-    }
-
-    return elems;
-}
-
-std::vector<std::string> split(const std::string& s, char delim)
-{
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
 }

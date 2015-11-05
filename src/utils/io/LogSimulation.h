@@ -10,13 +10,14 @@
 
 #include "Cell.h"
 #include "utils/Logger.h"
+#include "utils/utils.h"
 #include "simulation/Box.h"
 #include "utils/observables/Observer.h"
 
 class LogSimulation
 {
     public:
-        LogSimulation(char*, char*);
+        LogSimulation(std::string, std::string);
         LogSimulation(const LogSimulation& orig);
         virtual ~LogSimulation();
 
@@ -28,8 +29,8 @@ class LogSimulation
         void dumpState(Box&, std::vector<Cell>&);
 
     private:
-        char* logfile;
-        char* configfile;
+        std::string logfile;
+        std::string configfile;
         FILE* os;
         std::vector<Observer*> observers;
         std::vector<std::string> readConfigFile();
