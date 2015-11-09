@@ -23,7 +23,7 @@ INCLUDE  := -I/usr/local/include -I$(CURDIR)/src
 LIB      := -L/usr/lib -L/usr/local/lib
 DFLAGS   := -DTESTS
 
-CXXFLAGS := -Wall -O3 -std=gnu++0x -fopenmp $(INCLUDE)
+CXXFLAGS := -Wall -O3 -std=gnu++0x -fopenmp $(INCLUDE) -pg
 LDFLAGS  := $(LIB)
 LDLIBS   := -lm -lsteinhardt -lgsl -lgslcblas
 

@@ -11,21 +11,69 @@
 class Vector3D
 {
     public:
-        Vector3D();
-        Vector3D(double ix, double iy, double iz);
-        Vector3D(const Vector3D& orig);
-        virtual ~Vector3D();
+        Vector3D() : x(0), y(0), z(0) {}
+        Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
+        Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}
+        virtual ~Vector3D() {};
 
-        const Vector3D& operator +=(const Vector3D&);
-        const Vector3D& operator -=(const Vector3D&);
-        const Vector3D& operator *=(const double);
-        const Vector3D& operator /=(const double);
+        const Vector3D& operator +=(const Vector3D& v)
+        {
+            x += v.x;
+            y += v.y;
+            z += v.z;
+            return *this;
+        }
+        
+        const Vector3D& operator -=(const Vector3D& v)
+        {
+            x -= v.x;
+            y -= v.y;
+            z -= v.z;
+            return *this;
+        }
+        const Vector3D& operator *=(const double a)
+        {
+            x *= a;
+            y *= a;
+            z *= a;
+            return *this;
+        }
+        const Vector3D& operator /=(const double a)
+        {
+            return *this *= 1.0 / a;
+        }
 
-        double length() const;
-        double length2() const;
-        double angle(const Vector3D&) const;
-        void setLength(double);
+        double length() const
+        {
+            return sqrt(x * x + y * y + z * z);
+        }
+        double length2() const
+        {
+            return x * x + y * y + z * z;
+        }
+
+        void setLength(double r)
+        {
+            if (length() != 0)
+            {
+                double rl = r / length();
+                x *= rl;
+                y *= rl;
+                z *= rl;
+            }
+        }
+        
+        void normalize()
+        {
+            double len = length();
+            x /= len;
+            y /= len;
+            z /= len;
+        }
+        
         double x, y, z;
+        
+        double angle(const Vector3D&) const;
 };
 
 template <typename InputStreamT>
@@ -97,8 +145,26 @@ inline Vector3D abs(const Vector3D& v)
 inline Vector3D cross(const Vector3D& v1, const Vector3D& v2)
 {
     return Vector3D((v1.y * v2.z - v2.y * v1.z),
-                    (v2.x * v1.z - v1.x * v2.z),
-                    (v1.x * v2.y - v2.x * v1.y));
+                     (v2.x * v1.z - v1.x * v2.z),
+                     (v1.x * v2.y - v2.x * v1.y));
 }
 
-#endif	/* VECTOR3D_H */
+inline double Vector3D::angle(const Vector3D& v) const
+{
+    if (this->length() == 0 || v.length() == 0)
+    {
+        throw DataException("Zero length vector");
+    }
+    double d = *this * v;
+    double l1 = length();
+    double l2 = v.length();
+    double angle = acos(d / (l1 * l2));
+    return angle;
+}
+
+//inline double dotd(const Vector3Dd& v1, const Vector3Dd& v2)
+//{
+//    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+//}
+
+#endif	/* VECTOR3_H */
