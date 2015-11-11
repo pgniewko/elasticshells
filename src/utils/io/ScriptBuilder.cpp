@@ -1,3 +1,5 @@
+#include <c++/4.6/iosfwd>
+
 #include "ScriptBuilder.h"
 
 //extern const char names[];
@@ -5,19 +7,14 @@
 utils::Logger ScriptBuilder::scriptbuilder_logs("scriptbuilder");
 
 ScriptBuilder::ScriptBuilder(std::string rs, std::string ss, std::string tf, std::string sx) :
-    script(rs), surfaceScript(ss), trajfile(tf), stress_script(sx), drawBox(true) {}
+    script(rs), surfaceScript(ss), trajfile(tf), stress_script(sx) {}
 
 ScriptBuilder::ScriptBuilder(const ScriptBuilder& orig) :
-    script(orig.script), surfaceScript(orig.surfaceScript), trajfile(orig.trajfile), stress_script(orig.stress_script), drawBox(orig.drawBox) {}
+    script(orig.script), surfaceScript(orig.surfaceScript), trajfile(orig.trajfile), stress_script(orig.stress_script) {}
 
 ScriptBuilder::~ScriptBuilder() {}
 
-void ScriptBuilder::setDrawBox(bool db)
-{
-    drawBox = db;
-}
-
-void ScriptBuilder::saveSurfaceScript(const std::vector<Cell>& cells)
+void ScriptBuilder::saveSurfaceScript(const std::vector<Cell>& cells) const
 {
     std::ofstream os;
     os.open(surfaceScript);
@@ -90,7 +87,7 @@ void ScriptBuilder::saveSurfaceScript(const std::vector<Cell>& cells)
 }
 
 
-void ScriptBuilder::saveRenderScript(const std::vector<Cell>& cells, const Box& box, bool boxFlag, double rv)
+void ScriptBuilder::saveRenderScript(const std::vector<Cell>& cells, const Box& box, bool boxFlag, double rv) const
 {
     std::ofstream os;
     os.open(script);
@@ -111,7 +108,7 @@ void ScriptBuilder::saveRenderScript(const std::vector<Cell>& cells, const Box& 
 
         if (boxFlag)
         {
-            printBox(os, box);
+            printBox(box, os);
         }
 
         int lastCellIndex = 0;
@@ -154,53 +151,60 @@ void ScriptBuilder::saveRenderScript(const std::vector<Cell>& cells, const Box& 
     }
 }
 
-void ScriptBuilder::printBox(std::ofstream& os, const Box& box)
+void ScriptBuilder::printBox(const Box& box, std::ofstream& os) const
 {
-    os << "class Box(object):\n";
-    os << "  def __init__ (self, x, y, z, linewidth, color):\n";
-    os << "    lw = linewidth\n";
-    os << "    c1 = color[0]\n";
-    os << "    c2 = color[1]\n";
-    os << "    c3 = color[2]\n";
-    os << "    self.box = [\n";
-    os << "    LINEWIDTH, float(lw), BEGIN, LINES,\n";
-    os << "    COLOR,  color[0], color[1], color[2],\n";
-    os << "    VERTEX, x[0], y[0], z[0],\n";
-    os << "    VERTEX, x[1], y[0], z[0],\n";
-    os << "    VERTEX, x[0], y[0], z[0],\n";
-    os << "    VERTEX, x[0], y[1], z[0],\n";
-    os << "    VERTEX, x[0], y[0], z[0],\n";
-    os << "    VERTEX, x[0], y[0], z[1],\n";
-    os << "    VERTEX, x[1], y[1], z[1],\n";
-    os << "    VERTEX, x[1], y[1], z[0],\n";
-    os << "    VERTEX, x[1], y[1], z[1],\n";
-    os << "    VERTEX, x[0], y[1], z[1],\n";
-    os << "    VERTEX, x[1], y[1], z[1],\n";
-    os << "    VERTEX, x[1], y[0], z[1],\n";
-    os << "    VERTEX, x[0], y[0], z[1],\n";
-    os << "    VERTEX, x[1], y[0], z[1],\n";
-    os << "    VERTEX, x[0], y[1], z[0],\n";
-    os << "    VERTEX, x[0], y[1], z[1],\n";
-    os << "    VERTEX, x[0], y[1], z[0],\n";
-    os << "    VERTEX, x[1], y[1], z[0],\n";
-    os << "    VERTEX, x[0], y[0], z[1],\n";
-    os << "    VERTEX, x[0], y[1], z[1],\n";
-    os << "    VERTEX, x[1], y[0], z[0],\n";
-    os << "    VERTEX, x[1], y[1], z[0],\n";
-    os << "    VERTEX, x[1], y[0], z[0],\n";
-    os << "    VERTEX, x[1], y[0], z[1],\n";
-    os << "    END\n";
-    os << "    ]\n\n\n";
-    os << "B = Box(";
-    os << "(" << -box.getX() << "," << box.getX() << "),";
-    os << "(" << -box.getY() << "," << box.getY() << "),";
-    os << "(" << -box.getZ() << "," << box.getZ() << "),";
-    os << " 2.5, color=(0.0, 0.0, 0.0) )\n";
-    os << "obj = B.box\n";
-    os << "cmd.load_cgo(obj, \"box\", 1)\n\n\n";
+    if ( os.is_open() )
+    {
+        os << "class Box(object):\n";
+        os << "  def __init__ (self, x, y, z, linewidth, color):\n";
+        os << "    lw = linewidth\n";
+        os << "    c1 = color[0]\n";
+        os << "    c2 = color[1]\n";
+        os << "    c3 = color[2]\n";
+        os << "    self.box = [\n";
+        os << "    LINEWIDTH, float(lw), BEGIN, LINES,\n";
+        os << "    COLOR,  color[0], color[1], color[2],\n";
+        os << "    VERTEX, x[0], y[0], z[0],\n";
+        os << "    VERTEX, x[1], y[0], z[0],\n";
+        os << "    VERTEX, x[0], y[0], z[0],\n";
+        os << "    VERTEX, x[0], y[1], z[0],\n";
+        os << "    VERTEX, x[0], y[0], z[0],\n";
+        os << "    VERTEX, x[0], y[0], z[1],\n";
+        os << "    VERTEX, x[1], y[1], z[1],\n";
+        os << "    VERTEX, x[1], y[1], z[0],\n";
+        os << "    VERTEX, x[1], y[1], z[1],\n";
+        os << "    VERTEX, x[0], y[1], z[1],\n";
+        os << "    VERTEX, x[1], y[1], z[1],\n";
+        os << "    VERTEX, x[1], y[0], z[1],\n";
+        os << "    VERTEX, x[0], y[0], z[1],\n";
+        os << "    VERTEX, x[1], y[0], z[1],\n";
+        os << "    VERTEX, x[0], y[1], z[0],\n";
+        os << "    VERTEX, x[0], y[1], z[1],\n";
+        os << "    VERTEX, x[0], y[1], z[0],\n";
+        os << "    VERTEX, x[1], y[1], z[0],\n";
+        os << "    VERTEX, x[0], y[0], z[1],\n";
+        os << "    VERTEX, x[0], y[1], z[1],\n";
+        os << "    VERTEX, x[1], y[0], z[0],\n";
+        os << "    VERTEX, x[1], y[1], z[0],\n";
+        os << "    VERTEX, x[1], y[0], z[0],\n";
+        os << "    VERTEX, x[1], y[0], z[1],\n";
+        os << "    END\n";
+        os << "    ]\n\n\n";
+        os << "B = Box(";
+        os << "(" << -box.getX() << "," << box.getX() << "),";
+        os << "(" << -box.getY() << "," << box.getY() << "),";
+        os << "(" << -box.getZ() << "," << box.getZ() << "),";
+        os << " 2.5, color=(0.0, 0.0, 0.0) )\n";
+        os << "obj = B.box\n";
+        os << "cmd.load_cgo(obj, \"box\", 1)\n\n\n";
+    }
+    else
+    {
+        scriptbuilder_logs << utils::LogLevel::WARNING << "No open file for box script.\n";
+    }
 }
 
-void ScriptBuilder::saveStressScript(const std::vector<Cell>& cells, const Box& box)
+void ScriptBuilder::saveStressScript(const std::vector<Cell>& cells, const Box& box) const
 {
     std::ofstream os;
     os.open(stress_script);
