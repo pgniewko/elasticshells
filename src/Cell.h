@@ -114,6 +114,7 @@ class Cell
         double minStrain() const;
         double nbIntra(const Box&) const;
         double getTurgor() const;
+        double getStrain(int, int) const;
         void update(double = 0.0);
 
     private:

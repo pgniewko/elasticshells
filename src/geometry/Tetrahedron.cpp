@@ -38,11 +38,12 @@ double Tetrahedron::volume(const double eps) const
 
 double Tetrahedron::volumeSgn() const
 {
-    Vector3D AD = a - d;
-    Vector3D BD = b - d;
-    Vector3D CD = c - d;
-    Vector3D CcrossD = cross(BD, CD);
-    double volume = AD * CcrossD;
+    //Vector3D AD = a - d;
+    //Vector3D BD = b - d;
+    //Vector3D CD = c - d;
+    //Vector3D CcrossD = cross(BD, CD);
+    //double volume = AD * CcrossD;
+    double volume = (a - d) * cross((b-d), (c-d));
     //volume /= 6.0;
     return  SIGN( volume );
 }

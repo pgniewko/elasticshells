@@ -328,16 +328,12 @@ void Simulator::simulate(int steps)
             log_sim.dumpState(box, cells);
         }
 
-        //if ( (i + 1) % params.box_step == 0)
-        //{
         resized = box.resize();
 
         if (resized)
         {
             domains.setBoxDim(box);
         }
-
-        //}
 
         for (int i = 0; i < number_of_cells; i++)
         {
@@ -351,7 +347,9 @@ void Simulator::simulate(int steps)
     }
 
     log_sim.dumpState(box, cells);
-    sb.saveStressScript(cells, box);
+    sb.saveStrainScript(cells, box);
+    //sb.saveContactStress(cells, box);
+    sb.saveStrainScript(cells, box);
     traj.close();
     log_sim.close();
 }
