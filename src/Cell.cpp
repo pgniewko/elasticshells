@@ -938,6 +938,17 @@ double Cell::minStrain() const
     return max_strain;
 }
 
+double Cell::getStrain(int i, int j) const
+{
+    double r0 = vertices[i].r0[j];
+    int neigh_idx = vertices[i].bondedVerts[j];
+    Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
+
+    double r = dR.length();
+    double eps = (r - r0) / r0;
+    return eps;
+}
+
 double Cell::nbIntra(const Box& box) const
 {
     Vector3D dij;

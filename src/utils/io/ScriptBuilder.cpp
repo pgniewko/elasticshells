@@ -1,8 +1,4 @@
-#include <c++/4.6/iosfwd>
-
 #include "ScriptBuilder.h"
-
-//extern const char names[];
 
 utils::Logger ScriptBuilder::scriptbuilder_logs("scriptbuilder");
 
@@ -204,7 +200,136 @@ void ScriptBuilder::printBox(const Box& box, std::ofstream& os) const
     }
 }
 
-void ScriptBuilder::saveStressScript(const std::vector<Cell>& cells, const Box& box) const
+void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& box) const
+{
+    std::ofstream os;
+    os.open(stress_script);
+
+    if ( os.is_open() )
+    {
+        os << "from pymol.cgo import *\n";
+        os << "from pymol import cmd \n\n";
+        os << "cmd.do(\"load " << trajfile << ", cells\")\n";
+        os << "cmd.do(\"select rawdata, all\")\n";
+        os << "cmd.do(\"unbond rawdata, rawdata\")\n";
+        os << "cmd.do(\"hide all\")\n";
+        os << "cmd.do(\"set sphere_color, tv_red\")\n";
+        os << "cmd.do(\"set line_color, marine\")\n";
+        os << "cmd.do(\"show spheres\")\n";
+        os << "cmd.do(\"alter cells, vdw=" << 0.1 << "\")\n";
+        os << "cmd.do(\"rebuild\")\n\n";
+
+        int lastCellIndex = 0;
+        
+        os << "cmd.do(\"set_color red1 = [1,1.0,0] \")\n";
+        os << "cmd.do(\"set_color red2 = [1,0.9,0] \")\n";
+        os << "cmd.do(\"set_color red3 = [1,0.8,0] \")\n";
+        os << "cmd.do(\"set_color red4 = [1,0.7,0] \")\n";
+        os << "cmd.do(\"set_color red5 = [1,0.6,0] \")\n";
+        os << "cmd.do(\"set_color red6 = [1,0.5,0] \")\n";
+        os << "cmd.do(\"set_color red7 = [1,0.4,0] \")\n";
+        os << "cmd.do(\"set_color red8 = [1,0.3,0] \")\n";
+        os << "cmd.do(\"set_color red9 = [1,0.2,0] \")\n";
+        os << "cmd.do(\"set_color red10= [1,0.1,0] \")\n";
+        
+        os << "cmd.do(\"set_color blue1 = [0,1.0,1] \")\n";
+        os << "cmd.do(\"set_color blue2 = [0,0.9,1] \")\n";
+        os << "cmd.do(\"set_color blue3 = [0,0.8,1] \")\n";
+        os << "cmd.do(\"set_color blue4 = [0,0.7,1] \")\n";
+        os << "cmd.do(\"set_color blue5 = [0,0.6,1] \")\n";
+        os << "cmd.do(\"set_color blue6 = [0,0.5,1] \")\n";
+        os << "cmd.do(\"set_color blue7 = [0,0.4,1] \")\n";
+        os << "cmd.do(\"set_color blue8 = [0,0.3,1] \")\n";
+        os << "cmd.do(\"set_color blue9 = [0,0.2,1] \")\n";
+        os << "cmd.do(\"set_color blue10= [0,0.1,1] \")\n"; 
+        
+        for (unsigned int i = 0; i < cells.size(); i++)
+        {
+            for (int j = 0; j < cells[i].getNumberVertices(); j++)
+            {
+                std::string strindex = new_base_index( lastCellIndex +  cells[i].vertices[j].getId());
+                os << "cmd.do(\"select " << strindex << ", name " << strindex << "\")\n";
+            }
+
+            lastCellIndex += cells[i].getNumberVertices();
+        }
+        
+        lastCellIndex = 0;
+
+        for (unsigned int i = 0; i < cells.size(); i++)
+        {
+            for (int j = 0; j < cells[i].getNumberVertices(); j++)
+            {
+                for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
+                {
+                    std::string strindex1 = new_base_index( lastCellIndex +  cells[i].vertices[j].getId());
+                    std::string strindex2 = new_base_index( lastCellIndex +  cells[i].vertices[j].bondedVerts[k]);
+                    os << "cmd.do(\"bond " << strindex1 << ", " << strindex2 << "\")\n";
+                }
+            }
+
+            lastCellIndex += cells[i].getNumberVertices();
+        }
+        
+
+        lastCellIndex = 0;
+
+        int counter = 1;
+        for (unsigned int i = 0; i < cells.size(); i++)
+        {
+            for (int j = 0; j < cells[i].getNumberVertices(); j++)
+            {
+                for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
+                {
+                    std::string strindex1 = new_base_index( lastCellIndex +  cells[i].vertices[j].getId());
+                    std::string strindex2 = new_base_index( lastCellIndex +  cells[i].vertices[j].bondedVerts[k]);
+                    os << "cmd.do(\"select my_sele_" << counter <<" , name "   << strindex1 << " " << strindex2 << "\")\n";
+                    counter++;
+                }
+            }
+
+            lastCellIndex += cells[i].getNumberVertices();
+        }
+        
+        lastCellIndex = 0;
+        counter = 1;
+        double strain = 0.0;
+        double strain_max = 0.5;
+        for (unsigned int i = 0; i < cells.size(); i++)
+        {
+            for (int j = 0; j < cells[i].getNumberVertices(); j++)
+            {
+                for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
+                {
+                    strain = cells[i].getStrain(j, k);
+                    int number = (int) ((strain_max - fabs(strain)) / 0.05);
+                    
+                    if (strain > 0)
+                    {
+                        os << "cmd.do(\"set_bond line_color, blue" << number << " ,my_sele_" << counter << "\")\n";
+                    }
+                    else
+                    {
+                        os << "cmd.do(\"set_bond line_color, red" << number << ", my_sele_" << counter << "\")\n";
+                    }
+                    counter++;
+                }
+            }
+
+            lastCellIndex += cells[i].getNumberVertices();
+        }
+        
+        os << "cmd.do(\"show lines\")\n";
+        os << "cmd.do(\"bg white\")\n\n";
+        os.close();
+    }
+    else
+    {
+        scriptbuilder_logs << utils::LogLevel::WARNING << "Can not open file:" <<  script << "\n";
+    }    
+}
+
+void ScriptBuilder::saveContactStress(const std::vector<Cell>& cells, const Box& box) const
 {
     std::ofstream os;
     os.open(stress_script);
@@ -238,9 +363,9 @@ void ScriptBuilder::saveStressScript(const std::vector<Cell>& cells, const Box& 
 
         maxforce *= 2.0;
 
-        for (unsigned int i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < cells.size(); i++)
         {
-            for (unsigned int j = 0; j < cells.size(); j++)
+            for (uint j = 0; j < cells.size(); j++)
             {
                 double forceij = 0.0;
                 //double forceij = cells[i].contactForceNew(cells[j], box);
