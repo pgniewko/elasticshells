@@ -40,9 +40,21 @@ void Cell::voidVerletLsit()
 
 void Cell::builtVerletList(const Cell& other_cell, const Box& box)
 {
+    double R01 = getInitR();
+    double R02 = other_cell.getInitR();
+    Vector3D cm1 = getCm();
+    Vector3D cm2 = other_cell.getCm();
+    Vector3D cell_separation;
+    getDistance(cell_separation,  cm1, cm2, box);
+    
+    if (cell_separation.length() > 1.85 * (R01+R02)) // 1.85 just an arbitrary number
+        return;
+    
+    
     Vector3D distance_jk;
     double r_cut = 2 * params.r_vertex;
-
+    
+    
     if (this->cell_id != other_cell.cell_id)
     {
         for (int j = 0; j < number_v; j++)
@@ -827,15 +839,51 @@ double Cell::contactArea(const Cell& other_cell, const Box& box) const
 {
     double contact_area = 0.0;
 
-    for (int i = 0; i < number_t; i++)
+    for (int t_idx = 0; t_idx < number_t; t_idx++)
     {
-        if ( isInContact(i, other_cell, box) )
+        if ( isInContact(t_idx, other_cell, box) )
         {
-            contact_area += triangles[i].area(vertices, cm_m, params.r_vertex);
+            contact_area += triangles[t_idx].area(vertices, cm_m, params.r_vertex);
         }
     }
 
     return contact_area;
+}
+
+double Cell::activeArea(const Box& box, const std::vector<Cell>& cells)
+{
+    double total_surface = 0.0;
+    for (int t_idx = 0; t_idx < number_t; t_idx++)
+    {
+        total_surface += triangles[t_idx].area(vertices, cm_m, params.r_vertex);  
+    }    
+    
+    double total_contact_area = 0.0;
+
+    for (uint cid = 0; cid < cells.size(); cid++)
+    {
+        if (cell_id != cells[cid].cell_id)
+        {
+            total_contact_area += contactArea(cells[cid], box);
+        }
+    }
+    
+    total_contact_area += contactArea(box, 0.0);
+    
+    return std::max(0.0, total_surface - total_contact_area);
+}
+
+double Cell::activeAreaFraction(const Box& box, const std::vector<Cell>& cells)
+{
+    double total_surface = 0.0;
+    for (int t_idx = 0; t_idx < number_t; t_idx++)
+    {
+        total_surface += triangles[t_idx].area(vertices, cm_m, params.r_vertex);  
+    }    
+
+    double active_area = activeArea(box, cells);
+
+    return std::min(1.0, active_area / total_surface);
 }
 
 double Cell::contactArea(const Box& box, double d_param) const
@@ -969,7 +1017,7 @@ double Cell::nbIntra(const Box& box) const
             {
                 vertid = vertices[i].nbVerts[j];
                 getDistance(dij, vertices[vertid].r_c, vertices[i].r_c, box);
-                fij += HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
+                fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
                 
                 if ( fij.length() > 0.0 )
                 {
@@ -1069,4 +1117,4 @@ void Cell::findBud()
     return;
 }
 
-// ********* END OF CELL GROWTH  --- DON'T ADD ANYTHIN BELOW
+// ********* END OF CELL GROWTH  --- DON'T ADD ANYTHING BELOW

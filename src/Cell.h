@@ -109,6 +109,8 @@ class Cell
         double contactForceSF(const Box&) const; // for Surface Force use
         double contactArea(const Cell&, const Box&) const;
         double contactArea(const Box&, double = 0.0) const;
+        double activeArea(const Box&, const std::vector<Cell>&);
+        double activeAreaFraction(const Box&, const std::vector<Cell>&);
         double strainEnergy(const Box&) const;
         double maxStrain() const;
         double minStrain() const;
