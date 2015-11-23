@@ -37,7 +37,7 @@ double AverageContactArea::observe(const Box& box, std::vector<Cell>& cells)
         return 0.0;
     }
     
-    return (partial_conact_a / counter);
+    return (total_contact_a / counter);
 }
 
 DerivedRegister<AverageContactArea> AverageContactArea::reg("AverageContactArea");
