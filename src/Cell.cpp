@@ -880,14 +880,14 @@ double Cell::activeArea(const Box& box, const std::vector<Cell>& cells,  double&
         }
         else
         {
-            total_contact_area = 0.0;
+            return 0.0;
         }
     }
     else  // ONLY BOX NON-TOUCHING CELLS
     {
         if (total_cell_box_area > 0)
         {
-            total_contact_area = 0.0;
+            return 0.0;
         }
         else
         {
