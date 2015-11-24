@@ -12,22 +12,25 @@ void AverageContactArea::set_params(const int num, std::vector<std::string> args
 };
 
 double AverageContactArea::observe(const Box& box, std::vector<Cell>& cells)
-{
+{   
     uint cellsnumber = cells.size();
     double total_contact_a = 0.0;
     double partial_conact_a = 0.0;
     double counter = 0.0;
     
-    for (uint i = 0; i < cellsnumber - 1; i++)
+    for (uint i = 0; i < cellsnumber; i++)
     {
-        for (uint j = i + 1; j < cellsnumber; j++)
+        for (uint j = 0; j < cellsnumber; j++)
         {
-            partial_conact_a = cells[i].contactArea(cells[j], box);
-            total_contact_a += partial_conact_a;
-            
-            if (partial_conact_a > 0.0)
+            if (i != j)
             {
-                counter += 1.0;
+                partial_conact_a = cells[i].contactArea(cells[j], box);
+                total_contact_a += partial_conact_a;
+            
+                if (partial_conact_a > 0.0)
+                {
+                    counter += 1.0;
+                }
             }
         }
     }
@@ -37,7 +40,7 @@ double AverageContactArea::observe(const Box& box, std::vector<Cell>& cells)
         return 0.0;
     }
     
-    return (partial_conact_a / counter);
+    return (total_contact_a / counter);
 }
 
 DerivedRegister<AverageContactArea> AverageContactArea::reg("AverageContactArea");

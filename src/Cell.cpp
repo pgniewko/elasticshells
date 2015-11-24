@@ -850,7 +850,7 @@ double Cell::contactArea(const Cell& other_cell, const Box& box) const
     return contact_area;
 }
 
-double Cell::activeArea(const Box& box, const std::vector<Cell>& cells)
+double Cell::activeArea(const Box& box, const std::vector<Cell>& cells,  double& counter, bool flag) const
 {
     double total_surface = 0.0;
     for (int t_idx = 0; t_idx < number_t; t_idx++)
@@ -858,22 +858,48 @@ double Cell::activeArea(const Box& box, const std::vector<Cell>& cells)
         total_surface += triangles[t_idx].area(vertices, cm_m, params.r_vertex);  
     }    
     
-    double total_contact_area = 0.0;
-
+    double total_cell_cell_area = 0.0;
     for (uint cid = 0; cid < cells.size(); cid++)
     {
         if (cell_id != cells[cid].cell_id)
         {
-            total_contact_area += contactArea(cells[cid], box);
+            total_cell_cell_area += contactArea(cells[cid], box);
         }
     }
     
-    total_contact_area += contactArea(box, 0.0);
+    double total_cell_box_area = contactArea(box, 0.0);
+    
+    
+    double total_contact_area = 0.0;
+    if (flag) // ONLY BOX TOUCHING CELLS
+    {
+        if (total_cell_box_area > 0)
+        {
+            total_contact_area = total_cell_box_area + total_cell_cell_area;
+            counter += 1.0;
+        }
+        else
+        {
+            return 0.0;
+        }
+    }
+    else  // ONLY BOX NON-TOUCHING CELLS
+    {
+        if (total_cell_box_area > 0)
+        {
+            return 0.0;
+        }
+        else
+        {
+            total_contact_area = total_cell_cell_area;
+            counter += 1.0;
+        }
+    }
     
     return std::max(0.0, total_surface - total_contact_area);
 }
 
-double Cell::activeAreaFraction(const Box& box, const std::vector<Cell>& cells)
+double Cell::activeAreaFraction(const Box& box, const std::vector<Cell>& cells, double& counter, bool flag) const
 {
     double total_surface = 0.0;
     for (int t_idx = 0; t_idx < number_t; t_idx++)
@@ -881,7 +907,7 @@ double Cell::activeAreaFraction(const Box& box, const std::vector<Cell>& cells)
         total_surface += triangles[t_idx].area(vertices, cm_m, params.r_vertex);  
     }    
 
-    double active_area = activeArea(box, cells);
+    double active_area = activeArea(box, cells, counter, flag);
 
     return std::min(1.0, active_area / total_surface);
 }
