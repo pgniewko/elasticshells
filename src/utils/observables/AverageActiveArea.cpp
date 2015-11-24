@@ -28,6 +28,11 @@ double AverageActiveArea::observe(const Box& box, std::vector<Cell>& cells)
         //counter += 1.0;
     }
     
+    if (counter == 0.0 )
+    {
+        return 0.0;
+    }
+    
     return (total_active_a /= counter);
 }
 
