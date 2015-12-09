@@ -12,9 +12,8 @@ git clone git@bitbucket.org:pawelgniewek/biofilm.git
 ```
 
 To obtain the most recent version of the code:
-
 ```
-
+git pull origin master
 ```
 
 COMPILING AND INSTALLATION - LINUX
