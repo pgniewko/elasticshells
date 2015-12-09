@@ -7,7 +7,15 @@ SSE vectorization for x86_64 CPU.
 
 GETTING THE CODE
 ==================================================
+```
+git clone git@bitbucket.org:pawelgniewek/biofilm.git
+```
 
+To obtain the most recent version of the code:
+
+```
+
+```
 
 COMPILING AND INSTALLATION - LINUX
 ==================================================
