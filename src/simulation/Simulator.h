@@ -47,6 +47,7 @@ struct params_t
     double vc;
     double bud_d;
     double div_ratio;
+    double v_disp_cut2;
     bool draw_box;
     bool scale;
 };
@@ -88,9 +89,12 @@ class Simulator
         void midpointRungeKutta();
 
         int getTotalVertices();
-        double getMaxLengthScale();
+        double getLengthScale();
 
         void updateCells();
+        void update_neighbors_list(int);
+        
+        bool verlet_condition();
 
         int number_of_cells;
         //char* triangulator;

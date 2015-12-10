@@ -44,6 +44,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.scale = args.scale_flag;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
+    params.v_disp_cut2 = (args.verlet_r - 1.0)*(args.verlet_r - 1.0);
     setIntegrator(args.integrator_a);
     setTriangulator(args.tritype);
     box.setX(args.bsx);
@@ -61,7 +62,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configureScheduler(args.sch_config_file);
 
-    domains.setupDomainsList(getMaxLengthScale(), box);
+    domains.setupDomainsList(getLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     logParams();
@@ -275,6 +276,7 @@ void Simulator::simulate(int steps)
 
     if (params.nbhandler == 1)
     {
+        //std::cout << "verlet initial construction" << std::endl;
         rebuildVerletLists();
     }
     else if (params.nbhandler == 2)
@@ -295,17 +297,18 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i <= steps; i++)
     {
-        if (params.nbhandler == 1)
-        {
-            if ( (i + 1) % params.vlist_step == 0)
-            {
-                rebuildVerletLists();
-            }
-        }
-        else if (params.nbhandler == 2)
-        {
-            rebuildDomainsList();
-        }
+        update_neighbors_list(i);
+//        if (params.nbhandler == 1)
+//        {
+//            if ( (i + 1) % params.vlist_step == 0)
+//            {
+//                rebuildVerletLists();
+//            }
+//        }
+//        else if (params.nbhandler == 2)
+//        {
+//            rebuildDomainsList();
+//        }
 
         integrate();
 
@@ -420,6 +423,48 @@ void Simulator::calcForces()
     }
 }
 
+bool Simulator::verlet_condition()
+{
+    double disp = 0.0;
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            disp = cells[i].vertices[j].get_vertel_disp2();
+            if (disp >= params.v_disp_cut2)
+            {
+                return true;
+            }
+        }
+        
+    }
+    
+    return false;
+}
+
+void Simulator::update_neighbors_list(int i)
+{
+    if (params.nbhandler == 1)
+    {
+        if ( verlet_condition() )
+        {
+            rebuildVerletLists();
+            std::cout << "verlet updated:" << i <<std::endl;
+        }
+    }
+    else if (params.nbhandler == 2)
+    {
+        rebuildDomainsList();
+    }
+    
+    else if (params.nbhandler == 3)
+    {
+    // MIXED APPROACH
+        
+    }
+    
+}
+
 void Simulator::rebuildVerletLists()
 {
     for (int i = 0; i < number_of_cells; i++)
@@ -477,10 +522,18 @@ int Simulator::getTotalVertices()
     return totalnumber;
 }
 
-double Simulator::getMaxLengthScale()
+double Simulator::getLengthScale()
 {
     double maxscale = 0.0;
-    maxscale = std::max(maxscale, params.r_vertex);
+    if (params.nbhandler == 2)
+    {
+       maxscale = std::max(maxscale, params.r_vertex);
+    }
+    else 
+    {
+        
+    }
+
     return maxscale;
 }
 

@@ -88,6 +88,8 @@ class Vertex
         void voidTime();
 
         const vertex_t& getMyType() const;
+        
+        double get_vertel_disp2() const;
 
         Vector3D r_c;
         Vector3D f_c;
@@ -95,6 +97,7 @@ class Vertex
         Vector3D r_p;           // make it private
         Vector3D f_p;
 
+        Vector3D r_v;           // for verlet-list purposes
 
         int bondedVerts[NEIGH_MAX];
         double r0[NEIGH_MAX];

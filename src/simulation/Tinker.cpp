@@ -303,7 +303,7 @@ int Tinker::getLonelyVertex(Cell& cell)
     }
 
     double ptot = 0.0;
-    double cutoff = 2.0 * cell.params.r_vertex;
+    double cutoff = 2.0 * cell.params.vertex_r;
     int I, J;
 
     for (int i = 0; i < vertexCounter; i++)

@@ -11,12 +11,12 @@
 class Vector3D
 {
     public:
-        Vector3D() : x(0), y(0), z(0) {}
-        Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
-        Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}
-        virtual ~Vector3D() {};
+        inline Vector3D() : x(0), y(0), z(0) {}
+        inline Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
+        inline Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}
+        inline virtual ~Vector3D() {};
 
-        const Vector3D& operator +=(const Vector3D& v)
+        inline const Vector3D& operator +=(const Vector3D& v)
         {
             x += v.x;
             y += v.y;
@@ -24,35 +24,35 @@ class Vector3D
             return *this;
         }
         
-        const Vector3D& operator -=(const Vector3D& v)
+        inline const Vector3D& operator -=(const Vector3D& v)
         {
             x -= v.x;
             y -= v.y;
             z -= v.z;
             return *this;
         }
-        const Vector3D& operator *=(const double a)
+        inline const Vector3D& operator *=(const double a)
         {
             x *= a;
             y *= a;
             z *= a;
             return *this;
         }
-        const Vector3D& operator /=(const double a)
+        inline const Vector3D& operator /=(const double a)
         {
             return *this *= 1.0 / a;
         }
 
-        double length() const
+        inline double length() const
         {
             return sqrt(x * x + y * y + z * z);
         }
-        double length2() const
+        inline double length2() const
         {
             return x * x + y * y + z * z;
         }
 
-        void setLength(double r)
+        inline void setLength(double r)
         {
             if (length() != 0)
             {
@@ -63,7 +63,7 @@ class Vector3D
             }
         }
         
-        void normalize()
+        inline void normalize()
         {
             double len = length();
             x /= len;
@@ -73,7 +73,7 @@ class Vector3D
         
         double x, y, z;
         
-        double angle(const Vector3D&) const;
+        inline double angle(const Vector3D&) const;
 };
 
 template <typename InputStreamT>

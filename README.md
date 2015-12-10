@@ -7,11 +7,12 @@ SSE vectorization for x86_64 CPU.
 
 GETTING THE CODE
 ==================================================
+* To get the code:
 ```
 git clone git@bitbucket.org:pawelgniewek/biofilm.git
 ```
 
-To obtain the most recent version of the code:
+* To obtain the most recent version of the code:
 ```
 git pull origin master
 ```
@@ -112,5 +113,5 @@ License: BSD
 
 ACKNOWLEDGMENTS
 ===============
-We thank Dominik Gront (University of Warsaw) for sharing BioShell `Logger` and
+We thank Dominik Gront (University of Warsaw) for sharing [BioShell](http://bioshell.pl/) `Logger` and
 `LogManager` classes.

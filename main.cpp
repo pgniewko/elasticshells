@@ -60,7 +60,7 @@ static struct argp_option options[] =
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"vlist-step", 408,   "INT", 0, "Verlet-list step interval [default: 100]"},
+    {"vlist-step",408,   "INT", 0, "Verlet-list step interval [default: 100]"},
     {"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
@@ -143,7 +143,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->visc = 100.0;
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
-            arguments->verlet_r = 2.0;
+            arguments->verlet_r = 3.0;
             arguments->init_radius = 2.5;
             arguments->init_radius2 = 2.5;
             arguments->growth_rate = 0.0;
@@ -252,6 +252,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 409:
             arguments->verlet_r = arg ?  strtod (arg, NULL) : 3.0;
+            arguments->verlet_r = std::max(arguments->verlet_r, 1.0);
             break;
 
         case 410:

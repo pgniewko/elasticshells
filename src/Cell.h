@@ -19,12 +19,12 @@
 
 struct cell_params_t
 {
-    double r_vertex;
+    double vertex_r;
     double ecc;
     double nu;
     double dp;
     double gamma;
-    double verletR;
+    double verlet_f;
     double init_r;
     double vertexVisc;
     double totalVisc;
