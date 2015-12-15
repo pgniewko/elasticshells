@@ -16,6 +16,7 @@
 
 #define STRCMP(a,b) (!strcmp(a,b))
 #define SIGN(a) (a >= 0 ? 1 : -1)
+// change macros to inline functions! https://isocpp.org/wiki/faq/inline-functions#inline-vs-macros
 
 #define MAX_CELLS 100
 #define MAX_V 800
@@ -24,7 +25,7 @@
 #define TRIAN_MAX 40
 #define NBNEI_MAX 100
 #define MAX_IN_DOMAIN 10 // maximum number of particles in a domain
-#define MAX_M 50 // maximum number of linked-domains - in every direction
+#define MAX_M 50 // maximum number of linked-domains - in each direction
 #define MAX_D_NEIGH 27 // MUST BE 27 - ALWAYS !
 
 //TODO: moze warto przerowbic ten plik tak jak tutaj sugeruja:
@@ -38,7 +39,7 @@ const double SQRT3   = 1.73205080756888;
 const double SQRT6   = 2.44948974278319;
 const double DELTA7  = 0.00000001000000;
 const double DELTA14 = 0.00000000000001;
-const double EPSILON = 0.01;
+const double EPSILON = 0.001;
 const double P3ROOT2 = 1.25992104989487;
 const double D4_3    = 1.33333333333333;
 

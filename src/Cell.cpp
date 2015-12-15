@@ -107,6 +107,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
     Vector3D distance_ik;
     int vertIdx, cellIdx;
     double r_cut = 2 * params.vertex_r + EPSILON;
+    double r_cut2 = r_cut * r_cut;
 
     for (int i = 0; i < number_v; i++)
     {
@@ -125,7 +126,8 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
                 {
                     getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].r_c, vertices[i].r_c, box);
 
-                    if (distance_ik.length() <= r_cut)
+                    //if (distance_ik.length() <= r_cut)
+                    if (distance_ik.length2() <= r_cut2)
                     {
                         vertices[i].addNbNeighbor(vertIdx, cellIdx);
                     }
@@ -134,7 +136,8 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
                 {
                     getDistance(distance_ik, vertices[vertIdx].r_c, vertices[i].r_c, box);
 
-                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_cut)
+                    //if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_cut)
+                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length2() <= r_cut2)    
                     {
                         vertices[i].addNbNeighbor(vertIdx, cellIdx);
                     }
@@ -143,6 +146,12 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
         }
     }
 
+    // update the most current positions for which verlet-list has been calculated
+    for (int i = 0; i < number_v; i++)
+    {
+        vertices[i].r_v = vertices[i].r_c;
+    }
+    
 #ifdef TESTS
 
     for (int i = 0; i < number_v; i++)
