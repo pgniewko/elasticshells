@@ -335,8 +335,3 @@ void Vertex::voidTime()
 {
     gtimer = 0.0;
 }
-
-double Vertex::get_vertel_disp2() const
-{
-    return (r_c - r_v).length2();
-}
