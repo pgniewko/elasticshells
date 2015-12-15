@@ -11,70 +11,81 @@
 class Vector3D
 {
     public:
-        inline Vector3D() : x(0), y(0), z(0) {}
-        inline Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
-        inline Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}
-        inline virtual ~Vector3D() {};
-
-        inline const Vector3D& operator +=(const Vector3D& v)
-        {
-            x += v.x;
-            y += v.y;
-            z += v.z;
-            return *this;
-        }
+        Vector3D() : x(0), y(0), z(0) {}
+        Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
+        Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}
+        virtual ~Vector3D() {};
         
-        inline const Vector3D& operator -=(const Vector3D& v)
-        {
-            x -= v.x;
-            y -= v.y;
-            z -= v.z;
-            return *this;
-        }
-        inline const Vector3D& operator *=(const double a)
-        {
-            x *= a;
-            y *= a;
-            z *= a;
-            return *this;
-        }
-        inline const Vector3D& operator /=(const double a)
-        {
-            return *this *= 1.0 / a;
-        }
-
-        inline double length() const
-        {
-            return sqrt(x * x + y * y + z * z);
-        }
-        inline double length2() const
-        {
-            return x * x + y * y + z * z;
-        }
-
-        inline void setLength(double r)
-        {
-            if (length() != 0)
-            {
-                double rl = r / length();
-                x *= rl;
-                y *= rl;
-                z *= rl;
-            }
-        }
-        
-        inline void normalize()
-        {
-            double len = length();
-            x /= len;
-            y /= len;
-            z /= len;
-        }
+        const Vector3D& operator +=(const Vector3D& v);
+        const Vector3D& operator -=(const Vector3D& v);
+        const Vector3D& operator *=(const double a);
+        const Vector3D& operator /=(const double a);
+        double length() const;
+        double length2() const;
+        void setLength(double r);
+        void normalize();
+        double angle(const Vector3D&) const;
         
         double x, y, z;
-        
-        inline double angle(const Vector3D&) const;
 };
+
+inline const Vector3D& Vector3D::operator +=(const Vector3D& v)
+{
+    x += v.x;
+    y += v.y;
+    z += v.z;
+    return *this;
+}
+
+inline const Vector3D& Vector3D::operator -=(const Vector3D& v)
+{
+    x -= v.x;
+    y -= v.y;
+    z -= v.z;
+    return *this;
+}
+
+inline const Vector3D& Vector3D::operator *=(const double a)
+{
+    x *= a;
+    y *= a;
+    z *= a;
+    return *this;
+}
+
+inline const Vector3D& Vector3D::operator /=(const double a)
+{
+    return *this *= 1.0 / a;
+}
+
+inline double Vector3D::length() const
+{
+    return sqrt(x * x + y * y + z * z);
+}
+        
+inline double Vector3D::length2() const
+{
+    return x * x + y * y + z * z;
+}
+
+inline void Vector3D::setLength(double r)
+{
+    if (length() != 0)
+    {
+        double rl = r / length();
+        x *= rl;
+        y *= rl;
+        z *= rl;
+    }
+}
+        
+inline void Vector3D::normalize()
+{
+    double len = length();
+    x /= len;
+    y /= len;
+    z /= len;
+}
 
 template <typename InputStreamT>
 inline InputStreamT& operator>>(InputStreamT& s, Vector3D& v)
