@@ -280,6 +280,7 @@ void Simulator::simulate(int steps)
     {
         rebuildDomainsList();
     }
+    // TODO:  Update verlet-list przy urzyciu linked-domains!
     //else if (params.nbhandler == 3)
     //{
     //    rebuildDomainsList();
