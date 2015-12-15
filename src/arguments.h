@@ -46,7 +46,7 @@ struct arguments
     double ttime;
     double r_vertex;                   /* vertex radius */
     double verlet_f;
-    double init_radius;
+    double init_radius1;
     double init_radius2;
     double growth_rate;
     double vc;

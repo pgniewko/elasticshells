@@ -142,7 +142,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
             arguments->verlet_f = 3.0;
-            arguments->init_radius = 2.5;
+            arguments->init_radius1 = 2.5;
             arguments->init_radius2 = 2.5;
             arguments->growth_rate = 0.0;
             arguments->vc = 60.0;
@@ -282,7 +282,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
 
         case 502:
-            arguments->init_radius = arg ?  strtod (arg, NULL) : 2.5;
+            arguments->init_radius1 = arg ?  strtod (arg, NULL) : 2.5;
             break;
 
         case 503:
@@ -319,7 +319,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 511:
             arguments->init_radius2 = arg ?  strtod (arg, NULL) : 2.5;
-            arguments->init_radius2 = std::max(arguments->init_radius, arguments->init_radius2);
+            arguments->init_radius2 = std::max(arguments->init_radius1, arguments->init_radius2);
             break;
 
         case 512:
@@ -452,7 +452,7 @@ int main(int argc, char** argv)
     clocks[0].tic();
     simulation_time = read_timer();
     Simulator simulator(arguments);
-    simulator.initCells(arguments.n_cells, arguments.init_radius, arguments.init_radius2);
+    simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
     simulation_time = read_timer( ) - simulation_time;

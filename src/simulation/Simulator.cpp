@@ -115,7 +115,6 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::INFO  << "SIM_STEPS=" << params.nsteps << "\n";
     simulator_logs << utils::LogLevel::INFO  << "SAVE_STEP=" << params.save_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
-//    simulator_logs << utils::LogLevel::INFO  << "VERLET_STEP="  << params.vlist_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "TRIANGULATOR="  << triangulator << "\n";
     simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << " [s]\n";
     simulator_logs << utils::LogLevel::FINE  << "DEPTH="  << params.d << "\n";
