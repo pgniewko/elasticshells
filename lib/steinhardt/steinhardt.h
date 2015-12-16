@@ -123,10 +123,19 @@
 #ifndef STEINHARDT_H
 #define STEINHARDT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 int qlm (int l, int n, double rc, double* x, double* y, double* z,
          double* qlmRe, double* qlmIm);
 double qsum (int l, double* qlmRe, double* qlmIm);
 double Ql (int l, int count, double* qlmRe, double* qlmIm);
 double wl (int l, double* qlmRe, double* qlmIm);
+
+#ifdef  __cplusplus
+}
+#endif
 
 #endif  /* STEINHARDT_H */
