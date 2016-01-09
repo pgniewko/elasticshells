@@ -183,7 +183,7 @@ void Simulator::initCells(int N, double ra, double rb)
         {
             Vector3D tmpcm = cells[i].getCm();
             Vector3D delta = shift - tmpcm;
-            rsum = cells[i].getInitR() + r0 + rc + EPSILON;
+            rsum = cells[i].getInitR() + r0 + rc + constants::epsilon;
 
             if ( delta.length() < rsum)
             {

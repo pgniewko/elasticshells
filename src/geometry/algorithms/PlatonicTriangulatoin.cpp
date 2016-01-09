@@ -73,7 +73,7 @@ std::list<Triangle> PlatonicTriangulatoin::triangulate()
 
 void PlatonicTriangulatoin::createTetrahedron()
 {
-    double C = SQRT3 / 3.0; // - OK, checked. change C = SQRT3/3 to 1. no diff.
+    double C = constants::sqrt3 / 3.0; // - OK, checked. change C = SQRT3/3 to 1. no diff.
     tris.push_back(Triangle(Vector3D( C, C, C), Vector3D(-C, -C, C), Vector3D(-C, C, -C) ));
     tris.push_back(Triangle(Vector3D( C, C, C), Vector3D( C, -C, -C), Vector3D(-C, -C, C) ));
     tris.push_back(Triangle(Vector3D(-C, C, -C), Vector3D(-C, -C, C), Vector3D( C, -C, -C) ));

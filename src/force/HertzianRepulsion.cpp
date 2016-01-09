@@ -33,7 +33,7 @@ Vector3D HertzianRepulsion::calcForce(const Vector3D& dij, const double R1, cons
 
     if (h > 0)
     {
-        double fmagn = D4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
+        double fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
         Vector3D f = fmagn * (dij / dij.length()) ;
         return f;
     }

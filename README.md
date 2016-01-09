@@ -80,7 +80,7 @@ apt-get install libgsl0-dev
 
 * Steinhardt order parameters [library](https://github.com/nquesada/steinhardt).
 The library can be found in `lib/steinhardt` directory.
-First we compile a static library, then combine objects into library, create an index within the library,
+First we compile a library, then combine objects into a static library, create an index within the library,
 and finally we can install it in `/usr/local/lib`:
 ```
 $ g++ -O3 -Wall -lm -lgsl -lgslcblas -c -o steinhardt.o steinhardt.c 

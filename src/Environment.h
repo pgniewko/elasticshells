@@ -30,22 +30,23 @@
 
 //TODO: moze warto przerowbic ten plik tak jak tutaj sugeruja:
 // http://www.learncpp.com/cpp-tutorial/42-global-variables/
-//http://www.learncpp.com/cpp-tutorial/2-9-symbolic-constants-and-the-const-keyword/
+// http://www.learncpp.com/cpp-tutorial/2-9-symbolic-constants-and-the-const-keyword/
 
-const double E       = 2.71828182845905;
-const double PI      = 3.14159265358979;
-const double SQRT2   = 1.41421356237310;
-const double SQRT3   = 1.73205080756888;
-const double SQRT6   = 2.44948974278319;
-const double DELTA7  = 0.00000001000000;
-const double DELTA14 = 0.00000000000001;
-const double EPSILON = 0.001;
-const double P3ROOT2 = 1.25992104989487;
-const double D4_3    = 1.33333333333333;
-
-const char names[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+namespace constants
+{
+    const double e       = 2.71828182845905;
+    const double pi      = 3.14159265358979;
+    const double sqrt2   = 1.41421356237310;
+    const double sqrt3   = 1.73205080756888;
+    const double sqrt6   = 2.44948974278319;
+    const double delta7  = 0.00000001;
+    const double delta14 = 0.00000000000001;
+    const double epsilon = 0.001;
+    const double p3root2 = 1.25992104989487;
+    const double d4_3    = 1.33333333333333;
+    const char names[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
                         'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
                        };
-
+}
 #endif	/* ENVIRONMENT_H */
 

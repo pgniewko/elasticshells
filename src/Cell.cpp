@@ -106,7 +106,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
     int domainn;
     Vector3D distance_ik;
     int vertIdx, cellIdx;
-    double r_cut = 2 * params.vertex_r + EPSILON;
+    double r_cut = 2 * params.vertex_r + constants::epsilon;
     double r_cut2 = r_cut * r_cut;
 
     for (int i = 0; i < number_v; i++)
