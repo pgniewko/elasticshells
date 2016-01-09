@@ -1,7 +1,7 @@
 #ifndef ENVIRONMENT_H
 #define	ENVIRONMENT_H
 
-#if defined (_OPENMP)
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -16,7 +16,6 @@
 
 #define STRCMP(a,b) (!strcmp(a,b))
 #define SIGN(a) (a >= 0 ? 1 : -1)
-// change macros to inline functions! https://isocpp.org/wiki/faq/inline-functions#inline-vs-macros
 
 #define MAX_CELLS 100
 #define MAX_V 800
@@ -27,10 +26,6 @@
 #define MAX_IN_DOMAIN 10 // maximum number of particles in a domain
 #define MAX_M 50 // maximum number of linked-domains - in each direction
 #define MAX_D_NEIGH 27 // MUST BE 27 - ALWAYS !
-
-//TODO: moze warto przerowbic ten plik tak jak tutaj sugeruja:
-// http://www.learncpp.com/cpp-tutorial/42-global-variables/
-// http://www.learncpp.com/cpp-tutorial/2-9-symbolic-constants-and-the-const-keyword/
 
 namespace constants
 {
