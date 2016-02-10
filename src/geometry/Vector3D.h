@@ -1,8 +1,6 @@
 #ifndef VECTOR3D_H
 #define	VECTOR3D_H
 
-static_assert(__cplusplus > 199711L, "Program requires C++11 capable compiler");
-
 #include <iostream>
 #include <fstream>
 #include <cmath>
