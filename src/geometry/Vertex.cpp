@@ -291,6 +291,10 @@ double Vertex::getVisc() const
     return visc;
 }
 
+// TODO:
+// zamien te funkcje na przeciazaony >> operator
+// http://www.learncpp.com/cpp-tutorial/93-overloading-the-io-operators/
+
 void Vertex::printVertex()
 {
     std::cout << "myid=" << myid << " ";

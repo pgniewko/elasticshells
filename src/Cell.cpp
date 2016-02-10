@@ -2,8 +2,9 @@
 
 utils::Logger Cell::cell_log("cell");
 
-Cell::Cell(int depth) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), nRT(0), V0(0),
-    vert_no_bud(0)
+//Cell::Cell(int depth) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), nRT(0), V0(0),
+//    vert_no_bud(0)
+Cell::Cell(int depth)
 {
     SimpleTriangulation sm(depth);
     std::list<Triangle> tris = sm.triangulate();

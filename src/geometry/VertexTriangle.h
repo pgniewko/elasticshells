@@ -25,8 +25,10 @@ class VertexTriangle
         void printVertexTriangle() const;
         void subsVertex(int, int);
 
-        int ia, ib, ic;
-        int myindex;
+        int ia = -1;
+        int ib = -1;
+        int ic = -1;
+        int myindex = -1;
 };
 
 #endif	/* VERTEXTRIANGLE_H */

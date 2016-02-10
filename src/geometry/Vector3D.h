@@ -1,6 +1,8 @@
 #ifndef VECTOR3D_H
 #define	VECTOR3D_H
 
+static_assert(__cplusplus > 199711L, "Program requires C++11 capable compiler");
+
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -11,7 +13,8 @@
 class Vector3D
 {
     public:
-        Vector3D() : x(0), y(0), z(0) {}
+        //Vector3D() : x(0), y(0), z(0) {}
+        Vector3D() {} // do i need this one ?
         Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
         Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}
         virtual ~Vector3D() {};
@@ -26,7 +29,11 @@ class Vector3D
         void normalize();
         double angle(const Vector3D&) const;
         
-        double x, y, z;
+        // Should I favor uniform initialization '{}' ?
+        // '{}' is only for C++11 compatible compilers tough.
+        double x = 0.0;
+        double y = 0.0;
+        double z = 0.0;
 };
 
 inline const Vector3D& Vector3D::operator +=(const Vector3D& v)

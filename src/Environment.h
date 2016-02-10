@@ -9,10 +9,6 @@
 #include "utils/Logger.h"
 
 #define IMPLIES(x, y) (!(x) || (y))
-//#include <assert.h>
-//void foo(int array[], int n) {
-//  assert(IMPLIES(n > 0, array != NULL));
-//  ...
 
 #define STRCMP(a,b) (!strcmp(a,b))
 #define SIGN(a) (a >= 0 ? 1 : -1)
