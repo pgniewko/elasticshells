@@ -49,6 +49,7 @@ struct params_t
     double v_disp_cut2;
     bool draw_box;
     bool scale;
+    bool dynamics;
 };
 
 class Simulator

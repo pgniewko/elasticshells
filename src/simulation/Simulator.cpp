@@ -41,6 +41,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.div_ratio = args.div_ratio;
     params.draw_box = args.draw_box;
     params.scale = args.scale_flag;
+    params.dynamics = args.dynamics;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
     params.v_disp_cut2 = params.r_vertex*params.r_vertex*(args.verlet_f - 1.0)*(args.verlet_f - 1.0);
@@ -615,6 +616,8 @@ void Simulator::set_min_force()
 
 bool Simulator::check_min_force()
 {
+    if (params.dynamics) return false;
+    
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
