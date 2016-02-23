@@ -68,9 +68,9 @@ double VertexTriangle::area(const Vertex vs[], const Vector3D cm, double eps) co
         double n_ta = ta.length() + eps;
         double n_tb = tb.length() + eps;
         double n_tc = tc.length() + eps;
-        ta.setLength(n_ta);
-        tb.setLength(n_tb);
-        tc.setLength(n_tc);
+        ta.set_length(n_ta);
+        tb.set_length(n_tb);
+        tc.set_length(n_tc);
         Triangle t(ta, tb, tc);
         return t.area();
     }

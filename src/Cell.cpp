@@ -69,7 +69,7 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
                 getDistance(distance_jk,  other_cell.vertices[k].r_c, vertices[j].r_c, box);
 
                 //if (distance_jk.length() <= r_cut * params.verlet_f)
-                if (distance_jk.length2() <= r_cut2)
+                if (distance_jk.length_sq() <= r_cut2)
                 {
                     vertices[j].addNbNeighbor(k, other_cell.cell_id);
                 }
@@ -85,7 +85,7 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
                 getDistance(distance_jk, vertices[k].r_c, vertices[j].r_c, box);
 
                 //if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_cut * params.verlet_f)
-                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length2() <= r_cut2)
+                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length_sq() <= r_cut2)
                 {
                     vertices[j].addNbNeighbor(k, other_cell.cell_id);
                 }
@@ -128,7 +128,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
                     getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].r_c, vertices[i].r_c, box);
 
                     //if (distance_ik.length() <= r_cut)
-                    if (distance_ik.length2() <= r_cut2)
+                    if (distance_ik.length_sq() <= r_cut2)
                     {
                         vertices[i].addNbNeighbor(vertIdx, cellIdx);
                     }
@@ -138,7 +138,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
                     getDistance(distance_ik, vertices[vertIdx].r_c, vertices[i].r_c, box);
 
                     //if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_cut)
-                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length2() <= r_cut2)    
+                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length_sq() <= r_cut2)    
                     {
                         vertices[i].addNbNeighbor(vertIdx, cellIdx);
                     }
@@ -330,8 +330,8 @@ double Cell::calcVolume(double eps) const
         va = triangles[i].ia;
         vb = triangles[i].ib;
         vc = triangles[i].ic;
-        Tetrahedron tetr(vertices[va].r_c, vertices[vb].r_c, vertices[vc].r_c, cm_m);
-        volume += tetr.volume(eps);
+        volume +=Tetrahedron::volume(vertices[va].r_c, vertices[vb].r_c, vertices[vc].r_c, cm_m);
+        //volume += tetr.volume(eps);
     }
 
     return volume;
@@ -1070,7 +1070,7 @@ double Cell::nbIntra(const Box& box) const
                 
                 if ( fij.length() > 0.0 )
                 {
-                    dij.setLength( 2 * r1 - dij.length() );
+                    dij.set_length( 2 * r1 - dij.length() );
                     nb_energy += fabs( fij.x * dij.x + fij.y * dij.y + fij.z * dij.z );
                 }
             }

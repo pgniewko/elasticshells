@@ -17,8 +17,6 @@
 #include "simulation/DomainList.h"
 #include "simulation/Tinker.h"
 
-static_assert(__cplusplus > 199711L, "Program requires C++11 capable compiler");
-
 struct cell_params_t
 {
     double vertex_r;
