@@ -3,13 +3,6 @@
 double Tetrahedron::volume(const Vector3D& a, const Vector3D& b, const Vector3D& c, const Vector3D& d)
 {
     return fabs((a-d) * cross(b-d, c-d)) / 6.0;
-//    Vector3D AD = a - d;
-//    Vector3D BD = b - d;
-//    Vector3D CD = c - d;
-//    Vector3D CcrossD = cross(BD, CD);
-//    double volume = fabs(AD * CcrossD);
-//    volume /= 6.0;
-//    return volume;
 }
 
 double Tetrahedron::volume(const Vector3D& a, const Vector3D& b, const Vector3D& c, const Vector3D& d, const double eps)
