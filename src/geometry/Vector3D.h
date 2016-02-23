@@ -11,70 +11,86 @@
 class Vector3D
 {
     public:
-        Vector3D() : x(0), y(0), z(0) {}
+        //Vector3D() : x(0), y(0), z(0) {}
+        Vector3D() {} // do i need this one ?
         Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
         Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}
         virtual ~Vector3D() {};
-
-        const Vector3D& operator +=(const Vector3D& v)
-        {
-            x += v.x;
-            y += v.y;
-            z += v.z;
-            return *this;
-        }
         
-        const Vector3D& operator -=(const Vector3D& v)
-        {
-            x -= v.x;
-            y -= v.y;
-            z -= v.z;
-            return *this;
-        }
-        const Vector3D& operator *=(const double a)
-        {
-            x *= a;
-            y *= a;
-            z *= a;
-            return *this;
-        }
-        const Vector3D& operator /=(const double a)
-        {
-            return *this *= 1.0 / a;
-        }
-
-        double length() const
-        {
-            return sqrt(x * x + y * y + z * z);
-        }
-        double length2() const
-        {
-            return x * x + y * y + z * z;
-        }
-
-        void setLength(double r)
-        {
-            if (length() != 0)
-            {
-                double rl = r / length();
-                x *= rl;
-                y *= rl;
-                z *= rl;
-            }
-        }
-        
-        void normalize()
-        {
-            double len = length();
-            x /= len;
-            y /= len;
-            z /= len;
-        }
-        
-        double x, y, z;
-        
+        const Vector3D& operator +=(const Vector3D& v);
+        const Vector3D& operator -=(const Vector3D& v);
+        const Vector3D& operator *=(const double a);
+        const Vector3D& operator /=(const double a);
+        double length() const;
+        double length2() const;
+        void setLength(double r);
+        void normalize();
         double angle(const Vector3D&) const;
+        
+        // Should I favor uniform initialization '{}' ?
+        // '{}' is only for C++11 compatible compilers tough.
+        double x = 0.0;
+        double y = 0.0;
+        double z = 0.0;
 };
+
+inline const Vector3D& Vector3D::operator +=(const Vector3D& v)
+{
+    x += v.x;
+    y += v.y;
+    z += v.z;
+    return *this;
+}
+
+inline const Vector3D& Vector3D::operator -=(const Vector3D& v)
+{
+    x -= v.x;
+    y -= v.y;
+    z -= v.z;
+    return *this;
+}
+
+inline const Vector3D& Vector3D::operator *=(const double a)
+{
+    x *= a;
+    y *= a;
+    z *= a;
+    return *this;
+}
+
+inline const Vector3D& Vector3D::operator /=(const double a)
+{
+    return *this *= 1.0 / a;
+}
+
+inline double Vector3D::length() const
+{
+    return sqrt(x * x + y * y + z * z);
+}
+        
+inline double Vector3D::length2() const
+{
+    return x * x + y * y + z * z;
+}
+
+inline void Vector3D::setLength(double r)
+{
+    if (length() != 0)
+    {
+        double rl = r / length();
+        x *= rl;
+        y *= rl;
+        z *= rl;
+    }
+}
+        
+inline void Vector3D::normalize()
+{
+    double len = length();
+    x /= len;
+    y /= len;
+    z /= len;
+}
 
 template <typename InputStreamT>
 inline InputStreamT& operator>>(InputStreamT& s, Vector3D& v)

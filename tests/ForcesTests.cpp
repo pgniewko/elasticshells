@@ -54,9 +54,9 @@ void ForcesTests::testHookeanForce()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.5, f.x, DELTA14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, f.y, DELTA14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, f.z, DELTA14);
-    f = HookeanForce::calcForce(*v2, *v3, SQRT2, 1.0);
+    f = HookeanForce::calcForce(*v2, *v3, constants::sqrt2, 1.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, f.length(), DELTA14);
-    f = HookeanForce::calcForce(*v2, *v3, SQRT2 / 2, 1.0);
+    f = HookeanForce::calcForce(*v2, *v3, constants::sqrt2 / 2, 1.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(SQRT2 / 2, f.length(), DELTA14);
 }
 

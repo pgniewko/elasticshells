@@ -23,7 +23,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
 
     params.log_step = args.log_step;
     params.save_step = args.save_step;
-    params.vlist_step = args.vlist_step;
     params.d = args.d;
     params.nbhandler = args.nb_flag;
     params.E_cell = args.E_cell;
@@ -35,7 +34,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.visc = args.visc;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
-    params.verlet_r = args.verlet_r;
+    params.verlet_f = args.verlet_f;
     params.growth_rate = args.growth_rate;
     params.vc = args.vc;
     params.bud_d = args.bud_d;
@@ -44,6 +43,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.scale = args.scale_flag;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
+    params.v_disp_cut2 = params.r_vertex*params.r_vertex*(args.verlet_f - 1.0)*(args.verlet_f - 1.0);
     setIntegrator(args.integrator_a);
     setTriangulator(args.tritype);
     box.setX(args.bsx);
@@ -61,7 +61,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configureScheduler(args.sch_config_file);
 
-    domains.setupDomainsList(getMaxLengthScale(), box);
+    domains.setupDomainsList(getLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     logParams();
@@ -115,7 +115,6 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::INFO  << "SIM_STEPS=" << params.nsteps << "\n";
     simulator_logs << utils::LogLevel::INFO  << "SAVE_STEP=" << params.save_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
-    simulator_logs << utils::LogLevel::INFO  << "VERLET_STEP="  << params.vlist_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "TRIANGULATOR="  << triangulator << "\n";
     simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << " [s]\n";
     simulator_logs << utils::LogLevel::FINE  << "DEPTH="  << params.d << "\n";
@@ -184,7 +183,7 @@ void Simulator::initCells(int N, double ra, double rb)
         {
             Vector3D tmpcm = cells[i].getCm();
             Vector3D delta = shift - tmpcm;
-            rsum = cells[i].getInitR() + r0 + rc + EPSILON;
+            rsum = cells[i].getInitR() + r0 + rc + constants::epsilon;
 
             if ( delta.length() < rsum)
             {
@@ -247,7 +246,7 @@ void Simulator::addCell(double r0)
         newCell.setSpringConst(params.E_cell * params.th);
         newCell.setDp(params.dp, params.ddp);
         newCell.setVertexR(params.r_vertex);
-        newCell.setVerletR(params.verlet_r);
+        newCell.setVerletR(params.verlet_f);
         newCell.setCellId(number_of_cells);
         newCell.setVisc(params.visc);
         newCell.setInitR(r0);
@@ -281,6 +280,11 @@ void Simulator::simulate(int steps)
     {
         rebuildDomainsList();
     }
+    // TODO:  Update verlet-list przy urzyciu linked-domains!
+    //else if (params.nbhandler == 3)
+    //{
+    //    rebuildDomainsList();
+    //}
 
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
@@ -295,17 +299,18 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i <= steps; i++)
     {
-        if (params.nbhandler == 1)
-        {
-            if ( (i + 1) % params.vlist_step == 0)
-            {
-                rebuildVerletLists();
-            }
-        }
-        else if (params.nbhandler == 2)
-        {
-            rebuildDomainsList();
-        }
+        update_neighbors_list();
+//        if (params.nbhandler == 1)
+//        {
+//            if ( (i + 1) % params.vlist_step == 0)
+//            {
+//                rebuildVerletLists();
+//            }
+//        }
+//        else if (params.nbhandler == 2)
+//        {
+//            rebuildDomainsList();
+//        }
 
         integrate();
 
@@ -359,6 +364,13 @@ void Simulator::calcForces()
 
     #pragma omp parallel
     {
+        // CALC CENTER OF MASS
+        #pragma omp for
+        for (uint i = 0; i < cells.size(); i++)
+        {
+            cells[i].update();
+        }
+            
         // RESET FORCES
         #pragma omp for
         for (int i = 0 ; i < number_of_cells; i++)
@@ -397,6 +409,10 @@ void Simulator::calcForces()
                 {
                     cells[i].calcNbForcesVL(cells[j], box);
                 }
+                //else if (params.nbhandler == 3)
+                //{
+                //    cells[i].calcNbForcesVL(cells[j], box);
+                //}
                 else
                 {
                     cells[i].calcNbForcesON2(cells[j], box);
@@ -418,6 +434,47 @@ void Simulator::calcForces()
 
 
     }
+}
+
+bool Simulator::verlet_condition()
+{
+    double disp = 0.0;
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            disp = cells[i].vertices[j].get_verlet_disp2();
+            if (disp >= params.v_disp_cut2)
+            {
+                return true;
+            }
+        }
+        
+    }
+    
+    return false;
+}
+
+void Simulator::update_neighbors_list()
+{
+    if (params.nbhandler == 1)
+    {
+        if ( verlet_condition() )
+        {
+            rebuildVerletLists();
+        }
+    }
+    else if (params.nbhandler == 2)
+    {
+        rebuildDomainsList();
+    }
+    
+//    else if (params.nbhandler == 3)
+//    {
+//        if ( verlet_condition() )
+//        {
+//        }   
+//    }  
 }
 
 void Simulator::rebuildVerletLists()
@@ -477,10 +534,17 @@ int Simulator::getTotalVertices()
     return totalnumber;
 }
 
-double Simulator::getMaxLengthScale()
+double Simulator::getLengthScale()
 {
     double maxscale = 0.0;
-    maxscale = std::max(maxscale, params.r_vertex);
+    if (params.nbhandler == 2)
+    {
+        maxscale = std::max(maxscale, params.r_vertex);
+    }
+//    else if (params.nbhandler == 3)
+//    {
+//    }
+
     return maxscale;
 }
 
@@ -519,17 +583,14 @@ void Simulator::setTriangulator(char* token)
 {
     if (STRCMP (token, "simple"))
     {
-        //triangulator = token;
         triangulator = std::string(token);
     }
     else if (STRCMP (token, "plato"))
     {
-        //triangulator = token;
         triangulator = std::string(token);
     }
     else
     {
-        //triangulator = (char*)& "simple";
         triangulator = std::string("simple");
         simulator_logs << utils::LogLevel::FINE  << "SIMPLE TRIANGULATION IS APPLIED\n";
     }

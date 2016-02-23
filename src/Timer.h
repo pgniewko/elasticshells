@@ -19,8 +19,8 @@ class Timer
         double time();
 
     private:
-        clock_t t0;
-        clock_t final;
+        clock_t t0 = 0;
+        clock_t final = 0;
 };
 
 inline void print_time()

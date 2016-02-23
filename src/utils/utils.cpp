@@ -8,7 +8,7 @@ std::string new_base_index(int vindex, int base)
     do
     {
         r = vindex % base;
-        number.push_back( names[r] );
+        number.push_back( constants::names[r] );
         vindex /= base;
         i++;
     }
@@ -16,7 +16,7 @@ std::string new_base_index(int vindex, int base)
 
     while (number.size() < 4)
     {
-        number.push_back( names[0] );
+        number.push_back( constants::names[0] );
     }
 
     std::reverse(number.begin(), number.end());

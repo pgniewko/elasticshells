@@ -13,7 +13,7 @@ void Vector3DTests::setUp()
     v2 = new Vector3D(-0, -0, -0);
     v3 = new Vector3D(1, -1, -1);
     v4 = new Vector3D(112, -123.000001, 0.987654321);
-    v5 = new Vector3D(DELTA14, DELTA14, DELTA14);
+    v5 = new Vector3D(constants::delta14, constants::delta14, constants::delta14);
     v6 = new Vector3D(1, 0, 0);
     v7 = new Vector3D(0, 1, 0);
     v8 = new Vector3D(-1, 0, 0);

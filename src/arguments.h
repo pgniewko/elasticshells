@@ -30,7 +30,6 @@ struct arguments
     int log_step;
     int save_step;
     int box_step;
-    int vlist_step;
     int n_cells;
     int nsteps;
     int platotype;
@@ -46,8 +45,8 @@ struct arguments
     double visc;
     double ttime;
     double r_vertex;                   /* vertex radius */
-    double verlet_r;
-    double init_radius;
+    double verlet_f;
+    double init_radius1;
     double init_radius2;
     double growth_rate;
     double vc;

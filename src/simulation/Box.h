@@ -1,8 +1,8 @@
 #ifndef BOX_H
 #define	BOX_H
 
-#include <iostream>
 
+#include <iostream>
 #include "Environment.h"
 #include "utils/Logger.h"
 #include "simulation/Scheduler.h"

@@ -17,14 +17,16 @@
 #include "simulation/DomainList.h"
 #include "simulation/Tinker.h"
 
+static_assert(__cplusplus > 199711L, "Program requires C++11 capable compiler");
+
 struct cell_params_t
 {
-    double r_vertex;
+    double vertex_r;
     double ecc;
     double nu;
     double dp;
     double gamma;
-    double verletR;
+    double verlet_f;
     double init_r;
     double vertexVisc;
     double totalVisc;
@@ -34,7 +36,7 @@ struct cell_params_t
     double div_ratio;
 };
 
-enum class cell_phase_t
+enum class cell_phase_t // strongly typed and strongly scoped
 {
     C_G1,   // mother cell growth
     C_SG2,  // S+G2 - i.e. bud creation and budding phase
@@ -103,7 +105,7 @@ class Cell
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
 
-        int cell_id;
+        int cell_id = -1;
         double contactForce(const Cell&, const Box&) const;
         double contactForce(const Box&) const;
         double contactForceSF(const Box&) const; // for Surface Force use
@@ -135,14 +137,14 @@ class Cell
         double sumL2() const;
 
         cell_params_t params;
-        cell_phase_t my_phase;
-        int number_v;
-        int number_t;
-        double nRT;
-        double V0;
+        cell_phase_t my_phase = cell_phase_t::C_G1 ;
+        int number_v = 0;
+        int number_t = 0;
+        double nRT = 0.0;
+        double V0 = 0.0;
 
         int bud_idx[MAX_V];
-        int vert_no_bud;
+        int vert_no_bud = 0;
 
         static utils::Logger cell_log;
 };

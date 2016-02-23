@@ -2,8 +2,9 @@
 
 utils::Logger Cell::cell_log("cell");
 
-Cell::Cell(int depth) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), nRT(0), V0(0),
-    vert_no_bud(0)
+//Cell::Cell(int depth) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), nRT(0), V0(0),
+//    vert_no_bud(0)
+Cell::Cell(int depth)
 {
     SimpleTriangulation sm(depth);
     std::list<Triangle> tris = sm.triangulate();
@@ -25,7 +26,9 @@ Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1)
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles),
     cell_id(orig.cell_id), params(orig.params), my_phase(orig.my_phase), number_v(orig.number_v), number_t(orig.number_t), nRT(orig.nRT),
     V0(orig.V0), vert_no_bud(orig.vert_no_bud)
-{}
+{
+    // TODO: copy manually 
+}
 
 Cell::~Cell()
 {}
@@ -40,6 +43,7 @@ void Cell::voidVerletLsit()
 
 void Cell::builtVerletList(const Cell& other_cell, const Box& box)
 {
+    // TODO: remove length, Compare to length2 !!!
     double R01 = getInitR();
     double R02 = other_cell.getInitR();
     Vector3D cm1 = getCm();
@@ -47,12 +51,13 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
     Vector3D cell_separation;
     getDistance(cell_separation,  cm1, cm2, box);
     
-    if (cell_separation.length() > 1.85 * (R01+R02)) // 1.85 just an arbitrary number
+    if (cell_separation.length() > 2.0 * (R01+R02)) // 1.85 just an arbitrary number
         return;
     
     
     Vector3D distance_jk;
-    double r_cut = 2 * params.r_vertex;
+    double r_cut = 2 * params.vertex_r * params.verlet_f;
+    double r_cut2 = r_cut * r_cut;
     
     
     if (this->cell_id != other_cell.cell_id)
@@ -63,7 +68,8 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
             {
                 getDistance(distance_jk,  other_cell.vertices[k].r_c, vertices[j].r_c, box);
 
-                if (distance_jk.length() <= r_cut * params.verletR)
+                //if (distance_jk.length() <= r_cut * params.verlet_f)
+                if (distance_jk.length2() <= r_cut2)
                 {
                     vertices[j].addNbNeighbor(k, other_cell.cell_id);
                 }
@@ -78,22 +84,31 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
             {
                 getDistance(distance_jk, vertices[k].r_c, vertices[j].r_c, box);
 
-                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_cut * params.verletR)
+                //if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_cut * params.verlet_f)
+                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length2() <= r_cut2)
                 {
                     vertices[j].addNbNeighbor(k, other_cell.cell_id);
                 }
             }
         }
     }
+    
+    // update the most current positions for which verlet-list has been calculated
+    for (int i = 0; i < number_v; i++)
+    {
+        vertices[i].r_v = vertices[i].r_c;
+    }
 }
 
 void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box& box)
 {
+    // TODO: remove length, Compare to length2 !!!
     int domainIdx;
     int domainn;
     Vector3D distance_ik;
     int vertIdx, cellIdx;
-    double r_cut = 2 * params.r_vertex + EPSILON;
+    double r_cut = 2 * params.vertex_r + constants::epsilon;
+    double r_cut2 = r_cut * r_cut;
 
     for (int i = 0; i < number_v; i++)
     {
@@ -112,7 +127,8 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
                 {
                     getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].r_c, vertices[i].r_c, box);
 
-                    if (distance_ik.length() <= r_cut)
+                    //if (distance_ik.length() <= r_cut)
+                    if (distance_ik.length2() <= r_cut2)
                     {
                         vertices[i].addNbNeighbor(vertIdx, cellIdx);
                     }
@@ -121,7 +137,8 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
                 {
                     getDistance(distance_ik, vertices[vertIdx].r_c, vertices[i].r_c, box);
 
-                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_cut)
+                    //if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_cut)
+                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length2() <= r_cut2)    
                     {
                         vertices[i].addNbNeighbor(vertIdx, cellIdx);
                     }
@@ -130,6 +147,12 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
         }
     }
 
+    // update the most current positions for which verlet-list has been calculated
+    for (int i = 0; i < number_v; i++)
+    {
+        vertices[i].r_v = vertices[i].r_c;
+    }
+    
 #ifdef TESTS
 
     for (int i = 0; i < number_v; i++)
@@ -185,8 +208,8 @@ void Cell::calcNbForcesON2(const Cell& other_cell, const Box& box)
 {
     int ocellid = other_cell.cell_id;
     Vector3D dij;
-    double r1 = params.r_vertex;
-    double r2 = other_cell.params.r_vertex;
+    double r1 = params.vertex_r;
+    double r2 = other_cell.params.vertex_r;
     double e1 = params.ecc;
     double e2 = other_cell.params.ecc;
     double nu1 = params.nu;
@@ -218,8 +241,8 @@ void Cell::calcNbForcesVL(const Cell& other_cell, const Box& box)
     int ocellid = other_cell.cell_id;
     int vertid;
     Vector3D dij;
-    double r1 = params.r_vertex;
-    double r2 = other_cell.params.r_vertex;
+    double r1 = params.vertex_r;
+    double r2 = other_cell.params.vertex_r;
     double e1 = params.ecc;
     double e2 = other_cell.params.ecc;
     double nu1 = params.nu;
@@ -229,7 +252,7 @@ void Cell::calcNbForcesVL(const Cell& other_cell, const Box& box)
     {
         for (int j = 0; j < vertices[i].numNbNeighs; j++)
         {
-            if (vertices[i].nbCellsIdx[j] == ocellid)
+            if (vertices[i].nbCellsIdx[j] == ocellid) // TODO: list nbCellsIdx should be sorted - for the sake of branch prediction!
             {
                 vertid = vertices[i].nbVerts[j];
                 getDistance(dij, other_cell.vertices[vertid].r_c, vertices[i].r_c, box);
@@ -250,7 +273,7 @@ void Cell::calcBoxForces(const Box& box)
     double eb  = box.getE();
     double nub = box.getNu();
     double rb_ = 0.0;
-    double r1 = params.r_vertex;
+    double r1 = params.vertex_r;
     double e1 = params.ecc;
     double nu1 = params.nu;
 
@@ -396,7 +419,7 @@ int Cell::getNumberVertices() const
 
 void Cell::setVertexR(double rv)
 {
-    params.r_vertex = rv;
+    params.vertex_r = rv;
 }
 
 void Cell::setEcc(double a)
@@ -435,7 +458,7 @@ void Cell::setCellId(int ix)
 
 void Cell::setVerletR(double vr)
 {
-    params.verletR = vr;
+    params.verlet_f = vr;
 }
 
 void Cell::setInitR(double rinit)
@@ -476,7 +499,7 @@ Vector3D Cell::getCm() const
 
 double Cell::getVertexR() const
 {
-    return params.r_vertex;
+    return params.vertex_r;
 }
 
 double Cell::getE() const
@@ -586,7 +609,7 @@ double Cell::project_force(const Cell& other_cell, const Box& box, const Vector3
         {
             nj = triangles[tj].normal(vertices);
             nj_fi = nj.x * force_collector.x + nj.y * force_collector.y + nj.z * force_collector.z;
-            Aj = triangles[tj].area(vertices, cm_m, params.r_vertex);
+            Aj = triangles[tj].area(vertices, cm_m, params.vertex_r);
 
             totAi += Aj;
 
@@ -623,7 +646,7 @@ double Cell::project_force(const Box& box, const Vector3D& force_collector, cons
         {
             nj = triangles[tj].normal(vertices);
             nj_fi = nj.x * force_collector.x + nj.y * force_collector.y + nj.z * force_collector.z;
-            Aj = triangles[tj].area(vertices, cm_m, params.r_vertex);
+            Aj = triangles[tj].area(vertices, cm_m, params.vertex_r);
 
             totAi += Aj;
 
@@ -649,8 +672,8 @@ double Cell::contactForce(const Cell& other_cell, const Box& box) const
     Vector3D dij;
     Vector3D force_collector(0, 0, 0);
     double contact_force = 0.0;
-    double r1 = params.r_vertex;
-    double r2 = other_cell.params.r_vertex;
+    double r1 = params.vertex_r;
+    double r2 = other_cell.params.vertex_r;
     double e1 = params.ecc;
     double e2 = other_cell.params.ecc;
     double nu1 = params.nu;
@@ -777,8 +800,8 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box) const
     idx2 = triangles[t_idx].ib;
     idx3 = triangles[t_idx].ic;
 
-    double r1 = params.r_vertex;
-    double r2 = other_cell.params.r_vertex;
+    double r1 = params.vertex_r;
+    double r2 = other_cell.params.vertex_r;
     double e1 = params.ecc;
     double e2 = other_cell.params.ecc;
     double nu1 = params.nu;
@@ -843,7 +866,7 @@ double Cell::contactArea(const Cell& other_cell, const Box& box) const
     {
         if ( isInContact(t_idx, other_cell, box) )
         {
-            contact_area += triangles[t_idx].area(vertices, cm_m, params.r_vertex);
+            contact_area += triangles[t_idx].area(vertices, cm_m, params.vertex_r);
         }
     }
 
@@ -855,7 +878,7 @@ double Cell::activeArea(const Box& box, const std::vector<Cell>& cells,  double&
     double total_surface = 0.0;
     for (int t_idx = 0; t_idx < number_t; t_idx++)
     {
-        total_surface += triangles[t_idx].area(vertices, cm_m, params.r_vertex);  
+        total_surface += triangles[t_idx].area(vertices, cm_m, params.vertex_r);  
     }    
     
     double total_cell_cell_area = 0.0;
@@ -904,7 +927,7 @@ double Cell::activeAreaFraction(const Box& box, const std::vector<Cell>& cells, 
     double total_surface = 0.0;
     for (int t_idx = 0; t_idx < number_t; t_idx++)
     {
-        total_surface += triangles[t_idx].area(vertices, cm_m, params.r_vertex);  
+        total_surface += triangles[t_idx].area(vertices, cm_m, params.vertex_r);  
     }    
 
     double active_area = activeArea(box, cells, counter, flag);
@@ -930,7 +953,7 @@ double Cell::contactArea(const Box& box, double d_param) const
             }
             else
             {
-                contact_area += triangles[t_idx].area(vertices, cm_m, params.r_vertex);
+                contact_area += triangles[t_idx].area(vertices, cm_m, params.vertex_r);
             }
         }
     }
@@ -1027,7 +1050,7 @@ double Cell::nbIntra(const Box& box) const
 {
     Vector3D dij;
     Vector3D fij;
-    double r1 = params.r_vertex;
+    double r1 = params.vertex_r;
     double e1 = params.ecc;
     double nu1 = params.nu;
 

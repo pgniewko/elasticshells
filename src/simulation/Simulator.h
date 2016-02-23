@@ -27,7 +27,6 @@ struct params_t
 {
     int log_step;
     int save_step;
-    int vlist_step;
     int nsteps;
     int d;
     int nbhandler;
@@ -42,11 +41,12 @@ struct params_t
     double visc;
     double ttime;
     double r_vertex;
-    double verlet_r;
+    double verlet_f;
     double growth_rate;
     double vc;
     double bud_d;
     double div_ratio;
+    double v_disp_cut2;
     bool draw_box;
     bool scale;
 };
@@ -88,9 +88,12 @@ class Simulator
         void midpointRungeKutta();
 
         int getTotalVertices();
-        double getMaxLengthScale();
+        double getLengthScale();
 
         void updateCells();
+        void update_neighbors_list();
+        
+        bool verlet_condition();
 
         int number_of_cells;
         //char* triangulator;

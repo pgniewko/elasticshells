@@ -1,9 +1,22 @@
 DESCRIPTION
+==================================================
+
 Biofilm simulator is written in C/C++ and uses modern computer
 architectures and technologies: OpenMP for shared-memory systems, 
 SSE vectorization for x86_64 CPU.
 
+GETTING THE CODE
 ==================================================
+* To get the code:
+```
+git clone git@bitbucket.org:pawelgniewek/biofilm.git
+```
+
+* To obtain the most recent version of the code:
+```
+git pull origin master
+```
+
 COMPILING AND INSTALLATION - LINUX
 ==================================================
 
@@ -67,7 +80,7 @@ apt-get install libgsl0-dev
 
 * Steinhardt order parameters [library](https://github.com/nquesada/steinhardt).
 The library can be found in `lib/steinhardt` directory.
-First we compile a static library, then combine objects into library, create an index within the library,
+First we compile a library, then combine objects into a static library, create an index within the library,
 and finally we can install it in `/usr/local/lib`:
 ```
 $ g++ -O3 -Wall -lm -lgsl -lgslcblas -c -o steinhardt.o steinhardt.c 
@@ -100,5 +113,5 @@ License: BSD
 
 ACKNOWLEDGMENTS
 ===============
-We thank Dominik Gront (University of Warsaw) for sharing BioShell `Logger` and
+We thank Dominik Gront (University of Warsaw) for sharing [BioShell](http://bioshell.pl/) `Logger` and
 `LogManager` classes.

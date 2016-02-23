@@ -88,6 +88,8 @@ class Vertex
         void voidTime();
 
         const vertex_t& getMyType() const;
+        
+        double get_verlet_disp2() const;
 
         Vector3D r_c;
         Vector3D f_c;
@@ -95,6 +97,7 @@ class Vertex
         Vector3D r_p;           // make it private
         Vector3D f_p;
 
+        Vector3D r_v;           // for verlet-list purposes
 
         int bondedVerts[NEIGH_MAX];
         double r0[NEIGH_MAX];
@@ -119,5 +122,10 @@ class Vertex
         double gtimer;
         vertex_t my_type;
 };
+
+inline double Vertex::get_verlet_disp2() const
+{
+    return (r_c - r_v).length2();
+}
 
 #endif	/* VERTEX_H */

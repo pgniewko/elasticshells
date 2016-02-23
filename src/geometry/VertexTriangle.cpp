@@ -1,6 +1,6 @@
 #include "VertexTriangle.h"
 
-VertexTriangle::VertexTriangle() : ia(-1), ib(-1), ic(-1), myindex(-1) {}
+VertexTriangle::VertexTriangle() {}
 
 VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), myindex(-1) {}
 
