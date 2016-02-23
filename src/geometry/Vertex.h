@@ -125,7 +125,7 @@ class Vertex
 
 inline double Vertex::get_verlet_disp2() const
 {
-    return (r_c - r_v).length2();
+    return (r_c - r_v).length_sq();
 }
 
 #endif	/* VERTEX_H */

@@ -5,7 +5,7 @@
 #include <cstring>
 #include <vector>
 #include <stdio.h>      /* fprintf*/
-#include <stdlib.h>    /* atoi,  strtod */
+#include <stdlib.h>     /* atoi,  strtod */
 
 #include "Box.h"
 #include "Environment.h"
@@ -49,6 +49,7 @@ struct params_t
     double v_disp_cut2;
     bool draw_box;
     bool scale;
+    bool dynamics;
 };
 
 class Simulator
@@ -94,7 +95,14 @@ class Simulator
         void update_neighbors_list();
         
         bool verlet_condition();
+        
+        
+        void set_min_force();
+        bool check_min_force();
 
+        double MIN_FORCE_SQ  = 0.0;
+        double FORCE_FRAC = 0.025;
+        
         int number_of_cells;
         //char* triangulator;
         std::string triangulator;

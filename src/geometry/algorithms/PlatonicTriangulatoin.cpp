@@ -56,9 +56,9 @@ std::list<Triangle> PlatonicTriangulatoin::triangulate(double r0)
 
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
-        i->a.setLength(r0);
-        i->b.setLength(r0);
-        i->c.setLength(r0);
+        i->a.set_length(r0);
+        i->b.set_length(r0);
+        i->c.set_length(r0);
     }
 
     return tris;
@@ -179,9 +179,9 @@ void PlatonicTriangulatoin::subdivide()
         Vector3D abh = (i->a + i->b) * 0.5f; // point between points A and B
         Vector3D ach = (i->a + i->c) * 0.5f; // point between points A and C
         Vector3D bch = (i->b + i->c) * 0.5f; // point between points B and C
-        abh.setLength(l);
-        ach.setLength(l);
-        bch.setLength(l);
+        abh.set_length(l);
+        ach.set_length(l);
+        bch.set_length(l);
         newTris.push_back(Triangle(i->a, abh, ach));
         newTris.push_back(Triangle(ach, i->c, bch));
         newTris.push_back(Triangle(abh, bch, i->b));

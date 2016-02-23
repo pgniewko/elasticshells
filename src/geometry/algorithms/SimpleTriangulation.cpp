@@ -35,9 +35,9 @@ std::list<Triangle> SimpleTriangulation::triangulate(double r0)
 
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
-        i->a.setLength(r0);
-        i->b.setLength(r0);
-        i->c.setLength(r0);
+        i->a.set_length(r0);
+        i->b.set_length(r0);
+        i->c.set_length(r0);
     }
 
     return tris;
@@ -81,7 +81,7 @@ void SimpleTriangulation::subdivide()
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)  // go through all triangles
     {
         Vector3D mid = (i->a + i->b) * 0.5f; // point between points A and B
-        mid.setLength(l); // put in on the sphere
+        mid.set_length(l); // put in on the sphere
         newTris.push_back(Triangle(i->b, i->c, mid)); // remember new triangles
         newTris.push_back(Triangle(i->a, i->c, mid));
         counter++;

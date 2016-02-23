@@ -65,10 +65,10 @@ void Vector3DTests::testConstructor()
 void Vector3DTests::testSetLength()
 {
     Vector3D v3d1(*v1);
-    v3d1.setLength(1.0);
+    v3d1.set_length(1.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, v3d1.length(), DELTA14);
     Vector3D v3d2(*v5);
-    v3d2.setLength(1.0);
+    v3d2.set_length(1.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, v3d2.length(), DELTA14);
     Vector3D v3d3(*v2);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, v3d3.length(), DELTA14);

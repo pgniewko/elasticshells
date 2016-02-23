@@ -66,6 +66,7 @@ struct arguments
     bool draw_box;
     bool osmotic_flag;
     bool scale_flag;
+    bool dynamics;
     int nb_flag;
 
     ulong seed;

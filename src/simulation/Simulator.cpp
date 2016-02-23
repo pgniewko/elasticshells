@@ -41,6 +41,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.div_ratio = args.div_ratio;
     params.draw_box = args.draw_box;
     params.scale = args.scale_flag;
+    params.dynamics = args.dynamics;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
     params.v_disp_cut2 = params.r_vertex*params.r_vertex*(args.verlet_f - 1.0)*(args.verlet_f - 1.0);
@@ -65,6 +66,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     logParams();
+    
 }
 
 Simulator::~Simulator() {}
@@ -197,6 +199,8 @@ void Simulator::initCells(int N, double ra, double rb)
             shiftCell(shift, number_of_cells - 1);
         }
     }
+    
+    set_min_force();
 }
 
 void Simulator::addCell(const Cell& newCell)
@@ -299,20 +303,11 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i <= steps; i++)
     {
-        update_neighbors_list();
-//        if (params.nbhandler == 1)
-//        {
-//            if ( (i + 1) % params.vlist_step == 0)
-//            {
-//                rebuildVerletLists();
-//            }
-//        }
-//        else if (params.nbhandler == 2)
-//        {
-//            rebuildDomainsList();
-//        }
-
-        integrate();
+        do
+        {
+            update_neighbors_list();
+            integrate();
+        } while( check_min_force() );
 
         if ( (i + 1) % params.save_step == 0)
         {
@@ -602,6 +597,39 @@ void Simulator::updateCells()
     {
         cells[i].update();
     }
+}
+
+void Simulator::set_min_force()
+{
+    double average_area = cells[0].calcSurfaceArea();
+    average_area /= cells[0].getNumberTriangles();
+    
+    double max_turgor = 0.0;
+    for(int i = 0; i < number_of_cells;i++)
+    {
+        max_turgor = std::max(max_turgor, cells[i].getTurgor());
+    }
+    
+    MIN_FORCE_SQ = FORCE_FRAC * max_turgor * average_area;
+    MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
+}
+
+bool Simulator::check_min_force()
+{
+    if (params.dynamics) return false;
+    
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            if (cells[i].vertices[j].f_c.length_sq() > MIN_FORCE_SQ)
+            {
+                //std::cout << cells[i].vertices[j].f_c.length_sq() << " " << MIN_FORCE_SQ << std::endl;
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 /*

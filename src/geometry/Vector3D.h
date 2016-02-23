@@ -22,8 +22,8 @@ class Vector3D
         const Vector3D& operator *=(const double a);
         const Vector3D& operator /=(const double a);
         double length() const;
-        double length2() const;
-        void setLength(double r);
+        double length_sq() const;
+        void set_length(double r);
         void normalize();
         double angle(const Vector3D&) const;
         
@@ -68,12 +68,12 @@ inline double Vector3D::length() const
     return sqrt(x * x + y * y + z * z);
 }
         
-inline double Vector3D::length2() const
+inline double Vector3D::length_sq() const
 {
     return x * x + y * y + z * z;
 }
 
-inline void Vector3D::setLength(double r)
+inline void Vector3D::set_length(double r)
 {
     if (length() != 0)
     {

@@ -7,16 +7,9 @@
 class Tetrahedron
 {
     public:
-//    Tetrahedron();
-        Tetrahedron(Vector3D, Vector3D, Vector3D, Vector3D);
-        Tetrahedron(const Tetrahedron& orig);
-        virtual ~Tetrahedron();
-        double volume() const;
-        double volume(const double) const;
-        double volumeSgn() const;
-        Vector3D a, b, c, d;
-    private:
-
+        static double volume(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&);
+        static double volume(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&, const double);
+        static double volumeSgn(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&);
 };
 
 #endif	/* TETRAHEDRON_H */
