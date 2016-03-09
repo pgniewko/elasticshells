@@ -101,6 +101,7 @@ class Vertex
 
         int bondedVerts[NEIGH_MAX];
         double r0[NEIGH_MAX];
+        double k0[NEIGH_MAX];
 
         int bondedTris[TRIAN_MAX];
 

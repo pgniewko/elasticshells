@@ -65,9 +65,10 @@ static struct argp_option options[] =
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato] [default: simple]"},
     {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
-    {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], ico[1], oct[2] [default: 0]"},
+    {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], ico[1], hexa[2], iso[3] [default: 0]"},
     {"scale",     415,       0, 0, "Scale the saved coordinates upon compression [default: false]"},
     {"dynamics",  416,       0, 0, "[default: false]"},
+    {"model",     417,   "STR", 0, "Available models: ms_kot, ms_avg, fem [default: ms_kot]"},
 
     {0,             0,       0, 0, "Cell Options:", 5},
     {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
@@ -124,6 +125,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->sch_config_file = (char*)&"./input/schedule.config";
             arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
+            arguments->model_type = (char*)&"ms_kot";
             arguments->d = 3;
             arguments->platotype = 0;
             arguments->log_step = 10;
@@ -277,6 +279,12 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 416:
             arguments->dynamics = true;
             break;
+        
+        case 417:
+            arguments->model_type = arg;
+            std::cout << arg << " arguments->model_type=" << arguments->model_type <<std::endl;
+            break;     
+            
         case 500:
             arguments->E_cell = arg ? strtod (arg, NULL) : 1500.0;
             break;
@@ -456,7 +464,7 @@ int main(int argc, char** argv)
     clocks[0].tic();
     simulation_time = read_timer();
     Simulator simulator(arguments);
-    simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2);
+    simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.model_type);
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
     simulation_time = read_timer( ) - simulation_time;

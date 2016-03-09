@@ -23,7 +23,7 @@ struct cell_params_t
     double ecc;
     double nu;
     double dp;
-    double gamma;
+//    double gamma;
     double verlet_f;
     double init_r;
     double vertexVisc;
@@ -73,7 +73,7 @@ class Cell
         void setEcc(double);
         void setDp(double);
         void setDp(double, double);
-        void setSpringConst(double);
+        void setSpringConst(double, double, double, char*);
         void setVisc(double);
         void setCellId(int);
         void setNu(double);

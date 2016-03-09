@@ -172,6 +172,7 @@ void Cell::calcBondedForces()
 void Cell::calcHarmonicForces()
 {
     double R0ij;
+    double k0ij;
     int idxj;
 
     for (int i = 0; i < number_v; i++)
@@ -179,8 +180,10 @@ void Cell::calcHarmonicForces()
         for (int j = 0; j < vertices[i].numBonded; j++)
         {
             R0ij = vertices[i].r0[j];
+            k0ij = vertices[i].k0[j];
             idxj = vertices[i].bondedVerts[j];
-            vertices[i].f_c += HookeanForce::calcForce(vertices[i].r_c, vertices[idxj].r_c, R0ij, params.gamma);
+            //std::cout << "k0ij="<<k0ij <<" R0ij=" << R0ij<< " |f|="<< HookeanForce::calcForce(vertices[i].r_c, vertices[idxj].r_c, R0ij, k0ij).length() << std::endl;
+            vertices[i].f_c += HookeanForce::calcForce(vertices[i].r_c, vertices[idxj].r_c, R0ij, k0ij);
         }
     }
 }
@@ -445,10 +448,111 @@ void Cell::setDp(double dP, double ddp)
     nRT = params.dp * V0 * ( 1.0 - OsmoticForce::getEpsilon() );
 }
 
-void Cell::setSpringConst(double g)
+void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
 {
-    double correction = 4.0 * calcSurfaceArea() / sumL2();
-    params.gamma = correction * g;
+    if (STRCMP (model_t, "ms_kot"))
+    {
+        double g = E * t * ( 2.0 / (1.0 - nu_) )* calcSurfaceArea() / sumL2();
+        for (int i = 0; i < number_v; i++ )
+        {
+            for (int j = 0; j < vertices[i].numBonded; j++)
+            {
+                vertices[i].k0[j] = g;
+                std::cout <<" num bonded=" <<vertices[i].numBonded <<" E=" << E << " t="<< t << " nu=" << nu_ <<  " i: "<< i << " j: " << vertices[i].bondedVerts[j] <<  " g=" << g << std::endl;
+                        
+            }
+        }
+    }
+    else if (STRCMP (model_t, "ms_avg"))
+    {
+        //std::cout << <<
+        int me, him, third;
+        double area;
+
+        int t_me;
+        int t_him;
+        
+        double g_me_him;
+        
+        double a,b,c;
+        
+        for (int i = 0; i < number_v; i++)
+        {
+            me = i;
+            for (int j = 0; j < vertices[me].numBonded; j++)
+            {
+                g_me_him = 0.0;
+                him = vertices[me].bondedVerts[j];
+                
+                c = (vertices[me].r_c - vertices[him].r_c).length();
+                
+                for (int k = 0; k < vertices[me].numTris; k++)
+                {
+                    t_me = vertices[me].bondedTris[k];
+                    for (int l = 0; l < vertices[him].numTris; l++)
+                    {
+                        t_him = vertices[him].bondedTris[l];
+                        
+                        if (t_me == t_him)
+                        {
+                            area = triangles[t_me].area(vertices);
+                            
+                            if (triangles[t_me].ia == me && triangles[t_me].ib == him) third = triangles[t_me].ic;
+                            if (triangles[t_me].ib == me && triangles[t_me].ia == him) third = triangles[t_me].ic;
+                            
+                            if (triangles[t_me].ia == me && triangles[t_me].ic == him) third = triangles[t_me].ib;
+                            if (triangles[t_me].ic == me && triangles[t_me].ia == him) third = triangles[t_me].ib;
+                            
+                            if (triangles[t_me].ib == me && triangles[t_me].ic == him) third = triangles[t_me].ia;
+                            if (triangles[t_me].ic == me && triangles[t_me].ib == him) third = triangles[t_me].ia;
+                            
+                            a = (vertices[me].r_c - vertices[third].r_c).length();
+                            b = (vertices[third].r_c - vertices[him].r_c).length();
+                            
+                            g_me_him += E * t * area / (c*c*(1+nu_));
+                            g_me_him += E * t * nu_ * (a*a + b*b - c*c) / ((1 - nu_*nu_) * 8.0 * area);
+                            
+                            std::cout << "me: "<<  me << " ";
+                            std::cout << "him: "<<  him << " "; 
+                            std::cout << "third: "<<  third << " ";
+                            
+                            std::cout << "c: "<<  c << " ";
+                            std::cout << "a: "<<  a << " "; 
+                            std::cout << "b: "<<  b << " ";
+                            
+                            std::cout << " t_me=" << t_me << " ";
+                            std::cout << " t_him=" << t_him << " ";
+                            std::cout << " g_me_him=" << g_me_him << " ";
+                            
+                            std::cout << std::endl;
+                            
+                            
+                            
+
+                            
+                        }
+                        
+                    }
+                }
+                vertices[me].k0[j] = g_me_him; // him = vertices[me].bondedVerts[j];
+                std::cout << "vertices[me].k0[j] =" << vertices[me].k0[j] << " ";
+                std::cout << std::endl;
+            }
+            
+            
+        }
+
+    }
+    else if (STRCMP (model_t, "fem"))
+    {
+        
+    }
+    else 
+    {
+        // print error
+    }
+    
+    std::cout << "DONE!"<< std::endl;
 }
 
 void Cell::setCellId(int ix)
@@ -964,7 +1068,7 @@ double Cell::contactArea(const Box& box, double d_param) const
 double Cell::strainEnergy(const Box& box) const
 {
     double deps = 0.0;
-    double r0, r;
+    double r0, r, k0;
     int neigh_idx;
 
     for (int i = 0; i < number_v; i++)
@@ -972,11 +1076,12 @@ double Cell::strainEnergy(const Box& box) const
         for (int j = 0; j < vertices[i].numBonded; j++)
         {
             r0 = vertices[i].r0[j];
+            k0 = vertices[i].k0[j];
             neigh_idx = vertices[i].bondedVerts[j];
             Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
 
             r = dR.length();
-            deps += 0.5 * params.gamma * (r0 - r) * (r0 - r);
+            deps += 0.5 * k0 * (r0 - r) * (r0 - r);
         }
     }
 

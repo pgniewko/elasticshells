@@ -17,6 +17,7 @@ Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p)
     {
         bondedVerts[i] = orig.bondedVerts[i];
         r0[i] = orig.r0[i];
+        k0[i] = orig.k0[i];
     }
 
     for (int i = 0; i < numTris; i++)
@@ -33,7 +34,7 @@ Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p)
 
 Vertex::~Vertex() {}
 
-void Vertex::addNeighbor(int idx, double k0n)
+void Vertex::addNeighbor(int idx, double r0v)
 {
     try
     {
@@ -55,7 +56,7 @@ void Vertex::addNeighbor(int idx, double k0n)
         }
 
         bondedVerts[numBonded] = idx;
-        r0[numBonded] = k0n;
+        r0[numBonded] = r0v;
         numBonded++;
     }
     catch (MaxSizeException& e)

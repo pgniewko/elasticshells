@@ -5,6 +5,8 @@
 #include <omp.h>
 #endif
 
+#include <string.h>
+#include <limits>
 #include "random.h"
 #include "utils/Logger.h"
 

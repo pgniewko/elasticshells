@@ -64,6 +64,7 @@ class Simulator
 
         void initCells(int, double);
         void initCells(int, double, double);
+        void initCells(int, double, double, char*);
 
     private:
 
@@ -76,8 +77,8 @@ class Simulator
         void logParams();
 
         //void addCell();
-        void addCell(const Cell&);
-        void addCell(double);
+        void pushCell(const Cell&);
+        void addCell(double, char*);
 
         void calcForces();
         void integrate();

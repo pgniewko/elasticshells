@@ -25,6 +25,7 @@ struct arguments
 
     char* integrator_a;
     char* tritype;
+    char* model_type;
 
     int d;
     int log_step;
