@@ -188,6 +188,11 @@ void Cell::calcHarmonicForces()
     }
 }
 
+void Cell::calcFemForces()
+{
+    
+}
+
 void Cell::calcOsmoticForces()
 {
     int iva, ivb, ivc;

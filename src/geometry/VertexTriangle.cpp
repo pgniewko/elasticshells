@@ -89,3 +89,88 @@ Vector3D VertexTriangle::normal(const Vertex vs[]) const
     Vector3D normal = t.normal();
     return normal;
 }
+
+void VertexTriangle::setL2(const Vertex vs[])
+{
+    double L2[0] = (vs[ib].r_c - vs[ic].r_c).length_sq();
+    double L2[1] = (vs[ia].r_c - vs[ic].r_c).length_sq();
+    double L2[2] = (vs[ia].r_c - vs[ib].r_c).length_sq();
+}
+
+void VertexTriangle::setAn(const Vertex vs[])
+{
+    
+    // MAKE SURE THAT the angle is between 0-180
+    Vector3D ca = vs[ic] - vs[ia];
+    Vector3D ba = vs[ib] - vs[ia];
+    an[0] = ca.angle(ba);
+
+    Vector3D ab = vs[ia] - vs[ib];
+    Vector3D cb = vs[ic] - vs[ib];
+    an[1] = ab.angle(cb);
+
+    Vector3D ac = vs[ia] - vs[ic];
+    Vector3D bc = vs[ib] - vs[ic];
+    an[2] = ac.angle(bc);    
+}
+
+void VertexTriangle::setKi(const Vertex vs[], double E, double nu, double t)
+{
+    double Ap = area(vs);
+    ki[0] = E * t * (2.0 * cot(an[0]) * cot(an[0]) + 1.0 - nu) / (16.0 * Ap * (1.0 - nu*nu));
+    ki[1] = E * t * (2.0 * cot(an[1]) * cot(an[1]) + 1.0 - nu) / (16.0 * Ap * (1.0 - nu*nu));
+    ki[2] = E * t * (2.0 * cot(an[2]) * cot(an[2]) + 1.0 - nu) / (16.0 * Ap * (1.0 - nu*nu));
+    
+}
+
+void VertexTriangle::setCi(const Vertex vs[], double E, double nu, double t)
+{
+    double Ap = area(vs);
+    ci[0] = E*t*(2.0*cot(an[1])*cot(an[2]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu*nu));
+    ci[1] = E*t*(2.0*cot(an[0])*cot(an[2]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu*nu));
+    ci[2] = E*t*(2.0*cot(an[0])*cot(an[1]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu*nu));
+}
+
+void VertexTriangle::setParams(const Vertex vs[], double E, double nu, double t)
+{
+    
+    setL2(vs);
+    setAn(vs);
+    setKi(vs, E, nu, t);
+    setCi(vs, E, nu, t);
+}
+
+void VertexTriangle::calcFemForces(Vertex vs[]) 
+{
+    // 1 - a; 2 - b; 3 - c;
+    double l0_sq = (vs[ib].r_c - vs[ic].r_c).length_sq() - Lsq[0];
+    double l1_sq = (vs[ia].r_c - vs[ic].r_c).length_sq() - Lsq[1];
+    double l2_sq = (vs[ia].r_c - vs[ib].r_c).length_sq() - Lsq[2];
+    
+    
+    Vector3D T11;
+    Vector3D T12; 
+    T11 += ki[2] * l2_sq * (vs[ib].r_c - vs[ia].r_c) + ki[1] * l1_sq * (vs[ic].r_c - vs[ia].r_c);
+    T12 += (ci[1] * l0_sq + ci[0]*l1_sq) * (vs[ib].r_c - vs[ia].r_c);
+    T12 += (ci[2] * l0_sq + ci[0]*l2_sq) * (vs[ic].r_c - vs[ia].r_c);
+    
+    vs[ia].f_c += (T11 + T12);
+    
+    Vector3D T21;
+    Vector3D T22; 
+    T21 += ki[2] * l2_sq * (vs[ia].r_c - vs[ib].r_c) + ki[0] * l0_sq * (vs[ic].r_c - vs[ib].r_c);
+    T22 += (ci[0] * l1_sq + ci[1]*l0_sq) * (vs[ia].r_c - vs[ib].r_c);
+    T22 += (ci[2] * l1_sq + ci[1]*l2_sq) * (vs[ic].r_c - vs[ib].r_c);
+    
+    vs[ib].f_c += (T21 + T22);
+    
+    Vector3D T31;
+    Vector3D T32; 
+    T31 += ki[1] * l1_sq * (vs[ia].r_c - vs[ic].r_c) + ki[0] * l0_sq * (vs[ib].r_c - vs[ic].r_c);
+    T32 += (ci[0] * l2_sq + ci[2]*l0_sq) * (vs[ia].r_c - vs[ic].r_c);
+    T32 += (ci[1] * l2_sq + ci[2]*l1_sq) * (vs[ib].r_c - vs[ic].r_c);
+    
+    vs[ic].f_c += (T31 + T32);
+    
+}
+

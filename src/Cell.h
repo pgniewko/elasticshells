@@ -58,6 +58,7 @@ class Cell
 
         void calcBondedForces();
         void calcHarmonicForces();
+        void calcFemForces();
         void calcOsmoticForces();
         void calcNbForcesON2(const Cell&, const Box&);
         void calcNbForcesVL(const Cell&, const Box&);
