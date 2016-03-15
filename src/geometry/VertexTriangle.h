@@ -8,8 +8,6 @@
 
 class Vertex;
 
-double cot(double x) {return 1.0/tan(x);}
-
 class VertexTriangle
 {
     public:
@@ -27,23 +25,25 @@ class VertexTriangle
         
         void printVertexTriangle() const;
         void subsVertex(int, int);
-
-        void setL2(const Vertex[]);
-        void setAn(const Vertex[]);
-        void setKi(const Vertex[], double, double, double);
-        void setCi(const Vertex[], double, double, double);
         
-        void setParams(const Vertex[]);
-        
-        double an[3];
-        double Lsq[3];
-        double ki[3];
-        double ci[3];
+        void setParams(const Vertex[], double, double, double);
         
         int ia = -1;
         int ib = -1;
         int ic = -1;
         int myindex = -1;
+    
+    private:
+        void setL2(const Vertex[]);
+        void setAn(const Vertex[]);
+        void setKi(const Vertex[], double, double, double);
+        void setCi(const Vertex[], double, double, double);    
+        
+        double an[3];
+        double L2[3];
+        double ki[3];
+        double ci[3];
+        
 };
 
 #endif	/* VERTEXTRIANGLE_H */

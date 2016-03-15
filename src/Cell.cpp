@@ -25,7 +25,7 @@ Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1)
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles),
     cell_id(orig.cell_id), params(orig.params), my_phase(orig.my_phase), number_v(orig.number_v), number_t(orig.number_t), nRT(orig.nRT),
-    V0(orig.V0), vert_no_bud(orig.vert_no_bud)
+    V0(orig.V0), vert_no_bud(orig.vert_no_bud), fem_flag(orig.fem_flag)
 {
     // TODO: copy manually 
 }
@@ -165,7 +165,15 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
 
 void Cell::calcBondedForces()
 {
-    calcHarmonicForces();
+    //std::cout << "fem_flag=" << fem_flag << std::endl;
+    if (fem_flag)
+    {
+        calcFemForces();
+    } 
+    else
+    {
+        calcHarmonicForces();
+    }
     calcOsmoticForces();
 }
 
@@ -190,7 +198,12 @@ void Cell::calcHarmonicForces()
 
 void Cell::calcFemForces()
 {
-    
+    //std::cout << "inside calcFemForces()" << std::endl;
+    for (int i = 0; i < number_t; i++)
+    {
+        //std::cout << "Triangle i=" <<i << std::endl;
+        triangles[i].calcFemForces(vertices);
+    }
 }
 
 void Cell::calcOsmoticForces()
@@ -463,14 +476,13 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
             for (int j = 0; j < vertices[i].numBonded; j++)
             {
                 vertices[i].k0[j] = g;
-                std::cout <<" num bonded=" <<vertices[i].numBonded <<" E=" << E << " t="<< t << " nu=" << nu_ <<  " i: "<< i << " j: " << vertices[i].bondedVerts[j] <<  " g=" << g << std::endl;
+                //std::cout <<" num bonded=" <<vertices[i].numBonded <<" E=" << E << " t="<< t << " nu=" << nu_ <<  " i: "<< i << " j: " << vertices[i].bondedVerts[j] <<  " g=" << g << std::endl;
                         
             }
         }
     }
     else if (STRCMP (model_t, "ms_avg"))
     {
-        //std::cout << <<
         int me, him, third;
         double area;
 
@@ -500,6 +512,7 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
                         
                         if (t_me == t_him)
                         {
+                            third = -1;
                             area = triangles[t_me].area(vertices);
                             
                             if (triangles[t_me].ia == me && triangles[t_me].ib == him) third = triangles[t_me].ic;
@@ -511,37 +524,39 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
                             if (triangles[t_me].ib == me && triangles[t_me].ic == him) third = triangles[t_me].ia;
                             if (triangles[t_me].ic == me && triangles[t_me].ib == him) third = triangles[t_me].ia;
                             
+                            if (third == -1) 
+                            { 
+                                cell_log <<  utils::LogLevel::SEVERE  << "PROBLEM IN setSpringConst(). \n Simulation is exiting.\n";
+                                exit(EXIT_FAILURE);
+                            }
+                                
+                                
                             a = (vertices[me].r_c - vertices[third].r_c).length();
                             b = (vertices[third].r_c - vertices[him].r_c).length();
                             
                             g_me_him += E * t * area / (c*c*(1+nu_));
                             g_me_him += E * t * nu_ * (a*a + b*b - c*c) / ((1 - nu_*nu_) * 8.0 * area);
                             
-                            std::cout << "me: "<<  me << " ";
-                            std::cout << "him: "<<  him << " "; 
-                            std::cout << "third: "<<  third << " ";
+                            //std::cout << "me: "<<  me << " ";
+                            //std::cout << "him: "<<  him << " "; 
+                            //std::cout << "third: "<<  third << " ";
                             
-                            std::cout << "c: "<<  c << " ";
-                            std::cout << "a: "<<  a << " "; 
-                            std::cout << "b: "<<  b << " ";
+                            //std::cout << "c: "<<  c << " ";
+                            //std::cout << "a: "<<  a << " "; 
+                            //std::cout << "b: "<<  b << " ";
                             
-                            std::cout << " t_me=" << t_me << " ";
-                            std::cout << " t_him=" << t_him << " ";
-                            std::cout << " g_me_him=" << g_me_him << " ";
+                            //std::cout << " t_me=" << t_me << " ";
+                            //std::cout << " t_him=" << t_him << " ";
+                            //std::cout << " g_me_him=" << g_me_him << " ";
                             
-                            std::cout << std::endl;
-                            
-                            
-                            
-
-                            
+                            //std::cout << std::endl;
                         }
                         
                     }
                 }
                 vertices[me].k0[j] = g_me_him; // him = vertices[me].bondedVerts[j];
-                std::cout << "vertices[me].k0[j] =" << vertices[me].k0[j] << " ";
-                std::cout << std::endl;
+                //std::cout << "vertices[me].k0[j] =" << vertices[me].k0[j] << " ";
+                //std::cout << std::endl;
             }
             
             
@@ -550,14 +565,18 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
     }
     else if (STRCMP (model_t, "fem"))
     {
-        
+        fem_flag = true;
+        for (int i = 0; i < number_t; i++)
+        {
+            triangles[i].setParams(vertices, E, nu_, t);
+        }
     }
     else 
     {
         // print error
     }
     
-    std::cout << "DONE!"<< std::endl;
+    //std::cout << "DONE!"<< std::endl;
 }
 
 void Cell::setCellId(int ix)

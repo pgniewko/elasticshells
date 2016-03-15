@@ -144,6 +144,7 @@ class Cell
 
         int bud_idx[MAX_V];
         int vert_no_bud = 0;
+        bool fem_flag = false;
 
         static utils::Logger cell_log;
 };

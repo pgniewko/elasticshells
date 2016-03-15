@@ -1,10 +1,22 @@
 #include "VertexTriangle.h"
 
+double cot(double x) {return 1.0 / tan(x);}
+
 VertexTriangle::VertexTriangle() {}
 
 VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), myindex(-1) {}
 
-VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(orig.ib), ic(orig.ic), myindex(orig.myindex) {}
+VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(orig.ib), ic(orig.ic), myindex(orig.myindex) 
+{
+    for (int i = 0; i < 3; i++)
+    {
+        an[i] = orig.an[i];
+        L2[i] = orig.L2[i];
+        ki[i] = orig.ki[i];
+        ci[i] = orig.ci[i];
+    }
+    
+}
 
 VertexTriangle::~VertexTriangle() {}
 
@@ -92,26 +104,28 @@ Vector3D VertexTriangle::normal(const Vertex vs[]) const
 
 void VertexTriangle::setL2(const Vertex vs[])
 {
-    double L2[0] = (vs[ib].r_c - vs[ic].r_c).length_sq();
-    double L2[1] = (vs[ia].r_c - vs[ic].r_c).length_sq();
-    double L2[2] = (vs[ia].r_c - vs[ib].r_c).length_sq();
+    L2[0] = (vs[ib].r_c - vs[ic].r_c).length_sq();
+    L2[1] = (vs[ia].r_c - vs[ic].r_c).length_sq();
+    L2[2] = (vs[ia].r_c - vs[ib].r_c).length_sq();
 }
 
 void VertexTriangle::setAn(const Vertex vs[])
 {
     
     // MAKE SURE THAT the angle is between 0-180
-    Vector3D ca = vs[ic] - vs[ia];
-    Vector3D ba = vs[ib] - vs[ia];
+    Vector3D ca = vs[ic].r_c - vs[ia].r_c;
+    Vector3D ba = vs[ib].r_c - vs[ia].r_c;
     an[0] = ca.angle(ba);
 
-    Vector3D ab = vs[ia] - vs[ib];
-    Vector3D cb = vs[ic] - vs[ib];
+    Vector3D ab = vs[ia].r_c - vs[ib].r_c;
+    Vector3D cb = vs[ic].r_c - vs[ib].r_c;
     an[1] = ab.angle(cb);
 
-    Vector3D ac = vs[ia] - vs[ic];
-    Vector3D bc = vs[ib] - vs[ic];
-    an[2] = ac.angle(bc);    
+    Vector3D ac = vs[ia].r_c - vs[ic].r_c;
+    Vector3D bc = vs[ib].r_c - vs[ic].r_c;
+    an[2] = ac.angle(bc);
+    
+    //std::cout << "an[0]=" << an[0] << " an[1]="<<an[1] << " an[2]=" << an[2] << std::endl;
 }
 
 void VertexTriangle::setKi(const Vertex vs[], double E, double nu, double t)
@@ -143,9 +157,9 @@ void VertexTriangle::setParams(const Vertex vs[], double E, double nu, double t)
 void VertexTriangle::calcFemForces(Vertex vs[]) 
 {
     // 1 - a; 2 - b; 3 - c;
-    double l0_sq = (vs[ib].r_c - vs[ic].r_c).length_sq() - Lsq[0];
-    double l1_sq = (vs[ia].r_c - vs[ic].r_c).length_sq() - Lsq[1];
-    double l2_sq = (vs[ia].r_c - vs[ib].r_c).length_sq() - Lsq[2];
+    double l0_sq = (vs[ib].r_c - vs[ic].r_c).length_sq() - L2[0];
+    double l1_sq = (vs[ia].r_c - vs[ic].r_c).length_sq() - L2[1];
+    double l2_sq = (vs[ia].r_c - vs[ib].r_c).length_sq() - L2[2];
     
     
     Vector3D T11;
@@ -154,6 +168,7 @@ void VertexTriangle::calcFemForces(Vertex vs[])
     T12 += (ci[1] * l0_sq + ci[0]*l1_sq) * (vs[ib].r_c - vs[ia].r_c);
     T12 += (ci[2] * l0_sq + ci[0]*l2_sq) * (vs[ic].r_c - vs[ia].r_c);
     
+    //std::cout << "T11"<< T11 << " T12="<< T12 << std::endl;
     vs[ia].f_c += (T11 + T12);
     
     Vector3D T21;
@@ -162,6 +177,7 @@ void VertexTriangle::calcFemForces(Vertex vs[])
     T22 += (ci[0] * l1_sq + ci[1]*l0_sq) * (vs[ia].r_c - vs[ib].r_c);
     T22 += (ci[2] * l1_sq + ci[1]*l2_sq) * (vs[ic].r_c - vs[ib].r_c);
     
+    //std::cout << "T21"<< T21 << " T22="<< T22 << std::endl;
     vs[ib].f_c += (T21 + T22);
     
     Vector3D T31;
@@ -170,6 +186,7 @@ void VertexTriangle::calcFemForces(Vertex vs[])
     T32 += (ci[0] * l2_sq + ci[2]*l0_sq) * (vs[ia].r_c - vs[ic].r_c);
     T32 += (ci[1] * l2_sq + ci[2]*l1_sq) * (vs[ib].r_c - vs[ic].r_c);
     
+    //std::cout << "T31"<< T31 << " T32="<< T32 << std::endl;
     vs[ic].f_c += (T31 + T32);
     
 }
