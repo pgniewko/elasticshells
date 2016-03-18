@@ -178,6 +178,11 @@ inline double Vector3D::angle(const Vector3D& v) const
     return angle;
 }
 
+inline double dot(const Vector3D& v1, const Vector3D& v2)
+{
+   return (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z);
+}
+
 //inline double dotd(const Vector3Dd& v1, const Vector3Dd& v2)
 //{
 //    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
