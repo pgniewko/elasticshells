@@ -12,6 +12,7 @@
 #include "geometry/Triangle.h"
 #include "geometry/Vertex.h"
 #include "geometry/VertexTriangle.h"
+#include "geometry/BendingSpring.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
 #include "simulation/DomainList.h"
@@ -78,6 +79,7 @@ class Cell
         void setVisc(double);
         void setCellId(int);
         void setNu(double);
+        void setBSprings(double, double, double);
 
         void setVerletR(double);
         void setInitR(double);
@@ -103,6 +105,7 @@ class Cell
         Vector3D cm_b;
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
+        BendingSpring bsprings [2*MAX_T]; 
 
         int cell_id = -1;
         double contactForce(const Cell&, const Box&) const;
@@ -119,6 +122,8 @@ class Cell
         double getTurgor() const;
         double getStrain(int, int) const;
         void update(double = 0.0);
+        
+        static bool no_bending;
 
     private:
         void grow(double);
@@ -139,12 +144,14 @@ class Cell
         cell_phase_t my_phase = cell_phase_t::C_G1 ;
         int number_v = 0;
         int number_t = 0;
+        int number_s = 0;
         double nRT = 0.0;
         double V0 = 0.0;
 
         int bud_idx[MAX_V];
         int vert_no_bud = 0;
         bool fem_flag = false;
+        bool bending_flag = true;
 
         static utils::Logger cell_log;
 };

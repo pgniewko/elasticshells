@@ -2,6 +2,8 @@
 
 utils::Logger Cell::cell_log("cell");
 
+bool Cell::no_bending = false;
+
 //Cell::Cell(int depth) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), nRT(0), V0(0),
 //    vert_no_bud(0)
 Cell::Cell(int depth)
@@ -11,21 +13,23 @@ Cell::Cell(int depth)
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
+    Tinker::constructBSprings(*this);
     randomRotate();
 }
 
-Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), nRT(0),
-    V0(0), vert_no_bud(0)
+Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), number_s(0), nRT(0),
+    V0(0), vert_no_bud(0), fem_flag(false), bending_flag(true)
 {
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
+    Tinker::constructBSprings(*this);
     randomRotate();
 }
 
-Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles),
-    cell_id(orig.cell_id), params(orig.params), my_phase(orig.my_phase), number_v(orig.number_v), number_t(orig.number_t), nRT(orig.nRT),
-    V0(orig.V0), vert_no_bud(orig.vert_no_bud), fem_flag(orig.fem_flag)
+Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles), bsprings(orig.bsprings),
+    cell_id(orig.cell_id), params(orig.params), my_phase(orig.my_phase), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
+        nRT(orig.nRT), V0(orig.V0), vert_no_bud(orig.vert_no_bud), fem_flag(orig.fem_flag), bending_flag(orig.bending_flag)
 {
     // TODO: copy manually 
 }
@@ -165,7 +169,6 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
 
 void Cell::calcBondedForces()
 {
-    //std::cout << "fem_flag=" << fem_flag << std::endl;
     if (fem_flag)
     {
         calcFemForces();
@@ -190,7 +193,6 @@ void Cell::calcHarmonicForces()
             R0ij = vertices[i].r0[j];
             k0ij = vertices[i].k0[j];
             idxj = vertices[i].bondedVerts[j];
-            //std::cout << "k0ij="<<k0ij <<" R0ij=" << R0ij<< " |f|="<< HookeanForce::calcForce(vertices[i].r_c, vertices[idxj].r_c, R0ij, k0ij).length() << std::endl;
             vertices[i].f_c += HookeanForce::calcForce(vertices[i].r_c, vertices[idxj].r_c, R0ij, k0ij);
         }
     }
@@ -198,12 +200,19 @@ void Cell::calcHarmonicForces()
 
 void Cell::calcFemForces()
 {
-    //std::cout << "inside calcFemForces()" << std::endl;
     for (int i = 0; i < number_t; i++)
     {
-        //std::cout << "Triangle i=" <<i << std::endl;
         triangles[i].calcFemForces(vertices);
     }
+    
+    if (!no_bending)
+    {
+        for (int i = 0; i < number_s; i++)
+        {
+            bsprings[i].calcBendingForces(vertices);
+        }
+    }
+    
 }
 
 void Cell::calcOsmoticForces()
@@ -408,6 +417,16 @@ void Cell::setVisc(double mu)
     params.totalVisc = getCellViscosity();
 }
 
+void Cell::setBSprings(double E, double t, double nu_)
+{
+
+    for (int i = 0; i < number_s; i++)
+    {
+        bsprings[i].setD(E, t, nu_);
+        bsprings[i].setThetaZero(vertices);
+    }  
+}
+
 double Cell::getCellViscosity() const
 {
     double v = 0;
@@ -475,9 +494,7 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
         {
             for (int j = 0; j < vertices[i].numBonded; j++)
             {
-                vertices[i].k0[j] = g;
-                //std::cout <<" num bonded=" <<vertices[i].numBonded <<" E=" << E << " t="<< t << " nu=" << nu_ <<  " i: "<< i << " j: " << vertices[i].bondedVerts[j] <<  " g=" << g << std::endl;
-                        
+                vertices[i].k0[j] = g;        
             }
         }
     }
@@ -537,31 +554,14 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
                             g_me_him += E * t * area / (c*c*(1+nu_));
                             g_me_him += E * t * nu_ * (a*a + b*b - c*c) / ((1 - nu_*nu_) * 8.0 * area);
                             
-                            //std::cout << "me: "<<  me << " ";
-                            //std::cout << "him: "<<  him << " "; 
-                            //std::cout << "third: "<<  third << " ";
-                            
-                            //std::cout << "c: "<<  c << " ";
-                            //std::cout << "a: "<<  a << " "; 
-                            //std::cout << "b: "<<  b << " ";
-                            
-                            //std::cout << " t_me=" << t_me << " ";
-                            //std::cout << " t_him=" << t_him << " ";
-                            //std::cout << " g_me_him=" << g_me_him << " ";
-                            
-                            //std::cout << std::endl;
                         }
                         
                     }
                 }
-                vertices[me].k0[j] = g_me_him; // him = vertices[me].bondedVerts[j];
-                //std::cout << "vertices[me].k0[j] =" << vertices[me].k0[j] << " ";
-                //std::cout << std::endl;
+                vertices[me].k0[j] = g_me_him;
             }
-            
-            
-        }
 
+        }
     }
     else if (STRCMP (model_t, "fem"))
     {
@@ -573,10 +573,9 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
     }
     else 
     {
-        // print error
+        // print error and terminate
     }
     
-    //std::cout << "DONE!"<< std::endl;
 }
 
 void Cell::setCellId(int ix)

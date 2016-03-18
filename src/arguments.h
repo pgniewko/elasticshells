@@ -68,6 +68,7 @@ struct arguments
     bool osmotic_flag;
     bool scale_flag;
     bool dynamics;
+    bool nobending;
     int nb_flag;
 
     ulong seed;
