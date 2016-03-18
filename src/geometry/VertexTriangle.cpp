@@ -15,7 +15,6 @@ VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(ori
         ki[i] = orig.ki[i];
         ci[i] = orig.ci[i];
     }
-    
 }
 
 VertexTriangle::~VertexTriangle() {}
@@ -124,8 +123,6 @@ void VertexTriangle::setAn(const Vertex vs[])
     Vector3D ac = vs[ia].r_c - vs[ic].r_c;
     Vector3D bc = vs[ib].r_c - vs[ic].r_c;
     an[2] = ac.angle(bc);
-    
-    //std::cout << "an[0]=" << an[0] << " an[1]="<<an[1] << " an[2]=" << an[2] << std::endl;
 }
 
 void VertexTriangle::setKi(const Vertex vs[], double E, double nu, double t)
@@ -161,14 +158,12 @@ void VertexTriangle::calcFemForces(Vertex vs[])
     double l1_sq = (vs[ia].r_c - vs[ic].r_c).length_sq() - L2[1];
     double l2_sq = (vs[ia].r_c - vs[ib].r_c).length_sq() - L2[2];
     
-    
     Vector3D T11;
     Vector3D T12; 
     T11 += ki[2] * l2_sq * (vs[ib].r_c - vs[ia].r_c) + ki[1] * l1_sq * (vs[ic].r_c - vs[ia].r_c);
     T12 += (ci[1] * l0_sq + ci[0]*l1_sq) * (vs[ib].r_c - vs[ia].r_c);
     T12 += (ci[2] * l0_sq + ci[0]*l2_sq) * (vs[ic].r_c - vs[ia].r_c);
     
-    //std::cout << "T11"<< T11 << " T12="<< T12 << std::endl;
     vs[ia].f_c += (T11 + T12);
     
     Vector3D T21;
@@ -177,7 +172,6 @@ void VertexTriangle::calcFemForces(Vertex vs[])
     T22 += (ci[0] * l1_sq + ci[1]*l0_sq) * (vs[ia].r_c - vs[ib].r_c);
     T22 += (ci[2] * l1_sq + ci[1]*l2_sq) * (vs[ic].r_c - vs[ib].r_c);
     
-    //std::cout << "T21"<< T21 << " T22="<< T22 << std::endl;
     vs[ib].f_c += (T21 + T22);
     
     Vector3D T31;
@@ -186,7 +180,6 @@ void VertexTriangle::calcFemForces(Vertex vs[])
     T32 += (ci[0] * l2_sq + ci[2]*l0_sq) * (vs[ia].r_c - vs[ic].r_c);
     T32 += (ci[1] * l2_sq + ci[2]*l1_sq) * (vs[ib].r_c - vs[ic].r_c);
     
-    //std::cout << "T31"<< T31 << " T32="<< T32 << std::endl;
     vs[ic].f_c += (T31 + T32);
     
 }
