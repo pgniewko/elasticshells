@@ -65,6 +65,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     domains.setupDomainsList(getLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
+    Cell::no_bending = args.nobending;
     logParams();
     
 }
@@ -255,6 +256,7 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
         newCell.setSpringConst(params.E_cell, params.th, params.nu, model_t);
+        newCell.setBSprings(params.E_cell, params.th, params.nu);
         newCell.setDp(params.dp, params.ddp);
         newCell.setVertexR(params.r_vertex);
         newCell.setVerletR(params.verlet_f);
@@ -291,11 +293,6 @@ void Simulator::simulate(int steps)
     {
         rebuildDomainsList();
     }
-    // TODO:  Update verlet-list przy urzyciu linked-domains!
-    //else if (params.nbhandler == 3)
-    //{
-    //    rebuildDomainsList();
-    //}
 
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
