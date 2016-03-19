@@ -18,9 +18,9 @@ void BendingSpring::setD(const double& E, const double& t, const double& nu)
     D = E*t*t*t / (12.0 * (1.0 - nu*nu));
 }
 
-void BendingSpring::calcBendingForces(Vertex vs[])
+void BendingSpring::calcBendingForces(Vertex vs[]) const
 {
-
+    
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
     double E_norm = E.length();
     double E_norm2 = E_norm * E_norm;
@@ -60,7 +60,7 @@ void BendingSpring::setThetaZero(const Vertex vs[])
 
 }
 
-double BendingSpring::calcSinTheta(const Vertex vs[])
+double BendingSpring::calcSinTheta(const Vertex vs[]) const
 {
     
     Vector3D E = vs[x4].r_c - vs[x3].r_c;

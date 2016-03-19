@@ -213,7 +213,6 @@ void Simulator::initCells(int N, double ra, double rb, char* model_t)
 
 void Simulator::pushCell(const Cell& newCell)
 {
-
     try
     {
         if (cells.size() == MAX_CELLS)
@@ -251,7 +250,7 @@ void Simulator::addCell(double r0, char* model_t)
             SimpleTriangulation sm(params.d);
             tris = sm.triangulate(r0);
         }
-
+        
         Cell newCell(tris);
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);

@@ -125,7 +125,7 @@ void VertexTriangle::setAn(const Vertex vs[])
     an[2] = ac.angle(bc);
 }
 
-void VertexTriangle::setKi(const Vertex vs[], double E, double nu, double t)
+void VertexTriangle::setKi(const Vertex vs[], const double &E, const double &nu, const double &t)
 {
     double Ap = area(vs);
     ki[0] = E * t * (2.0 * cot(an[0]) * cot(an[0]) + 1.0 - nu) / (16.0 * Ap * (1.0 - nu*nu));
@@ -134,7 +134,7 @@ void VertexTriangle::setKi(const Vertex vs[], double E, double nu, double t)
     
 }
 
-void VertexTriangle::setCi(const Vertex vs[], double E, double nu, double t)
+void VertexTriangle::setCi(const Vertex vs[], const double &E, const double &nu, const double &t)
 {
     double Ap = area(vs);
     ci[0] = E*t*(2.0*cot(an[1])*cot(an[2]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu*nu));
@@ -142,7 +142,7 @@ void VertexTriangle::setCi(const Vertex vs[], double E, double nu, double t)
     ci[2] = E*t*(2.0*cot(an[0])*cot(an[1]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu*nu));
 }
 
-void VertexTriangle::setParams(const Vertex vs[], double E, double nu, double t)
+void VertexTriangle::setParams(const Vertex vs[], const double E, const double nu, const double t)
 {
     
     setL2(vs);
@@ -151,7 +151,7 @@ void VertexTriangle::setParams(const Vertex vs[], double E, double nu, double t)
     setCi(vs, E, nu, t);
 }
 
-void VertexTriangle::calcFemForces(Vertex vs[]) 
+void VertexTriangle::calcFemForces(Vertex vs[]) const
 {
     // 1 - a; 2 - b; 3 - c;
     double l0_sq = (vs[ib].r_c - vs[ic].r_c).length_sq() - L2[0];

@@ -288,7 +288,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         
         case 418:
             arguments->model_type = arg;
-            std::cout << arg << " arguments->model_type=" << arguments->model_type <<std::endl;
             break;     
             
         case 500:

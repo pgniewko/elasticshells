@@ -17,7 +17,7 @@ public:
     virtual ~BendingSpring();
     
     void setD(const double&, const double&, const double&);
-    void calcBendingForces(Vertex[]);
+    void calcBendingForces(Vertex[]) const;
     void setThetaZero(const Vertex[]);
     friend bool operator== (BendingSpring&, BendingSpring&);
     
@@ -28,7 +28,7 @@ private:
     int x2 = -1;
     int x3 = -1;
     int x4 = -1;
-    double calcSinTheta(const Vertex[]);
+    double calcSinTheta(const Vertex[]) const;
 };
 
 inline bool operator== (BendingSpring& bs1, BendingSpring& bs2)
