@@ -359,7 +359,6 @@ double Cell::calcVolume(double eps) const
         vb = triangles[i].ib;
         vc = triangles[i].ic;
         volume +=Tetrahedron::volume(vertices[va].r_c, vertices[vb].r_c, vertices[vc].r_c, cm_m);
-        //volume += tetr.volume(eps);
     }
 
     return volume;
@@ -413,10 +412,9 @@ void Cell::setVisc(double mu, bool dynamics)
     }
     else
     {
-        std::cout << "NO DYNAMICS SIMULATION"<< std::endl;
         for (int i = 0; i < number_v; i++)
         {
-            vertices[i].setVisc(100.0);
+            vertices[i].setVisc(1.0);
         }
     }
 }

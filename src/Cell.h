@@ -75,7 +75,7 @@ class Cell
         void setDp(double);
         void setDp(double, double);
         void setSpringConst(double, double, double, char*);
-        void setVisc(double, bool=true);
+        void setVisc(double, bool=false);
         void setCellId(int);
         void setNu(double);
         void setBSprings(double, double, double);

@@ -686,7 +686,6 @@ void Simulator::heunMethod()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
-            std::cout << "visc="<< visc << " " << j << std::endl;
             cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c / visc;
         }
     }
