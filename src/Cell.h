@@ -24,11 +24,10 @@ struct cell_params_t
     double ecc;
     double nu;
     double dp;
-//    double gamma;
     double verlet_f;
     double init_r;
-    double vertexVisc;
-    double totalVisc;
+    //double vertexVisc;
+    //double totalVisc;
     double growth_rate;
     double div_volume;
     double bud_d;
@@ -76,7 +75,7 @@ class Cell
         void setDp(double);
         void setDp(double, double);
         void setSpringConst(double, double, double, char*);
-        void setVisc(double);
+        void setVisc(double, bool=true);
         void setCellId(int);
         void setNu(double);
         void setBSprings(double, double, double);

@@ -371,22 +371,19 @@ void Cell::calcCM()
     Vector3D tmp_b(0.0, 0.0, 0.0);
     double Mm = 0.0;
     double Mb = 0.0;
-    double m;
 
     for (int i = 0; i < number_v; i++)
     {
         if (vertices[i].getMyType() == vertex_t::MOTHER)
         {
-            m = vertices[i].getMass();
-            tmp_m += m * vertices[i].r_c;
-            Mm += m;
+            tmp_m += 1.0 * vertices[i].r_c;
+            Mm += 1.0;
         }
 
         if (vertices[i].getMyType() == vertex_t::BUD)
         {
-            m = vertices[i].getMass();
-            tmp_b += m * vertices[i].r_c;
-            Mb += m;
+            tmp_b += 1.0 * vertices[i].r_c;
+            Mb += 1.0;
         }
     }
 
@@ -403,16 +400,25 @@ void Cell::calcCM()
     }
 }
 
-void Cell::setVisc(double mu)
+void Cell::setVisc(double mu, bool dynamics)
 {
-    params.vertexVisc = mu / number_v;
-
-    for (int i = 0; i < number_v; i++)
+    if (dynamics)
     {
-        vertices[i].setVisc(params.vertexVisc);
-    }
+        double vertexVisc = mu / number_v;
 
-    params.totalVisc = getCellViscosity();
+        for (int i = 0; i < number_v; i++)
+        {
+            vertices[i].setVisc(vertexVisc);
+        }
+    }
+    else
+    {
+        std::cout << "NO DYNAMICS SIMULATION"<< std::endl;
+        for (int i = 0; i < number_v; i++)
+        {
+            vertices[i].setVisc(100.0);
+        }
+    }
 }
 
 void Cell::setBSprings(double E, double t, double nu_)
@@ -618,7 +624,6 @@ double Cell::getInitR() const
 
 Vector3D Cell::getCm() const
 {
-//    calcCM();
     return cm_m;
 }
 

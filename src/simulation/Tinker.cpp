@@ -247,7 +247,6 @@ void Tinker::grow(Cell& cell)
     Vector3D newcoor = 0.5 * (cell.vertices[vert1].r_c + cell.vertices[vert2].r_c);
     cell.vertices[cell.number_v] = Vertex(newcoor.x, newcoor.y, newcoor.z);
     cell.vertices[cell.number_v].setId(cell.number_v);
-    cell.vertices[cell.number_v].setMass(cell.vertices[vertexId].getMass());
     cell.vertices[cell.number_v].setVisc(cell.vertices[vertexId].getVisc());
     int newid = cell.number_v;
     cell.number_v++;

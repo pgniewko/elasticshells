@@ -58,8 +58,8 @@ class Vertex
         virtual ~Vertex();
         int setId(int);
         int getId() const;
-        double setMass(double);
-        double getMass() const;
+        //double setMass(double);
+        //double getMass() const;
         double setVisc(double);
         double getVisc() const;
 
@@ -117,7 +117,6 @@ class Vertex
 
     private:
         int myid;
-        double mass;
         double visc;
 
         double gtimer;

@@ -260,7 +260,7 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setVertexR(params.r_vertex);
         newCell.setVerletR(params.verlet_f);
         newCell.setCellId(number_of_cells);
-        newCell.setVisc(params.visc);
+        newCell.setVisc(params.visc, params.dynamics);
         newCell.setInitR(r0);
         newCell.setGrowthRate(params.growth_rate);
         newCell.setBuddingVolume(params.vc);
@@ -351,7 +351,6 @@ void Simulator::simulate(int steps)
 
     log_sim.dumpState(box, cells);
     sb.saveStrainScript(cells, box);
-    //sb.saveContactStress(cells, box);
     sb.saveStrainScript(cells, box);
     traj.close();
     log_sim.close();
@@ -627,7 +626,6 @@ bool Simulator::check_min_force()
         {
             if (cells[i].vertices[j].f_c.length_sq() > MIN_FORCE_SQ)
             {
-                //std::cout << cells[i].vertices[j].f_c.length_sq() << " " << MIN_FORCE_SQ << std::endl;
                 return true;
             }
         }
@@ -688,6 +686,7 @@ void Simulator::heunMethod()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             visc = cells[i].vertices[j].getVisc();
+            std::cout << "visc="<< visc << " " << j << std::endl;
             cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c / visc;
         }
     }

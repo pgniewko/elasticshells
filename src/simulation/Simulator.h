@@ -76,7 +76,6 @@ class Simulator
         void diagnoseParams(arguments);
         void logParams();
 
-        //void addCell();
         void pushCell(const Cell&);
         void addCell(double, char*);
 
@@ -105,12 +104,10 @@ class Simulator
         double FORCE_FRAC = 0.025;
         
         int number_of_cells;
-        //char* triangulator;
         std::string triangulator;
         params_t params;
 
         std::vector<Cell> cells;
-
 
         Box box;
 

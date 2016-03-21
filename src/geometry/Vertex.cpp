@@ -1,17 +1,17 @@
 #include "Vertex.h"
 
 Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), r_v(0, 0, 0), numBonded(0), numTris(0), numNbNeighs(0),
-    domainIdx(-1), myid(-1), mass(1.0), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
+    domainIdx(-1), myid(-1),visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
 Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), r_p(x, y, z), r_v(x, y, z), numBonded(0), numTris(0),
-    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
+    numNbNeighs(0), domainIdx(-1), myid(-1), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
 Vertex::Vertex(Vector3D v) : r_c(v), r_p(v), r_v(v), numBonded(0), numTris(0),
-    numNbNeighs(0), domainIdx(-1), myid(-1), mass(1.0), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
+    numNbNeighs(0), domainIdx(-1), myid(-1), visc(100.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
 Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p), f_p(orig.f_p), r_v(orig.r_v),
     numBonded(orig.numBonded), numTris(orig.numTris), numNbNeighs(orig.numNbNeighs), domainIdx(orig.domainIdx),
-    myid(orig.myid), mass( orig.mass ), visc(orig.visc), gtimer(0.0), my_type(orig.my_type)
+    myid(orig.myid), visc(orig.visc), gtimer(0.0), my_type(orig.my_type)
 {
     for (int i = 0; i < numBonded; i++)
     {
@@ -270,16 +270,16 @@ double Vertex::getNeighborR0(int idx) const
     return r0[idx];
 }
 
-double Vertex::setMass(double m)
-{
-    mass = m;
-    return mass;
-}
+//double Vertex::setMass(double m)
+//{
+//    mass = m;
+//    return mass;
+//}
 
-double Vertex::getMass() const
-{
-    return mass;
-}
+//double Vertex::getMass() const
+//{
+//    return mass;
+//}
 
 double Vertex::setVisc(double v)
 {
