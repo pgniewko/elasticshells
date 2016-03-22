@@ -53,7 +53,7 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
     Vector3D cell_separation;
     getDistance(cell_separation,  cm1, cm2, box);
     
-    if (cell_separation.length() > 2.0 * (R01+R02)) // 1.85 just an arbitrary number
+    if (cell_separation.length() > 2.0 * (R01+R02)) // 2.0 just an arbitrary number
         return;
     
     
@@ -1067,22 +1067,18 @@ double Cell::contactArea(const Box& box, double d_param) const
 {
     double contact_area = 0.0;
 
-    for (int t_idx = 0; t_idx < number_t; t_idx++)
+    for (int t_id = 0; t_id < number_t; t_id++)
     {
-        if ( isInContact(t_idx, box) )
+        if ( isInContact(t_id, box) )
         {
-            //TODO: this condition is confusing.
-            // It should be rather the other way around.
-            // When changing be careful about changing observables.config parameters
-            // Two classes are influenced by this code: CellBoxStress and WallCoverageFraction.
-            if (d_param > 0.0)
+            // Two classes are affected by this code: CellBoxStress and WallCoverageFraction.
+            double eps = params.vertex_r - d_param;
+            if (eps < 0)
             {
-                contact_area += triangles[t_idx].area(vertices);
+                cell_log << utils::LogLevel::WARNING << "In contactArea(const Box& box, double d_param): ";
+                cell_log << utils::LogLevel::WARNING << "d_param(=" << d_param << ") larger than params.vertex_r" << "\n";
             }
-            else
-            {
-                contact_area += triangles[t_idx].area(vertices, cm_m, params.vertex_r);
-            }
+            contact_area += triangles[t_id].area(vertices, cm_m, eps);
         }
     }
 
