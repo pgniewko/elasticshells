@@ -101,7 +101,7 @@ class Simulator
         bool check_min_force();
 
         double MIN_FORCE_SQ  = 0.0;
-        double FORCE_FRAC = 0.025;
+        double FORCE_FRAC = 0.01;
         
         int number_of_cells;
         std::string triangulator;

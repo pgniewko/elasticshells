@@ -1,29 +1,33 @@
 #include "Tetrahedron.h"
 
-double Tetrahedron::volume(const Vector3D& a, const Vector3D& b, const Vector3D& c, const Vector3D& d)
+double Tetrahedron::volume(const Vector3D& a, const Vector3D& b, const Vector3D& c, const Vector3D& cm)
 {
-    return fabs((a-d) * cross(b-d, c-d)) / 6.0;
+    return fabs((a-cm) * cross(b-cm, c-cm)) / 6.0;
 }
 
-double Tetrahedron::volume(const Vector3D& a, const Vector3D& b, const Vector3D& c, const Vector3D& d, const double eps)
+double Tetrahedron::volume(const Vector3D& a, const Vector3D& b, const Vector3D& c, const Vector3D& cm, const double eps)
 {
-    Vector3D AD = a - d;
-    Vector3D BD = b - d;
-    Vector3D CD = c - d;
+    if (eps == 0)
+    {
+        return volume(a, b, c, cm);
+    }
+    
+    Vector3D AD = a - cm;
+    Vector3D BD = b - cm;
+    Vector3D CD = c - cm;
     double nAD = AD.length() + eps;
     double nBD = BD.length() + eps;
     double nCD = CD.length() + eps;
+    
     AD.set_length(nAD);
     BD.set_length(nBD);
     CD.set_length(nCD);
-    Vector3D CcrossD = cross(BD, CD);
-    double volume = fabs(AD * CcrossD);
-    volume /= 6.0;
-    return volume;
+
+    return ( fabs(AD * cross(BD, CD)) / 6.0 );
 }
 
-double Tetrahedron::volumeSgn(const Vector3D& a, const Vector3D& b, const Vector3D& c, const Vector3D& d)
+double Tetrahedron::volumeSgn(const Vector3D& a, const Vector3D& b, const Vector3D& c, const Vector3D& cm)
 {
-    double volume = (a - d) * cross((b-d), (c-d));
+    double volume = (a - cm) * cross((b-cm), (c-cm));
     return  SIGN( volume );   
 }

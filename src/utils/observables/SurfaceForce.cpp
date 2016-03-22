@@ -28,7 +28,6 @@ double SurfaceForce::calcTotalForce(const Box& box, std::vector<Cell>& cells)
 
     for (uint i = 0; i < numOfCells; i++)
     {
-        //totalForce += cells[i].contactForce(box);
         totalForce += cells[i].contactForceSF(box);
     }
 

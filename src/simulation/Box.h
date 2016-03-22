@@ -22,13 +22,6 @@ class Box
         void setZ(const double);
         double getZ() const;
 
-        //void setDx(const double);
-        //double getDx() const;
-        //void setDy(const double);
-        //double getDy() const;
-        //void setDz(const double);
-        //double getDz() const;
-
         void setXmax(const double);
         void setYmax(const double);
         void setZmax(const double);
@@ -45,16 +38,16 @@ class Box
 
         bool resize();
 
-        double getVolume(const double = 0.0) const;
-        double getArea(const double = 0.0) const;
+        double getVolume(const double=0.0) const;
+        double getArea(const double=0.0) const;
 
         void setPbc(bool);
         void setEwall(double);
         void setNu(double);
         bool pbc;
-        double getXEdge(const double = 0.0) const;
-        double getYEdge(const double = 0.0) const;
-        double getZEdge(const double = 0.0) const;
+        double getXEdge(const double=0.0) const;
+        double getYEdge(const double=0.0) const;
+        double getZEdge(const double=0.0) const;
         double getNu() const;
         double getE() const;
 
@@ -71,9 +64,6 @@ class Box
         double x_min;
         double y_min;
         double z_min;
-        //double dx;
-        //double dy;
-        //double dz;
         double E_box;
         double nu;
 
