@@ -21,6 +21,7 @@ class Tinker
         static void constructVertices(Cell&, std::list<Triangle>&);
         static void constructVTriangles(Cell&, std::list<Triangle>&);
         static void constructTopology(Cell&);
+        static void constructBSprings(Cell&);
 
         static void grow(Cell&);
         static void bud(Cell&);
@@ -33,6 +34,8 @@ class Tinker
         static int getOldestVertex(Cell&);
         static int getVertex(Cell&, const Vector3D&);
         static int validVertList(Cell&);
+        
+        static bool isBSpringUnique(int,int,int,int, Cell&);
 
         static int vidx[MAX_V];
 

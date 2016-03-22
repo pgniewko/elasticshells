@@ -58,8 +58,8 @@ class Vertex
         virtual ~Vertex();
         int setId(int);
         int getId() const;
-        double setMass(double);
-        double getMass() const;
+        //double setMass(double);
+        //double getMass() const;
         double setVisc(double);
         double getVisc() const;
 
@@ -101,6 +101,7 @@ class Vertex
 
         int bondedVerts[NEIGH_MAX];
         double r0[NEIGH_MAX];
+        double k0[NEIGH_MAX];
 
         int bondedTris[TRIAN_MAX];
 
@@ -116,7 +117,6 @@ class Vertex
 
     private:
         int myid;
-        double mass;
         double visc;
 
         double gtimer;

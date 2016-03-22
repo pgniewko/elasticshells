@@ -25,6 +25,7 @@ struct arguments
 
     char* integrator_a;
     char* tritype;
+    char* model_type;
 
     int d;
     int log_step;
@@ -67,6 +68,7 @@ struct arguments
     bool osmotic_flag;
     bool scale_flag;
     bool dynamics;
+    bool nobending;
     int nb_flag;
 
     ulong seed;

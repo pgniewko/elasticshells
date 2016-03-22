@@ -65,6 +65,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     domains.setupDomainsList(getLengthScale(), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
+    Cell::no_bending = args.nobending;
     logParams();
     
 }
@@ -152,11 +153,18 @@ void Simulator::initCells(int N, double r0)
 
 void Simulator::initCells(int N, double ra, double rb)
 {
+    initCells(N, ra, rb, (char*)&"ms_kot");
+}
+
+void Simulator::initCells(int N, double ra, double rb, char* model_t)
+{
     if (ra > rb)
     {
         simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: ra > rb. Simulator will set: rb = ra \n";
         rb = ra;
     }
+    
+    simulator_logs << utils::LogLevel::INFO  << "CELL MODEL: " << model_t << "\n";
 
     double nx, ny, nz;
     bool flag = true;
@@ -195,7 +203,7 @@ void Simulator::initCells(int N, double ra, double rb)
 
         if (flag)
         {
-            addCell(r0);
+            addCell(r0, model_t);
             shiftCell(shift, number_of_cells - 1);
         }
     }
@@ -203,9 +211,8 @@ void Simulator::initCells(int N, double ra, double rb)
     set_min_force();
 }
 
-void Simulator::addCell(const Cell& newCell)
+void Simulator::pushCell(const Cell& newCell)
 {
-
     try
     {
         if (cells.size() == MAX_CELLS)
@@ -222,7 +229,7 @@ void Simulator::addCell(const Cell& newCell)
     }
 }
 
-void Simulator::addCell(double r0)
+void Simulator::addCell(double r0, char* model_t)
 {
     try
     {
@@ -243,22 +250,23 @@ void Simulator::addCell(double r0)
             SimpleTriangulation sm(params.d);
             tris = sm.triangulate(r0);
         }
-
+        
         Cell newCell(tris);
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
-        newCell.setSpringConst(params.E_cell * params.th);
+        newCell.setSpringConst(params.E_cell, params.th, params.nu, model_t);
+        newCell.setBSprings(params.E_cell, params.th, params.nu);
         newCell.setDp(params.dp, params.ddp);
         newCell.setVertexR(params.r_vertex);
         newCell.setVerletR(params.verlet_f);
         newCell.setCellId(number_of_cells);
-        newCell.setVisc(params.visc);
+        newCell.setVisc(params.visc, params.dynamics);
         newCell.setInitR(r0);
         newCell.setGrowthRate(params.growth_rate);
         newCell.setBuddingVolume(params.vc);
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
-        addCell(newCell);
+        pushCell(newCell);
     }
     catch (MaxSizeException& e)
     {
@@ -284,11 +292,6 @@ void Simulator::simulate(int steps)
     {
         rebuildDomainsList();
     }
-    // TODO:  Update verlet-list przy urzyciu linked-domains!
-    //else if (params.nbhandler == 3)
-    //{
-    //    rebuildDomainsList();
-    //}
 
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
@@ -303,6 +306,11 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i <= steps; i++)
     {
+        if ( i % (steps / 10) == 0.0 )
+        {
+            simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
+        }
+        
         do
         {
             update_neighbors_list();
@@ -339,16 +347,10 @@ void Simulator::simulate(int steps)
         {
             cells[i].cellCycle(params.dt);
         }
-
-        if ( i % (steps / 10) == 0.0 )
-        {
-            simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
-        }
     }
 
     log_sim.dumpState(box, cells);
     sb.saveStrainScript(cells, box);
-    //sb.saveContactStress(cells, box);
     sb.saveStrainScript(cells, box);
     traj.close();
     log_sim.close();
@@ -624,7 +626,6 @@ bool Simulator::check_min_force()
         {
             if (cells[i].vertices[j].f_c.length_sq() > MIN_FORCE_SQ)
             {
-                //std::cout << cells[i].vertices[j].f_c.length_sq() << " " << MIN_FORCE_SQ << std::endl;
                 return true;
             }
         }

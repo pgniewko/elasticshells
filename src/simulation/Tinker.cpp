@@ -119,6 +119,75 @@ void Tinker::constructTopology(Cell& cell)
     }
 }
 
+void Tinker::constructBSprings(Cell& cell)
+{
+
+    for (int x3 = 0; x3 < cell.number_v; x3++)
+    {
+        
+        for (int j = 0; j < cell.vertices[x3].numBonded; j++)
+        {
+            std::vector<int> common_verts;
+            int x4 = cell.vertices[x3].bondedVerts[j];
+            
+            for (int k = 0; k < cell.vertices[x3].numBonded; k++)
+            {
+                for (int l = 0; l < cell.vertices[x4].numBonded; l++)
+                {
+                    //std::cout << cell.vertices[x3].bondedVerts[k] << " " << cell.vertices[x4].bondedVerts[l] << std::endl;
+                    if (x4 != cell.vertices[x3].bondedVerts[k] && x3 != cell.vertices[x4].bondedVerts[l])
+                    {
+                        if (cell.vertices[x3].bondedVerts[k] == cell.vertices[x4].bondedVerts[l])
+                        {
+                            //std::cout << "ADD=" << cell.vertices[x3].bondedVerts[k] << std::endl;
+                            common_verts.push_back(cell.vertices[x3].bondedVerts[k]);
+                        }
+                    }
+                }
+            }    
+        
+        
+            int x3_ = std::min(x3, x4);
+            int x4_ = std::max(x3, x4);
+        
+            //std::cout << "x3="<<x3 << " x4=" << x4 << " common_verts.size()="<<common_verts.size() << std::endl;
+            for (uint ix = 0; ix < common_verts.size(); ix++)
+            {
+                for (uint iy = ix+1; iy < common_verts.size(); iy++)
+                {
+                    int x1_ = std::min(common_verts[ix], common_verts[iy]);
+                    int x2_ = std::max(common_verts[ix], common_verts[iy]);
+                    //std::cout << "x1_="<<x1_ << " x2_=" << x2_ << std::endl;
+                
+                    if( isBSpringUnique(x1_, x2_, x3_, x4_, cell) )
+                    {
+                        cell.bsprings[cell.number_s] = BendingSpring(x1_, x2_, x3_, x4_);
+                        cell.number_s++;
+                    }
+                }
+            }
+        }
+        //std::cout << "************" << std::endl;
+        
+        
+    }
+}
+
+bool Tinker::isBSpringUnique(int x1, int x2, int x3, int x4, Cell& cell)
+{
+    BendingSpring bs_tmp(x1, x2, x3, x4);
+    
+    for (int i = 0; i < cell.number_s; i++)
+    {
+        if (bs_tmp == cell.bsprings[i])
+        {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
 void Tinker::grow(Cell& cell)
 {
     //int vertexId = getRandomVertex(cell);
@@ -178,7 +247,6 @@ void Tinker::grow(Cell& cell)
     Vector3D newcoor = 0.5 * (cell.vertices[vert1].r_c + cell.vertices[vert2].r_c);
     cell.vertices[cell.number_v] = Vertex(newcoor.x, newcoor.y, newcoor.z);
     cell.vertices[cell.number_v].setId(cell.number_v);
-    cell.vertices[cell.number_v].setMass(cell.vertices[vertexId].getMass());
     cell.vertices[cell.number_v].setVisc(cell.vertices[vertexId].getVisc());
     int newid = cell.number_v;
     cell.number_v++;

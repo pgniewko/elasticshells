@@ -64,6 +64,7 @@ class Simulator
 
         void initCells(int, double);
         void initCells(int, double, double);
+        void initCells(int, double, double, char*);
 
     private:
 
@@ -75,9 +76,8 @@ class Simulator
         void diagnoseParams(arguments);
         void logParams();
 
-        //void addCell();
-        void addCell(const Cell&);
-        void addCell(double);
+        void pushCell(const Cell&);
+        void addCell(double, char*);
 
         void calcForces();
         void integrate();
@@ -104,12 +104,10 @@ class Simulator
         double FORCE_FRAC = 0.025;
         
         int number_of_cells;
-        //char* triangulator;
         std::string triangulator;
         params_t params;
 
         std::vector<Cell> cells;
-
 
         Box box;
 

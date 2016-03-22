@@ -31,7 +31,8 @@ class Observer
         double d_param;
 };
 
-template<typename T> Observer* createT(const char* n, const char* t)
+template<typename T> 
+Observer* createT(const char* n, const char* t)
 {
     return new T (n, t);
 }
