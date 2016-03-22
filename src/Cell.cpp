@@ -358,7 +358,7 @@ double Cell::calcVolume(double eps) const
         va = triangles[i].ia;
         vb = triangles[i].ib;
         vc = triangles[i].ic;
-        volume +=Tetrahedron::volume(vertices[va].r_c, vertices[vb].r_c, vertices[vc].r_c, cm_m);
+        volume += Tetrahedron::volume(vertices[va].r_c, vertices[vb].r_c, vertices[vc].r_c, cm_m, eps);
     }
 
     return volume;
