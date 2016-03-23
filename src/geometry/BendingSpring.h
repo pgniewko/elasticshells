@@ -23,7 +23,7 @@ public:
     
 private:
     double D = 0.0;
-    double sinHalfTheta0 = 0.0;
+    double sinTheta0 = 0.0;
     int x1 = -1;
     int x2 = -1;
     int x3 = -1;
