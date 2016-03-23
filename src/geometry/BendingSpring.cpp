@@ -7,7 +7,7 @@ BendingSpring::BendingSpring(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x
 {
 }
 
-BendingSpring::BendingSpring(const BendingSpring& orig) : D(orig.D), sinHalfTheta0(orig.sinHalfTheta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4)
+BendingSpring::BendingSpring(const BendingSpring& orig) : D(orig.D), sinTheta0(orig.sinTheta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4)
 {}
 
 BendingSpring::~BendingSpring() 
@@ -25,20 +25,23 @@ void BendingSpring::calcBendingForces(Vertex vs[]) const
     double E_norm = E.length();
     double E_norm2 = E_norm * E_norm;
     
-    Vector3D N1 = 0.5 * cross(vs[x1].r_c - vs[x3].r_c, vs[x1].r_c - vs[x4].r_c);
-    double N1_norm = N1.length();
-    Vector3D N2 = 0.5 * cross(vs[x2].r_c - vs[x4].r_c, vs[x2].r_c - vs[x3].r_c);
-    double N2_norm = N2.length();
+    Vector3D A1 = 0.5 * cross(vs[x1].r_c - vs[x3].r_c, vs[x1].r_c - vs[x4].r_c);
+    double area1 = A1.length();
+    Vector3D n1 = A1 / area1;
     
-    double sinHalfTheta = calcSinTheta(vs);
+    Vector3D A2 = 0.5 * cross(vs[x2].r_c - vs[x4].r_c, vs[x2].r_c - vs[x3].r_c);
+    double area2 = A2.length();
+    Vector3D n2 = A2 / area2;
     
-    double C = D * E_norm2 / (N1_norm + N2_norm) * (sinHalfTheta - sinHalfTheta0);
+    double sinTheta = calcSinTheta(vs);
     
-    Vector3D u1 = E_norm * N1 / (N1_norm*N1_norm);
-    Vector3D u2 = E_norm * N2 / (N2_norm*N2_norm);
+    double C = D * 3.0 * E_norm2 / (area1 + area2) * (sinTheta - sinTheta0);
     
-    Vector3D u3 =  dot(vs[x1].r_c-vs[x4].r_c, E) * N1 / (N1_norm*N1_norm*E_norm) + dot(vs[x2].r_c-vs[x4].r_c, E) * N2 / (N2_norm*N2_norm*E_norm);
-    Vector3D u4 = -dot(vs[x1].r_c-vs[x3].r_c, E) * N1 / (N1_norm*N1_norm*E_norm) - dot(vs[x2].r_c-vs[x3].r_c, E) * N2 / (N2_norm*N2_norm*E_norm);
+    Vector3D u1 = E_norm /(2.0 * area1) * n1;
+    Vector3D u2 = E_norm /(2.0 * area2) * n2;
+    
+    Vector3D u3 =  dot(vs[x1].r_c-vs[x4].r_c, E) * n1/(2.0*area1*E_norm) + dot(vs[x2].r_c-vs[x4].r_c, E)*n2/(2.0*area2*E_norm);
+    Vector3D u4 = -dot(vs[x1].r_c-vs[x3].r_c, E) * n1/(2.0*area1*E_norm) - dot(vs[x2].r_c-vs[x3].r_c, E)*n2/(2.0*area2*E_norm);
     
     vs[x1].f_c += (C * u1);
     vs[x2].f_c += (C * u2);
@@ -49,14 +52,14 @@ void BendingSpring::calcBendingForces(Vertex vs[]) const
     
 void BendingSpring::setThetaZero(const Vertex vs[])
 {
-    sinHalfTheta0 = calcSinTheta(vs);
-    if (sinHalfTheta0 < 0) // ENFORCE THAT THE INDEXING IS SUCH THAT THE ANGLE IS PI-THETA; THETA > 0 
+    sinTheta0 = calcSinTheta(vs);
+    if (sinTheta0 < 0) // ENFORCE THAT THE INDEXING IS SUCH THAT THE ANGLE IS PI-THETA; THETA > 0 
     {
         int x_tmp = x1;
         x1 = x2;
         x2 = x_tmp;
     }
-    sinHalfTheta0 = calcSinTheta(vs);
+    sinTheta0 = calcSinTheta(vs);
 
 }
 
@@ -71,8 +74,7 @@ double BendingSpring::calcSinTheta(const Vertex vs[]) const
     Vector3D N2 = cross(vs[x4].r_c - vs[x2].r_c, vs[x3].r_c - vs[x2].r_c);
     Vector3D n2 = N2 / N2.length();
 
-    int sign = SIGN( dot(cross(n1,n2),e) );
-    
-    double in_v = std::max(0.0, 0.5 * (1.0 - dot(n1,n2)) );
-    return ( sign * sqrt( in_v ) );
+    Vector3D cross_n1n2 = cross(n1,n2);
+    int sign = SIGN( dot( cross_n1n2 , e) );
+    return ( sign * cross_n1n2.length() );
 }
