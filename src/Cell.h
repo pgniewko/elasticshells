@@ -12,7 +12,7 @@
 #include "geometry/Triangle.h"
 #include "geometry/Vertex.h"
 #include "geometry/VertexTriangle.h"
-#include "geometry/BendingSpring.h"
+#include "force/BendingHinge.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
 #include "simulation/DomainList.h"
@@ -104,7 +104,7 @@ class Cell
         Vector3D cm_b;
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
-        BendingSpring bsprings [2*MAX_T]; 
+        BendingHinge bhinges [2*MAX_T]; 
 
         int cell_id = -1;
         double contactForce(const Cell&, const Box&) const;

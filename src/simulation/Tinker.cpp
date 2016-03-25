@@ -161,7 +161,7 @@ void Tinker::constructBSprings(Cell& cell)
                 
                     if( isBSpringUnique(x1_, x2_, x3_, x4_, cell) )
                     {
-                        cell.bsprings[cell.number_s] = BendingSpring(x1_, x2_, x3_, x4_);
+                        cell.bhinges[cell.number_s] = BendingHinge(x1_, x2_, x3_, x4_);
                         cell.number_s++;
                     }
                 }
@@ -175,11 +175,11 @@ void Tinker::constructBSprings(Cell& cell)
 
 bool Tinker::isBSpringUnique(int x1, int x2, int x3, int x4, Cell& cell)
 {
-    BendingSpring bs_tmp(x1, x2, x3, x4);
+    BendingHinge bs_tmp(x1, x2, x3, x4);
     
     for (int i = 0; i < cell.number_s; i++)
     {
-        if (bs_tmp == cell.bsprings[i])
+        if (bs_tmp == cell.bhinges[i])
         {
             return false;
         }

@@ -1,24 +1,22 @@
-#include "BendingSpring.h"
-#include "Vertex.h"
+#include "BendingHinge.h"
 
-BendingSpring::BendingSpring() : x1(-1), x2(-1), x3(-1), x4(-1) {}
+BendingHinge::BendingHinge() : x1(-1), x2(-1), x3(-1), x4(-1) {}
 
-BendingSpring::BendingSpring(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_)
-{
-}
-
-BendingSpring::BendingSpring(const BendingSpring& orig) : D(orig.D), sinTheta0(orig.sinTheta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4)
+BendingHinge::BendingHinge(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_)
 {}
 
-BendingSpring::~BendingSpring() 
+BendingHinge::BendingHinge(const BendingHinge& orig) : D(orig.D), sinTheta0(orig.sinTheta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4)
 {}
 
-void BendingSpring::setD(const double& E, const double& t, const double& nu)
+BendingHinge::~BendingHinge() 
+{}
+
+void BendingHinge::setD(const double& E, const double& t, const double& nu)
 {
     D = E*t*t*t / (12.0 * (1.0 - nu*nu));
 }
 
-void BendingSpring::calcBendingForces(Vertex vs[]) const
+void BendingHinge::calcBendingForces(Vertex vs[]) const
 {
     
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
@@ -33,12 +31,16 @@ void BendingSpring::calcBendingForces(Vertex vs[]) const
     double area2 = A2.length();
     Vector3D n2 = A2 / area2;
     
-    double sinTheta = calcSinTheta(vs);
+    //double sinTheta = calcSinTheta(vs);
+    double theta = calcTheta(vs);
     
-    double C = D * 3.0 * E_norm2 / (area1 + area2) * (sinTheta - sinTheta0);
     
-    Vector3D u1 = E_norm /(2.0 * area1) * n1;
-    Vector3D u2 = E_norm /(2.0 * area2) * n2;
+    //double C = D * 3.0 * E_norm2 / (area1 + area2) * (sinTheta - sinTheta0);
+    double C = D * 3.0 * E_norm2 / (area1 + area2) * sin(theta - theta0);
+   
+    
+    Vector3D u1 = E_norm / (2.0 * area1) * n1;
+    Vector3D u2 = E_norm / (2.0 * area2) * n2;
     
     Vector3D u3 =  dot(vs[x1].r_c-vs[x4].r_c, E) * n1/(2.0*area1*E_norm) + dot(vs[x2].r_c-vs[x4].r_c, E)*n2/(2.0*area2*E_norm);
     Vector3D u4 = -dot(vs[x1].r_c-vs[x3].r_c, E) * n1/(2.0*area1*E_norm) - dot(vs[x2].r_c-vs[x3].r_c, E)*n2/(2.0*area2*E_norm);
@@ -50,7 +52,7 @@ void BendingSpring::calcBendingForces(Vertex vs[]) const
     
 }
     
-void BendingSpring::setThetaZero(const Vertex vs[])
+void BendingHinge::setThetaZero(const Vertex vs[])
 {
     sinTheta0 = calcSinTheta(vs);
     if (sinTheta0 < 0) // ENFORCE THAT THE INDEXING IS SUCH THAT THE ANGLE IS PI-THETA; THETA > 0 
@@ -60,10 +62,17 @@ void BendingSpring::setThetaZero(const Vertex vs[])
         x2 = x_tmp;
     }
     sinTheta0 = calcSinTheta(vs);
+    theta0 = asin(sinTheta0);
 
 }
 
-double BendingSpring::calcSinTheta(const Vertex vs[]) const
+double BendingHinge::calcTheta(const Vertex vs[]) const
+{
+    double sin_theta = calcSinTheta(vs);
+    return asin(sin_theta);
+}
+
+double BendingHinge::calcSinTheta(const Vertex vs[]) const
 {
     
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
