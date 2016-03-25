@@ -1,24 +1,22 @@
-#include "BendingSpring.h"
-#include "Vertex.h"
+#include "BendingHinge.h"
 
-BendingSpring::BendingSpring() : x1(-1), x2(-1), x3(-1), x4(-1) {}
+BendingHinge::BendingHinge() : x1(-1), x2(-1), x3(-1), x4(-1) {}
 
-BendingSpring::BendingSpring(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_)
-{
-}
-
-BendingSpring::BendingSpring(const BendingSpring& orig) : D(orig.D), sinTheta0(orig.sinTheta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4)
+BendingHinge::BendingHinge(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_)
 {}
 
-BendingSpring::~BendingSpring() 
+BendingHinge::BendingHinge(const BendingHinge& orig) : D(orig.D), sinTheta0(orig.sinTheta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4)
 {}
 
-void BendingSpring::setD(const double& E, const double& t, const double& nu)
+BendingHinge::~BendingHinge() 
+{}
+
+void BendingHinge::setD(const double& E, const double& t, const double& nu)
 {
     D = E*t*t*t / (12.0 * (1.0 - nu*nu));
 }
 
-void BendingSpring::calcBendingForces(Vertex vs[]) const
+void BendingHinge::calcBendingForces(Vertex vs[]) const
 {
     
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
@@ -54,7 +52,7 @@ void BendingSpring::calcBendingForces(Vertex vs[]) const
     
 }
     
-void BendingSpring::setThetaZero(const Vertex vs[])
+void BendingHinge::setThetaZero(const Vertex vs[])
 {
     sinTheta0 = calcSinTheta(vs);
     if (sinTheta0 < 0) // ENFORCE THAT THE INDEXING IS SUCH THAT THE ANGLE IS PI-THETA; THETA > 0 
@@ -68,13 +66,13 @@ void BendingSpring::setThetaZero(const Vertex vs[])
 
 }
 
-double BendingSpring::calcTheta(const Vertex vs[]) const
+double BendingHinge::calcTheta(const Vertex vs[]) const
 {
     double sin_theta = calcSinTheta(vs);
     return asin(sin_theta);
 }
 
-double BendingSpring::calcSinTheta(const Vertex vs[]) const
+double BendingHinge::calcSinTheta(const Vertex vs[]) const
 {
     
     Vector3D E = vs[x4].r_c - vs[x3].r_c;

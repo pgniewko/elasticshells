@@ -9,6 +9,7 @@
 #include "geometry/Triangle.h"
 #include "geometry/Vertex.h"
 #include "geometry/VertexTriangle.h"
+#include "force/BendingHinge.h"
 
 class Cell;
 

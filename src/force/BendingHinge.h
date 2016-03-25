@@ -1,25 +1,25 @@
-#ifndef BENDINGSPRING_H
-#define	BENDINGSPRING_H
+#ifndef BENDINGHINGE_H
+#define	BENDINGHINGE_H
 
 #include <iostream>
 #include <iomanip>
 
 #include "Environment.h"
-#include "Vector3D.h"
-#include "Triangle.h"
-#include "Vertex.h"
+#include "geometry/Triangle.h"
+#include "geometry/Vertex.h"
+#include "geometry/Vector3D.h"
 
-class BendingSpring {
+class BendingHinge {
 public:
-    BendingSpring();
-    BendingSpring(int, int, int, int);
-    BendingSpring(const BendingSpring& orig);
-    virtual ~BendingSpring();
+    BendingHinge();
+    BendingHinge(int, int, int, int);
+    BendingHinge(const BendingHinge& orig);
+    virtual ~BendingHinge();
     
     void setD(const double&, const double&, const double&);
     void calcBendingForces(Vertex[]) const;
     void setThetaZero(const Vertex[]);
-    friend bool operator== (BendingSpring&, BendingSpring&);
+    friend bool operator== (BendingHinge&, BendingHinge&);
     
 private:
     double D = 0.0;
@@ -33,10 +33,10 @@ private:
     double calcSinTheta(const Vertex[]) const;
 };
 
-inline bool operator== (BendingSpring& bs1, BendingSpring& bs2)
+inline bool operator== (BendingHinge& bs1, BendingHinge& bs2)
 {
     return (bs1.x1 == bs2.x1 && bs1.x2 == bs2.x2 && bs1.x3 == bs2.x3 && bs1.x4 == bs2.x4);
 }
 
-#endif	/* BENDINGSPRING_H */
+#endif	/* BENDINGHINGE_H */
 
