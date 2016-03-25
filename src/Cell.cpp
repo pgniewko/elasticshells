@@ -25,7 +25,7 @@ Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1)
     randomRotate();
 }
 
-Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles), bsprings(orig.bsprings),
+Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
     cell_id(orig.cell_id), params(orig.params), my_phase(orig.my_phase), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
         nRT(orig.nRT), V0(orig.V0), vert_no_bud(orig.vert_no_bud), fem_flag(orig.fem_flag), bending_flag(orig.bending_flag)
 {
@@ -207,7 +207,7 @@ void Cell::calcFemForces()
     {
         for (int i = 0; i < number_s; i++)
         {
-            bsprings[i].calcBendingForces(vertices);
+            bhinges[i].calcBendingForces(vertices);
         }
     }
     
@@ -424,8 +424,8 @@ void Cell::setBSprings(double E, double t, double nu_)
 
     for (int i = 0; i < number_s; i++)
     {
-        bsprings[i].setD(E, t, nu_);
-        bsprings[i].setThetaZero(vertices);
+        bhinges[i].setD(E, t, nu_);
+        bhinges[i].setThetaZero(vertices);
     }  
 }
 

@@ -104,7 +104,7 @@ class Cell
         Vector3D cm_b;
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
-        BendingSpring bsprings [2*MAX_T]; 
+        BendingSpring bhinges [2*MAX_T]; 
 
         int cell_id = -1;
         double contactForce(const Cell&, const Box&) const;

@@ -33,12 +33,16 @@ void BendingSpring::calcBendingForces(Vertex vs[]) const
     double area2 = A2.length();
     Vector3D n2 = A2 / area2;
     
-    double sinTheta = calcSinTheta(vs);
+    //double sinTheta = calcSinTheta(vs);
+    double theta = calcTheta(vs);
     
-    double C = D * 3.0 * E_norm2 / (area1 + area2) * (sinTheta - sinTheta0);
     
-    Vector3D u1 = E_norm /(2.0 * area1) * n1;
-    Vector3D u2 = E_norm /(2.0 * area2) * n2;
+    //double C = D * 3.0 * E_norm2 / (area1 + area2) * (sinTheta - sinTheta0);
+    double C = D * 3.0 * E_norm2 / (area1 + area2) * sin(theta - theta0);
+   
+    
+    Vector3D u1 = E_norm / (2.0 * area1) * n1;
+    Vector3D u2 = E_norm / (2.0 * area2) * n2;
     
     Vector3D u3 =  dot(vs[x1].r_c-vs[x4].r_c, E) * n1/(2.0*area1*E_norm) + dot(vs[x2].r_c-vs[x4].r_c, E)*n2/(2.0*area2*E_norm);
     Vector3D u4 = -dot(vs[x1].r_c-vs[x3].r_c, E) * n1/(2.0*area1*E_norm) - dot(vs[x2].r_c-vs[x3].r_c, E)*n2/(2.0*area2*E_norm);
@@ -60,7 +64,14 @@ void BendingSpring::setThetaZero(const Vertex vs[])
         x2 = x_tmp;
     }
     sinTheta0 = calcSinTheta(vs);
+    theta0 = asin(sinTheta0);
 
+}
+
+double BendingSpring::calcTheta(const Vertex vs[]) const
+{
+    double sin_theta = calcSinTheta(vs);
+    return asin(sin_theta);
 }
 
 double BendingSpring::calcSinTheta(const Vertex vs[]) const
