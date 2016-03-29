@@ -304,9 +304,10 @@ void Simulator::simulate(int steps)
 
     bool resized = false;
 
-    for (int i = 0; i <= steps; i++)
+    for (int i = 0; i < steps; i++)
     {
-        if ( i % (steps / 10) == 0.0 )
+       
+        if ( i % (steps / std::min(steps, 10) ) == 0.0 )
         {
             simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
         }
