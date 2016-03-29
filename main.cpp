@@ -11,6 +11,7 @@
 #include <stdlib.h>    /* atoi,  strtod */
 #include <math.h>      /* log, sqrt */
 #include <string>
+#include <climits>
 
 #include "Environment.h"
 #include "src/Timer.h"
@@ -409,6 +410,18 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
     return 0;
 }
 
+void print_limits()
+{
+#ifdef DEBUG
+    std::cout << "# =============================================" << std::endl;
+    std::cout << "# Number of bits in byte:          " << CHAR_BIT << std::endl;
+    std::cout << "# Maximum value of object(size_t): " << SIZE_MAX << std::endl;
+    std::cout << "# Minimum value of int:            " << INT_MIN << std::endl;
+    std::cout << "# Maximum value of int:            " << INT_MAX << std::endl;
+    std::cout << "# Maximum value of signed int:     " << UINT_MAX << std::endl;
+    std::cout << "# =============================================" << std::endl;
+#endif
+}
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
 Timer clocks[10];
@@ -416,6 +429,8 @@ double simulation_time;
 
 int main(int argc, char** argv)
 {
+    print_limits();
+    
     print_time();
 
     if ( argc <= 1 )
