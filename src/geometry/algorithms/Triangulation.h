@@ -4,6 +4,7 @@
 #include <list>         /* list*/
 #include <iostream>
 
+#include "utils/utils.h"
 #include "Environment.h"
 #include "geometry/Triangle.h"
 

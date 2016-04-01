@@ -12,7 +12,7 @@ Cell::Cell(int depth)
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
     Tinker::constructBSprings(*this);
-    randomRotate();
+    //randomRotate();
 }
 
 Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), number_s(0), nRT(0),
@@ -22,7 +22,7 @@ Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1)
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
     Tinker::constructBSprings(*this);
-    randomRotate();
+    //randomRotate();
 }
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
@@ -198,6 +198,7 @@ void Cell::calcHarmonicForces()
 
 void Cell::calcFemForces()
 {
+    
     for (int i = 0; i < number_t; i++)
     {
         triangles[i].calcFemForces(vertices);

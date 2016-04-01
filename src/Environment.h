@@ -16,8 +16,10 @@
 #define SIGN(a) (a >= 0 ? 1 : -1)
 
 #define MAX_CELLS 100
-#define MAX_V 800
-#define MAX_T 1600
+//#define MAX_V 800
+//#define MAX_T 1600
+#define MAX_V 2000
+#define MAX_T 4000
 #define NEIGH_MAX 20
 #define TRIAN_MAX 40
 #define NBNEI_MAX 100

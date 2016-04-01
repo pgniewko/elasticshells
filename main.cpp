@@ -22,6 +22,8 @@
 #include "utils/Logger.h"
 #include "src/utils/LogManager.h"
 
+#include "src/geometry/algorithms/MembraneTriangulation.h"
+
 utils::Logger biofilm_logs("biofilm");
 
 const char* argp_program_version = "biofilm 0.5";
@@ -489,6 +491,22 @@ int main(int argc, char** argv)
     clocks[0].toc();
     simulation_time = read_timer( ) - simulation_time;
 
+    MembraneTriangulation mt;
+    //mt.triangulate(2.0, 0.5, 15);
+    //mt.saveTriangulatedSurface("membrane.xyz", false);
+    //mt.saveRenderingScript("membrane.py", "membrane.xyz");
+    
+    Cell test_cell(mt.triangulate(1.0,0.5, 15));
+    std::vector<Cell> cells;
+    cells.push_back(test_cell);
+    ScriptBuilder sb("render.py","surface.py","traj.xyz","stress.py");
+    Box box(0,0,0);
+    sb.saveRenderScript(cells, box, false, 0.05);
+    
+    XyzTraj traj("traj.xyz","box.xyz");
+    traj.open();
+    traj.save(cells, cells[0].getNumberVertices(), 1,1,1);
+    
 #ifdef _OPENMP
     int gt = omp_get_max_threads();
     int ncpu = omp_get_num_procs();
