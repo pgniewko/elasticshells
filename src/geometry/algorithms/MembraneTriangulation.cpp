@@ -92,7 +92,6 @@ void MembraneTriangulation::subdivide()
 {
     int counter = 0;
     std::list<Triangle> newTris;
-    float l = tris.begin()->a.length();
 
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)  // go through all triangles
     {
