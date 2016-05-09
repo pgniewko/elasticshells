@@ -251,7 +251,16 @@ void Simulator::addCell(double r0, char* model_t)
             tris = sm.triangulate(r0);
         }
         
+        if (Cell::membrane_test)
+        {
+            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
+            double re = 1.0;
+            MembraneTriangulation mt;
+            tris = mt.triangulate(r0, re, 5);
+        }
+        
         Cell newCell(tris);
+        
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
         newCell.setSpringConst(params.E_cell, params.th, params.nu, model_t);
@@ -266,6 +275,14 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setBuddingVolume(params.vc);
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
+        
+        if (Cell::membrane_test)
+        {
+            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
+            double re = 1.0;
+            newCell._set_hooks(r0+re);
+        }
+        
         pushCell(newCell);
     }
     catch (MaxSizeException& e)
@@ -359,7 +376,17 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
+//    double P0 = 0.025;
+//    P0 = params.bud_d;
+//    double R0 = 2.14;
+    
+//    double membrane_area = 3.14159265358979*R0*R0;
+//    int num_in_R0 = cells[0].num_vertex(R0);
+//    double force_per_vertex = P0 * membrane_area / num_in_R0;
 
+//    double pulling_force = 0.01;
+//    double hooks_pull_force = pulling_force / (cells[0].get_phooks_n() - 1);
+    
     #pragma omp parallel
     {
         // CALC CENTER OF MASS
@@ -385,7 +412,18 @@ void Simulator::calcForces()
         {
             cells[i].calcBondedForces();
         }
-
+        
+//        if (Cell::membrane_test)
+//        {
+//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
+//            for (int i = 0 ; i < number_of_cells; i++)
+//            {
+//                //cells[i].pull_vertex(pulling_force, 0.005);
+//                //cells[i].pull_vertex(force_per_vertex, R0);
+//                //cells[i].push_membrane(P0);
+//                //cells[i].pull_membrane(hooks_pull_force);
+//            }        
+//        }
 //#pragma omp barrier
 
         // CALCULATE INTER-CELLULAR FORCES
@@ -429,8 +467,16 @@ void Simulator::calcForces()
                 cells[i].calcBoxForces(box);
             }
         }
-
-
+        
+//        if (Cell::membrane_test)
+//        {
+//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
+//            for (int i = 0 ; i < number_of_cells; i++)
+//            {
+//                //cells[i].voidForcesOutsideCircle(R0);
+//                //cells[i].voidForcesForHooks();
+//            }        
+//        }
     }
 }
 
