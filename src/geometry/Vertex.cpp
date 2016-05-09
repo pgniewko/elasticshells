@@ -42,11 +42,12 @@ void Vertex::addNeighbor(int idx, double r0v)
             throw MaxSizeException("Maximum number of neighbors has been reached."
                                    "New neighbor will not be added!\n"
                                    "Simulation will be terminated.\n");
-
+        
         if (idx < 0)
             throw RunTimeError("Trying to add a vertex with a negative index.\n"
                                "Runtime data is incorrect. Simulation will be terminated.\n");
 
+        
         for (int i = 0; i < numBonded; i++)
         {
             if (bondedVerts[i] == idx)
