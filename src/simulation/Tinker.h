@@ -27,13 +27,14 @@ class Tinker
         static void grow(Cell&);
         static void bud(Cell&);
         static void divide(Cell&);
+        
     private:
-        static bool isUnique(std::list<Vector3D>&, Vector3D&);
+        static bool isUnique(std::list<Vector3D>&, Vector3D&, double=constants::epsilon);
         static int getRandomVertex(Cell&);
         static int getLonelyVertex(Cell&);
         static int getLeastDensiestVertex(Cell&);
         static int getOldestVertex(Cell&);
-        static int getVertex(Cell&, const Vector3D&);
+        static int getVertex(Cell&, const Vector3D&, double=constants::epsilon);
         static int validVertList(Cell&);
         
         static bool isBSpringUnique(int,int,int,int, Cell&);
