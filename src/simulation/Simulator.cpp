@@ -251,13 +251,13 @@ void Simulator::addCell(double r0, char* model_t)
             tris = sm.triangulate(r0);
         }
         
-        if (Cell::membrane_test)
-        {
-            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-            double re = 1.0;
-            MembraneTriangulation mt;
-            tris = mt.triangulate(r0, re, 5);
-        }
+//        if (Cell::membrane_test)
+//        {
+//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
+//            double re = 1.0;
+//            MembraneTriangulation mt;
+//            tris = mt.triangulate(r0, re, 5);
+//        }
         
         Cell newCell(tris);
         
@@ -276,12 +276,12 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
         
-        if (Cell::membrane_test)
-        {
-            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-            double re = 1.0;
-            newCell._set_hooks(r0+re);
-        }
+//        if (Cell::membrane_test)
+//        {
+//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
+//            double re = 1.0;
+//            newCell._set_hooks(r0+re);
+//        }
         
         pushCell(newCell);
     }
@@ -403,11 +403,8 @@ void Simulator::calcForces()
             cells[i].voidForces();
         }
 
-//#pragma omp barrier
-
         // CALCULATE INTRA-CELLULAR FORCES
         #pragma omp for schedule(guided)
-
         for (int i = 0 ; i < number_of_cells; i++)
         {
             cells[i].calcBondedForces();
@@ -424,11 +421,9 @@ void Simulator::calcForces()
 //                //cells[i].pull_membrane(hooks_pull_force);
 //            }        
 //        }
-//#pragma omp barrier
 
         // CALCULATE INTER-CELLULAR FORCES
         #pragma omp for schedule(guided)
-
         for (int i = 0; i < number_of_cells; i++)
         {
             for (int j = 0; j < number_of_cells; j++)
@@ -456,7 +451,6 @@ void Simulator::calcForces()
             }
         }
 
-//#pragma omp barrier
         // CALCULATE FORCES BETWEEN CELLS AND BOX
         if (!box.pbc)
         {

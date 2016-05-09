@@ -97,7 +97,6 @@ class Simulator
         
         bool verlet_condition();
         
-        
         void set_min_force();
         bool check_min_force();
 
