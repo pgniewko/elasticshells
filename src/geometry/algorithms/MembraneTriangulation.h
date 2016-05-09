@@ -14,12 +14,14 @@ class MembraneTriangulation : public Triangulation
         virtual ~MembraneTriangulation();
         std::list<Triangle> triangulate();
         std::list<Triangle> triangulate(double, double, int);
+        
     private:
         std::list<Triangle> hexagon;
-        void createHex(double, double, double);
+        std::list<Triangle> diamond1;
+        std::list<Triangle> diamond2;
+        void createHex(double, double);
+        void putTwoTriangles(double);
         void subdivide();
-
-
 };
 
 #endif	/* MEMBRANETRIANGULATION_H */
