@@ -5,7 +5,7 @@ BendingHinge::BendingHinge() : x1(-1), x2(-1), x3(-1), x4(-1) {}
 BendingHinge::BendingHinge(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_)
 {}
 
-BendingHinge::BendingHinge(const BendingHinge& orig) : D(orig.D), sinTheta0(orig.sinTheta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4)
+BendingHinge::BendingHinge(const BendingHinge& orig) : D(orig.D), sinTheta0(orig.sinTheta0), theta0(orig.theta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4)
 {}
 
 BendingHinge::~BendingHinge() 
@@ -36,8 +36,8 @@ void BendingHinge::calcBendingForces(Vertex vs[]) const
     
     
     //double C = D * 3.0 * E_norm2 / (area1 + area2) * (sinTheta - sinTheta0);
-    double C = D * 3.0 * E_norm2 / (area1 + area2) * sin(theta - theta0);
-   
+    double C = 3.0 * D * E_norm2 / (area1 + area2) * sin(theta - theta0); // Grinspun eq.3, Cubic Shells, 2007
+    
     
     Vector3D u1 = E_norm / (2.0 * area1) * n1;
     Vector3D u2 = E_norm / (2.0 * area2) * n2;
@@ -85,5 +85,6 @@ double BendingHinge::calcSinTheta(const Vertex vs[]) const
 
     Vector3D cross_n1n2 = cross(n1,n2);
     int sign = SIGN( dot( cross_n1n2 , e) );
+    
     return ( sign * cross_n1n2.length() );
 }

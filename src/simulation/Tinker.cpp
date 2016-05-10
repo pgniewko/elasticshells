@@ -52,15 +52,23 @@ void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
     }
 }
 
-bool Tinker::isUnique(std::list<Vector3D>& vlist, Vector3D& v)
+bool Tinker::isUnique(std::list<Vector3D>& vlist, Vector3D& v, double e)
 {
     for (std::list<Vector3D>::iterator i = vlist.begin(); i != vlist.end(); ++i)
     {
-        if (i->x == v.x && i->y == v.y && i->z == v.z)
+        if ( fabs(i->x - v.x) < e && fabs(i->y - v.y) < e && fabs(i->z - v.z) < e )
         {
             return false;
         }
     }
+    
+//    for (std::list<Vector3D>::iterator i = vlist.begin(); i != vlist.end(); ++i)
+//    {
+//        if (i->x == v.x && i->y == v.y && i->z == v.z)
+//        {
+//            return false;
+//        }
+//    }
 
     return true;
 }
@@ -80,14 +88,20 @@ void Tinker::constructVTriangles(Cell& cell, std::list<Triangle>& tris)
     }
 }
 
-int Tinker::getVertex(Cell& cell, const Vector3D& v)
+int Tinker::getVertex(Cell& cell, const Vector3D& v, double e)
 {
     for (int i = 0; i < cell.number_v; i++)
-    {
-        if (cell.vertices[i].r_c.x == v.x && cell.vertices[i].r_c.y == v.y && cell.vertices[i].r_c.z == v.z)
+    {        
+        if ( fabs(cell.vertices[i].r_c.x - v.x) < e && fabs(cell.vertices[i].r_c.y - v.y) < e && fabs(cell.vertices[i].r_c.z - v.z) < e )
         {
             return cell.vertices[i].getId();
         }
+        
+//        if (cell.vertices[i].r_c.x == v.x && cell.vertices[i].r_c.y == v.y && cell.vertices[i].r_c.z == v.z)
+//        {
+//            return cell.vertices[i].getId();
+//        }        
+       
     }
 
     return -1;

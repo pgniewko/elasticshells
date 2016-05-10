@@ -20,9 +20,14 @@ void Triangulation::saveTriangulatedSurface(const char* filename, bool wrap)
         }
         else
         {
-            os << "H" << index++ << " " << i->a.x << " " << i->a.y << " " << i->a.z << "\n";
-            os << "H" << index++ << " " << i->b.x << " " << i->b.y << " " << i->b.z << "\n";
-            os << "H" << index++ << " " << i->c.x << " " << i->c.y << " " << i->c.z << "\n";
+            std::string strindex = new_base_index( index );
+            os << strindex << " " << i->a.x << " " << i->a.y << " " << i->a.z << "\n";
+            index++;
+            strindex = new_base_index( index );
+            os << strindex << " " << i->b.x << " " << i->b.y << " " << i->b.z << "\n";
+            index++;
+            strindex = new_base_index( index );
+            os << strindex << " " << i->c.x << " " << i->c.y << " " << i->c.z << "\n";
         }
     }
 
@@ -45,10 +50,13 @@ void Triangulation::saveRenderingScript(const char* filename, const char* cellsf
 
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
-        os << "cmd.do(\"bond /cells///UNK`/H" << index + 0 << ", /cells///UNK`/H" << index + 1 << "\")\n";
-        os << "cmd.do(\"bond /cells///UNK`/H" << index + 1 << ", /cells///UNK`/H" << index + 2 << "\")\n";
-        os << "cmd.do(\"bond /cells///UNK`/H" << index + 2 << ", /cells///UNK`/H" << index + 0 << "\")\n";
-        index = index + 3;
+        std::string strindex1 = new_base_index( index+0 );
+        std::string strindex2 = new_base_index( index+1 );
+        std::string strindex3 = new_base_index( index+2 );
+        os << "cmd.do(\"bond /cells///UNK`/" << strindex1 << ", /cells///UNK`/" << strindex2 << "\")\n";
+        os << "cmd.do(\"bond /cells///UNK`/" << strindex1 << ", /cells///UNK`/" << strindex3 << "\")\n";
+        os << "cmd.do(\"bond /cells///UNK`/" << strindex2 << ", /cells///UNK`/" << strindex3 << "\")\n";
+        index += 3;
     }
 
     os << "cmd.do(\"show lines\")\n";

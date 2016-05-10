@@ -110,12 +110,11 @@ void VertexTriangle::setL2(const Vertex vs[])
 
 void VertexTriangle::setAn(const Vertex vs[])
 {
-    
     // MAKE SURE THAT the angle is between 0-180
     Vector3D ca = vs[ic].r_c - vs[ia].r_c;
     Vector3D ba = vs[ib].r_c - vs[ia].r_c;
     an[0] = ca.angle(ba);
-
+    
     Vector3D ab = vs[ia].r_c - vs[ib].r_c;
     Vector3D cb = vs[ic].r_c - vs[ib].r_c;
     an[1] = ab.angle(cb);
@@ -144,7 +143,6 @@ void VertexTriangle::setCi(const Vertex vs[], const double &E, const double &nu,
 
 void VertexTriangle::setParams(const Vertex vs[], const double E, const double nu, const double t)
 {
-    
     setL2(vs);
     setAn(vs);
     setKi(vs, E, nu, t);

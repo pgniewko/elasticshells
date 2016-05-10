@@ -11,6 +11,7 @@
 #include <stdlib.h>    /* atoi,  strtod */
 #include <math.h>      /* log, sqrt */
 #include <string>
+#include <climits>
 
 #include "Environment.h"
 #include "src/Timer.h"
@@ -20,6 +21,8 @@
 
 #include "utils/Logger.h"
 #include "src/utils/LogManager.h"
+
+#include "src/geometry/algorithms/MembraneTriangulation.h"
 
 utils::Logger biofilm_logs("biofilm");
 
@@ -409,6 +412,18 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
     return 0;
 }
 
+void print_limits()
+{
+#ifdef DEBUG
+    std::cout << "# =============================================" << std::endl;
+    std::cout << "# Number of bits in byte:          " << CHAR_BIT << std::endl;
+    std::cout << "# Maximum value of object(size_t): " << SIZE_MAX << std::endl;
+    std::cout << "# Minimum value of int:            " << INT_MIN << std::endl;
+    std::cout << "# Maximum value of int:            " << INT_MAX << std::endl;
+    std::cout << "# Maximum value of signed int:     " << UINT_MAX << std::endl;
+    std::cout << "# =============================================" << std::endl;
+#endif
+}
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
 Timer clocks[10];
@@ -416,6 +431,8 @@ double simulation_time;
 
 int main(int argc, char** argv)
 {
+    print_limits();
+    
     print_time();
 
     if ( argc <= 1 )
@@ -466,6 +483,7 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
 
+    //Cell::membrane_test = true;
     clocks[0].tic();
     simulation_time = read_timer();
     Simulator simulator(arguments);
@@ -473,7 +491,8 @@ int main(int argc, char** argv)
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
     simulation_time = read_timer( ) - simulation_time;
-
+    
+    
 #ifdef _OPENMP
     int gt = omp_get_max_threads();
     int ncpu = omp_get_num_procs();
