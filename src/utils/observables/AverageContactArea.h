@@ -3,18 +3,18 @@
 
 #include "utils/observables/Observer.h"
 
-class AverageContactArea : public Observer 
+class AverageContactArea : public Observer
 {
-public:
-    AverageContactArea(const char*, const char*);
-    AverageContactArea(const AverageContactArea& orig);
-    virtual ~AverageContactArea();
-        
-    void set_params(const int, std::vector<std::string>);
-    double observe(const Box&, std::vector<Cell>&);
-    
-private:
-    static DerivedRegister<AverageContactArea> reg;
+    public:
+        AverageContactArea(const char*, const char*);
+        AverageContactArea(const AverageContactArea& orig);
+        virtual ~AverageContactArea();
+
+        void set_params(const int, std::vector<std::string>);
+        double observe(const Box&, std::vector<Cell>&);
+
+    private:
+        static DerivedRegister<AverageContactArea> reg;
 
 };
 

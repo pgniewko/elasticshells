@@ -88,7 +88,7 @@ class Vertex
         void voidTime();
 
         const vertex_t& getMyType() const;
-        
+
         double get_verlet_disp2() const;
 
         Vector3D r_c;

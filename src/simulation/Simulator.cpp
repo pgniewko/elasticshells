@@ -44,7 +44,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.dynamics = args.dynamics;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
-    params.v_disp_cut2 = params.r_vertex*params.r_vertex*(args.verlet_f - 1.0)*(args.verlet_f - 1.0);
+    params.v_disp_cut2 = params.r_vertex * params.r_vertex * (args.verlet_f - 1.0) * (args.verlet_f - 1.0);
     setIntegrator(args.integrator_a);
     setTriangulator(args.tritype);
     box.setX(args.bsx);
@@ -67,7 +67,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     OsmoticForce::setEpsilon(args.eps);
     Cell::no_bending = args.nobending;
     logParams();
-    
+
 }
 
 Simulator::~Simulator() {}
@@ -163,7 +163,7 @@ void Simulator::initCells(int N, double ra, double rb, char* model_t)
         simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: ra > rb. Simulator will set: rb = ra \n";
         rb = ra;
     }
-    
+
     simulator_logs << utils::LogLevel::INFO  << "CELL MODEL: " << model_t << "\n";
 
     double nx, ny, nz;
@@ -207,7 +207,7 @@ void Simulator::initCells(int N, double ra, double rb, char* model_t)
             shiftCell(shift, number_of_cells - 1);
         }
     }
-    
+
     set_min_force();
 }
 
@@ -250,7 +250,7 @@ void Simulator::addCell(double r0, char* model_t)
             SimpleTriangulation sm(params.d);
             tris = sm.triangulate(r0);
         }
-        
+
 //        if (Cell::membrane_test)
 //        {
 //            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
@@ -258,9 +258,9 @@ void Simulator::addCell(double r0, char* model_t)
 //            MembraneTriangulation mt;
 //            tris = mt.triangulate(r0, re, 5);
 //        }
-        
+
         Cell newCell(tris);
-        
+
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
         newCell.setSpringConst(params.E_cell, params.th, params.nu, model_t);
@@ -275,14 +275,14 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setBuddingVolume(params.vc);
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
-        
+
 //        if (Cell::membrane_test)
 //        {
 //            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
 //            double re = 1.0;
 //            newCell._set_hooks(r0+re);
 //        }
-        
+
         pushCell(newCell);
     }
     catch (MaxSizeException& e)
@@ -323,17 +323,18 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i < steps; i++)
     {
-       
+
         if ( i % (steps / std::min(steps, 10) ) == 0.0 )
         {
             simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
         }
-        
+
         do
         {
             update_neighbors_list();
             integrate();
-        } while( check_min_force() );
+        }
+        while ( check_min_force() );
 
         if ( (i + 1) % params.save_step == 0)
         {
@@ -346,7 +347,8 @@ void Simulator::simulate(int steps)
                 traj.save(cells, getTotalVertices(), box.getXmax() / box.getX(),
                           box.getYmax() / box.getY(), box.getZmax() / box.getZ());
             }
-            traj.save_box(box, (i+1) * params.dt);
+
+            traj.save_box(box, (i + 1) * params.dt);
         }
 
         if ( (i + 1) % params.log_step == 0)
@@ -379,14 +381,14 @@ void Simulator::calcForces()
 //    double P0 = 0.025;
 //    P0 = params.bud_d;
 //    double R0 = 2.14;
-    
+
 //    double membrane_area = 3.14159265358979*R0*R0;
 //    int num_in_R0 = cells[0].num_vertex(R0);
 //    double force_per_vertex = P0 * membrane_area / num_in_R0;
 
 //    double pulling_force = 0.01;
 //    double hooks_pull_force = pulling_force / (cells[0].get_phooks_n() - 1);
-    
+
     #pragma omp parallel
     {
         // CALC CENTER OF MASS
@@ -395,9 +397,10 @@ void Simulator::calcForces()
         {
             cells[i].update();
         }
-            
+
         // RESET FORCES
         #pragma omp for
+
         for (int i = 0 ; i < number_of_cells; i++)
         {
             cells[i].voidForces();
@@ -405,11 +408,12 @@ void Simulator::calcForces()
 
         // CALCULATE INTRA-CELLULAR FORCES
         #pragma omp for schedule(guided)
+
         for (int i = 0 ; i < number_of_cells; i++)
         {
             cells[i].calcBondedForces();
         }
-        
+
 //        if (Cell::membrane_test)
 //        {
 //            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
@@ -419,11 +423,12 @@ void Simulator::calcForces()
 //                //cells[i].pull_vertex(force_per_vertex, R0);
 //                //cells[i].push_membrane(P0);
 //                //cells[i].pull_membrane(hooks_pull_force);
-//            }        
+//            }
 //        }
 
         // CALCULATE INTER-CELLULAR FORCES
         #pragma omp for schedule(guided)
+
         for (int i = 0; i < number_of_cells; i++)
         {
             for (int j = 0; j < number_of_cells; j++)
@@ -461,7 +466,7 @@ void Simulator::calcForces()
                 cells[i].calcBoxForces(box);
             }
         }
-        
+
 //        if (Cell::membrane_test)
 //        {
 //            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
@@ -469,7 +474,7 @@ void Simulator::calcForces()
 //            {
 //                //cells[i].voidForcesOutsideCircle(R0);
 //                //cells[i].voidForcesForHooks();
-//            }        
+//            }
 //        }
     }
 }
@@ -477,19 +482,21 @@ void Simulator::calcForces()
 bool Simulator::verlet_condition()
 {
     double disp = 0.0;
+
     for (uint i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             disp = cells[i].vertices[j].get_verlet_disp2();
+
             if (disp >= params.v_disp_cut2)
             {
                 return true;
             }
         }
-        
+
     }
-    
+
     return false;
 }
 
@@ -506,13 +513,13 @@ void Simulator::update_neighbors_list()
     {
         rebuildDomainsList();
     }
-    
+
 //    else if (params.nbhandler == 3)
 //    {
 //        if ( verlet_condition() )
 //        {
-//        }   
-//    }  
+//        }
+//    }
 }
 
 void Simulator::rebuildVerletLists()
@@ -575,10 +582,12 @@ int Simulator::getTotalVertices()
 double Simulator::getLengthScale()
 {
     double maxscale = 0.0;
+
     if (params.nbhandler == 2)
     {
         maxscale = std::max(maxscale, params.r_vertex);
     }
+
 //    else if (params.nbhandler == 3)
 //    {
 //    }
@@ -646,21 +655,25 @@ void Simulator::set_min_force()
 {
     double average_area = cells[0].calcSurfaceArea();
     average_area /= cells[0].getNumberTriangles();
-    
+
     double max_turgor = 0.0;
-    for(int i = 0; i < number_of_cells;i++)
+
+    for (int i = 0; i < number_of_cells; i++)
     {
         max_turgor = std::max(max_turgor, cells[i].getTurgor());
     }
-    
+
     MIN_FORCE_SQ = FORCE_FRAC * max_turgor * average_area;
     MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
 }
 
 bool Simulator::check_min_force()
 {
-    if (params.dynamics) return false;
-    
+    if (params.dynamics)
+    {
+        return false;
+    }
+
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -671,6 +684,7 @@ bool Simulator::check_min_force()
             }
         }
     }
+
     return false;
 }
 

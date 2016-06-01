@@ -5,7 +5,7 @@
 
 class BoxVolume : public Observer
 {
-public:
+    public:
     public:
         BoxVolume(const char*, const char*);
         BoxVolume(const BoxVolume& orig);

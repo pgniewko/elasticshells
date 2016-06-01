@@ -61,7 +61,7 @@ bool Tinker::isUnique(std::list<Vector3D>& vlist, Vector3D& v, double e)
             return false;
         }
     }
-    
+
 //    for (std::list<Vector3D>::iterator i = vlist.begin(); i != vlist.end(); ++i)
 //    {
 //        if (i->x == v.x && i->y == v.y && i->z == v.z)
@@ -91,17 +91,17 @@ void Tinker::constructVTriangles(Cell& cell, std::list<Triangle>& tris)
 int Tinker::getVertex(Cell& cell, const Vector3D& v, double e)
 {
     for (int i = 0; i < cell.number_v; i++)
-    {        
+    {
         if ( fabs(cell.vertices[i].r_c.x - v.x) < e && fabs(cell.vertices[i].r_c.y - v.y) < e && fabs(cell.vertices[i].r_c.z - v.z) < e )
         {
             return cell.vertices[i].getId();
         }
-        
+
 //        if (cell.vertices[i].r_c.x == v.x && cell.vertices[i].r_c.y == v.y && cell.vertices[i].r_c.z == v.z)
 //        {
 //            return cell.vertices[i].getId();
-//        }        
-       
+//        }
+
     }
 
     return -1;
@@ -138,12 +138,12 @@ void Tinker::constructBSprings(Cell& cell)
 
     for (int x3 = 0; x3 < cell.number_v; x3++)
     {
-        
+
         for (int j = 0; j < cell.vertices[x3].numBonded; j++)
         {
             std::vector<int> common_verts;
             int x4 = cell.vertices[x3].bondedVerts[j];
-            
+
             for (int k = 0; k < cell.vertices[x3].numBonded; k++)
             {
                 for (int l = 0; l < cell.vertices[x4].numBonded; l++)
@@ -158,22 +158,22 @@ void Tinker::constructBSprings(Cell& cell)
                         }
                     }
                 }
-            }    
-        
-        
+            }
+
+
             int x3_ = std::min(x3, x4);
             int x4_ = std::max(x3, x4);
-        
+
             //std::cout << "x3="<<x3 << " x4=" << x4 << " common_verts.size()="<<common_verts.size() << std::endl;
             for (uint ix = 0; ix < common_verts.size(); ix++)
             {
-                for (uint iy = ix+1; iy < common_verts.size(); iy++)
+                for (uint iy = ix + 1; iy < common_verts.size(); iy++)
                 {
                     int x1_ = std::min(common_verts[ix], common_verts[iy]);
                     int x2_ = std::max(common_verts[ix], common_verts[iy]);
                     //std::cout << "x1_="<<x1_ << " x2_=" << x2_ << std::endl;
-                
-                    if( isBSpringUnique(x1_, x2_, x3_, x4_, cell) )
+
+                    if ( isBSpringUnique(x1_, x2_, x3_, x4_, cell) )
                     {
                         cell.bhinges[cell.number_s] = BendingHinge(x1_, x2_, x3_, x4_);
                         cell.number_s++;
@@ -181,16 +181,17 @@ void Tinker::constructBSprings(Cell& cell)
                 }
             }
         }
+
         //std::cout << "************" << std::endl;
-        
-        
+
+
     }
 }
 
 bool Tinker::isBSpringUnique(int x1, int x2, int x3, int x4, Cell& cell)
 {
     BendingHinge bs_tmp(x1, x2, x3, x4);
-    
+
     for (int i = 0; i < cell.number_s; i++)
     {
         if (bs_tmp == cell.bhinges[i])
@@ -198,7 +199,7 @@ bool Tinker::isBSpringUnique(int x1, int x2, int x3, int x4, Cell& cell)
             return false;
         }
     }
-    
+
     return true;
 }
 

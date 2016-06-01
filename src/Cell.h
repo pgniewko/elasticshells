@@ -73,7 +73,7 @@ class Cell
         void setDp(double);
         void setDp(double, double);
         void setSpringConst(double, double, double, char*);
-        void setVisc(double, bool=false);
+        void setVisc(double, bool = false);
         void setCellId(int);
         void setNu(double);
         void setBSprings(double, double, double);
@@ -102,7 +102,7 @@ class Cell
         Vector3D cm_b;
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
-        BendingHinge bhinges [2*MAX_T]; 
+        BendingHinge bhinges [2 * MAX_T];
 
         int cell_id = -1;
         double contactForce(const Cell&, const Box&) const;
@@ -110,8 +110,8 @@ class Cell
         double contactForceSF(const Box&) const; // for Surface Force use
         double contactArea(const Cell&, const Box&) const;
         double contactArea(const Box&, double = 0.0) const;
-        double activeArea(const Box&, const std::vector<Cell>&, double&, bool=false) const;
-        double activeAreaFraction(const Box&, const std::vector<Cell>&, double&, bool=false) const;
+        double activeArea(const Box&, const std::vector<Cell>&, double&, bool = false) const;
+        double activeAreaFraction(const Box&, const std::vector<Cell>&, double&, bool = false) const;
         double strainEnergy(const Box&) const;
         double maxStrain() const;
         double minStrain() const;
@@ -128,10 +128,10 @@ class Cell
 //        void _set_hooks(double);
 //        void _pull_membrane(double);
 //        int _get_phooks_n() {return _phooks_n;};
-        
+
         static bool no_bending;
 //        static bool membrane_test;
-        
+
     private:
         void grow(double);
         void bud(double);
@@ -166,7 +166,7 @@ class Cell
 //        bool _fix_corner[MAX_V];
 //        int _phooks_n;
 //        int _fhooks_n;
-        
+
         static utils::Logger cell_log;
 };
 

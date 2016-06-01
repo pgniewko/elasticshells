@@ -94,15 +94,15 @@ class Simulator
 
         void updateCells();
         void update_neighbors_list();
-        
+
         bool verlet_condition();
-        
+
         void set_min_force();
         bool check_min_force();
 
         double MIN_FORCE_SQ  = 0.0;
         double FORCE_FRAC = 0.01;
-        
+
         int number_of_cells;
         std::string triangulator;
         params_t params;

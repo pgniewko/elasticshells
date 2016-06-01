@@ -1,7 +1,7 @@
 #include "Vertex.h"
 
 Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), r_v(0, 0, 0), numBonded(0), numTris(0), numNbNeighs(0),
-    domainIdx(-1), myid(-1),visc(1.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
+    domainIdx(-1), myid(-1), visc(1.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
 
 Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), r_p(x, y, z), r_v(x, y, z), numBonded(0), numTris(0),
     numNbNeighs(0), domainIdx(-1), myid(-1), visc(1.0), gtimer(0.0), my_type(vertex_t::MOTHER) {}
@@ -42,12 +42,12 @@ void Vertex::addNeighbor(int idx, double r0v)
             throw MaxSizeException("Maximum number of neighbors has been reached."
                                    "New neighbor will not be added!\n"
                                    "Simulation will be terminated.\n");
-        
+
         if (idx < 0)
             throw RunTimeError("Trying to add a vertex with a negative index.\n"
                                "Runtime data is incorrect. Simulation will be terminated.\n");
 
-        
+
         for (int i = 0; i < numBonded; i++)
         {
             if (bondedVerts[i] == idx)

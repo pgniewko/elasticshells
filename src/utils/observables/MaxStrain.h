@@ -9,10 +9,10 @@ class MaxStrain : public Observer
         MaxStrain(const char*, const char*);
         MaxStrain(const MaxStrain& orig);
         virtual ~MaxStrain();
-        
+
         void set_params(const int, std::vector<std::string>);
         double observe(const Box&, std::vector<Cell>&);
-        
+
     private:
         static DerivedRegister<MaxStrain> reg;
 

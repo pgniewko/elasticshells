@@ -281,18 +281,19 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 415:
             arguments->scale_flag = true;
             break;
+
         case 416:
             arguments->dynamics = true;
             break;
-            
+
         case 417:
             arguments->nobending = true;
             break;
-        
+
         case 418:
             arguments->model_type = arg;
-            break;     
-            
+            break;
+
         case 500:
             arguments->E_cell = arg ? strtod (arg, NULL) : 1500.0;
             break;
@@ -432,7 +433,7 @@ double simulation_time;
 int main(int argc, char** argv)
 {
     print_limits();
-    
+
     print_time();
 
     if ( argc <= 1 )
@@ -491,8 +492,8 @@ int main(int argc, char** argv)
     simulator.simulate(arguments.nsteps);
     clocks[0].toc();
     simulation_time = read_timer( ) - simulation_time;
-    
-    
+
+
 #ifdef _OPENMP
     int gt = omp_get_max_threads();
     int ncpu = omp_get_num_procs();

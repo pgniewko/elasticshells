@@ -16,48 +16,49 @@ std::list<Triangle> MembraneTriangulation::triangulate(double L, double eps, int
 {
 //    N = 6;
 //    double a = 2*(L + eps) / N;
-//    
+//
 //    put2Triangles(L + eps);
 //    for (int i = 0; i < N; i++)
 //    {
 //        subdivide();
 //    }
-    
+
     double ta = (L + eps) / N ;
     double h = 0.5 * sqrt(3.0) * ta;
     createHex(ta, h);
-    
-    Vector3D x_shift(ta,0,0);
-    Vector3D y_shift(0,2*h,0);
+
+    Vector3D x_shift(ta, 0, 0);
+    Vector3D y_shift(0, 2 * h, 0);
     int Nx = (int) (L + eps) / (ta);
-    int Ny = (int) (L + eps) / (2*h);
-    
+    int Ny = (int) (L + eps) / (2 * h);
+
     Vector3D shift;
+
     for (int ix = -Nx; ix < Nx; ix++)
     {
-       for (int jy = -Ny; jy < Ny; jy++)
+        for (int jy = -Ny; jy < Ny; jy++)
         {
 
             for (std::list<Triangle>::iterator i = hexagon.begin(); i != hexagon.end(); ++i)
             {
-                shift = ix*x_shift + jy*y_shift;
+                shift = ix * x_shift + jy * y_shift;
             }
-            
+
             for (std::list<Triangle>::iterator i = diamond1.begin(); i != diamond1.end(); ++i)
             {
-                shift = ix*x_shift + jy*y_shift;
-                tris.push_back(Triangle( shift+i->a, shift+i->b, shift+i->c ));
+                shift = ix * x_shift + jy * y_shift;
+                tris.push_back(Triangle( shift + i->a, shift + i->b, shift + i->c ));
             }
-            
+
             for (std::list<Triangle>::iterator i = diamond2.begin(); i != diamond2.end(); ++i)
             {
-                shift = ix*x_shift + jy*y_shift;
-                tris.push_back(Triangle( shift+i->a, shift+i->b, shift+i->c ));
+                shift = ix * x_shift + jy * y_shift;
+                tris.push_back(Triangle( shift + i->a, shift + i->b, shift + i->c ));
             }
-        }    
+        }
     }
-    
-     
+
+
     return tris;
 
 }
@@ -65,19 +66,19 @@ std::list<Triangle> MembraneTriangulation::triangulate(double L, double eps, int
 void MembraneTriangulation::createHex(double a, double h)
 {
     double a2 = a / 2.0;
-    
+
     hexagon.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a, 0, 0), Vector3D( a2, +h, 0)));
     hexagon.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a, 0, 0), Vector3D( a2, -h, 0)));
 
-    hexagon.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a2,-h, 0), Vector3D( -a2,-h, 0)));
+    hexagon.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a2, -h, 0), Vector3D( -a2, -h, 0)));
     hexagon.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a2, h, 0), Vector3D( -a2, h, 0)));
- 
+
     hexagon.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(-a, 0, 0), Vector3D( -a2, h, 0)));
-    hexagon.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(-a, 0, 0), Vector3D( -a2,-h, 0)));
-    
-    diamond1.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a2,-h, 0), Vector3D( -a2,-h, 0)));
+    hexagon.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(-a, 0, 0), Vector3D( -a2, -h, 0)));
+
+    diamond1.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a2, -h, 0), Vector3D( -a2, -h, 0)));
     diamond1.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a2, h, 0), Vector3D( -a2, h, 0)));
-    
+
     diamond2.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a, 0, 0), Vector3D( a2, +h, 0)));
     diamond2.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a, 0, 0), Vector3D( a2, -h, 0)));
 }
