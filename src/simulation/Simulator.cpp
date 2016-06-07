@@ -251,13 +251,13 @@ void Simulator::addCell(double r0, char* model_t)
             tris = sm.triangulate(r0);
         }
 
-//        if (Cell::membrane_test)
-//        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            double re = 1.0;
-//            MembraneTriangulation mt;
-//            tris = mt.triangulate(r0, re, 5);
-//        }
+        if (Cell::membrane_test)
+        {
+            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
+            double re = 1.0;
+            MembraneTriangulation mt;
+            tris = mt.triangulate(r0, re, 5);
+        }
 
         Cell newCell(tris);
 
@@ -276,12 +276,12 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
 
-//        if (Cell::membrane_test)
-//        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            double re = 1.0;
-//            newCell._set_hooks(r0+re);
-//        }
+        if (Cell::membrane_test)
+        {
+            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
+            double re = 1.0;
+            newCell._set_hooks(r0+re);
+        }
 
         pushCell(newCell);
     }
@@ -378,15 +378,15 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
-//    double P0 = 0.025;
-//    P0 = params.bud_d;
-//    double R0 = 2.14;
+    double P0 = 0.025;
+    P0 = params.bud_d;
+    double R0 = 2.14;
 
-//    double membrane_area = 3.14159265358979*R0*R0;
+    double membrane_area = 3.14159265358979*R0*R0;
 //    int num_in_R0 = cells[0].num_vertex(R0);
-//    double force_per_vertex = P0 * membrane_area / num_in_R0;
+    double force_per_vertex = P0 * membrane_area / num_in_R0;
 
-//    double pulling_force = 0.01;
+    double pulling_force = 0.01;
 //    double hooks_pull_force = pulling_force / (cells[0].get_phooks_n() - 1);
 
     #pragma omp parallel
@@ -426,56 +426,52 @@ void Simulator::calcForces()
 //            }
 //        }
 
-        // CALCULATE INTER-CELLULAR FORCES
-        #pragma omp for schedule(guided)
-
-        for (int i = 0; i < number_of_cells; i++)
-        {
-            for (int j = 0; j < number_of_cells; j++)
-            {
-                if (params.nbhandler == 0)
-                {
-                    cells[i].calcNbForcesON2(cells[j], box);
-                }
-                else if (params.nbhandler == 1)
-                {
-                    cells[i].calcNbForcesVL(cells[j], box);
-                }
-                else if (params.nbhandler == 2)
-                {
-                    cells[i].calcNbForcesVL(cells[j], box);
-                }
-                //else if (params.nbhandler == 3)
-                //{
-                //    cells[i].calcNbForcesVL(cells[j], box);
-                //}
-                else
-                {
-                    cells[i].calcNbForcesON2(cells[j], box);
-                }
-            }
-        }
-
-        // CALCULATE FORCES BETWEEN CELLS AND BOX
-        if (!box.pbc)
-        {
-            #pragma omp for schedule(guided)
-
-            for (int i = 0 ; i < number_of_cells; i++)
-            {
-                cells[i].calcBoxForces(box);
-            }
-        }
-
-//        if (Cell::membrane_test)
+//        // CALCULATE INTER-CELLULAR FORCES
+//        #pragma omp for schedule(guided)
+//
+//        for (int i = 0; i < number_of_cells; i++)
 //        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            for (int i = 0 ; i < number_of_cells; i++)
+//            for (int j = 0; j < number_of_cells; j++)
 //            {
-//                //cells[i].voidForcesOutsideCircle(R0);
-//                //cells[i].voidForcesForHooks();
+//                if (params.nbhandler == 0)
+//                {
+//                    cells[i].calcNbForcesON2(cells[j], box);
+//                }
+//                else if (params.nbhandler == 1)
+//                {
+//                    cells[i].calcNbForcesVL(cells[j], box);
+//                }
+//                else if (params.nbhandler == 2)
+//                {
+//                    cells[i].calcNbForcesVL(cells[j], box);
+//                }
+//                else
+//                {
+//                    cells[i].calcNbForcesON2(cells[j], box);
+//                }
 //            }
 //        }
+//
+//        // CALCULATE FORCES BETWEEN CELLS AND BOX
+//        if (!box.pbc)
+//        {
+//            #pragma omp for schedule(guided)
+//
+//            for (int i = 0 ; i < number_of_cells; i++)
+//            {
+//                cells[i].calcBoxForces(box);
+//            }
+//        }
+
+        if (Cell::membrane_test)
+        {
+            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
+            for (int i = 0 ; i < number_of_cells; i++)
+            {
+                //cells[i].voidForcesOutsideCircle(R0);
+                //cells[i].voidForcesForHooks();
+            }
+        }
     }
 }
 

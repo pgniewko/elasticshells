@@ -120,17 +120,17 @@ class Cell
         double getStrain(int, int) const;
         void update(double = 0.0);
 
-//        void _voidForcesOutsideCircle(double);
-//        void _voidForcesForHooks();
-//        void _pull_vertex(double, double);
-//        void _push_membrane(double);
-//        int  _num_vertex(double);
-//        void _set_hooks(double);
-//        void _pull_membrane(double);
-//        int _get_phooks_n() {return _phooks_n;};
+        void _voidForcesOutsideCircle(double);
+        void _voidForcesForHooks();
+        void _pull_vertex(double, double);
+        void _push_membrane(double);
+        int  _num_vertex(double);
+        void _set_hooks(double);
+        void _pull_membrane(double);
+        int _get_phooks_n() {return _phooks_n;};
 
         static bool no_bending;
-//        static bool membrane_test;
+        static bool membrane_test;
 
     private:
         void grow(double);
@@ -160,12 +160,12 @@ class Cell
         bool fem_flag = false;
         bool bending_flag = true;
 
-//        int _pull_hooks[MAX_V];
-//        int _fix_hooks[MAX_V];
-//        bool _pull_corner[MAX_V];
-//        bool _fix_corner[MAX_V];
-//        int _phooks_n;
-//        int _fhooks_n;
+        int _pull_hooks[MAX_V];
+        int _fix_hooks[MAX_V];
+        bool _pull_corner[MAX_V];
+        bool _fix_corner[MAX_V];
+        int _phooks_n;
+        int _fhooks_n;
 
         static utils::Logger cell_log;
 };
