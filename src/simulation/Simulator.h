@@ -39,7 +39,7 @@ struct params_t
     double dt;
     double dp;
     double ddp;
-    double visc;
+//    double visc;
     double ttime;
     double r_vertex;
     double verlet_f;

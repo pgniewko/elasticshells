@@ -78,7 +78,7 @@ static struct argp_option options[] =
     {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
     {"ecw",       501, "FLOAT", 0, "Box Young's modulus [UNIT=0.1 MPa] [default: 2000.0]"},
     {"ir",        502, "FLOAT", 0, "Cells size at the initialization - lower limit [default:2.5"},
-    {"mu",        503, "FLOAT", 0, "Viscosity coefficient [default: 100.0]"},
+//    {"mu",        503, "FLOAT", 0, "Viscosity coefficient [default: 100.0]"},
     {"dp",        504, "FLOAT", 0, "Osmotic pressure [default: 0.0]"},
     {"osm",       505,       0, 0, "Volume dependent osmotic pressure [default:  false]"},
     {"rv",        506, "FLOAT", 0, "Radius of a single vertex [default: 0.25]"},
@@ -145,7 +145,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->dp = 0.0;
             arguments->ddp = 0.0;
             arguments->eps = 0.0;
-            arguments->visc = 100.0;
+//            arguments->visc = 100.0;
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
             arguments->verlet_f = 3.0;
@@ -306,9 +306,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->init_radius1 = arg ?  strtod (arg, NULL) : 2.5;
             break;
 
-        case 503:
-            arguments->visc = arg ? strtod (arg, NULL) : 100.0;
-            break;
+//        case 503:
+//            arguments->visc = arg ? strtod (arg, NULL) : 100.0;
+//            break;
 
         case 504:
             arguments->dp = arg ? strtod (arg, NULL) : 0.0;

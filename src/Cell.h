@@ -73,7 +73,7 @@ class Cell
         void setDp(double);
         void setDp(double, double);
         void setSpringConst(double, double, double, char*);
-        void setVisc(double, bool = false);
+//        void setVisc(double, bool = false);
         void setCellId(int);
         void setNu(double);
         void setBSprings(double, double, double);
@@ -87,7 +87,7 @@ class Cell
         void setDivisionRatio(double);
 
         double getInitR() const;
-        double getCellViscosity() const;
+//        double getCellViscosity() const;
         Vector3D getCm() const;
         double getVertexR() const;
         double getE() const;

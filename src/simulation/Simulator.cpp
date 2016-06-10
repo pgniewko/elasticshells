@@ -31,7 +31,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.dt = args.dt;
     params.dp = args.dp;
     params.ddp = args.ddp;
-    params.visc = args.visc;
+//    params.visc = args.visc;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     params.verlet_f = args.verlet_f;
@@ -269,7 +269,7 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setVertexR(params.r_vertex);
         newCell.setVerletR(params.verlet_f);
         newCell.setCellId(number_of_cells);
-        newCell.setVisc(params.visc, params.dynamics);
+        //newCell.setVisc(params.visc, params.dynamics);
         newCell.setInitR(r0);
         newCell.setGrowthRate(params.growth_rate);
         newCell.setBuddingVolume(params.vc);
@@ -690,6 +690,9 @@ bool Simulator::check_min_force()
 
 /*
  * INTEGRATORS
+ * 
+ * Viscosity of each vertex is assumed to be 1.0 !
+ * 
  */
 
 void Simulator::integrate()
@@ -707,15 +710,15 @@ void Simulator::setIntegrator(void (Simulator::*functoall)())
 void Simulator::integrateEuler()
 {
     calcForces();
-    double visc;
+//    double visc;
     double dt = params.dt;
 
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c / visc;
+//            visc = cells[i].vertices[j].getVisc();
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c;// / visc;
         }
     }
 }
@@ -723,7 +726,7 @@ void Simulator::integrateEuler()
 void Simulator::heunMethod()
 {
     calcForces();
-    double visc;
+//    double visc;
     double dt = params.dt;
 
     for (int i = 0; i < number_of_cells; i++)
@@ -740,8 +743,8 @@ void Simulator::heunMethod()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c / visc;
+//            visc = cells[i].vertices[j].getVisc();
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c;// / visc;
         }
     }
 
@@ -752,15 +755,15 @@ void Simulator::heunMethod()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + 0.5 * dt * ( cells[i].vertices[j].f_p + cells[i].vertices[j].f_c) / visc;
+//            visc = cells[i].vertices[j].getVisc();
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + 0.5 * dt * ( cells[i].vertices[j].f_p + cells[i].vertices[j].f_c);// / visc;
         }
     }
 }
 
 void Simulator::midpointRungeKutta()
 {
-    double visc;
+//    double visc;
     double dt = params.dt;
 
     for (int i = 0; i < number_of_cells; i++)
@@ -778,8 +781,8 @@ void Simulator::midpointRungeKutta()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c += 0.5 * dt * cells[i].vertices[j].f_c / visc;
+//            visc = cells[i].vertices[j].getVisc();
+            cells[i].vertices[j].r_c += 0.5 * dt * cells[i].vertices[j].f_c;// / visc;
         }
     }
 
@@ -790,8 +793,8 @@ void Simulator::midpointRungeKutta()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c / visc;
+//            visc = cells[i].vertices[j].getVisc();
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c;// / visc;
         }
     }
 }

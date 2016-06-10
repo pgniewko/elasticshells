@@ -60,8 +60,8 @@ class Vertex
         int getId() const;
         //double setMass(double);
         //double getMass() const;
-        double setVisc(double);
-        double getVisc() const;
+        //double setVisc(double);
+        //double getVisc() const;
 
         void printVertex();
 
@@ -117,7 +117,7 @@ class Vertex
 
     private:
         int myid;
-        double visc;
+//        double visc;
 
         double gtimer;
         vertex_t my_type;

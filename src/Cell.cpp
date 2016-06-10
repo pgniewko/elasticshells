@@ -581,25 +581,25 @@ void Cell::calcCM()
     }
 }
 
-void Cell::setVisc(double mu, bool dynamics)
-{
-    if (dynamics)
-    {
-        double vertexVisc = mu / number_v;
-
-        for (int i = 0; i < number_v; i++)
-        {
-            vertices[i].setVisc(vertexVisc);
-        }
-    }
-    else
-    {
-        for (int i = 0; i < number_v; i++)
-        {
-            vertices[i].setVisc(1.0);
-        }
-    }
-}
+//void Cell::setVisc(double mu, bool dynamics)
+//{
+//    if (dynamics)
+//    {
+//        double vertexVisc = mu / number_v;
+//
+//        for (int i = 0; i < number_v; i++)
+//        {
+//            vertices[i].setVisc(vertexVisc);
+//        }
+//    }
+//    else
+//    {
+//        for (int i = 0; i < number_v; i++)
+//        {
+//            vertices[i].setVisc(1.0);
+//        }
+//    }
+//}
 
 void Cell::setBSprings(double E, double t, double nu_)
 {
@@ -610,17 +610,17 @@ void Cell::setBSprings(double E, double t, double nu_)
     }
 }
 
-double Cell::getCellViscosity() const
-{
-    double v = 0;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        v += vertices[i].getVisc();
-    }
-
-    return v;
-}
+//double Cell::getCellViscosity() const
+//{
+//    double v = 0;
+//
+//    for (int i = 0; i < number_v; i++)
+//    {
+//        v += vertices[i].getVisc();
+//    }
+//
+//    return v;
+//}
 
 void Cell::addXYZ(const Vector3D& nxyz)
 {
