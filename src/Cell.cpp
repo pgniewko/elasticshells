@@ -3,7 +3,7 @@
 utils::Logger Cell::cell_log("cell");
 
 bool Cell::no_bending = false;
-//bool Cell::membrane_test = false;
+bool Cell::membrane_test = false;
 
 Cell::Cell(int depth)
 {
@@ -247,10 +247,8 @@ void Cell::_voidForcesOutsideCircle(double R0)
         distance_from_zero = sqrt(vertices[i].r_c.x*vertices[i].r_c.x + vertices[i].r_c.y*vertices[i].r_c.y);
         if (distance_from_zero >= R0)
         {
-            vertices[i].f_c = Vector3D(0,0,0);
+            vertices[i].f_c = Vector3D(0, 0, 0);
         }
-        vertices[i].f_c.x = 0.0;
-        vertices[i].f_c.y = 0.0;
     }
 }
 
@@ -280,7 +278,7 @@ void Cell::_push_membrane(double P0)
         int ic = triangles[i].ic;
 
         Vector3D t_normal = triangles[i].normal(vertices);
-        double projection = fabs( dot(t_normal, Vector3D(0,0,1)) );
+        double projection = fabs( dot(t_normal, Vector3D(0,0,1)) ); // so only transverse pressure is applied
 
         vertices[ia].f_c += projection * P0 * (ti_area / 3.0) * Vector3D(0,0,1);
         vertices[ib].f_c += projection * P0 * (ti_area / 3.0) * Vector3D(0,0,1);
