@@ -607,6 +607,8 @@ void Cell::setBSprings(double E, double t, double nu_)
     {
         bhinges[i].setD(E, t, nu_);
         bhinges[i].setThetaZero(vertices);
+        double r = bhinges[i].calcCurvatureRadius(vertices);
+        //std::cout << " R0="<< params.init_r << " R="<< r << std::endl;
     }
 }
 
