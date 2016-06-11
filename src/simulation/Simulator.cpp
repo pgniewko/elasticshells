@@ -411,8 +411,8 @@ void Simulator::calcForces()
         {
             for (int i = 0 ; i < number_of_cells; i++)
             {
-                cells[i]._pull_vertex(load, 0.05);
-                //cells[i]._push_membrane(load);
+                //cells[i]._pull_vertex(load, 0.05);
+                cells[i]._push_membrane(load);
                 //cells[i].pull_membrane(hooks_pull_force);
             }
         }
