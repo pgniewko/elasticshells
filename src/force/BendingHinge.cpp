@@ -37,7 +37,7 @@ double BendingHinge::calcCurvatureRadius(Vertex vs[]) const
     R1 = 1.0 / R1;
     R2 = 1.0 / R2;
     
-    std::cout << " R1=" << R1<< " R2="<< R2<< " (R1+R2)/2="<<(R1+R2)/2 << std::endl;
+//    std::cout << "theta0= "<< theta0<< " R1= " << R1<< " R2= "<< R2<< " (R1+R2)/2= "<<(R1+R2)/2 << std::endl;
     
     return R1;
 }
