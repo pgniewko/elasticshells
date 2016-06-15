@@ -251,14 +251,6 @@ void Simulator::addCell(double r0, char* model_t)
             tris = sm.triangulate(r0);
         }
 
-//        if (Cell::membrane_test)
-//        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            double re = 1.0;
-//            MembraneTriangulation mt;
-//            tris = mt.triangulate(r0, re, 5);
-//        }
-
         Cell newCell(tris);
 
         newCell.setEcc(params.E_cell);
@@ -275,13 +267,6 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setBuddingVolume(params.vc);
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
-
-//        if (Cell::membrane_test)
-//        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            double re = 1.0;
-//            newCell._set_hooks(r0+re);
-//        }
 
         pushCell(newCell);
     }
@@ -369,7 +354,7 @@ void Simulator::simulate(int steps)
         }
     }
 
-    log_sim.dumpState(box, cells);
+    log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results
     sb.saveStrainScript(cells, box);
     sb.saveStrainScript(cells, box);
     traj.close();
@@ -378,17 +363,6 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
-//    double P0 = 0.025;
-//    P0 = params.bud_d;
-//    double R0 = 2.14;
-
-//    double membrane_area = 3.14159265358979*R0*R0;
-//    int num_in_R0 = cells[0].num_vertex(R0);
-//    double force_per_vertex = P0 * membrane_area / num_in_R0;
-
-//    double pulling_force = 0.01;
-//    double hooks_pull_force = pulling_force / (cells[0].get_phooks_n() - 1);
-
     #pragma omp parallel
     {
         // CALC CENTER OF MASS
@@ -414,18 +388,6 @@ void Simulator::calcForces()
             cells[i].calcBondedForces();
         }
 
-//        if (Cell::membrane_test)
-//        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            for (int i = 0 ; i < number_of_cells; i++)
-//            {
-//                //cells[i].pull_vertex(pulling_force, 0.005);
-//                //cells[i].pull_vertex(force_per_vertex, R0);
-//                //cells[i].push_membrane(P0);
-//                //cells[i].pull_membrane(hooks_pull_force);
-//            }
-//        }
-
         // CALCULATE INTER-CELLULAR FORCES
         #pragma omp for schedule(guided)
 
@@ -445,10 +407,6 @@ void Simulator::calcForces()
                 {
                     cells[i].calcNbForcesVL(cells[j], box);
                 }
-                //else if (params.nbhandler == 3)
-                //{
-                //    cells[i].calcNbForcesVL(cells[j], box);
-                //}
                 else
                 {
                     cells[i].calcNbForcesON2(cells[j], box);
@@ -466,16 +424,6 @@ void Simulator::calcForces()
                 cells[i].calcBoxForces(box);
             }
         }
-
-//        if (Cell::membrane_test)
-//        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            for (int i = 0 ; i < number_of_cells; i++)
-//            {
-//                //cells[i].voidForcesOutsideCircle(R0);
-//                //cells[i].voidForcesForHooks();
-//            }
-//        }
     }
 }
 
@@ -513,13 +461,6 @@ void Simulator::update_neighbors_list()
     {
         rebuildDomainsList();
     }
-
-//    else if (params.nbhandler == 3)
-//    {
-//        if ( verlet_condition() )
-//        {
-//        }
-//    }
 }
 
 void Simulator::rebuildVerletLists()
@@ -587,10 +528,6 @@ double Simulator::getLengthScale()
     {
         maxscale = std::max(maxscale, params.r_vertex);
     }
-
-//    else if (params.nbhandler == 3)
-//    {
-//    }
 
     return maxscale;
 }

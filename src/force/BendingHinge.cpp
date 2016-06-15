@@ -1,8 +1,9 @@
 #include "BendingHinge.h"
 
-BendingHinge::BendingHinge() : x1(-1), x2(-1), x3(-1), x4(-1) {}
+BendingHinge::BendingHinge() : x1(-1), x2(-1), x3(-1), x4(-1) 
+{}
 
-BendingHinge::BendingHinge(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_)
+BendingHinge::BendingHinge(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_) 
 {}
 
 BendingHinge::BendingHinge(const BendingHinge& orig) : D(orig.D), sinTheta0(orig.sinTheta0), theta0(orig.theta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4)
@@ -44,7 +45,7 @@ double BendingHinge::calcCurvatureRadius(Vertex vs[]) const
 
 void BendingHinge::calcBendingForces(Vertex vs[]) const
 {
-
+    
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
     double E_norm = E.length();
     double E_norm2 = E_norm * E_norm;
