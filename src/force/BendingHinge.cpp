@@ -60,9 +60,7 @@ void BendingHinge::calcBendingForces(Vertex vs[]) const
     //double sinTheta = calcSinTheta(vs);
     double theta = calcTheta(vs);
 
-
-    //double C = D * 3.0 * E_norm2 / (area1 + area2) * (sinTheta - sinTheta0);
-    double C = 3.0 * D * E_norm2 / (area1 + area2) * sin(theta - theta0); // Grinspun eq.3, Cubic Shells, 2007
+    double C = D * E_norm2 / (area1 + area2) * sin(theta - theta0); // Grinspun eq.3, Cubic Shells, 2007
 
 
     Vector3D u1 = E_norm / (2.0 * area1) * n1;
