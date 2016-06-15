@@ -251,14 +251,6 @@ void Simulator::addCell(double r0, char* model_t)
             tris = sm.triangulate(r0);
         }
 
-        if (Cell::membrane_test)
-        {
-            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-            double r_eps = 1.0;
-            MembraneTriangulation mt;
-            tris = mt.triangulate(r0, r_eps, 18);
-        }
-
         Cell newCell(tris);
 
         newCell.setEcc(params.E_cell);
@@ -275,12 +267,6 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setBuddingVolume(params.vc);
         newCell.setBudDiameter(params.bud_d);
         newCell.setDivisionRatio(params.div_ratio);
-
-        //if (Cell::membrane_test)
-        //{
-        //    double r_eps = 0.5;
-        //    newCell._set_hooks(r0 + r_eps);
-        //}
 
         pushCell(newCell);
     }
@@ -377,11 +363,6 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
-    
-    double P0 = params.bud_d;
-    double R0 = cells[0].getInitR();
-    double load = P0;
-
     #pragma omp parallel
     {
         // CALC CENTER OF MASS
@@ -407,58 +388,40 @@ void Simulator::calcForces()
             cells[i].calcBondedForces();
         }
 
-        if (Cell::membrane_test)
+        // CALCULATE INTER-CELLULAR FORCES
+        #pragma omp for schedule(guided)
+
+        for (int i = 0; i < number_of_cells; i++)
         {
-            for (int i = 0 ; i < number_of_cells; i++)
+            for (int j = 0; j < number_of_cells; j++)
             {
-                //cells[i]._pull_vertex(load, 0.05);
-                cells[i]._push_membrane(load);
-                //cells[i].pull_membrane(hooks_pull_force);
+                if (params.nbhandler == 0)
+                {
+                    cells[i].calcNbForcesON2(cells[j], box);
+                }
+                else if (params.nbhandler == 1)
+                {
+                    cells[i].calcNbForcesVL(cells[j], box);
+                }
+                else if (params.nbhandler == 2)
+                {
+                    cells[i].calcNbForcesVL(cells[j], box);
+                }
+                else
+                {
+                    cells[i].calcNbForcesON2(cells[j], box);
+                }
             }
         }
 
-//        // CALCULATE INTER-CELLULAR FORCES
-//        #pragma omp for schedule(guided)
-//
-//        for (int i = 0; i < number_of_cells; i++)
-//        {
-//            for (int j = 0; j < number_of_cells; j++)
-//            {
-//                if (params.nbhandler == 0)
-//                {
-//                    cells[i].calcNbForcesON2(cells[j], box);
-//                }
-//                else if (params.nbhandler == 1)
-//                {
-//                    cells[i].calcNbForcesVL(cells[j], box);
-//                }
-//                else if (params.nbhandler == 2)
-//                {
-//                    cells[i].calcNbForcesVL(cells[j], box);
-//                }
-//                else
-//                {
-//                    cells[i].calcNbForcesON2(cells[j], box);
-//                }
-//            }
-//        }
-//
-//        // CALCULATE FORCES BETWEEN CELLS AND BOX
-//        if (!box.pbc)
-//        {
-//            #pragma omp for schedule(guided)
-//
-//            for (int i = 0 ; i < number_of_cells; i++)
-//            {
-//                cells[i].calcBoxForces(box);
-//            }
-//        }
-
-        if (Cell::membrane_test)
+        // CALCULATE FORCES BETWEEN CELLS AND BOX
+        if (!box.pbc)
         {
+            #pragma omp for schedule(guided)
+
             for (int i = 0 ; i < number_of_cells; i++)
             {
-                cells[i]._voidForcesOutsideCircle(R0);
+                cells[i].calcBoxForces(box);
             }
         }
     }
@@ -498,13 +461,6 @@ void Simulator::update_neighbors_list()
     {
         rebuildDomainsList();
     }
-
-//    else if (params.nbhandler == 3)
-//    {
-//        if ( verlet_condition() )
-//        {
-//        }
-//    }
 }
 
 void Simulator::rebuildVerletLists()
@@ -572,10 +528,6 @@ double Simulator::getLengthScale()
     {
         maxscale = std::max(maxscale, params.r_vertex);
     }
-
-//    else if (params.nbhandler == 3)
-//    {
-//    }
 
     return maxscale;
 }

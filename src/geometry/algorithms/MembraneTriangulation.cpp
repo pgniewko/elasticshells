@@ -14,10 +14,10 @@ std::list<Triangle> MembraneTriangulation::triangulate()
 
 std::list<Triangle> MembraneTriangulation::triangulate(double L, double eps, int N)
 {
-//    N = 6;
+//    N = 10;
 //    double a = 2*(L + eps) / N;
 //
-//    put2Triangles(L + eps);
+//    putTwoTriangles(L + eps);
 //    for (int i = 0; i < N; i++)
 //    {
 //        subdivide();

@@ -484,7 +484,6 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
 
-    Cell::membrane_test = true;
     clocks[0].tic();
     simulation_time = read_timer();
     Simulator simulator(arguments);

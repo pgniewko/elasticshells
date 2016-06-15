@@ -3,7 +3,6 @@
 utils::Logger Cell::cell_log("cell");
 
 bool Cell::no_bending = false;
-bool Cell::membrane_test = false;
 
 Cell::Cell(int depth)
 {
@@ -13,43 +12,25 @@ Cell::Cell(int depth)
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
     Tinker::constructBSprings(*this);
-    if (! Cell::membrane_test)
-    {
-        randomRotate();
-    }
+
 }
 
 Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), number_s(0), nRT(0),
-    V0(0), vert_no_bud(0), fem_flag(false), bending_flag(true), _phooks_n(0), _fhooks_n(0)
+    V0(0), vert_no_bud(0), fem_flag(false), bending_flag(true)
 {
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
     Tinker::constructBSprings(*this);
-    if (! Cell::membrane_test)
-    {
-      randomRotate();
-    }
+    randomRotate();
+    
 }
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
     cell_id(orig.cell_id), params(orig.params), my_phase(orig.my_phase), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
-    nRT(orig.nRT), V0(orig.V0), vert_no_bud(orig.vert_no_bud), fem_flag(orig.fem_flag), bending_flag(orig.bending_flag),
-        _phooks_n(orig._phooks_n), _fhooks_n(orig._fhooks_n)
-{
-    // TODO: copy manually
-    for(int i = 0; i < _phooks_n; i++)
-    {
-        _pull_hooks[i] = orig._pull_hooks[i];
-        _pull_corner[i] = orig._pull_corner[i];
-    }
-
-    for(int i = 0; i < _fhooks_n; i++)
-    {
-        _fix_hooks[i] = orig._fix_hooks[i];
-        _fix_corner[i] = orig._fix_corner[i];
-    }
-}
+    nRT(orig.nRT), V0(orig.V0), vert_no_bud(orig.vert_no_bud), fem_flag(orig.fem_flag), bending_flag(orig.bending_flag)
+       
+{}
 
 Cell::~Cell()
 {}
@@ -234,164 +215,6 @@ void Cell::calcFemForces()
         }
     }
 }
-
-
-//******************************************************************************
-//******************************************************************************
-//******************************************************************************
-void Cell::_voidForcesOutsideCircle(double R0)
-{
-    double distance_from_zero;
-    for (int i = 0; i < number_v; i++)
-    {
-        distance_from_zero = sqrt(vertices[i].r_c.x*vertices[i].r_c.x + vertices[i].r_c.y*vertices[i].r_c.y);
-        if (distance_from_zero >= R0)
-        {
-            vertices[i].f_c = Vector3D(0, 0, 0);
-        }
-    }
-}
-
-void Cell::_pull_vertex(double F, double radius)
-{
-    double coff = 0.001;
-    coff = radius;
-    double x,y;
-    for (int i = 0; i < number_v; i++)
-    {
-        x = vertices[i].r_c.x;
-        y = vertices[i].r_c.y;
-        if ( (x*x+y*y) <= (coff*coff) )
-        {
-            vertices[i].f_c += Vector3D(0.0, 0.0, F);
-        }
-    }
-}
-
-void Cell::_push_membrane(double P0)
-{
-    for (int i = 0; i < number_t; i++)
-    {
-        double ti_area = triangles[i].area(vertices);
-        int ia = triangles[i].ia;
-        int ib = triangles[i].ib;
-        int ic = triangles[i].ic;
-
-        Vector3D t_normal = triangles[i].normal(vertices);
-        double projection = fabs( dot(t_normal, Vector3D(0,0,1)) ); // so only transverse pressure is applied
-
-        vertices[ia].f_c += projection * P0 * (ti_area / 3.0) * Vector3D(0,0,1);
-        vertices[ib].f_c += projection * P0 * (ti_area / 3.0) * Vector3D(0,0,1);
-        vertices[ic].f_c += projection * P0 * (ti_area / 3.0) * Vector3D(0,0,1);
-
-    }
-}
-
-int Cell::_num_vertex(double coff)
-{
-    int n = 0;
-    double x,y;
-    for (int i = 0; i < number_v; i++)
-    {
-        x = vertices[i].r_c.x;
-        y = vertices[i].r_c.y;
-        if ( (x*x+y*y) <= (coff*coff) )
-        {
-            n++;
-        }
-    }
-    return n;
-}
-
-void Cell::_set_hooks(double R)
-{
-    double eps = 0.001;
-    for (int i = 0; i < number_v; i++)
-    {
-        if ( fabs(vertices[i].r_c.x - R) < eps )
-        {
-            _pull_hooks[_phooks_n] = i;
-
-            if ( fabs(vertices[i].r_c.y - R) < eps || fabs(vertices[i].r_c.y + R) < eps)
-            {
-                _pull_corner[_phooks_n] = true;
-            }
-            else
-            {
-                _pull_corner[_phooks_n] = false;
-            }
-            _phooks_n++;
-        }
-    }
-
-    for (int i = 0; i < number_v; i++)
-    {
-        if ( fabs(vertices[i].r_c.x + R) < eps )
-        {
-            _fix_hooks[_fhooks_n] = i;
-            if ( fabs(vertices[i].r_c.y - R) < eps || fabs(vertices[i].r_c.y + R) < eps)
-            {
-                _fix_corner[_fhooks_n] = true;
-            }
-            else
-            {
-                _fix_corner[_fhooks_n] = false;
-            }
-
-            _fhooks_n++;
-        }
-    }
-}
-
-void Cell::_pull_membrane(double F)
-{
-    int idx;
-    double c = 1.0;
-    for (int i = 0; i < _phooks_n; i++)
-    {
-        idx = _pull_hooks[i];
-        if (_pull_corner[i])
-        {
-            c = 0.5;
-        }
-        else
-        {
-            c = 1.0;
-        }
-
-        vertices[idx].f_c += Vector3D(c*F, 0.0, 0.0);
-    }
-
-    for (int i = 0; i < _phooks_n; i++)
-    {
-        idx = _fix_hooks[i];
-        if (_fix_corner[i])
-        {
-            c = 0.5;
-        }
-        else
-        {
-            c = 1.0;
-        }
-
-        vertices[idx].f_c += Vector3D(-c*F, 0.0, 0.0);
-    }
-
-}
-
-void Cell::_voidForcesForHooks()
-{
-    int idx;
-    for (int i = 0; i < _fhooks_n; i++)
-    {
-        idx = _fix_hooks[i];
-        vertices[idx].f_c = Vector3D(0.0, 0.0, 0.0);
-    }
-}
-
-//******************************************************************************
-//******************************************************************************
-//******************************************************************************
 
 void Cell::calcOsmoticForces()
 {
@@ -610,14 +433,14 @@ void Cell::setBSprings(double E, double t, double nu_)
 
 double Cell::getCellViscosity() const
 {
-    double v = 0;
+    double mu = 0;
 
     for (int i = 0; i < number_v; i++)
     {
-        v += vertices[i].getVisc();
+        mu += vertices[i].getVisc();
     }
 
-    return v;
+    return mu;
 }
 
 void Cell::addXYZ(const Vector3D& nxyz)
