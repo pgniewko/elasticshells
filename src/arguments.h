@@ -1,9 +1,6 @@
 #ifndef ARGUMENTS_H
 #define	ARGUMENTS_H
 
-//#include <string>
-//using namespace std;
-
 struct arguments
 {
     std::string render_file;            /* file arg to ‘--output’ */
@@ -43,16 +40,11 @@ struct arguments
     double dp;
     double ddp;
     double eps;
-//    double visc;
     double ttime;
     double r_vertex;                   /* vertex radius */
     double verlet_f;
     double init_radius1;
     double init_radius2;
-    double growth_rate;
-    double vc;
-    double bud_d;
-    double div_ratio;
 
     double bsx;
     double bsy;

@@ -31,14 +31,9 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.dt = args.dt;
     params.dp = args.dp;
     params.ddp = args.ddp;
-//    params.visc = args.visc;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     params.verlet_f = args.verlet_f;
-    params.growth_rate = args.growth_rate;
-    params.vc = args.vc;
-    params.bud_d = args.bud_d;
-    params.div_ratio = args.div_ratio;
     params.draw_box = args.draw_box;
     params.scale = args.scale_flag;
     params.dynamics = args.dynamics;
@@ -100,17 +95,10 @@ void Simulator::diagnoseParams(arguments args)
         throw DataException("Time step must be positive number ! \n!"
                             "Simulation will terminate with exit(1)!\n");
 
-//    if (args.k <= 0)
-//        throw DataException("Spring constant for bonded vertices must be positive! \n!"
-//                            "Simulation will terminate with exit(1)!\n");
-
     if (args.r_vertex <= 0)
         throw DataException("Vertex radius must be larger than 0! \n!"
                             "Simulation will terminate with exit(1)!\n");
 
-    if (args.growth_rate < 0)
-        throw DataException("Growth rate must be positive or 0! \n!"
-                            "Simulation will terminate with exit(1)!\n");
 }
 
 void Simulator::logParams()
@@ -129,10 +117,6 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (CELL)="  << params.nu << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (BOX)="  << box.getNu() << "\n";
     simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << " [micron]\n";
-    simulator_logs << utils::LogLevel::FINE  << "GROWTH_RATE="  << params.growth_rate << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "VOLUME_CR="  << params.vc << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "BUD_SCAR_D="  << params.bud_d << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "CELL_DIV_RATIO="  << params.div_ratio << "\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
@@ -261,12 +245,7 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setVertexR(params.r_vertex);
         newCell.setVerletR(params.verlet_f);
         newCell.setCellId(number_of_cells);
-        //newCell.setVisc(params.visc, params.dynamics);
         newCell.setInitR(r0);
-        newCell.setGrowthRate(params.growth_rate);
-        newCell.setBuddingVolume(params.vc);
-        newCell.setBudDiameter(params.bud_d);
-        newCell.setDivisionRatio(params.div_ratio);
 
         pushCell(newCell);
     }
@@ -346,11 +325,6 @@ void Simulator::simulate(int steps)
         if (resized)
         {
             domains.setBoxDim(box);
-        }
-
-        for (int i = 0; i < number_of_cells; i++)
-        {
-            cells[i].cellCycle(params.dt);
         }
     }
 
@@ -636,7 +610,6 @@ void Simulator::integrate()
 {
     (*this.*integrator)();
     updateCells();
-//    makeVertsOlder(); // function's temporary location
 }
 
 void Simulator::setIntegrator(void (Simulator::*functoall)())
@@ -647,15 +620,13 @@ void Simulator::setIntegrator(void (Simulator::*functoall)())
 void Simulator::integrateEuler()
 {
     calcForces();
-//    double visc;
     double dt = params.dt;
 
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-//            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c;// / visc;
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c;
         }
     }
 }
@@ -663,7 +634,6 @@ void Simulator::integrateEuler()
 void Simulator::heunMethod()
 {
     calcForces();
-//    double visc;
     double dt = params.dt;
 
     for (int i = 0; i < number_of_cells; i++)
@@ -680,8 +650,7 @@ void Simulator::heunMethod()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-//            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c;// / visc;
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c;
         }
     }
 
@@ -692,15 +661,13 @@ void Simulator::heunMethod()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-//            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + 0.5 * dt * ( cells[i].vertices[j].f_p + cells[i].vertices[j].f_c);// / visc;
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + 0.5 * dt * ( cells[i].vertices[j].f_p + cells[i].vertices[j].f_c);
         }
     }
 }
 
 void Simulator::midpointRungeKutta()
 {
-//    double visc;
     double dt = params.dt;
 
     for (int i = 0; i < number_of_cells; i++)
@@ -718,8 +685,7 @@ void Simulator::midpointRungeKutta()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-//            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c += 0.5 * dt * cells[i].vertices[j].f_c;// / visc;
+            cells[i].vertices[j].r_c += 0.5 * dt * cells[i].vertices[j].f_c;
         }
     }
 
@@ -730,8 +696,7 @@ void Simulator::midpointRungeKutta()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-//            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c;// / visc;
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c;
         }
     }
 }

@@ -40,13 +40,6 @@ struct nblist_t
     }
 };
 
-enum class vertex_t
-{
-    MOTHER,
-    BUD,
-    GHOST
-};
-
 class Vertex
 {
         friend class Tinker;
@@ -58,10 +51,6 @@ class Vertex
         virtual ~Vertex();
         int setId(int);
         int getId() const;
-        //double setMass(double);
-        //double getMass() const;
-        //double setVisc(double);
-        //double getVisc() const;
 
         void printVertex();
 
@@ -82,12 +71,6 @@ class Vertex
         double getNeighborR0(int) const;
 
         void sortNbList();
-        void normalizedR0(double);
-
-        void addTime(double);
-        void voidTime();
-
-        const vertex_t& getMyType() const;
 
         double get_verlet_disp2() const;
 
@@ -109,18 +92,14 @@ class Vertex
         int nbVerts[NBNEI_MAX];
         int nbCellsIdx[NBNEI_MAX];
 
-        int numBonded;
-        int numTris;
-        int numNbNeighs;
+        int numBonded;              // make it private       
+        int numTris;                // make it private
+        int numNbNeighs;            // make it private
 
         int domainIdx;              // make it private
 
     private:
         int myid;
-//        double visc;
-
-        double gtimer;
-        vertex_t my_type;
 };
 
 inline double Vertex::get_verlet_disp2() const

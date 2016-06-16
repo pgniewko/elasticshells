@@ -1,17 +1,17 @@
 #include "Vertex.h"
 
 Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), r_v(0, 0, 0), numBonded(0), numTris(0), numNbNeighs(0),
-    domainIdx(-1), myid(-1), gtimer(0.0), my_type(vertex_t::MOTHER) {}
+    domainIdx(-1), myid(-1) {}
 
 Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), r_p(x, y, z), r_v(x, y, z), numBonded(0), numTris(0),
-    numNbNeighs(0), domainIdx(-1), myid(-1), gtimer(0.0), my_type(vertex_t::MOTHER) {}
+    numNbNeighs(0), domainIdx(-1), myid(-1) {}
 
 Vertex::Vertex(Vector3D v) : r_c(v), r_p(v), r_v(v), numBonded(0), numTris(0),
-    numNbNeighs(0), domainIdx(-1), myid(-1), gtimer(0.0), my_type(vertex_t::MOTHER) {}
+    numNbNeighs(0), domainIdx(-1), myid(-1) {}
 
 Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p), f_p(orig.f_p), r_v(orig.r_v),
     numBonded(orig.numBonded), numTris(orig.numTris), numNbNeighs(orig.numNbNeighs), domainIdx(orig.domainIdx),
-    myid(orig.myid), gtimer(0.0), my_type(orig.my_type)
+    myid(orig.myid)
 {
     for (int i = 0; i < numBonded; i++)
     {
@@ -271,28 +271,6 @@ double Vertex::getNeighborR0(int idx) const
     return r0[idx];
 }
 
-//double Vertex::setMass(double m)
-//{
-//    mass = m;
-//    return mass;
-//}
-
-//double Vertex::getMass() const
-//{
-//    return mass;
-//}
-
-//double Vertex::setVisc(double v)
-//{
-//    visc = v;
-//    return visc;
-//}
-//
-//double Vertex::getVisc() const
-//{
-//    return visc;
-//}
-
 // TODO:
 // zamien te funkcje na przeciazaony >> operator
 // http://www.learncpp.com/cpp-tutorial/93-overloading-the-io-operators/
@@ -317,27 +295,4 @@ void Vertex::printVertex()
     }
 
     std::cout << std::endl;
-}
-
-void Vertex::normalizedR0(double newR0)
-{
-    for (int i = 0; i < numBonded; i++)
-    {
-        r0[i] = newR0;
-    }
-}
-
-const vertex_t& Vertex::getMyType() const
-{
-    return my_type;
-}
-
-void Vertex::addTime(double dt)
-{
-    gtimer += dt;
-}
-
-void Vertex::voidTime()
-{
-    gtimer = 0.0;
 }

@@ -15,8 +15,8 @@ Cell::Cell(int depth)
 
 }
 
-Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), number_s(0), nRT(0),
-    V0(0), vert_no_bud(0), fem_flag(false), bending_flag(true)
+Cell::Cell(std::list<Triangle> tris) : cell_id(-1), number_v(0), number_t(0), number_s(0), nRT(0),
+    V0(0), fem_flag(false), bending_flag(true)
 {
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
@@ -26,14 +26,11 @@ Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1)
     
 }
 
-Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
-    cell_id(orig.cell_id), params(orig.params), my_phase(orig.my_phase), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
-    nRT(orig.nRT), V0(orig.V0), vert_no_bud(orig.vert_no_bud), fem_flag(orig.fem_flag), bending_flag(orig.bending_flag)
-       
-{}
+Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
+    cell_id(orig.cell_id), params(orig.params), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
+    nRT(orig.nRT), V0(orig.V0),  fem_flag(orig.fem_flag), bending_flag(orig.bending_flag) {}
 
-Cell::~Cell()
-{}
+Cell::~Cell() {}
 
 void Cell::voidVerletLsit()
 {
@@ -45,7 +42,6 @@ void Cell::voidVerletLsit()
 
 void Cell::builtVerletList(const Cell& other_cell, const Box& box)
 {
-    // TODO: remove length, Compare to length2 !!!
     double R01 = getInitR();
     double R02 = other_cell.getInitR();
     Vector3D cm1 = getCm();
@@ -72,7 +68,6 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
             {
                 getDistance(distance_jk,  other_cell.vertices[k].r_c, vertices[j].r_c, box);
 
-                //if (distance_jk.length() <= r_cut * params.verlet_f)
                 if (distance_jk.length_sq() <= r_cut2)
                 {
                     vertices[j].addNbNeighbor(k, other_cell.cell_id);
@@ -88,7 +83,6 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
             {
                 getDistance(distance_jk, vertices[k].r_c, vertices[j].r_c, box);
 
-                //if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_cut * params.verlet_f)
                 if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length_sq() <= r_cut2)
                 {
                     vertices[j].addNbNeighbor(k, other_cell.cell_id);
@@ -370,23 +364,12 @@ double Cell::calcVolume(double eps) const
 void Cell::calcCM()
 {
     Vector3D tmp_m(0.0, 0.0, 0.0);
-    Vector3D tmp_b(0.0, 0.0, 0.0);
     double Mm = 0.0;
-    double Mb = 0.0;
 
     for (int i = 0; i < number_v; i++)
     {
-        if (vertices[i].getMyType() == vertex_t::MOTHER)
-        {
-            tmp_m += 1.0 * vertices[i].r_c;
-            Mm += 1.0;
-        }
-
-        if (vertices[i].getMyType() == vertex_t::BUD)
-        {
-            tmp_b += 1.0 * vertices[i].r_c;
-            Mb += 1.0;
-        }
+        tmp_m += vertices[i].r_c;
+        Mm += 1.0;
     }
 
     if (Mm > 0.0)
@@ -394,33 +377,11 @@ void Cell::calcCM()
         tmp_m /= Mm;
         cm_m = tmp_m;
     }
-
-    if (Mb > 0.0)
+    else
     {
-        tmp_b /= Mb;
-        cm_b = tmp_b;
+        // REPORT PROBLEM
     }
 }
-
-//void Cell::setVisc(double mu, bool dynamics)
-//{
-//    if (dynamics)
-//    {
-//        double vertexVisc = mu / number_v;
-//
-//        for (int i = 0; i < number_v; i++)
-//        {
-//            vertices[i].setVisc(vertexVisc);
-//        }
-//    }
-//    else
-//    {
-//        for (int i = 0; i < number_v; i++)
-//        {
-//            vertices[i].setVisc(1.0);
-//        }
-//    }
-//}
 
 void Cell::setBSprings(double E, double t, double nu_)
 {
@@ -428,22 +389,8 @@ void Cell::setBSprings(double E, double t, double nu_)
     {
         bhinges[i].setD(E, t, nu_);
         bhinges[i].setThetaZero(vertices);
-        double r = bhinges[i].calcCurvatureRadius(vertices);
-        //std::cout << " R0="<< params.init_r << " R="<< r << std::endl;
     }
 }
-
-//double Cell::getCellViscosity() const
-//{
-//    double mu = 0;
-//
-//    for (int i = 0; i < number_v; i++)
-//    {
-//        mu += vertices[i].getVisc();
-//    }
-//
-//    return mu;
-//}
 
 void Cell::addXYZ(const Vector3D& nxyz)
 {
@@ -624,26 +571,6 @@ void Cell::setInitR(double rinit)
     params.init_r = rinit;
 }
 
-void Cell::setBuddingVolume(double vc)
-{
-    params.div_volume = vc;
-}
-
-void Cell::setGrowthRate(double gr)
-{
-    params.growth_rate = gr;
-}
-
-void Cell::setBudDiameter(double bd)
-{
-    params.bud_d = bd;
-}
-
-void Cell::setDivisionRatio(double ds)
-{
-    params.div_ratio = ds;
-}
-
 double Cell::getInitR() const
 {
     return params.init_r;
@@ -669,6 +596,7 @@ double Cell::getNu() const
     return params.nu;
 }
 
+// TODO: OPTIMIZE THIS FUNCTION - IT'S A CRUCIAL ONE
 void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box) const
 {
     dkj = vk - vj;
@@ -707,7 +635,7 @@ double Cell::sumL2() const
 void Cell::randomRotate()
 {
     calcCM();
-    //
+
     double u1 = uniform();
     double u2 = uniform();
     double u3 = uniform();
@@ -1271,65 +1199,3 @@ void Cell::update(double d)
 {
     calcCM();
 }
-
-// ********* CELL GROWTH
-void Cell::cellCycle(double dt)
-{
-    return;
-
-    switch (my_phase)
-    {
-        case cell_phase_t::C_G1:
-            grow(dt);
-            break;
-
-        case cell_phase_t::C_SG2:
-            bud(dt);
-            break;
-
-        case cell_phase_t::C_M:
-            divide();
-            break;
-
-        default :
-            break;
-
-    }
-}
-
-void Cell::grow(double dt)
-{
-    return;
-
-    if (uniform() > params.growth_rate * dt)
-    {
-        return;
-    }
-
-    Tinker::grow(*this);
-}
-
-void Cell::bud(double dt)
-{
-    return;
-    findBud();
-
-    if (uniform() > params.growth_rate * dt)
-    {
-
-        Tinker::bud(*this);
-    }
-}
-
-void Cell::divide()
-{
-    return;
-    Tinker::divide(*this);
-}
-
-void Cell::findBud()
-{
-    return;
-}
-
-// ********* END OF CELL GROWTH  --- DON'T ADD ANYTHING BELOW

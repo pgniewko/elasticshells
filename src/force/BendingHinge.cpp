@@ -17,28 +17,23 @@ void BendingHinge::setD(const double& E, const double& t, const double& nu)
     D = E * t * t * t / (12.0 * (1.0 - nu * nu));
 }
 
-double BendingHinge::calcCurvatureRadius(Vertex vs[]) const
+double BendingHinge::calcRadiusOfCurvature(Vertex vs[]) const
 {
-   Vector3D E = vs[x4].r_c - vs[x3].r_c;
+    Vector3D E = vs[x4].r_c - vs[x3].r_c;
     double E_norm = E.length();
 
     Vector3D A1 = 0.5 * cross(vs[x1].r_c - vs[x3].r_c, vs[x1].r_c - vs[x4].r_c);
     double area1 = A1.length();
-
 
     Vector3D A2 = 0.5 * cross(vs[x2].r_c - vs[x4].r_c, vs[x2].r_c - vs[x3].r_c);
     double area2 = A2.length();
 
     double h1 = 2.0 * area1 / E_norm;
     double h2 = 2.0 * area2 / E_norm;
-    double h = (h1+h2)/2.0;
+    double h = (h1 + h2)/2.0;
 
-    double R1 = 2.0 * sin(theta0/2) / h;
-    double R2 = 2.0 * tan(theta0/2.0) / h;
+    double R1 = 2.0 * sin(theta0 / 2.0) / h;
     R1 = 1.0 / R1;
-    R2 = 1.0 / R2;
-    
-//    std::cout << "theta0= "<< theta0<< " R1= " << R1<< " R2= "<< R2<< " (R1+R2)/2= "<<(R1+R2)/2 << std::endl;
     
     return R1;
 }

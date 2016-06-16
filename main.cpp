@@ -26,12 +26,12 @@
 
 utils::Logger biofilm_logs("biofilm");
 
-const char* argp_program_version = "biofilm 0.5";
+const char* argp_program_version = "biofilm 0.5.1";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
 
 static char doc[] =
     "General information about the software goes *here*\
-    \vCopyright (C) 2014-2015, Pawel Gniewek. \nAll rights reserved.";
+    \vCopyright (C) 2014-2016, Pawel Gniewek. \nAll rights reserved.";
 
 static char args_doc[] = "";
 
@@ -78,15 +78,10 @@ static struct argp_option options[] =
     {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
     {"ecw",       501, "FLOAT", 0, "Box Young's modulus [UNIT=0.1 MPa] [default: 2000.0]"},
     {"ir",        502, "FLOAT", 0, "Cells size at the initialization - lower limit [default:2.5"},
-//    {"mu",        503, "FLOAT", 0, "Viscosity coefficient [default: 100.0]"},
+    {"ir2",       503, "FLOAT", 0, "Cells size at the initialization - upper limit [default:2.5]"},
     {"dp",        504, "FLOAT", 0, "Osmotic pressure [default: 0.0]"},
     {"osm",       505,       0, 0, "Volume dependent osmotic pressure [default:  false]"},
     {"rv",        506, "FLOAT", 0, "Radius of a single vertex [default: 0.25]"},
-    {"gr",        507, "FLOAT", 0, "Cell growth rate [default: 0.0]"},
-    {"vc",        508, "FLOAT", 0, "Minimum volume for budding[default: 60.0]"},
-    {"bd",        509, "FLOAT", 0, "Bud-neck diameter [default: 0.5]"},
-    {"dr",        510, "FLOAT", 0, "Bud volume and Mother cell volume ratio at division [default: 0.7]"},
-    {"ir2",       511, "FLOAT", 0, "Cells size at the initialization - upper limit [default:2.5]"},
     {"ddp",       512, "FLOAT", 0, "Variation in osmotic pressure [UNIT=0.1 MPa] [default: 0.0]"},
     {"eps",       513, "FLOAT", 0, "Non osmotic volume fraction [default: 0.0]"},
     {"nu",        514, "FLOAT", 0, "Cell and box Poisson's ratio (the same for box and cell) [default: 0.5]"},
@@ -145,16 +140,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->dp = 0.0;
             arguments->ddp = 0.0;
             arguments->eps = 0.0;
-//            arguments->visc = 100.0;
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
             arguments->verlet_f = 3.0;
             arguments->init_radius1 = 2.5;
             arguments->init_radius2 = 2.5;
-            arguments->growth_rate = 0.0;
-            arguments->vc = 60.0;
-            arguments->bud_d = 0.5;
-            arguments->div_ratio = 0.7;
             arguments->bsx = 10.0;
             arguments->bsy = 10.0;
             arguments->bsz = 10.0;
@@ -305,10 +295,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 502:
             arguments->init_radius1 = arg ?  strtod (arg, NULL) : 2.5;
             break;
-
-//        case 503:
-//            arguments->visc = arg ? strtod (arg, NULL) : 100.0;
-//            break;
+            
+        case 503:
+            arguments->init_radius2 = arg ?  strtod (arg, NULL) : 2.5;
+            arguments->init_radius2 = std::max(arguments->init_radius1, arguments->init_radius2);
+            break;            
 
         case 504:
             arguments->dp = arg ? strtod (arg, NULL) : 0.0;
@@ -320,27 +311,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 506:
             arguments->r_vertex = arg ?  strtod (arg, NULL) : 0.25;
-            break;
-
-        case 507:
-            arguments->growth_rate = arg ?  strtod (arg, NULL) : 0.0;
-            break;
-
-        case 508:
-            arguments->vc = arg ?  strtod (arg, NULL) : 60.0;
-            break;
-
-        case 509:
-            arguments->bud_d = arg ?  strtod (arg, NULL) : 0.5;
-            break;
-
-        case 510:
-            arguments->div_ratio = arg ?  strtod (arg, NULL) : 0.7;
-            break;
-
-        case 511:
-            arguments->init_radius2 = arg ?  strtod (arg, NULL) : 2.5;
-            arguments->init_radius2 = std::max(arguments->init_radius1, arguments->init_radius2);
             break;
 
         case 512:

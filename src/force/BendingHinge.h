@@ -19,7 +19,7 @@ class BendingHinge
 
         void setD(const double&, const double&, const double&);
         void calcBendingForces(Vertex[]) const;
-        double calcCurvatureRadius(Vertex[]) const;
+        double calcRadiusOfCurvature(Vertex[]) const;
         void setThetaZero(const Vertex[]);
         friend bool operator== (BendingHinge&, BendingHinge&);
 

@@ -38,14 +38,9 @@ struct params_t
     double dt;
     double dp;
     double ddp;
-//    double visc;
     double ttime;
     double r_vertex;
     double verlet_f;
-    double growth_rate;
-    double vc;
-    double bud_d;
-    double div_ratio;
     double v_disp_cut2;
     bool draw_box;
     bool scale;
