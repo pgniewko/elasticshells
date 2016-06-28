@@ -38,6 +38,7 @@ struct params_t
     double dt;
     double dp;
     double ddp;
+    double volume_scale;
     double ttime;
     double r_vertex;
     double verlet_f;
@@ -45,6 +46,7 @@ struct params_t
     bool draw_box;
     bool scale;
     bool dynamics;
+    bool const_volume; 
 };
 
 class Simulator
@@ -93,8 +95,9 @@ class Simulator
 
         void set_min_force();
         bool check_min_force();
+        bool check_const_volume();
 
-        double MIN_FORCE_SQ  = 0.0;
+        double MIN_FORCE_SQ = 0.0;
         double FORCE_FRAC = 0.01;
 
         int number_of_cells;

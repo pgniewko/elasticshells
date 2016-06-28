@@ -86,6 +86,8 @@ static struct argp_option options[] =
     {"eps",       513, "FLOAT", 0, "Non osmotic volume fraction [default: 0.0]"},
     {"nu",        514, "FLOAT", 0, "Cell and box Poisson's ratio (the same for box and cell) [default: 0.5]"},
     {"th",        515, "FLOAT", 0, "Cell-wall thickness [UNIT=1 micron]  [default: 0.1]"},
+    {"vs",        516, "FLOAT", 0, "Constant volume scale [default: 1.0]"},
+    {"vol-f",     517,       0, 0, "Constant volume flag [default: false]"},
 
     {0,             0,       0, 0, "Box options:", 6},
     {"bsx",       601, "FLOAT", 0, "X Box size [default: 10.0]"},
@@ -145,6 +147,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->verlet_f = 3.0;
             arguments->init_radius1 = 2.5;
             arguments->init_radius2 = 2.5;
+            arguments->volume_scale = 1.0;
             arguments->bsx = 10.0;
             arguments->bsy = 10.0;
             arguments->bsz = 10.0;
@@ -160,6 +163,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->scale_flag = false;
             arguments->dynamics = false;
             arguments->nobending = false;
+            arguments->const_volume = false;
             arguments->nb_flag = 0;
             arguments->seed = 0x123;
             break;
@@ -328,6 +332,14 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 515:
             arguments->thickness = arg ?  strtod (arg, NULL) : 0.1;
             break;
+        
+        case 516:
+            arguments->volume_scale = arg ?  strtod (arg, NULL) : 1.0;
+            break;
+            
+        case 517:
+            arguments->const_volume = true;
+            break;    
 
         case 601:
             arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;
@@ -454,6 +466,7 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
 
+    std::cout << " volume_scale=" <<  arguments.volume_scale << " const_vol=" << arguments.const_volume << std::endl;
     clocks[0].tic();
     simulation_time = read_timer();
     Simulator simulator(arguments);
