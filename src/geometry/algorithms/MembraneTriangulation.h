@@ -14,7 +14,7 @@ class MembraneTriangulation : public Triangulation
         virtual ~MembraneTriangulation();
         std::list<Triangle> triangulate();
         std::list<Triangle> triangulate(double, double, int);
-        
+
     private:
         std::list<Triangle> hexagon;
         std::list<Triangle> diamond1;

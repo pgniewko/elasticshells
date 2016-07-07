@@ -3,7 +3,6 @@
 utils::Logger Cell::cell_log("cell");
 
 bool Cell::no_bending = false;
-//bool Cell::membrane_test = false;
 
 Cell::Cell(int depth)
 {
@@ -13,46 +12,25 @@ Cell::Cell(int depth)
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
     Tinker::constructBSprings(*this);
-//    if (! Cell::membrane_test) 
-//    {    
-        randomRotate();
-//    }
+
 }
 
-Cell::Cell(std::list<Triangle> tris) : cell_id(-1), my_phase(cell_phase_t::C_G1), number_v(0), number_t(0), number_s(0), nRT(0),
-    V0(0), vert_no_bud(0), fem_flag(false), bending_flag(true)//, _phooks_n(0), _fhooks_n(0)
+Cell::Cell(std::list<Triangle> tris) : cell_id(-1), number_v(0), number_t(0), number_s(0), nRT(0),
+    V0(0), fem_flag(false), bending_flag(true)
 {
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
     Tinker::constructBSprings(*this);
-//    if (! Cell::membrane_test) 
-//    {
-        randomRotate();
-//    }
+    randomRotate();
+    
 }
 
-Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), cm_b(orig.cm_b), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
-    cell_id(orig.cell_id), params(orig.params), my_phase(orig.my_phase), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
-        nRT(orig.nRT), V0(orig.V0), vert_no_bud(orig.vert_no_bud), fem_flag(orig.fem_flag), bending_flag(orig.bending_flag)//,
-//        _phooks_n(orig._phooks_n), _fhooks_n(orig._fhooks_n)
-{
-    // TODO: copy manually 
-//    for(int i = 0; i < _phooks_n; i++)
-//    {
-//        _pull_hooks[i] = orig._pull_hooks[i];
-//        _pull_corner[i] = orig._pull_corner[i];
-//    }
-//    
-//    for(int i = 0; i < _fhooks_n; i++)
-//    {
-//        _fix_hooks[i] = orig._fix_hooks[i];
-//        _fix_corner[i] = orig._fix_corner[i];
-//    }
-}
+Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
+    cell_id(orig.cell_id), params(orig.params), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
+    nRT(orig.nRT), V0(orig.V0),  fem_flag(orig.fem_flag), bending_flag(orig.bending_flag) {}
 
-Cell::~Cell()
-{}
+Cell::~Cell() {}
 
 void Cell::voidVerletLsit()
 {
@@ -64,23 +42,24 @@ void Cell::voidVerletLsit()
 
 void Cell::builtVerletList(const Cell& other_cell, const Box& box)
 {
-    // TODO: remove length, Compare to length2 !!!
     double R01 = getInitR();
     double R02 = other_cell.getInitR();
     Vector3D cm1 = getCm();
     Vector3D cm2 = other_cell.getCm();
     Vector3D cell_separation;
     getDistance(cell_separation,  cm1, cm2, box);
-    
-    if (cell_separation.length() > 2.0 * (R01+R02)) // 2.0 - just an arbitrary number
+
+    if (cell_separation.length() > 2.0 * (R01 + R02)) // 2.0 - just an arbitrary number
+    {
         return;
-    
-    
+    }
+
+
     Vector3D distance_jk;
     double r_cut = 2 * params.vertex_r * params.verlet_f;
     double r_cut2 = r_cut * r_cut;
-    
-    
+
+
     if (this->cell_id != other_cell.cell_id)
     {
         for (int j = 0; j < number_v; j++)
@@ -89,7 +68,6 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
             {
                 getDistance(distance_jk,  other_cell.vertices[k].r_c, vertices[j].r_c, box);
 
-                //if (distance_jk.length() <= r_cut * params.verlet_f)
                 if (distance_jk.length_sq() <= r_cut2)
                 {
                     vertices[j].addNbNeighbor(k, other_cell.cell_id);
@@ -105,7 +83,6 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
             {
                 getDistance(distance_jk, vertices[k].r_c, vertices[j].r_c, box);
 
-                //if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length() <= r_cut * params.verlet_f)
                 if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length_sq() <= r_cut2)
                 {
                     vertices[j].addNbNeighbor(k, other_cell.cell_id);
@@ -113,7 +90,7 @@ void Cell::builtVerletList(const Cell& other_cell, const Box& box)
             }
         }
     }
-    
+
     // update the most current positions for which verlet-list has been calculated
     for (int i = 0; i < number_v; i++)
     {
@@ -159,7 +136,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
                     getDistance(distance_ik, vertices[vertIdx].r_c, vertices[i].r_c, box);
 
                     //if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_cut)
-                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length_sq() <= r_cut2)    
+                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length_sq() <= r_cut2)
                     {
                         vertices[i].addNbNeighbor(vertIdx, cellIdx);
                     }
@@ -173,7 +150,7 @@ void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box&
     {
         vertices[i].r_v = vertices[i].r_c;
     }
-    
+
 #ifdef TESTS
 
     for (int i = 0; i < number_v; i++)
@@ -194,6 +171,7 @@ void Cell::calcBondedForces()
     {
         calcHarmonicForces();
     }
+
     calcOsmoticForces();
 }
 
@@ -217,12 +195,12 @@ void Cell::calcHarmonicForces()
 
 void Cell::calcFemForces()
 {
-    
+
     for (int i = 0; i < number_t; i++)
     {
         triangles[i].calcFemForces(vertices);
     }
-    
+
     if (!no_bending)
     {
         for (int i = 0; i < number_s; i++)
@@ -231,166 +209,6 @@ void Cell::calcFemForces()
         }
     }
 }
-
-
-//******************************************************************************
-//******************************************************************************
-//******************************************************************************
-//void Cell::_voidForcesOutsideCircle(double R0)
-//{
-//    double distance_from_zero;
-//    for (int i = 0; i < number_v; i++)
-//    {
-//        distance_from_zero = sqrt(vertices[i].r_c.x*vertices[i].r_c.x + vertices[i].r_c.y*vertices[i].r_c.y);
-//        if (distance_from_zero >= R0)
-//        {
-//            vertices[i].f_c = Vector3D(0,0,0);
-//        }
-//        vertices[i].f_c.x = 0.0;
-//        vertices[i].f_c.y = 0.0;
-//    }
-//}
-//
-//void Cell::_pull_vertex(double F, double radius)
-//{
-//    double coff = 0.001;
-//    coff = radius;
-//    double x,y;
-//    for (int i = 0; i < number_v; i++)
-//    {
-//        x = vertices[i].r_c.x;
-//        y = vertices[i].r_c.y;
-//        if ( (x*x+y*y) <= (coff*coff) )
-//        {
-//            vertices[i].f_c += Vector3D(0.0, 0.0, F);
-//        }
-//    }
-//}
-//
-//void Cell::_push_membrane(double P0)
-//{
-//    for (int i = 0; i < number_t; i++)
-//    {
-//        double ti_area = triangles[i].area(vertices);
-//        int ia = triangles[i].ia;
-//        int ib = triangles[i].ib;
-//        int ic = triangles[i].ic;
-//        
-//        Vector3D t_normal = triangles[i].normal(vertices);
-//        double projection = fabs( dot(t_normal, Vector3D(0,0,1)) );
-//        
-//        vertices[ia].f_c += projection * P0 * (ti_area / 3.0) * Vector3D(0,0,1);
-//        vertices[ib].f_c += projection * P0 * (ti_area / 3.0) * Vector3D(0,0,1);
-//        vertices[ic].f_c += projection * P0 * (ti_area / 3.0) * Vector3D(0,0,1);
-//        
-//    }
-//}
-//
-//int Cell::_num_vertex(double coff)
-//{
-//    int n = 0;
-//    double x,y;
-//    for (int i = 0; i < number_v; i++)
-//    {
-//        x = vertices[i].r_c.x;
-//        y = vertices[i].r_c.y;
-//        if ( (x*x+y*y) <= (coff*coff) )
-//        {
-//            n++;
-//        }
-//    }
-//    return n;
-//}
-//
-//void Cell::_set_hooks(double R)
-//{
-//    double eps = 0.001;
-//    for (int i = 0; i < number_v; i++)
-//    {
-//        if ( fabs(vertices[i].r_c.x - R) < eps )
-//        {
-//            _pull_hooks[_phooks_n] = i;
-//            
-//            if ( fabs(vertices[i].r_c.y - R) < eps || fabs(vertices[i].r_c.y + R) < eps)
-//            {
-//                _pull_corner[_phooks_n] = true;
-//            }
-//            else
-//            {
-//                _pull_corner[_phooks_n] = false;
-//            }
-//            _phooks_n++;
-//        }
-//    }
-//    
-//    for (int i = 0; i < number_v; i++)
-//    {
-//        if ( fabs(vertices[i].r_c.x + R) < eps )
-//        {
-//            _fix_hooks[_fhooks_n] = i;
-//            if ( fabs(vertices[i].r_c.y - R) < eps || fabs(vertices[i].r_c.y + R) < eps)
-//            {
-//                _fix_corner[_fhooks_n] = true;
-//            }
-//            else
-//            {
-//                _fix_corner[_fhooks_n] = false;
-//            }
-//            
-//            _fhooks_n++;
-//        }
-//    }
-//}
-//
-//void Cell::_pull_membrane(double F)
-//{
-//    int idx;
-//    double c = 1.0;
-//    for (int i = 0; i < _phooks_n; i++)
-//    {
-//        idx = _pull_hooks[i];
-//        if (_pull_corner[i])
-//        {
-//            c = 0.5;
-//        }
-//        else
-//        {
-//            c = 1.0;
-//        }
-//        
-//        vertices[idx].f_c += Vector3D(c*F, 0.0, 0.0);
-//    }
-//    
-//    for (int i = 0; i < _phooks_n; i++)
-//    {
-//        idx = _fix_hooks[i];
-//        if (_fix_corner[i])
-//        {
-//            c = 0.5;
-//        }
-//        else
-//        {
-//            c = 1.0;
-//        }
-//        
-//        vertices[idx].f_c += Vector3D(-c*F, 0.0, 0.0);
-//    }
-//    
-//}
-//
-//void Cell::_voidForcesForHooks()
-//{
-//    int idx;
-//    for (int i = 0; i < _fhooks_n; i++)
-//    {
-//        idx = _fix_hooks[i];
-//        vertices[idx].f_c = Vector3D(0.0, 0.0, 0.0);
-//    }    
-//}
-
-//******************************************************************************
-//******************************************************************************
-//******************************************************************************
 
 void Cell::calcOsmoticForces()
 {
@@ -413,6 +231,8 @@ void Cell::calcOsmoticForces()
 
 void Cell::calcNbForcesON2(const Cell& other_cell, const Box& box)
 {
+    /*Other possibility is presented by Cheng'87
+     */
     int ocellid = other_cell.cell_id;
     Vector3D dij;
     double r1 = params.vertex_r;
@@ -546,23 +366,12 @@ double Cell::calcVolume(double eps) const
 void Cell::calcCM()
 {
     Vector3D tmp_m(0.0, 0.0, 0.0);
-    Vector3D tmp_b(0.0, 0.0, 0.0);
     double Mm = 0.0;
-    double Mb = 0.0;
 
     for (int i = 0; i < number_v; i++)
     {
-        if (vertices[i].getMyType() == vertex_t::MOTHER)
-        {
-            tmp_m += 1.0 * vertices[i].r_c;
-            Mm += 1.0;
-        }
-
-        if (vertices[i].getMyType() == vertex_t::BUD)
-        {
-            tmp_b += 1.0 * vertices[i].r_c;
-            Mb += 1.0;
-        }
+        tmp_m += vertices[i].r_c;
+        Mm += 1.0;
     }
 
     if (Mm > 0.0)
@@ -570,31 +379,9 @@ void Cell::calcCM()
         tmp_m /= Mm;
         cm_m = tmp_m;
     }
-
-    if (Mb > 0.0)
-    {
-        tmp_b /= Mb;
-        cm_b = tmp_b;
-    }
-}
-
-void Cell::setVisc(double mu, bool dynamics)
-{
-    if (dynamics)
-    {
-        double vertexVisc = mu / number_v;
-
-        for (int i = 0; i < number_v; i++)
-        {
-            vertices[i].setVisc(vertexVisc);
-        }
-    }
     else
     {
-        for (int i = 0; i < number_v; i++)
-        {
-            vertices[i].setVisc(1.0);
-        }
+        // REPORT PROBLEM
     }
 }
 
@@ -604,19 +391,7 @@ void Cell::setBSprings(double E, double t, double nu_)
     {
         bhinges[i].setD(E, t, nu_);
         bhinges[i].setThetaZero(vertices);
-    }  
-}
-
-double Cell::getCellViscosity() const
-{
-    double v = 0;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        v += vertices[i].getVisc();
     }
-
-    return v;
 }
 
 void Cell::addXYZ(const Vector3D& nxyz)
@@ -669,12 +444,13 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
 {
     if (STRCMP (model_t, "ms_kot"))
     {
-        double g = E * t * ( 2.0 / (1.0 - nu_) )* calcSurfaceArea() / sumL2();
+        double g = E * t * ( 2.0 / (1.0 - nu_) ) * calcSurfaceArea() / sumL2();
+
         for (int i = 0; i < number_v; i++ )
         {
             for (int j = 0; j < vertices[i].numBonded; j++)
             {
-                vertices[i].k0[j] = g;        
+                vertices[i].k0[j] = g;
             }
         }
     }
@@ -685,59 +461,83 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
 
         int t_me;
         int t_him;
-        
+
         double g_me_him;
-        
-        double a,b,c;
-        
+
+        double a, b, c;
+
         for (int i = 0; i < number_v; i++)
         {
             me = i;
+
             for (int j = 0; j < vertices[me].numBonded; j++)
             {
                 g_me_him = 0.0;
                 him = vertices[me].bondedVerts[j];
-                
+
                 c = (vertices[me].r_c - vertices[him].r_c).length();
-                
+
                 for (int k = 0; k < vertices[me].numTris; k++)
                 {
                     t_me = vertices[me].bondedTris[k];
+
                     for (int l = 0; l < vertices[him].numTris; l++)
                     {
                         t_him = vertices[him].bondedTris[l];
-                        
+
                         if (t_me == t_him)
                         {
                             third = -1;
                             area = triangles[t_me].area(vertices);
-                            
-                            if (triangles[t_me].ia == me && triangles[t_me].ib == him) third = triangles[t_me].ic;
-                            if (triangles[t_me].ib == me && triangles[t_me].ia == him) third = triangles[t_me].ic;
-                            
-                            if (triangles[t_me].ia == me && triangles[t_me].ic == him) third = triangles[t_me].ib;
-                            if (triangles[t_me].ic == me && triangles[t_me].ia == him) third = triangles[t_me].ib;
-                            
-                            if (triangles[t_me].ib == me && triangles[t_me].ic == him) third = triangles[t_me].ia;
-                            if (triangles[t_me].ic == me && triangles[t_me].ib == him) third = triangles[t_me].ia;
-                            
-                            if (third == -1) 
-                            { 
+
+                            if (triangles[t_me].ia == me && triangles[t_me].ib == him)
+                            {
+                                third = triangles[t_me].ic;
+                            }
+
+                            if (triangles[t_me].ib == me && triangles[t_me].ia == him)
+                            {
+                                third = triangles[t_me].ic;
+                            }
+
+                            if (triangles[t_me].ia == me && triangles[t_me].ic == him)
+                            {
+                                third = triangles[t_me].ib;
+                            }
+
+                            if (triangles[t_me].ic == me && triangles[t_me].ia == him)
+                            {
+                                third = triangles[t_me].ib;
+                            }
+
+                            if (triangles[t_me].ib == me && triangles[t_me].ic == him)
+                            {
+                                third = triangles[t_me].ia;
+                            }
+
+                            if (triangles[t_me].ic == me && triangles[t_me].ib == him)
+                            {
+                                third = triangles[t_me].ia;
+                            }
+
+                            if (third == -1)
+                            {
                                 cell_log <<  utils::LogLevel::SEVERE  << "PROBLEM IN setSpringConst(). \n Simulation is exiting.\n";
                                 exit(EXIT_FAILURE);
                             }
-                                
-                                
+
+
                             a = (vertices[me].r_c - vertices[third].r_c).length();
                             b = (vertices[third].r_c - vertices[him].r_c).length();
-                            
-                            g_me_him += E * t * area / (c*c*(1+nu_));
-                            g_me_him += E * t * nu_ * (a*a + b*b - c*c) / ((1 - nu_*nu_) * 8.0 * area);
-                            
+
+                            g_me_him += E * t * area / (c * c * (1 + nu_));
+                            g_me_him += E * t * nu_ * (a * a + b * b - c * c) / ((1 - nu_ * nu_) * 8.0 * area);
+
                         }
-                        
+
                     }
                 }
+
                 vertices[me].k0[j] = g_me_him;
             }
         }
@@ -745,16 +545,17 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
     else if (STRCMP (model_t, "fem"))
     {
         fem_flag = true;
+
         for (int i = 0; i < number_t; i++)
         {
             triangles[i].setParams(vertices, E, nu_, t);
         }
     }
-    else 
+    else
     {
         // print error and terminate
     }
-    
+
 }
 
 void Cell::setCellId(int ix)
@@ -770,26 +571,6 @@ void Cell::setVerletR(double vr)
 void Cell::setInitR(double rinit)
 {
     params.init_r = rinit;
-}
-
-void Cell::setBuddingVolume(double vc)
-{
-    params.div_volume = vc;
-}
-
-void Cell::setGrowthRate(double gr)
-{
-    params.growth_rate = gr;
-}
-
-void Cell::setBudDiameter(double bd)
-{
-    params.bud_d = bd;
-}
-
-void Cell::setDivisionRatio(double ds)
-{
-    params.div_ratio = ds;
 }
 
 double Cell::getInitR() const
@@ -817,6 +598,7 @@ double Cell::getNu() const
     return params.nu;
 }
 
+// TODO: OPTIMIZE THIS FUNCTION - IT'S A CRUCIAL ONE
 void Cell::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box) const
 {
     dkj = vk - vj;
@@ -855,7 +637,7 @@ double Cell::sumL2() const
 void Cell::randomRotate()
 {
     calcCM();
-    //
+
     double u1 = uniform();
     double u2 = uniform();
     double u3 = uniform();
@@ -1181,12 +963,14 @@ double Cell::contactArea(const Cell& other_cell, const Box& box) const
 double Cell::activeArea(const Box& box, const std::vector<Cell>& cells,  double& counter, bool flag) const
 {
     double total_surface = 0.0;
+
     for (int t_idx = 0; t_idx < number_t; t_idx++)
     {
-        total_surface += triangles[t_idx].area(vertices, cm_m, params.vertex_r);  
-    }    
-    
+        total_surface += triangles[t_idx].area(vertices, cm_m, params.vertex_r);
+    }
+
     double total_cell_cell_area = 0.0;
+
     for (uint cid = 0; cid < cells.size(); cid++)
     {
         if (cell_id != cells[cid].cell_id)
@@ -1194,11 +978,12 @@ double Cell::activeArea(const Box& box, const std::vector<Cell>& cells,  double&
             total_cell_cell_area += contactArea(cells[cid], box);
         }
     }
-    
+
     double total_cell_box_area = contactArea(box, 0.0);
-    
-    
+
+
     double total_contact_area = 0.0;
+
     if (flag) // ONLY BOX TOUCHING CELLS
     {
         if (total_cell_box_area > 0)
@@ -1223,17 +1008,18 @@ double Cell::activeArea(const Box& box, const std::vector<Cell>& cells,  double&
             counter += 1.0;
         }
     }
-    
+
     return std::max(0.0, total_surface - total_contact_area);
 }
 
 double Cell::activeAreaFraction(const Box& box, const std::vector<Cell>& cells, double& counter, bool flag) const
 {
     double total_surface = 0.0;
+
     for (int t_idx = 0; t_idx < number_t; t_idx++)
     {
-        total_surface += triangles[t_idx].area(vertices, cm_m, params.vertex_r);  
-    }    
+        total_surface += triangles[t_idx].area(vertices, cm_m, params.vertex_r);
+    }
 
     double active_area = activeArea(box, cells, counter, flag);
 
@@ -1250,11 +1036,13 @@ double Cell::contactArea(const Box& box, double d_param) const
         {
             // Two classes are affected by this code: CellBoxStress and WallCoverageFraction.
             double eps = params.vertex_r - d_param;
+
             if (eps < 0)
             {
                 cell_log << utils::LogLevel::WARNING << "In contactArea(const Box& box, double d_param): ";
                 cell_log << utils::LogLevel::WARNING << "d_param(=" << d_param << ") larger than params.vertex_r" << "\n";
             }
+
             contact_area += triangles[t_id].area(vertices, cm_m, eps);
         }
     }
@@ -1302,9 +1090,9 @@ double Cell::maxStrain() const
 
             r = dR.length();
             eps = (r - r0) / r0;
-            
+
             max_strain = std::max(max_strain, eps );
-            
+
         }
     }
 
@@ -1328,9 +1116,9 @@ double Cell::minStrain() const
 
             r = dR.length();
             eps = (r - r0) / r0;
-            
+
             max_strain = std::min(max_strain, eps);
-            
+
         }
     }
 
@@ -1357,9 +1145,9 @@ double Cell::nbIntra(const Box& box) const
     double nu1 = params.nu;
 
     double nb_energy = 0.0;
-    
+
     int vertid;
-    
+
     for (int i = 0; i < number_v; i++)
     {
         for (int j = 0; j < vertices[i].numNbNeighs; j++)
@@ -1369,7 +1157,7 @@ double Cell::nbIntra(const Box& box) const
                 vertid = vertices[i].nbVerts[j];
                 getDistance(dij, vertices[vertid].r_c, vertices[i].r_c, box);
                 fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
-                
+
                 if ( fij.length() > 0.0 )
                 {
                     dij.set_length( 2 * r1 - dij.length() );
@@ -1377,8 +1165,8 @@ double Cell::nbIntra(const Box& box) const
                 }
             }
         }
-    }    
-    
+    }
+
     return nb_energy;
 }
 
@@ -1414,62 +1202,19 @@ void Cell::update(double d)
     calcCM();
 }
 
-// ********* CELL GROWTH
-void Cell::cellCycle(double dt)
+void Cell::setConstantVolume(double scale)
 {
-    return;
-    switch (my_phase)
-    {
-        case cell_phase_t::C_G1:
-            grow(dt);
-            break;
-
-        case cell_phase_t::C_SG2:
-            bud(dt);
-            break;
-
-        case cell_phase_t::C_M:
-            divide();
-            break;
-
-        default :
-            break;
-
-    }
+    params.vol_c = calcVolume() * (scale*scale*scale);
 }
 
-void Cell::grow(double dt)
+double Cell::checkVolumeCondition(double eps)
 {
-    return;
-    if (uniform() > params.growth_rate * dt)
-    {
-        return;
-    }
-
-    Tinker::grow(*this);
+    double V = calcVolume();
+    return (params.vol_c - V) / V;
 }
 
-void Cell::bud(double dt)
+void Cell::ajustTurgor(double step)
 {
-    return;
-    findBud();
-
-    if (uniform() > params.growth_rate * dt)
-    {
-
-        Tinker::bud(*this);
-    }
+    params.dp = (1.0 + step) * params.dp;
+//    params.dp = params.dp + params.dp * step;
 }
-
-void Cell::divide()
-{
-    return;
-    Tinker::divide(*this);
-}
-
-void Cell::findBud()
-{
-    return;
-}
-
-// ********* END OF CELL GROWTH  --- DON'T ADD ANYTHING BELOW

@@ -15,24 +15,27 @@ void AverageActiveArea::set_params(const int num, std::vector<std::string> args_
 double AverageActiveArea::observe(const Box& box, std::vector<Cell>& cells)
 {
     bool flag = false;
+
     if (i_param > 0)
+    {
         flag = true;
-        
+    }
+
     uint cellsnumber = cells.size();
     double total_active_a = 0.0;
     double counter = 0.0;
-    
+
     for (uint i = 0; i < cellsnumber; i++)
     {
         total_active_a += cells[i].activeArea(box, cells, counter, flag);
         //counter += 1.0;
     }
-    
+
     if (counter == 0.0 )
     {
         return 0.0;
     }
-    
+
     return (total_active_a /= counter);
 }
 

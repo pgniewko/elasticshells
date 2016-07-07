@@ -220,7 +220,7 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
         os << "cmd.do(\"rebuild\")\n\n";
 
         int lastCellIndex = 0;
-        
+
         os << "cmd.do(\"set_color red1 = [1,1.0,0] \")\n";
         os << "cmd.do(\"set_color red2 = [1,0.9,0] \")\n";
         os << "cmd.do(\"set_color red3 = [1,0.8,0] \")\n";
@@ -231,7 +231,7 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
         os << "cmd.do(\"set_color red8 = [1,0.3,0] \")\n";
         os << "cmd.do(\"set_color red9 = [1,0.2,0] \")\n";
         os << "cmd.do(\"set_color red10= [1,0.1,0] \")\n";
-        
+
         os << "cmd.do(\"set_color blue1 = [0,1.0,1] \")\n";
         os << "cmd.do(\"set_color blue2 = [0,0.9,1] \")\n";
         os << "cmd.do(\"set_color blue3 = [0,0.8,1] \")\n";
@@ -241,8 +241,8 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
         os << "cmd.do(\"set_color blue7 = [0,0.4,1] \")\n";
         os << "cmd.do(\"set_color blue8 = [0,0.3,1] \")\n";
         os << "cmd.do(\"set_color blue9 = [0,0.2,1] \")\n";
-        os << "cmd.do(\"set_color blue10= [0,0.1,1] \")\n"; 
-        
+        os << "cmd.do(\"set_color blue10= [0,0.1,1] \")\n";
+
         for (unsigned int i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -253,7 +253,7 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
 
             lastCellIndex += cells[i].getNumberVertices();
         }
-        
+
         lastCellIndex = 0;
 
         for (unsigned int i = 0; i < cells.size(); i++)
@@ -270,11 +270,12 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
 
             lastCellIndex += cells[i].getNumberVertices();
         }
-        
+
 
         lastCellIndex = 0;
 
         int counter = 1;
+
         for (unsigned int i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -283,18 +284,19 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
                 {
                     std::string strindex1 = new_base_index( lastCellIndex +  cells[i].vertices[j].getId());
                     std::string strindex2 = new_base_index( lastCellIndex +  cells[i].vertices[j].bondedVerts[k]);
-                    os << "cmd.do(\"select my_sele_" << counter <<" , name "   << strindex1 << " " << strindex2 << "\")\n";
+                    os << "cmd.do(\"select my_sele_" << counter << " , name "   << strindex1 << " " << strindex2 << "\")\n";
                     counter++;
                 }
             }
 
             lastCellIndex += cells[i].getNumberVertices();
         }
-        
+
         lastCellIndex = 0;
         counter = 1;
         double strain = 0.0;
         double strain_max = 0.5;
+
         for (unsigned int i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -303,7 +305,7 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
                 {
                     strain = cells[i].getStrain(j, k);
                     int number = (int) ((strain_max - fabs(strain)) / 0.05);
-                    
+
                     if (strain > 0)
                     {
                         os << "cmd.do(\"set_bond line_color, blue" << number << " ,my_sele_" << counter << "\")\n";
@@ -312,13 +314,14 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
                     {
                         os << "cmd.do(\"set_bond line_color, red" << number << ", my_sele_" << counter << "\")\n";
                     }
+
                     counter++;
                 }
             }
 
             lastCellIndex += cells[i].getNumberVertices();
         }
-        
+
         os << "cmd.do(\"show lines\")\n";
         os << "cmd.do(\"bg white\")\n\n";
         os.close();
@@ -326,7 +329,7 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
     else
     {
         scriptbuilder_logs << utils::LogLevel::WARNING << "Can not open file:" <<  script << "\n";
-    }    
+    }
 }
 
 void ScriptBuilder::saveContactStress(const std::vector<Cell>& cells, const Box& box) const

@@ -16,7 +16,6 @@
 #include "exceptions/NotImplementedException.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "geometry/algorithms/PlatonicTriangulatoin.h"
-#include "geometry/algorithms/MembraneTriangulation.h"
 #include "utils/io/ScriptBuilder.h"
 #include "utils/io/XyzTraj.h"
 #include "utils/io/LogSimulation.h"
@@ -39,18 +38,15 @@ struct params_t
     double dt;
     double dp;
     double ddp;
-    double visc;
+    double volume_scale;
     double ttime;
     double r_vertex;
     double verlet_f;
-    double growth_rate;
-    double vc;
-    double bud_d;
-    double div_ratio;
     double v_disp_cut2;
     bool draw_box;
     bool scale;
     bool dynamics;
+    bool const_volume; 
 };
 
 class Simulator
@@ -94,15 +90,16 @@ class Simulator
 
         void updateCells();
         void update_neighbors_list();
-        
+
         bool verlet_condition();
-        
+
         void set_min_force();
         bool check_min_force();
+        bool check_const_volume();
 
-        double MIN_FORCE_SQ  = 0.0;
-        double FORCE_FRAC = 0.01;
-        
+        double MIN_FORCE_SQ = 0.0;
+        double FORCE_FRAC = 0.005;
+
         int number_of_cells;
         std::string triangulator;
         params_t params;

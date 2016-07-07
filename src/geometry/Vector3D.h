@@ -16,7 +16,7 @@ class Vector3D
         Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
         Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}
         virtual ~Vector3D() {};
-        
+
         const Vector3D& operator +=(const Vector3D& v);
         const Vector3D& operator -=(const Vector3D& v);
         const Vector3D& operator *=(const double a);
@@ -26,7 +26,7 @@ class Vector3D
         void set_length(double r);
         void normalize();
         double angle(const Vector3D&) const;
-        
+
         // Should I favor uniform initialization '{}' ?
         // '{}' is only for C++11 compatible compilers tough.
         double x = 0.0;
@@ -67,7 +67,7 @@ inline double Vector3D::length() const
 {
     return sqrt(x * x + y * y + z * z);
 }
-        
+
 inline double Vector3D::length_sq() const
 {
     return x * x + y * y + z * z;
@@ -83,7 +83,7 @@ inline void Vector3D::set_length(double r)
         z *= rl;
     }
 }
-        
+
 inline void Vector3D::normalize()
 {
     double len = length();
@@ -161,8 +161,8 @@ inline Vector3D abs(const Vector3D& v)
 inline Vector3D cross(const Vector3D& v1, const Vector3D& v2)
 {
     return Vector3D((v1.y * v2.z - v2.y * v1.z),
-                     (v2.x * v1.z - v1.x * v2.z),
-                     (v1.x * v2.y - v2.x * v1.y));
+                    (v2.x * v1.z - v1.x * v2.z),
+                    (v1.x * v2.y - v2.x * v1.y));
 }
 
 inline double Vector3D::angle(const Vector3D& v) const
@@ -171,6 +171,7 @@ inline double Vector3D::angle(const Vector3D& v) const
     {
         throw DataException("Zero length vector");
     }
+
     double d = *this * v;
     double l1 = length();
     double l2 = v.length();
@@ -180,7 +181,7 @@ inline double Vector3D::angle(const Vector3D& v) const
 
 inline double dot(const Vector3D& v1, const Vector3D& v2)
 {
-   return (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z);
+    return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 }
 
 //inline double dotd(const Vector3Dd& v1, const Vector3Dd& v2)

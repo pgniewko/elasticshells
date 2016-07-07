@@ -13,25 +13,25 @@ void BoxSizeObserver::set_params(const int num, std::vector<std::string> args_)
 
 double BoxSizeObserver::observe(const Box& box, std::vector<Cell>& cells)
 {
-    switch(i_param)
+    switch (i_param)
     {
         case 1:
             return box.getX();
             //break;
-            
+
         case 2:
             return box.getY();
             //break;
-           
+
         case 3:
             return box.getZ();
             //break;
-            
+
         default:
             return 0.0;
             //break;
     }
-    
+
     return 0.0;
 }
 

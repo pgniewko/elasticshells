@@ -50,9 +50,9 @@ void Triangulation::saveRenderingScript(const char* filename, const char* cellsf
 
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
-        std::string strindex1 = new_base_index( index+0 );
-        std::string strindex2 = new_base_index( index+1 );
-        std::string strindex3 = new_base_index( index+2 );
+        std::string strindex1 = new_base_index( index + 0 );
+        std::string strindex2 = new_base_index( index + 1 );
+        std::string strindex3 = new_base_index( index + 2 );
         os << "cmd.do(\"bond /cells///UNK`/" << strindex1 << ", /cells///UNK`/" << strindex2 << "\")\n";
         os << "cmd.do(\"bond /cells///UNK`/" << strindex1 << ", /cells///UNK`/" << strindex3 << "\")\n";
         os << "cmd.do(\"bond /cells///UNK`/" << strindex2 << ", /cells///UNK`/" << strindex3 << "\")\n";

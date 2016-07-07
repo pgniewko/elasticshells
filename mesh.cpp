@@ -44,12 +44,13 @@ bool isUnique(std::list<Vector3D>& vlist, Vector3D& v)
     return true;
 }
 
-int constructVertices(std::list<Triangle>& tris, Vertex *vertices)
+int constructVertices(std::list<Triangle>& tris, Vertex* vertices)
 {
     std::list<Vector3D> vectors;
     double xtmp, ytmp, ztmp;
 
     int number_v = 0;
+
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
         if ( isUnique(vectors, i->a) )
@@ -85,11 +86,11 @@ int constructVertices(std::list<Triangle>& tris, Vertex *vertices)
             number_v++;
         }
     }
-    
+
     return number_v;
 }
 
-int getVertex(Vector3D& v, Vertex *vertices, int number_v)
+int getVertex(Vector3D& v, Vertex* vertices, int number_v)
 {
     for (int i = 0; i < number_v; i++)
     {
@@ -103,9 +104,10 @@ int getVertex(Vector3D& v, Vertex *vertices, int number_v)
 }
 
 
-int  constructVTriangles(std::list<Triangle>& tris, Vertex *vertices, VertexTriangle *triangles, int number_v)
+int  constructVTriangles(std::list<Triangle>& tris, Vertex* vertices, VertexTriangle* triangles, int number_v)
 {
     int number_t = 0;
+
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
         int va = getVertex(i->a, vertices, number_v);
@@ -116,7 +118,7 @@ int  constructVTriangles(std::list<Triangle>& tris, Vertex *vertices, VertexTria
         triangles[number_t].setId(number_t);
         number_t++;
     }
-    
+
     return number_t;
 }
 
@@ -128,19 +130,19 @@ double min_theta(Triangle tri)
     Vector3D ab = tri.a - tri.b;
     Vector3D ac = tri.a - tri.c;
     Vector3D bc = tri.b - tri.c;
-    
+
     double a = ab.length();
     double b = ac.length();
     double c = bc.length();
 
-    double cosA = std::cos(a*a + b*b - c*c) / (2*a*b);
-    double cosB = std::cos(a*a + c*c - b*b) / (2*a*c);
-    double cosC = std::cos(b*b + c*c - a*a) / (2*b*c);
-    
+    double cosA = std::cos(a * a + b * b - c * c) / (2 * a * b);
+    double cosB = std::cos(a * a + c * c - b * b) / (2 * a * c);
+    double cosC = std::cos(b * b + c * c - a * a) / (2 * b * c);
+
     double thetaA = std::acos(cosA);
     double thetaB = std::acos(cosB);
     double thetaC = std::acos(cosC);
-    
+
     double mintheta = std::numeric_limits<double>::max();
     mintheta = std::min(mintheta, thetaA);
     mintheta = std::min(mintheta, thetaB);
@@ -151,34 +153,35 @@ double min_theta(Triangle tri)
 double q(std::list<Triangle>& tris)
 {
     double min_q = std::numeric_limits<double>::max();
-    
+
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
         Vector3D ab = i->a - i->b;
         Vector3D ac = i->a - i->c;
         Vector3D bc = i->b - i->c;
-    
+
         double a = ab.length();
         double b = ac.length();
         double c = bc.length();
-        min_q = std::min( min_q, (b+c-a)*(c+a-b)*(a+b-c)/(a*b*c));
+        min_q = std::min( min_q, (b + c - a) * (c + a - b) * (a + b - c) / (a * b * c));
     }
-    
-    
+
+
     return min_q;
 }
 
-double q_A(Vertex* vertices, VertexTriangle *triangles, int number_v)
+double q_A(Vertex* vertices, VertexTriangle* triangles, int number_v)
 {
     int idx;
     double min_A = std::numeric_limits<double>::max();
     double max_A = std::numeric_limits<double>::min();
-    
+
     double tmp;
-    
+
     for (int i = 0; i < number_v; i++)
     {
         tmp = 0.0;
+
         for (int j = 0; j < vertices[i].numTris; j++)
         {
             idx = vertices[i].bondedTris[j];
@@ -186,28 +189,28 @@ double q_A(Vertex* vertices, VertexTriangle *triangles, int number_v)
         }
 
         min_A = std::min(min_A, tmp);
-        max_A = std::max(max_A, tmp);        
+        max_A = std::max(max_A, tmp);
     }
-    
+
     return min_A / max_A;
 }
 
 double q_theta(std::list<Triangle>& tris)
 {
     double min_angle = std::numeric_limits<double>::max();
-    
+
     double tmp;
-    
+
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
         tmp = i->min_angle();
         min_angle = std::min(min_angle, tmp);
     }
-    
+
     return min_angle / (M_PI / 3.0);
 }
 
-void constructTopology(Vertex *vertices, VertexTriangle *triangles, int number_v, int number_t)
+void constructTopology(Vertex* vertices, VertexTriangle* triangles, int number_v, int number_t)
 {
     for (int i = 0; i < number_t; i++)
     {
@@ -233,34 +236,35 @@ void constructTopology(Vertex *vertices, VertexTriangle *triangles, int number_v
     }
 }
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
 
-    Vertex *vertices = new Vertex[170000];
-    VertexTriangle *triangles = new VertexTriangle[330000];
+    Vertex* vertices = new Vertex[170000];
+    VertexTriangle* triangles = new VertexTriangle[330000];
 
     int number_v = 0;
-    int number_t = 0;    
-    int depths[8] = {1,2,3,4,5,6,7,8};
-    
+    int number_t = 0;
+    int depths[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+
     std::cout << "Level & Points & Triangles & $q_A$ & $q_\\theta$ & $q$ \\\\  [0.5ex]  \\hline \\hline" << std::endl;
+
     for (int i = 0; i < 8; i++)
     {
-        SimpleTriangulation mesh(i+1);
+        SimpleTriangulation mesh(i + 1);
         //PlatonicTriangulatoin mesh(i+1, 3);
         std::list<Triangle> tris = mesh.triangulate();
-                
+
         number_v = constructVertices(tris, vertices);
         number_t = constructVTriangles(tris, vertices, triangles, number_v);
         constructTopology(vertices, triangles, number_v, number_t);
 
-        std::cout << depths[i] << " & " << number_v <<" & " << tris.size()<< " & "<< std::setprecision(5)<< q_A(vertices, triangles, number_v) << " & " << std::setprecision(5)<< q_theta(tris) << " & " << std::setprecision(5)<< q(tris) << " \\\\ [1ex] \\hline" << std::endl;
-        
+        std::cout << depths[i] << " & " << number_v << " & " << tris.size() << " & " << std::setprecision(5) << q_A(vertices, triangles, number_v) << " & " << std::setprecision(5) << q_theta(tris) << " & " << std::setprecision(5) << q(tris) << " \\\\ [1ex] \\hline" << std::endl;
+
     }
-    
+
     delete[] vertices;
     delete[] triangles;
-    
+
     return 0;
 }
 

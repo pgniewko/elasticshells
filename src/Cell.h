@@ -26,17 +26,7 @@ struct cell_params_t
     double dp;
     double verlet_f;
     double init_r;
-    double growth_rate;
-    double div_volume;
-    double bud_d;
-    double div_ratio;
-};
-
-enum class cell_phase_t // strongly typed and strongly scoped
-{
-    C_G1,   // mother cell growth
-    C_SG2,  // S+G2 - i.e. bud creation and budding phase
-    C_M     // cell division phase
+    double vol_c;
 };
 
 class Cell
@@ -73,21 +63,17 @@ class Cell
         void setDp(double);
         void setDp(double, double);
         void setSpringConst(double, double, double, char*);
-        void setVisc(double, bool=false);
         void setCellId(int);
         void setNu(double);
         void setBSprings(double, double, double);
+        void setConstantVolume(double=1.0);
+        double checkVolumeCondition(double=0.0);
+        void ajustTurgor(double=0.0);
 
         void setVerletR(double);
         void setInitR(double);
 
-        void setBuddingVolume(double);
-        void setGrowthRate(double);
-        void setBudDiameter(double);
-        void setDivisionRatio(double);
-
         double getInitR() const;
-        double getCellViscosity() const;
         Vector3D getCm() const;
         double getVertexR() const;
         double getE() const;
@@ -96,13 +82,10 @@ class Cell
         void voidForces();
         void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&) const;
 
-        void cellCycle(double);
-
         Vector3D cm_m;
-        Vector3D cm_b;
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
-        BendingHinge bhinges [2*MAX_T]; 
+        BendingHinge bhinges [2 * MAX_T];
 
         int cell_id = -1;
         double contactForce(const Cell&, const Box&) const;
@@ -110,8 +93,8 @@ class Cell
         double contactForceSF(const Box&) const; // for Surface Force use
         double contactArea(const Cell&, const Box&) const;
         double contactArea(const Box&, double = 0.0) const;
-        double activeArea(const Box&, const std::vector<Cell>&, double&, bool=false) const;
-        double activeAreaFraction(const Box&, const std::vector<Cell>&, double&, bool=false) const;
+        double activeArea(const Box&, const std::vector<Cell>&, double&, bool = false) const;
+        double activeAreaFraction(const Box&, const std::vector<Cell>&, double&, bool = false) const;
         double strainEnergy(const Box&) const;
         double maxStrain() const;
         double minStrain() const;
@@ -120,23 +103,10 @@ class Cell
         double getStrain(int, int) const;
         void update(double = 0.0);
 
-//        void _voidForcesOutsideCircle(double);
-//        void _voidForcesForHooks();
-//        void _pull_vertex(double, double);
-//        void _push_membrane(double);
-//        int  _num_vertex(double);
-//        void _set_hooks(double);
-//        void _pull_membrane(double);
-//        int _get_phooks_n() {return _phooks_n;};
-        
         static bool no_bending;
-//        static bool membrane_test;
-        
+
     private:
-        void grow(double);
-        void bud(double);
-        void divide();
-        void findBud();
+
         void randomRotate();
 
         bool isInContact(const int, const Cell&, const Box&) const;
@@ -148,25 +118,15 @@ class Cell
         double sumL2() const;
 
         cell_params_t params;
-        cell_phase_t my_phase = cell_phase_t::C_G1 ;
         int number_v = 0;
         int number_t = 0;
         int number_s = 0;
         double nRT = 0.0;
         double V0 = 0.0;
 
-        int bud_idx[MAX_V];
-        int vert_no_bud = 0;
         bool fem_flag = false;
         bool bending_flag = true;
 
-//        int _pull_hooks[MAX_V];
-//        int _fix_hooks[MAX_V];
-//        bool _pull_corner[MAX_V];
-//        bool _fix_corner[MAX_V];
-//        int _phooks_n;
-//        int _fhooks_n;
-        
         static utils::Logger cell_log;
 };
 

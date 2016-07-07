@@ -38,16 +38,16 @@ class Box
 
         bool resize();
 
-        double getVolume(const double=0.0) const;
-        double getArea(const double=0.0) const;
+        double getVolume(const double = 0.0) const;
+        double getArea(const double = 0.0) const;
 
         void setPbc(bool);
         void setEwall(double);
         void setNu(double);
         bool pbc;
-        double getXEdge(const double=0.0) const;
-        double getYEdge(const double=0.0) const;
-        double getZEdge(const double=0.0) const;
+        double getXEdge(const double = 0.0) const;
+        double getYEdge(const double = 0.0) const;
+        double getZEdge(const double = 0.0) const;
         double getNu() const;
         double getE() const;
 

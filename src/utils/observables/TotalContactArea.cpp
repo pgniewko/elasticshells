@@ -15,7 +15,7 @@ double TotalContactArea::observe(const Box& box, std::vector<Cell>& cells)
 {
     uint cellsnumber = cells.size();
     double total_contact_a = 0.0;
-    
+
     for (uint i = 0; i < cellsnumber - 1; i++)
     {
         for (uint j = i + 1; j < cellsnumber; j++)
@@ -23,7 +23,7 @@ double TotalContactArea::observe(const Box& box, std::vector<Cell>& cells)
             total_contact_a += cells[i].contactArea(cells[j], box);
         }
     }
-    
+
     return total_contact_a;
 }
 

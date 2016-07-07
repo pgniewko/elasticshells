@@ -31,20 +31,17 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.dt = args.dt;
     params.dp = args.dp;
     params.ddp = args.ddp;
-    params.visc = args.visc;
+    params.volume_scale = args.volume_scale;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     params.verlet_f = args.verlet_f;
-    params.growth_rate = args.growth_rate;
-    params.vc = args.vc;
-    params.bud_d = args.bud_d;
-    params.div_ratio = args.div_ratio;
     params.draw_box = args.draw_box;
     params.scale = args.scale_flag;
     params.dynamics = args.dynamics;
+    params.const_volume = args.const_volume;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
-    params.v_disp_cut2 = params.r_vertex*params.r_vertex*(args.verlet_f - 1.0)*(args.verlet_f - 1.0);
+    params.v_disp_cut2 = params.r_vertex * params.r_vertex * (args.verlet_f - 1.0) * (args.verlet_f - 1.0);
     setIntegrator(args.integrator_a);
     setTriangulator(args.tritype);
     box.setX(args.bsx);
@@ -67,7 +64,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     OsmoticForce::setEpsilon(args.eps);
     Cell::no_bending = args.nobending;
     logParams();
-    
+
 }
 
 Simulator::~Simulator() {}
@@ -100,17 +97,10 @@ void Simulator::diagnoseParams(arguments args)
         throw DataException("Time step must be positive number ! \n!"
                             "Simulation will terminate with exit(1)!\n");
 
-//    if (args.k <= 0)
-//        throw DataException("Spring constant for bonded vertices must be positive! \n!"
-//                            "Simulation will terminate with exit(1)!\n");
-
     if (args.r_vertex <= 0)
         throw DataException("Vertex radius must be larger than 0! \n!"
                             "Simulation will terminate with exit(1)!\n");
 
-    if (args.growth_rate < 0)
-        throw DataException("Growth rate must be positive or 0! \n!"
-                            "Simulation will terminate with exit(1)!\n");
 }
 
 void Simulator::logParams()
@@ -129,10 +119,6 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (CELL)="  << params.nu << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (BOX)="  << box.getNu() << "\n";
     simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << " [micron]\n";
-    simulator_logs << utils::LogLevel::FINE  << "GROWTH_RATE="  << params.growth_rate << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "VOLUME_CR="  << params.vc << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "BUD_SCAR_D="  << params.bud_d << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "CELL_DIV_RATIO="  << params.div_ratio << "\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
@@ -163,7 +149,7 @@ void Simulator::initCells(int N, double ra, double rb, char* model_t)
         simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: ra > rb. Simulator will set: rb = ra \n";
         rb = ra;
     }
-    
+
     simulator_logs << utils::LogLevel::INFO  << "CELL MODEL: " << model_t << "\n";
 
     double nx, ny, nz;
@@ -207,7 +193,7 @@ void Simulator::initCells(int N, double ra, double rb, char* model_t)
             shiftCell(shift, number_of_cells - 1);
         }
     }
-    
+
     set_min_force();
 }
 
@@ -250,39 +236,20 @@ void Simulator::addCell(double r0, char* model_t)
             SimpleTriangulation sm(params.d);
             tris = sm.triangulate(r0);
         }
-        
-//        if (Cell::membrane_test)
-//        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            double re = 1.0;
-//            MembraneTriangulation mt;
-//            tris = mt.triangulate(r0, re, 5);
-//        }
-        
+
         Cell newCell(tris);
-        
+
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
         newCell.setSpringConst(params.E_cell, params.th, params.nu, model_t);
         newCell.setBSprings(params.E_cell, params.th, params.nu);
         newCell.setDp(params.dp, params.ddp);
+        newCell.setConstantVolume(params.volume_scale);
         newCell.setVertexR(params.r_vertex);
         newCell.setVerletR(params.verlet_f);
         newCell.setCellId(number_of_cells);
-        newCell.setVisc(params.visc, params.dynamics);
         newCell.setInitR(r0);
-        newCell.setGrowthRate(params.growth_rate);
-        newCell.setBuddingVolume(params.vc);
-        newCell.setBudDiameter(params.bud_d);
-        newCell.setDivisionRatio(params.div_ratio);
-        
-//        if (Cell::membrane_test)
-//        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            double re = 1.0;
-//            newCell._set_hooks(r0+re);
-//        }
-        
+
         pushCell(newCell);
     }
     catch (MaxSizeException& e)
@@ -323,17 +290,24 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i < steps; i++)
     {
-       
+
         if ( i % (steps / std::min(steps, 10) ) == 0.0 )
         {
             simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
         }
-        
+
         do
-        {
-            update_neighbors_list();
-            integrate();
-        } while( check_min_force() );
+        { 
+            do
+            {
+                update_neighbors_list();
+                integrate();
+            }
+            while ( check_min_force() );
+        } 
+        while ( check_const_volume() );
+        
+        
 
         if ( (i + 1) % params.save_step == 0)
         {
@@ -346,7 +320,8 @@ void Simulator::simulate(int steps)
                 traj.save(cells, getTotalVertices(), box.getXmax() / box.getX(),
                           box.getYmax() / box.getY(), box.getZmax() / box.getZ());
             }
-            traj.save_box(box, (i+1) * params.dt);
+
+            traj.save_box(box, (i + 1) * params.dt);
         }
 
         if ( (i + 1) % params.log_step == 0)
@@ -360,14 +335,9 @@ void Simulator::simulate(int steps)
         {
             domains.setBoxDim(box);
         }
-
-        for (int i = 0; i < number_of_cells; i++)
-        {
-            cells[i].cellCycle(params.dt);
-        }
     }
 
-    log_sim.dumpState(box, cells);
+    log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results
     sb.saveStrainScript(cells, box);
     sb.saveStrainScript(cells, box);
     traj.close();
@@ -376,17 +346,6 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
-//    double P0 = 0.025;
-//    P0 = params.bud_d;
-//    double R0 = 2.14;
-    
-//    double membrane_area = 3.14159265358979*R0*R0;
-//    int num_in_R0 = cells[0].num_vertex(R0);
-//    double force_per_vertex = P0 * membrane_area / num_in_R0;
-
-//    double pulling_force = 0.01;
-//    double hooks_pull_force = pulling_force / (cells[0].get_phooks_n() - 1);
-    
     #pragma omp parallel
     {
         // CALC CENTER OF MASS
@@ -395,9 +354,10 @@ void Simulator::calcForces()
         {
             cells[i].update();
         }
-            
+
         // RESET FORCES
         #pragma omp for
+
         for (int i = 0 ; i < number_of_cells; i++)
         {
             cells[i].voidForces();
@@ -405,25 +365,15 @@ void Simulator::calcForces()
 
         // CALCULATE INTRA-CELLULAR FORCES
         #pragma omp for schedule(guided)
+
         for (int i = 0 ; i < number_of_cells; i++)
         {
             cells[i].calcBondedForces();
         }
-        
-//        if (Cell::membrane_test)
-//        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            for (int i = 0 ; i < number_of_cells; i++)
-//            {
-//                //cells[i].pull_vertex(pulling_force, 0.005);
-//                //cells[i].pull_vertex(force_per_vertex, R0);
-//                //cells[i].push_membrane(P0);
-//                //cells[i].pull_membrane(hooks_pull_force);
-//            }        
-//        }
 
         // CALCULATE INTER-CELLULAR FORCES
         #pragma omp for schedule(guided)
+
         for (int i = 0; i < number_of_cells; i++)
         {
             for (int j = 0; j < number_of_cells; j++)
@@ -440,10 +390,6 @@ void Simulator::calcForces()
                 {
                     cells[i].calcNbForcesVL(cells[j], box);
                 }
-                //else if (params.nbhandler == 3)
-                //{
-                //    cells[i].calcNbForcesVL(cells[j], box);
-                //}
                 else
                 {
                     cells[i].calcNbForcesON2(cells[j], box);
@@ -461,35 +407,27 @@ void Simulator::calcForces()
                 cells[i].calcBoxForces(box);
             }
         }
-        
-//        if (Cell::membrane_test)
-//        {
-//            simulator_logs << utils::LogLevel::WARNING  << "MEMBRANE_TEST MODE\n";
-//            for (int i = 0 ; i < number_of_cells; i++)
-//            {
-//                //cells[i].voidForcesOutsideCircle(R0);
-//                //cells[i].voidForcesForHooks();
-//            }        
-//        }
     }
 }
 
 bool Simulator::verlet_condition()
 {
     double disp = 0.0;
+
     for (uint i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             disp = cells[i].vertices[j].get_verlet_disp2();
+
             if (disp >= params.v_disp_cut2)
             {
                 return true;
             }
         }
-        
+
     }
-    
+
     return false;
 }
 
@@ -506,13 +444,6 @@ void Simulator::update_neighbors_list()
     {
         rebuildDomainsList();
     }
-    
-//    else if (params.nbhandler == 3)
-//    {
-//        if ( verlet_condition() )
-//        {
-//        }   
-//    }  
 }
 
 void Simulator::rebuildVerletLists()
@@ -575,13 +506,11 @@ int Simulator::getTotalVertices()
 double Simulator::getLengthScale()
 {
     double maxscale = 0.0;
+
     if (params.nbhandler == 2)
     {
         maxscale = std::max(maxscale, params.r_vertex);
     }
-//    else if (params.nbhandler == 3)
-//    {
-//    }
 
     return maxscale;
 }
@@ -646,21 +575,25 @@ void Simulator::set_min_force()
 {
     double average_area = cells[0].calcSurfaceArea();
     average_area /= cells[0].getNumberTriangles();
-    
+
     double max_turgor = 0.0;
-    for(int i = 0; i < number_of_cells;i++)
+
+    for (int i = 0; i < number_of_cells; i++)
     {
         max_turgor = std::max(max_turgor, cells[i].getTurgor());
     }
-    
+
     MIN_FORCE_SQ = FORCE_FRAC * max_turgor * average_area;
     MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
 }
 
 bool Simulator::check_min_force()
 {
-    if (params.dynamics) return false;
-    
+    if (params.dynamics)
+    {
+        return false;
+    }
+
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -671,18 +604,47 @@ bool Simulator::check_min_force()
             }
         }
     }
+
     return false;
+}
+
+bool Simulator::check_const_volume()
+{
+    if (params.const_volume)
+    {
+        double step;
+        double eps = 0.001;
+        bool flag = false;
+    
+        for (int i = 0; i < number_of_cells; i++)
+        {
+            step = cells[i].checkVolumeCondition(eps);
+            if ( fabs(step) > eps )
+            {
+                flag = true;
+                cells[i].ajustTurgor(step); 
+            }
+        }
+
+        return flag;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /*
  * INTEGRATORS
+ * 
+ * Viscosity of each vertex is assumed to be 1.0 !
+ * 
  */
 
 void Simulator::integrate()
 {
     (*this.*integrator)();
     updateCells();
-//    makeVertsOlder(); // function's temporary location
 }
 
 void Simulator::setIntegrator(void (Simulator::*functoall)())
@@ -693,15 +655,13 @@ void Simulator::setIntegrator(void (Simulator::*functoall)())
 void Simulator::integrateEuler()
 {
     calcForces();
-    double visc;
     double dt = params.dt;
 
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c / visc;
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c;
         }
     }
 }
@@ -709,7 +669,6 @@ void Simulator::integrateEuler()
 void Simulator::heunMethod()
 {
     calcForces();
-    double visc;
     double dt = params.dt;
 
     for (int i = 0; i < number_of_cells; i++)
@@ -726,8 +685,7 @@ void Simulator::heunMethod()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c / visc;
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].f_c;
         }
     }
 
@@ -738,15 +696,13 @@ void Simulator::heunMethod()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + 0.5 * dt * ( cells[i].vertices[j].f_p + cells[i].vertices[j].f_c) / visc;
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + 0.5 * dt * ( cells[i].vertices[j].f_p + cells[i].vertices[j].f_c);
         }
     }
 }
 
 void Simulator::midpointRungeKutta()
 {
-    double visc;
     double dt = params.dt;
 
     for (int i = 0; i < number_of_cells; i++)
@@ -764,8 +720,7 @@ void Simulator::midpointRungeKutta()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c += 0.5 * dt * cells[i].vertices[j].f_c / visc;
+            cells[i].vertices[j].r_c += 0.5 * dt * cells[i].vertices[j].f_c;
         }
     }
 
@@ -776,8 +731,7 @@ void Simulator::midpointRungeKutta()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            visc = cells[i].vertices[j].getVisc();
-            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c / visc;
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c;
         }
     }
 }
