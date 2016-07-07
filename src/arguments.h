@@ -45,6 +45,7 @@ struct arguments
     double verlet_f;
     double init_radius1;
     double init_radius2;
+    double volume_scale;
 
     double bsx;
     double bsy;
@@ -61,6 +62,7 @@ struct arguments
     bool scale_flag;
     bool dynamics;
     bool nobending;
+    bool const_volume;
     int nb_flag;
 
     ulong seed;

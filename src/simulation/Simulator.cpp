@@ -31,12 +31,14 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.dt = args.dt;
     params.dp = args.dp;
     params.ddp = args.ddp;
+    params.volume_scale = args.volume_scale;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     params.verlet_f = args.verlet_f;
     params.draw_box = args.draw_box;
     params.scale = args.scale_flag;
     params.dynamics = args.dynamics;
+    params.const_volume = args.const_volume;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
     params.v_disp_cut2 = params.r_vertex * params.r_vertex * (args.verlet_f - 1.0) * (args.verlet_f - 1.0);
@@ -242,6 +244,7 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setSpringConst(params.E_cell, params.th, params.nu, model_t);
         newCell.setBSprings(params.E_cell, params.th, params.nu);
         newCell.setDp(params.dp, params.ddp);
+        newCell.setConstantVolume(params.volume_scale);
         newCell.setVertexR(params.r_vertex);
         newCell.setVerletR(params.verlet_f);
         newCell.setCellId(number_of_cells);
@@ -294,11 +297,17 @@ void Simulator::simulate(int steps)
         }
 
         do
-        {
-            update_neighbors_list();
-            integrate();
-        }
-        while ( check_min_force() );
+        { 
+            do
+            {
+                update_neighbors_list();
+                integrate();
+            }
+            while ( check_min_force() );
+        } 
+        while ( check_const_volume() );
+        
+        
 
         if ( (i + 1) % params.save_step == 0)
         {
@@ -597,6 +606,32 @@ bool Simulator::check_min_force()
     }
 
     return false;
+}
+
+bool Simulator::check_const_volume()
+{
+    if (params.const_volume)
+    {
+        double step;
+        double eps = 0.001;
+        bool flag = false;
+    
+        for (int i = 0; i < number_of_cells; i++)
+        {
+            step = cells[i].checkVolumeCondition(eps);
+            if ( fabs(step) > eps )
+            {
+                flag = true;
+                cells[i].ajustTurgor(step); 
+            }
+        }
+
+        return flag;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /*

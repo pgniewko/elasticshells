@@ -26,6 +26,7 @@ struct cell_params_t
     double dp;
     double verlet_f;
     double init_r;
+    double vol_c;
 };
 
 class Cell
@@ -65,6 +66,9 @@ class Cell
         void setCellId(int);
         void setNu(double);
         void setBSprings(double, double, double);
+        void setConstantVolume(double=1.0);
+        double checkVolumeCondition(double=0.0);
+        void ajustTurgor(double=0.0);
 
         void setVerletR(double);
         void setInitR(double);

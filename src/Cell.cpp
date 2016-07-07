@@ -231,6 +231,8 @@ void Cell::calcOsmoticForces()
 
 void Cell::calcNbForcesON2(const Cell& other_cell, const Box& box)
 {
+    /*Other possibility is presented by Cheng'87
+     */
     int ocellid = other_cell.cell_id;
     Vector3D dij;
     double r1 = params.vertex_r;
@@ -1198,4 +1200,21 @@ double Cell::getTurgor() const
 void Cell::update(double d)
 {
     calcCM();
+}
+
+void Cell::setConstantVolume(double scale)
+{
+    params.vol_c = calcVolume() * (scale*scale*scale);
+}
+
+double Cell::checkVolumeCondition(double eps)
+{
+    double V = calcVolume();
+    return (params.vol_c - V) / V;
+}
+
+void Cell::ajustTurgor(double step)
+{
+    params.dp = (1.0 + step) * params.dp;
+//    params.dp = params.dp + params.dp * step;
 }

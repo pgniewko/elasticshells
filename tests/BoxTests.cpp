@@ -44,67 +44,67 @@ void BoxTests::testFailedMethod()
 
 void BoxTests::testConstructor()
 {
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, box2->getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, box3->getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, box4->getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, box5->getZ(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, box6->getZ(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, box2->getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(10.0, box3->getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, box4->getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, box5->getZ(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, box6->getZ(), constants::delta14);
 }
 
 void BoxTests::testCopyConstructor()
 {
     Box tmpbox1(*box1);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getZ(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getVolume(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getZ(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getVolume(), constants::delta14);
     Box tmpbox2(*box2);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox2.getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox2.getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox2.getZ(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox2.getDx(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox2.getDy(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox2.getDz(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1000.0, tmpbox2.getVolume(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox2.getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox2.getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox2.getZ(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox2.getDx(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox2.getDy(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox2.getDz(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1000.0, tmpbox2.getVolume(), constants::delta14);
     Box tmpbox3(*box6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, tmpbox3.getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox3.getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, tmpbox3.getZ(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tmpbox3.getDx(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tmpbox3.getDy(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tmpbox3.getDz(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(960.0, tmpbox3.getVolume(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, tmpbox3.getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox3.getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, tmpbox3.getZ(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tmpbox3.getDx(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tmpbox3.getDy(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tmpbox3.getDz(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(960.0, tmpbox3.getVolume(), constants::delta14);
     Box tmpbox4(*box7);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, tmpbox4.getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox4.getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, tmpbox4.getZ(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.1, tmpbox4.getDx(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.1, tmpbox4.getDy(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.1, tmpbox4.getDz(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(960.0, tmpbox4.getVolume(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, tmpbox4.getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox4.getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.0, tmpbox4.getZ(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.1, tmpbox4.getDx(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.1, tmpbox4.getDy(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.1, tmpbox4.getDz(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(960.0, tmpbox4.getVolume(), constants::delta14);
 }
 
 void BoxTests::testGetVolume()
 {
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getVolume(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1000.0, box2->getVolume(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(8000.0, box3->getVolume(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1680.0, box4->getVolume(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(512.0, box5->getVolume(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(960.0, box6->getVolume(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(960.0, box7->getVolume(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getVolume(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1000.0, box2->getVolume(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(8000.0, box3->getVolume(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1680.0, box4->getVolume(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(512.0, box5->getVolume(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(960.0, box6->getVolume(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(960.0, box7->getVolume(), constants::delta14);
 }
 
 void BoxTests::testGetArea()
 {
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getArea(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(600.0, box2->getArea(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(2400.0, box3->getArea(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(856.0, box4->getArea(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(384.0, box5->getArea(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(592.0, box6->getArea(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(592.0, box7->getArea(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getArea(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(600.0, box2->getArea(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2400.0, box3->getArea(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(856.0, box4->getArea(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(384.0, box5->getArea(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(592.0, box6->getArea(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(592.0, box7->getArea(), constants::delta14);
 }
 
 void BoxTests::testResizing()
@@ -114,10 +114,10 @@ void BoxTests::testResizing()
         box1->resize();
     }
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getZ(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getVolume(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getZ(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, box1->getVolume(), constants::delta14);
     Box tmpbox1(*box1);
     tmpbox1.setDx(0.1);
 
@@ -126,10 +126,10 @@ void BoxTests::testResizing()
         tmpbox1.resize();
     }
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpbox1.getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getZ(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getVolume(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpbox1.getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getZ(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpbox1.getVolume(), constants::delta14);
     Box tmpbox2(*box1);
     tmpbox2.setDx(0.1);
     tmpbox2.setDy(0.2);
@@ -140,10 +140,10 @@ void BoxTests::testResizing()
         tmpbox2.resize();
     }
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpbox2.getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, tmpbox2.getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, tmpbox2.getZ(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(48.0, tmpbox2.getVolume(), DELTA7);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpbox2.getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, tmpbox2.getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, tmpbox2.getZ(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(48.0, tmpbox2.getVolume(), constants::delta14);
     Box tmpbox3(4, 5, 6, -0.1);
     tmpbox3.setXmin(1.0);
     tmpbox3.setYmin(1.0);
@@ -154,18 +154,18 @@ void BoxTests::testResizing()
         tmpbox3.resize();
     }
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, tmpbox3.getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, tmpbox3.getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox3.getZ(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(480, tmpbox3.getVolume(), DELTA7);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, tmpbox3.getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, tmpbox3.getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.0, tmpbox3.getZ(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(480, tmpbox3.getVolume(), constants::delta14);
 
     for (int i = 0; i < 10; i++)
     {
         tmpbox3.resize();
     }
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, tmpbox3.getX(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, tmpbox3.getY(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, tmpbox3.getZ(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(192.0, tmpbox3.getVolume(), DELTA7);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, tmpbox3.getX(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, tmpbox3.getY(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, tmpbox3.getZ(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(192.0, tmpbox3.getVolume(), constants::delta14);
 }
