@@ -298,7 +298,6 @@ void Simulator::simulate(int steps)
 
         do
         { 
-            std::cout <<  "step="<< i<< std::endl;
             do
             {
                 update_neighbors_list();

@@ -1210,19 +1210,11 @@ void Cell::setConstantVolume(double scale)
 double Cell::checkVolumeCondition(double eps)
 {
     double V = calcVolume();
-    std::cout<< "V="<<V <<" vol_c="<< params.vol_c << " (params.vol_c - V) / V="<<(params.vol_c - V) / V << std::endl;
-//    if ( (V - params.vol_c) / V > eps  ) 
-//    {
-        return (params.vol_c - V) / V;
-//    }
-//    else
-//    {
-//        return 0.0;
-//    }
+    return (params.vol_c - V) / V;
 }
 
 void Cell::ajustTurgor(double step)
 {
-  //  std::cout << "Vol change:"<< params.dp * step << std::endl;    
-    params.dp = params.dp + params.dp * step;
+    params.dp = (1.0 + step) * params.dp;
+//    params.dp = params.dp + params.dp * step;
 }
