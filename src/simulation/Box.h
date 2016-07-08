@@ -11,7 +11,7 @@ class Box
 {
     public:
         Box(double, double, double);
-        Box(double, double, double, double);
+//        Box(double, double, double, double);
         Box(const Box& orig);
         virtual ~Box();
 
@@ -34,7 +34,7 @@ class Box
         double getZmax() const;
         double getXmin() const;
         double getYmin() const;
-        double getZmin() const;
+        double getZmin() const;  
 
         bool resize();
 

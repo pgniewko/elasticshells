@@ -5,12 +5,25 @@ utils::Logger Box::box_logger("box_logger");
 Box::Box(double bsx, double bsy, double bsz) : pbc(false),
     x(bsx), y(bsy), z(bsz), x_max(bsx), y_max(bsy), z_max(bsz),
     x_min(bsx), y_min(bsy), z_min(bsz), E_box(0.0), nu(0.0)
-{}
+{
+    if (bsx==0)
+    {
+        x_max = DBL_MAX;
+    }
+    if (bsy==0)
+    {
+        y_max = DBL_MAX;
+    }
+    if (bsz==0)
+    {
+        z_max = DBL_MAX;
+    }
+}
 
-Box::Box(double bsx, double bsy, double bsz, double dbs) : pbc(false),
-    x(bsx), y(bsy), z(bsz), x_max(bsx), y_max(bsy), z_max(bsz),
-    x_min(bsx), y_min(bsy), z_min(bsz), E_box(0.0), nu(0.0)
-{}
+//Box::Box(double bsx, double bsy, double bsz, double dbs) : pbc(false),
+//    x(bsx), y(bsy), z(bsz), x_max(bsx), y_max(bsy), z_max(bsz),
+//    x_min(bsx), y_min(bsy), z_min(bsz), E_box(0.0), nu(0.0)
+//{}
 
 Box::Box(const Box& orig) : pbc(orig.pbc),
     x(orig.x), y(orig.y), z(orig.z), x_max(orig.x_max), y_max(orig.y_max), z_max(orig.z_max),
@@ -120,36 +133,6 @@ double Box::getZ() const
 {
     return z;
 }
-
-//void Box::setDx(const double newdx)
-//{
-//    dx = newdx;
-//}
-
-//double Box::getDx() const
-//{
-//    return dx;
-//}
-
-//void Box::setDy(const double newdy)
-//{
-//    dy = newdy;
-//}
-
-//double Box::getDy() const
-//{
-//    return dy;
-//}
-
-//void Box::setDz(const double newdz)
-//{
-//    dz = newdz;
-//}
-
-//double Box::getDz() const
-//{
-//    return dz;
-//}
 
 void Box::setXmax(const double xst)
 {

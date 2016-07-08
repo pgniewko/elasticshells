@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <limits>
+#include <float.h>
 #include "random.h"
 #include "utils/Logger.h"
 
