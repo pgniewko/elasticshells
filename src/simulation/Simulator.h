@@ -98,7 +98,7 @@ class Simulator
         bool check_const_volume();
 
         double MIN_FORCE_SQ = 0.0;
-        double FORCE_FRAC = 0.005;
+        double FORCE_FRAC = 0.01;
 
         int number_of_cells;
         std::string triangulator;

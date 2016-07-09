@@ -63,10 +63,10 @@ void ForcesTests::testHookeanForce()
 void ForcesTests::testHertzianForce()
 {
     Vector3D f;
-    //f = HertzianRepulsion::calcForce(*v2 - *v1, 1.0, 100.0, 1.0, 1.0, 0.5, 0.5);
-    //CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, f.length(), constants::delta14);
-    //f = HertzianRepulsion::calcForce(0.5 * (*v2 - *v1), 1.0 , 100.0, 1.0, 1.0, 0.5, 0.5);
-    //CPPUNIT_ASSERT_DOUBLES_EQUAL(47.140452079103173, f.length(), constants::delta7);
+    f = HertzianRepulsion::calcForce(*v2 - *v1, 0.5, 0.5, 100.0, 100.0, 0.5, 0.5);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, f.length(), constants::delta14);
+    f = HertzianRepulsion::calcForce(0.5 * (*v2 - *v1), 0.5, 0.5, 100.0, 100.0, 0.5, 0.5);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(15.71348402, f.length(), constants::delta7);
 }
 
 void ForcesTests::testOsmoticForce()
