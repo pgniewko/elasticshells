@@ -84,6 +84,7 @@ class Simulator
         void integrateEuler();
         void heunMethod();
         void midpointRungeKutta();
+        void gear_cp();
 
         int getTotalVertices();
         double getLengthScale();
