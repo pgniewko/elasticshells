@@ -533,6 +533,10 @@ void Simulator::setIntegrator(char* token)
     {
         this->setIntegrator(&Simulator::midpointRungeKutta);
     }
+    else if (STRCMP (token, "cp"))
+    {
+        this->setIntegrator(&Simulator::gear_cp);
+    }
     else
     {
         this->setIntegrator(&Simulator::integrateEuler);
@@ -732,6 +736,49 @@ void Simulator::midpointRungeKutta()
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + dt * cells[i].vertices[j].f_c;
+        }
+    }
+}
+
+void Simulator::gear_cp()
+{
+    //std::cout << "Inside gear-cp" << std::endl;
+    double dt = params.dt;
+    double C1,C2;
+    
+    C1 = dt;
+    C2 = C1 * dt / 2.0;
+    //C3 = C2 * dt / 3.0;
+    
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c + C1*cells[i].vertices[j].v_c + C2*cells[i].vertices[j].a_c;
+            cells[i].vertices[j].v_p = cells[i].vertices[j].v_c + C1*cells[i].vertices[j].a_c;
+            cells[i].vertices[j].a_p = cells[i].vertices[j].a_c;
+        }
+    }
+    
+    calcForces();
+ 
+    double GEAR0 = 5.0/12.0;
+    double GEAR2 = 1.0/2.0;
+    
+    double CR = GEAR0 * C1;
+    double CA = GEAR2 * C1 / C2;
+    
+    Vector3D corr_v;
+    
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            corr_v = cells[i].vertices[j].f_c - cells[i].vertices[j].v_p; // viscosity = 1.0
+            
+            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + CR * corr_v;
+            cells[i].vertices[j].v_c = cells[i].vertices[j].f_c;
+            cells[i].vertices[j].a_c = cells[i].vertices[j].a_p + CA * corr_v;
         }
     }
 }

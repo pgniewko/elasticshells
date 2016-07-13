@@ -81,6 +81,11 @@ class Vertex
         Vector3D f_p;
 
         Vector3D r_v;           // for verlet-list purposes
+        
+        Vector3D v_p;
+        Vector3D v_c;
+        Vector3D a_p;
+        Vector3D a_c;        
 
         int bondedVerts[NEIGH_MAX];
         double r0[NEIGH_MAX];
