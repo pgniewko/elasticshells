@@ -4,7 +4,8 @@ utils::Logger Simulator::simulator_logs("simulator");
 
 Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
-    traj(args.traj_file, args.box_file), log_sim(args.output_file, args.ob_config_file)
+    traj(args.traj_file, args.box_file), log_sim(args.output_file, args.ob_config_file),
+    restarter(args.topology_file, args.lf_file)
 {
     try
     {
@@ -139,15 +140,20 @@ void Simulator::initCells(int N, double r0)
 
 void Simulator::initCells(int N, double ra, double rb)
 {
-    initCells(N, ra, rb, (char*)&"ms_kot");
+    initCells(N, ra, rb, (char*)&"ms_kot", false);
 }
 
-void Simulator::initCells(int N, double ra, double rb, char* model_t)
+void Simulator::initCells(int N, double ra, double rb, char* model_t, bool restart_flag)
 {
     if (ra > rb)
     {
         simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: ra > rb. Simulator will set: rb = ra \n";
         rb = ra;
+    }
+    
+    if (restart_flag)
+    {
+        simulator_logs << utils::LogLevel::INFO  << "Cells are initialized from the topology file\n";
     }
 
     simulator_logs << utils::LogLevel::INFO  << "CELL MODEL: " << model_t << "\n";
@@ -194,6 +200,7 @@ void Simulator::initCells(int N, double ra, double rb, char* model_t)
         }
     }
 
+    restarter.saveTopologyFile(cells);
     set_min_force();
 }
 
@@ -338,7 +345,6 @@ void Simulator::simulate(int steps)
     }
 
     log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results
-    sb.saveStrainScript(cells, box);
     sb.saveStrainScript(cells, box);
     traj.close();
     log_sim.close();

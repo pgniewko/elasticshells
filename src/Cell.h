@@ -104,6 +104,8 @@ class Cell
         void update(double = 0.0);
 
         static bool no_bending;
+        
+        friend std::ostream& operator<< (std::ostream &, const Cell &);
 
     private:
 
@@ -129,6 +131,5 @@ class Cell
 
         static utils::Logger cell_log;
 };
-
 
 #endif	/* CELL_H */

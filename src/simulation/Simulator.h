@@ -22,6 +22,7 @@
 #include "utils/Logger.h"
 #include "force/OsmoticForce.h"
 #include "simulation/DomainList.h"
+#include "simulation/Restarter.h"
 
 struct params_t
 {
@@ -61,7 +62,7 @@ class Simulator
 
         void initCells(int, double);
         void initCells(int, double, double);
-        void initCells(int, double, double, char*);
+        void initCells(int, double, double, char*,bool=false);
 
     private:
 
@@ -113,6 +114,8 @@ class Simulator
         LogSimulation log_sim;
 
         DomainList domains;
+        
+        Restarter restarter;
 
         static utils::Logger simulator_logs;
 };
