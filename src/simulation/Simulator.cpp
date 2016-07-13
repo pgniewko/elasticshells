@@ -742,13 +742,11 @@ void Simulator::midpointRungeKutta()
 
 void Simulator::gear_cp()
 {
-    //std::cout << "Inside gear-cp" << std::endl;
     double dt = params.dt;
-    double C1,C2;
+    double C1, C2;
     
     C1 = dt;
-    C2 = C1 * dt / 2.0;
-    //C3 = C2 * dt / 3.0;
+    C2 = dt * dt / 2.0;
     
     for (int i = 0; i < number_of_cells; i++)
     {
@@ -762,11 +760,11 @@ void Simulator::gear_cp()
     
     calcForces();
  
-    double GEAR0 = 5.0/12.0;
-    double GEAR2 = 1.0/2.0;
+    double gear0 = 5.0/12.0;
+    double gear2 = 1.0/2.0;
     
-    double CR = GEAR0 * C1;
-    double CA = GEAR2 * C1 / C2;
+    double CR = gear0 * C1;
+    double CA = gear2 * C1 / C2;
     
     Vector3D corr_v;
     
