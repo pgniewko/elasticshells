@@ -10,7 +10,7 @@ Vertex::Vertex(Vector3D v) : r_c(v), r_p(v), r_v(v), numBonded(0), numTris(0),
     numNbNeighs(0), domainIdx(-1), myid(-1) {}
 
 Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p), f_p(orig.f_p), r_v(orig.r_v),
-       v_p(orig.v_p), v_c(orig.v_c), a_p(orig.a_p), a_c(orig.a_c),
+    v_p(orig.v_p), v_c(orig.v_c), a_p(orig.a_p), a_c(orig.a_c),
     numBonded(orig.numBonded), numTris(orig.numTris), numNbNeighs(orig.numNbNeighs), domainIdx(orig.domainIdx),
     myid(orig.myid)
 {

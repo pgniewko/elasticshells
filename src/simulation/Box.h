@@ -34,7 +34,7 @@ class Box
         double getZmax() const;
         double getXmin() const;
         double getYmin() const;
-        double getZmin() const;  
+        double getZmin() const;
 
         bool resize();
 

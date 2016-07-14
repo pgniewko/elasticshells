@@ -58,8 +58,10 @@ static struct argp_option options[] =
     {"time",      't', "FLOAT", 0, "Total simulation time [default: 1.0]"},
     {"ns",        401,   "INT", 0, "Number of simulation steps [default: 10]"},
     {"dt",        402, "FLOAT", 0, "Time step [default: 0.001]"},
-    {"int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], "
-                                   "Gear corrector-predictor[cp] [default: fe]"},
+    {
+        "int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], "
+        "Gear corrector-predictor[cp] [default: fe]"
+    },
     {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Verlet-list[1], Linked-domains[2] [default: 0]"},
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
@@ -300,11 +302,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 502:
             arguments->init_radius1 = arg ?  strtod (arg, NULL) : 2.5;
             break;
-            
+
         case 503:
             arguments->init_radius2 = arg ?  strtod (arg, NULL) : 2.5;
             arguments->init_radius2 = std::max(arguments->init_radius1, arguments->init_radius2);
-            break;            
+            break;
 
         case 504:
             arguments->dp = arg ? strtod (arg, NULL) : 0.0;
@@ -333,14 +335,14 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 515:
             arguments->thickness = arg ?  strtod (arg, NULL) : 0.1;
             break;
-        
+
         case 516:
             arguments->volume_scale = arg ?  strtod (arg, NULL) : 1.0;
             break;
-            
+
         case 517:
             arguments->const_volume = true;
-            break;    
+            break;
 
         case 601:
             arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;

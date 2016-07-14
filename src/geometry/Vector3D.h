@@ -86,7 +86,7 @@ inline void Vector3D::set_length(double r)
 //    if (length() != 0)
 //    {
 //    double sq_l = length_sq();
-    
+
 //    double rl = r / length();
     double rl = r * inv_length();
     x *= rl;

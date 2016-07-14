@@ -46,7 +46,7 @@ struct params_t
     bool draw_box;
     bool scale;
     bool dynamics;
-    bool const_volume; 
+    bool const_volume;
 };
 
 class Simulator

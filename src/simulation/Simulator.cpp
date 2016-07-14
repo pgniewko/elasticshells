@@ -297,17 +297,17 @@ void Simulator::simulate(int steps)
         }
 
         do
-        { 
+        {
             do
             {
                 update_neighbors_list();
                 integrate();
             }
             while ( check_min_force() );
-        } 
+        }
         while ( check_const_volume() );
-        
-        
+
+
 
         if ( (i + 1) % params.save_step == 0)
         {
@@ -619,14 +619,15 @@ bool Simulator::check_const_volume()
         double step;
         double eps = 0.001;
         bool flag = false;
-    
+
         for (int i = 0; i < number_of_cells; i++)
         {
             step = cells[i].checkVolumeCondition(eps);
+
             if ( fabs(step) > eps )
             {
                 flag = true;
-                cells[i].ajustTurgor(step); 
+                cells[i].ajustTurgor(step);
             }
         }
 
@@ -640,9 +641,9 @@ bool Simulator::check_const_volume()
 
 /*
  * INTEGRATORS
- * 
+ *
  * Viscosity of each vertex is assumed to be 1.0 !
- * 
+ *
  */
 
 void Simulator::integrate()
@@ -744,36 +745,36 @@ void Simulator::gear_cp()
 {
     double dt = params.dt;
     double C1, C2;
-    
+
     C1 = dt;
     C2 = dt * dt / 2.0;
-    
+
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c + C1*cells[i].vertices[j].v_c + C2*cells[i].vertices[j].a_c;
-            cells[i].vertices[j].v_p = cells[i].vertices[j].v_c + C1*cells[i].vertices[j].a_c;
+            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c + C1 * cells[i].vertices[j].v_c + C2 * cells[i].vertices[j].a_c;
+            cells[i].vertices[j].v_p = cells[i].vertices[j].v_c + C1 * cells[i].vertices[j].a_c;
             cells[i].vertices[j].a_p = cells[i].vertices[j].a_c;
         }
     }
-    
+
     calcForces();
- 
-    double gear0 = 5.0/12.0;
-    double gear2 = 1.0/2.0;
-    
+
+    double gear0 = 5.0 / 12.0;
+    double gear2 = 1.0 / 2.0;
+
     double CR = gear0 * C1;
     double CA = gear2 * C1 / C2;
-    
+
     Vector3D corr_v;
-    
+
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             corr_v = cells[i].vertices[j].f_c - cells[i].vertices[j].v_p; // viscosity = 1.0
-            
+
             cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + CR * corr_v;
             cells[i].vertices[j].v_c = cells[i].vertices[j].f_c;
             cells[i].vertices[j].a_c = cells[i].vertices[j].a_p + CA * corr_v;

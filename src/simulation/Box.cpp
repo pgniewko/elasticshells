@@ -6,15 +6,17 @@ Box::Box(double bsx, double bsy, double bsz) : pbc(false),
     x(bsx), y(bsy), z(bsz), x_max(bsx), y_max(bsy), z_max(bsz),
     x_min(bsx), y_min(bsy), z_min(bsz), E_box(0.0), nu(0.0)
 {
-    if (bsx==0)
+    if (bsx == 0)
     {
         x_max = DBL_MAX;
     }
-    if (bsy==0)
+
+    if (bsy == 0)
     {
         y_max = DBL_MAX;
     }
-    if (bsz==0)
+
+    if (bsz == 0)
     {
         z_max = DBL_MAX;
     }

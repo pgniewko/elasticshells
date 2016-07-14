@@ -131,7 +131,7 @@ void Scheduler::execute(double& dx, double& dy, double& dz)
             dy = default_schedule.dy + uniform(-default_schedule.ry, default_schedule.ry);
             dz = default_schedule.dz + uniform(-default_schedule.rz, default_schedule.rz);
         }
-        
+
         default_schedule.counter++;
     }
 

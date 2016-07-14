@@ -23,7 +23,7 @@ Cell::Cell(std::list<Triangle> tris) : cell_id(-1), number_v(0), number_t(0), nu
     Tinker::constructTopology(*this);
     Tinker::constructBSprings(*this);
     randomRotate();
-    
+
 }
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
@@ -1204,7 +1204,7 @@ void Cell::update(double d)
 
 void Cell::setConstantVolume(double scale)
 {
-    params.vol_c = calcVolume() * (scale*scale*scale);
+    params.vol_c = calcVolume() * (scale * scale * scale);
 }
 
 double Cell::checkVolumeCondition(double eps)

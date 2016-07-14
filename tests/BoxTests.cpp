@@ -156,14 +156,14 @@ void BoxTests::testResizing()
     {
         tmpbox3.resize();
     }
-    
+
     CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, tmpbox3.getX(), constants::delta14);
-    
+
     tmpbox3.setDefaultSchedule(1, 1, -0.1, -0.1, -0.1, 0.0, 0.0, 0.0);
     tmpbox3.setXmin(1.0);
     tmpbox3.setYmin(1.0);
     tmpbox3.setZmin(5.5);
-    
+
     for (int i = 0; i < 10; i++)
     {
         tmpbox3.resize();
@@ -175,6 +175,7 @@ void BoxTests::testResizing()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(528, tmpbox3.getVolume(), constants::delta7);
 
     tmpbox3.setZmin(1.0);
+
     for (int i = 0; i < 10; i++)
     {
         tmpbox3.resize();
