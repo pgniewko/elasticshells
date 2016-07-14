@@ -32,7 +32,7 @@ double BendingHinge::calcRadiusOfCurvature(Vertex vs[]) const
     double h2 = 2.0 * area2 / E_norm;
     double h = (h1 + h2)/2.0;
 
-    double R1 = 2.0 * sin(theta0 / 2.0) / h;
+    double R1 = 2.0 * fastmath::fast_sin(theta0 / 2.0) / h;
     R1 = 1.0 / R1;
     
     return R1;
@@ -56,7 +56,7 @@ void BendingHinge::calcBendingForces(Vertex vs[]) const
     //double sinTheta = calcSinTheta(vs);
     double theta = calcTheta(vs);
 
-    double C = D * E_norm2 / (area1 + area2) * sin(theta - theta0); // Grinspun eq.3, Cubic Shells, 2007
+    double C = D * E_norm2 / (area1 + area2) * fastmath::fast_sin(theta - theta0); // Grinspun eq.3, Cubic Shells, 2007
 
 
     Vector3D u1 = E_norm / (2.0 * area1) * n1;

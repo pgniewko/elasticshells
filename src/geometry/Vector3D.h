@@ -22,6 +22,7 @@ class Vector3D
         const Vector3D& operator *=(const double a);
         const Vector3D& operator /=(const double a);
         double length() const;
+        double inv_length() const;
         double length_sq() const;
         void set_length(double r);
         void normalize();
@@ -65,7 +66,14 @@ inline const Vector3D& Vector3D::operator /=(const double a)
 
 inline double Vector3D::length() const
 {
-    return sqrt(x * x + y * y + z * z);
+    //return sqrt(x * x + y * y + z * z);
+    return fastmath::fast_sqrt(x * x + y * y + z * z);
+}
+
+inline double Vector3D::inv_length() const
+{
+    //return sqrt(x * x + y * y + z * z);
+    return fastmath::fast_invsqrt(x * x + y * y + z * z);
 }
 
 inline double Vector3D::length_sq() const
@@ -75,21 +83,24 @@ inline double Vector3D::length_sq() const
 
 inline void Vector3D::set_length(double r)
 {
-    if (length() != 0)
-    {
-        double rl = r / length();
-        x *= rl;
-        y *= rl;
-        z *= rl;
-    }
+//    if (length() != 0)
+//    {
+//    double sq_l = length_sq();
+    
+//    double rl = r / length();
+    double rl = r * inv_length();
+    x *= rl;
+    y *= rl;
+    z *= rl;
+//    }
 }
 
 inline void Vector3D::normalize()
 {
-    double len = length();
-    x /= len;
-    y /= len;
-    z /= len;
+    double invlen = inv_length();
+    x *= invlen;
+    y *= invlen;
+    z *= invlen;
 }
 
 template <typename InputStreamT>

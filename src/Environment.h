@@ -9,6 +9,7 @@
 #include <limits>
 #include <float.h>
 #include "random.h"
+#include "fastmath.h"
 #include "utils/Logger.h"
 
 #define IMPLIES(x, y) (!(x) || (y))

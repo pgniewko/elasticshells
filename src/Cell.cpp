@@ -641,10 +641,10 @@ void Cell::randomRotate()
     double u1 = uniform();
     double u2 = uniform();
     double u3 = uniform();
-    double q0 = sqrt(1 - u1) * sin(2 * M_PI * u2);
-    double q1 = sqrt(1 - u1) * cos(2 * M_PI * u2);
-    double q2 = sqrt(u1) * sin(2 * M_PI * u3);
-    double q3 = sqrt(u1) * cos(2 * M_PI * u3);
+    double q0 = fastmath::fast_sqrt(1 - u1) * fastmath::fast_sin(2 * M_PI * u2);
+    double q1 = fastmath::fast_sqrt(1 - u1) * fastmath::fast_cos(2 * M_PI * u2);
+    double q2 = fastmath::fast_sqrt(u1) * fastmath::fast_sin(2 * M_PI * u3);
+    double q3 = fastmath::fast_sqrt(u1) * fastmath::fast_cos(2 * M_PI * u3);
     double A[3][3];
     A[0][0] = q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3;
     A[0][1] = 2 * (q1 * q2 + q0 * q3);
