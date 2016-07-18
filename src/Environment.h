@@ -22,10 +22,10 @@
 #define MAX_T 1600
 #define NEIGH_MAX 20
 #define TRIAN_MAX 40
-#define NBNEI_MAX 100
-#define MAX_IN_DOMAIN 10 // maximum number of particles in a domain
+//#define NBNEI_MAX 100
+//#define MAX_IN_DOMAIN 10 // maximum number of particles in a domain
 #define MAX_M 50 // maximum number of linked-domains - in each direction
-#define MAX_D_NEIGH 27 // MUST BE 27 - ALWAYS !
+#define MAX_D_NEIGH 26 // MUST BE 26 - ALWAYS !
 
 namespace constants
 {
@@ -43,5 +43,6 @@ namespace constants
                             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
                            };
 }
+
 #endif	/* ENVIRONMENT_H */
 

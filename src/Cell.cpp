@@ -32,134 +32,134 @@ Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), vertices(orig.vertices), triangl
 
 Cell::~Cell() {}
 
-void Cell::voidVerletLsit()
-{
-    for (int i = 0; i < number_v; i++)
-    {
-        vertices[i].numNbNeighs = 0;
-    }
-}
+//void Cell::voidVerletLsit()
+//{
+//    for (int i = 0; i < number_v; i++)
+//    {
+//        vertices[i].numNbNeighs = 0;
+//    }
+//}
+//
+//void Cell::builtVerletList(const Cell& other_cell, const Box& box)
+//{
+//    double R01 = getInitR();
+//    double R02 = other_cell.getInitR();
+//    Vector3D cm1 = getCm();
+//    Vector3D cm2 = other_cell.getCm();
+//    Vector3D cell_separation;
+//    getDistance(cell_separation,  cm1, cm2, box);
+//
+//    if (cell_separation.length() > 2.0 * (R01 + R02)) // 2.0 - just an arbitrary number
+//    {
+//        return;
+//    }
+//
+//
+//    Vector3D distance_jk;
+//    double r_cut = 2 * params.vertex_r * params.verlet_f;
+//    double r_cut2 = r_cut * r_cut;
+//
+//
+//    if (this->cell_id != other_cell.cell_id)
+//    {
+//        for (int j = 0; j < number_v; j++)
+//        {
+//            for (int k = 0; k < other_cell.number_v; k++ )
+//            {
+//                getDistance(distance_jk,  other_cell.vertices[k].r_c, vertices[j].r_c, box);
+//
+//                if (distance_jk.length_sq() <= r_cut2)
+//                {
+//                    vertices[j].addNbNeighbor(k, other_cell.cell_id);
+//                }
+//            }
+//        }
+//    }
+//    else
+//    {
+//        for (int j = 0; j < number_v; j++)
+//        {
+//            for (int k = 0; k < number_v; k++)
+//            {
+//                getDistance(distance_jk, vertices[k].r_c, vertices[j].r_c, box);
+//
+//                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length_sq() <= r_cut2)
+//                {
+//                    vertices[j].addNbNeighbor(k, other_cell.cell_id);
+//                }
+//            }
+//        }
+//    }
+//
+//    // update the most current positions for which verlet-list has been calculated
+//    for (int i = 0; i < number_v; i++)
+//    {
+//        vertices[i].r_v = vertices[i].r_c;
+//    }
+//}
 
-void Cell::builtVerletList(const Cell& other_cell, const Box& box)
-{
-    double R01 = getInitR();
-    double R02 = other_cell.getInitR();
-    Vector3D cm1 = getCm();
-    Vector3D cm2 = other_cell.getCm();
-    Vector3D cell_separation;
-    getDistance(cell_separation,  cm1, cm2, box);
-
-    if (cell_separation.length() > 2.0 * (R01 + R02)) // 2.0 - just an arbitrary number
-    {
-        return;
-    }
-
-
-    Vector3D distance_jk;
-    double r_cut = 2 * params.vertex_r * params.verlet_f;
-    double r_cut2 = r_cut * r_cut;
-
-
-    if (this->cell_id != other_cell.cell_id)
-    {
-        for (int j = 0; j < number_v; j++)
-        {
-            for (int k = 0; k < other_cell.number_v; k++ )
-            {
-                getDistance(distance_jk,  other_cell.vertices[k].r_c, vertices[j].r_c, box);
-
-                if (distance_jk.length_sq() <= r_cut2)
-                {
-                    vertices[j].addNbNeighbor(k, other_cell.cell_id);
-                }
-            }
-        }
-    }
-    else
-    {
-        for (int j = 0; j < number_v; j++)
-        {
-            for (int k = 0; k < number_v; k++)
-            {
-                getDistance(distance_jk, vertices[k].r_c, vertices[j].r_c, box);
-
-                if (j != k && !vertices[j].isNeighbor(k) && distance_jk.length_sq() <= r_cut2)
-                {
-                    vertices[j].addNbNeighbor(k, other_cell.cell_id);
-                }
-            }
-        }
-    }
-
-    // update the most current positions for which verlet-list has been calculated
-    for (int i = 0; i < number_v; i++)
-    {
-        vertices[i].r_v = vertices[i].r_c;
-    }
-}
-
-void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box& box)
-{
-    // TODO: remove length, Compare to length2 !!!
-    int domainIdx;
-    int domainn;
-    Vector3D distance_ik;
-    int vertIdx, cellIdx;
-    double r_cut = 2 * params.vertex_r + constants::epsilon;
-    double r_cut2 = r_cut * r_cut;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        domainIdx = domains.getDomainIndex(vertices[i]);
-
-        for (int j = 0; j < domains.getNumberOfNeigh(domainIdx); j++)
-        {
-            domainn = domains.getDomainNeighbor(domainIdx, j);
-
-            for (int k = 0; k < domains.getNumOfParticles(domainn); k++)
-            {
-                vertIdx = domains.getVertexIdx(domainn, k);
-                cellIdx = domains.getCellIdx(domainn, k);
-
-                if (this->cell_id != cellIdx)
-                {
-                    getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].r_c, vertices[i].r_c, box);
-
-                    //if (distance_ik.length() <= r_cut)
-                    if (distance_ik.length_sq() <= r_cut2)
-                    {
-                        vertices[i].addNbNeighbor(vertIdx, cellIdx);
-                    }
-                }
-                else
-                {
-                    getDistance(distance_ik, vertices[vertIdx].r_c, vertices[i].r_c, box);
-
-                    //if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_cut)
-                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length_sq() <= r_cut2)
-                    {
-                        vertices[i].addNbNeighbor(vertIdx, cellIdx);
-                    }
-                }
-            }
-        }
-    }
-
-    // update the most current positions for which verlet-list has been calculated
-    for (int i = 0; i < number_v; i++)
-    {
-        vertices[i].r_v = vertices[i].r_c;
-    }
-
-#ifdef TESTS
-
-    for (int i = 0; i < number_v; i++)
-    {
-        vertices[i].sortNbList();
-    }
-
-#endif
-}
+//void Cell::builtNbList(std::vector<Cell>& cells, DomainList& domains, const Box& box)
+//{
+//    // TODO: remove length, Compare to length2 !!!
+//    int domainIdx;
+//    int domainn;
+//    Vector3D distance_ik;
+//    int vertIdx, cellIdx;
+//    double r_cut = 2 * params.vertex_r + constants::epsilon;
+//    double r_cut2 = r_cut * r_cut;
+//
+//    for (int i = 0; i < number_v; i++)
+//    {
+//        domainIdx = domains.getDomainIndex(vertices[i]);
+//
+//        for (int j = 0; j < domains.getNumberOfNeigh(domainIdx); j++)
+//        {
+//            domainn = domains.getDomainNeighbor(domainIdx, j);
+//
+//            for (int k = 0; k < domains.getNumOfParticles(domainn); k++)
+//            {
+//                vertIdx = domains.getVertexIdx(domainn, k);
+//                cellIdx = domains.getCellIdx(domainn, k);
+//
+//                if (this->cell_id != cellIdx)
+//                {
+//                    getDistance(distance_ik, cells[cellIdx].vertices[vertIdx].r_c, vertices[i].r_c, box);
+//
+//                    //if (distance_ik.length() <= r_cut)
+//                    if (distance_ik.length_sq() <= r_cut2)
+//                    {
+//                        vertices[i].addNbNeighbor(vertIdx, cellIdx);
+//                    }
+//                }
+//                else
+//                {
+//                    getDistance(distance_ik, vertices[vertIdx].r_c, vertices[i].r_c, box);
+//
+//                    //if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length() <= r_cut)
+//                    if (i != vertIdx && !vertices[i].isNeighbor(vertIdx) && distance_ik.length_sq() <= r_cut2)
+//                    {
+//                        vertices[i].addNbNeighbor(vertIdx, cellIdx);
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    // update the most current positions for which verlet-list has been calculated
+//    for (int i = 0; i < number_v; i++)
+//    {
+//        vertices[i].r_v = vertices[i].r_c;
+//    }
+//
+//#ifdef TESTS
+//
+//    for (int i = 0; i < number_v; i++)
+//    {
+//        vertices[i].sortNbList();
+//    }
+//
+//#endif
+//}
 
 void Cell::calcBondedForces()
 {
@@ -263,31 +263,31 @@ void Cell::calcNbForcesON2(const Cell& other_cell, const Box& box)
     }
 }
 
-void Cell::calcNbForcesVL(const Cell& other_cell, const Box& box)
-{
-    int ocellid = other_cell.cell_id;
-    int vertid;
-    Vector3D dij;
-    double r1 = params.vertex_r;
-    double r2 = other_cell.params.vertex_r;
-    double e1 = params.ecc;
-    double e2 = other_cell.params.ecc;
-    double nu1 = params.nu;
-    double nu2 = other_cell.params.nu;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        for (int j = 0; j < vertices[i].numNbNeighs; j++)
-        {
-            if (vertices[i].nbCellsIdx[j] == ocellid) // TODO: list nbCellsIdx should be sorted - for the sake of branch prediction!
-            {
-                vertid = vertices[i].nbVerts[j];
-                getDistance(dij, other_cell.vertices[vertid].r_c, vertices[i].r_c, box);
-                vertices[i].f_c += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-            }
-        }
-    }
-}
+//void Cell::calcNbForcesVL(const Cell& other_cell, const Box& box)
+//{
+//    int ocellid = other_cell.cell_id;
+//    int vertid;
+//    Vector3D dij;
+//    double r1 = params.vertex_r;
+//    double r2 = other_cell.params.vertex_r;
+//    double e1 = params.ecc;
+//    double e2 = other_cell.params.ecc;
+//    double nu1 = params.nu;
+//    double nu2 = other_cell.params.nu;
+//
+//    for (int i = 0; i < number_v; i++)
+//    {
+//        for (int j = 0; j < vertices[i].numNbNeighs; j++)
+//        {
+//            if (vertices[i].nbCellsIdx[j] == ocellid) // TODO: list nbCellsIdx should be sorted - for the sake of branch prediction!
+//            {
+//                vertid = vertices[i].nbVerts[j];
+//                getDistance(dij, other_cell.vertices[vertid].r_c, vertices[i].r_c, box);
+//                vertices[i].f_c += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+//            }
+//        }
+//    }
+//}
 
 void Cell::calcBoxForces(const Box& box)
 {
@@ -561,12 +561,17 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
 void Cell::setCellId(int ix)
 {
     cell_id = ix;
+    
+    for (int i = 0; i < number_v; i++)
+    {
+        vertices[i].setCellId(cell_id);
+    }
 }
 
-void Cell::setVerletR(double vr)
-{
-    params.verlet_f = vr;
-}
+//void Cell::setVerletR(double vr)
+//{
+//    params.verlet_f = vr;
+//}
 
 void Cell::setInitR(double rinit)
 {
@@ -1138,36 +1143,37 @@ double Cell::getStrain(int i, int j) const
 
 double Cell::nbIntra(const Box& box) const
 {
-    Vector3D dij;
-    Vector3D fij;
-    double r1 = params.vertex_r;
-    double e1 = params.ecc;
-    double nu1 = params.nu;
-
-    double nb_energy = 0.0;
-
-    int vertid;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        for (int j = 0; j < vertices[i].numNbNeighs; j++)
-        {
-            if (vertices[i].nbCellsIdx[j] == cell_id)
-            {
-                vertid = vertices[i].nbVerts[j];
-                getDistance(dij, vertices[vertid].r_c, vertices[i].r_c, box);
-                fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
-
-                if ( fij.length() > 0.0 )
-                {
-                    dij.set_length( 2 * r1 - dij.length() );
-                    nb_energy += fabs( fij.x * dij.x + fij.y * dij.y + fij.z * dij.z );
-                }
-            }
-        }
-    }
-
-    return nb_energy;
+    return 0.0;
+//    Vector3D dij;
+//    Vector3D fij;
+//    double r1 = params.vertex_r;
+//    double e1 = params.ecc;
+//    double nu1 = params.nu;
+//
+//    double nb_energy = 0.0;
+//
+//    int vertid;
+//
+//    for (int i = 0; i < number_v; i++)
+//    {
+//        for (int j = 0; j < vertices[i].numNbNeighs; j++)
+//        {
+//            if (vertices[i].nbCellsIdx[j] == cell_id)
+//            {
+//                vertid = vertices[i].nbVerts[j];
+//                getDistance(dij, vertices[vertid].r_c, vertices[i].r_c, box);
+//                fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
+//
+//                if ( fij.length() > 0.0 )
+//                {
+//                    dij.set_length( 2 * r1 - dij.length() );
+//                    nb_energy += fabs( fij.x * dij.x + fij.y * dij.y + fij.z * dij.z );
+//                }
+//            }
+//        }
+//    }
+//
+//    return nb_energy;
 }
 
 double Cell::getTurgor() const
@@ -1216,5 +1222,9 @@ double Cell::checkVolumeCondition(double eps)
 void Cell::ajustTurgor(double step)
 {
     params.dp = (1.0 + step) * params.dp;
-//    params.dp = params.dp + params.dp * step;
+}
+
+const cell_params_t& Cell::get_params()
+{
+    return params;
 }

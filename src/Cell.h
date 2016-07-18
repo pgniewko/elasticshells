@@ -15,7 +15,7 @@
 #include "force/BendingHinge.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
-#include "simulation/DomainList.h"
+//#include "simulation/DomainList.h"
 #include "simulation/Tinker.h"
 
 struct cell_params_t
@@ -24,7 +24,7 @@ struct cell_params_t
     double ecc;
     double nu;
     double dp;
-    double verlet_f;
+    //double verlet_f;
     double init_r;
     double vol_c;
 };
@@ -32,6 +32,7 @@ struct cell_params_t
 class Cell
 {
         friend class Tinker;
+        friend class DomainList;
     public:
 
         Cell(int);
@@ -48,13 +49,17 @@ class Cell
         void calcHarmonicForces();
         void calcFemForces();
         void calcOsmoticForces();
+        
         void calcNbForcesON2(const Cell&, const Box&);
-        void calcNbForcesVL(const Cell&, const Box&);
+        //void calcNbForcesON(const Cell&, const Box&);
+        //void calcNbForcesON(const Cell&, const Box&);
+        
+        //void calcNbForcesVL(const Cell&, const Box&);
         void calcBoxForces(const Box&);
 
-        void voidVerletLsit();
-        void builtVerletList(const Cell&, const Box&);
-        void builtNbList(std::vector<Cell>&, DomainList&, const Box&);
+        //void voidVerletLsit();
+        //void builtVerletList(const Cell&, const Box&);
+        //void builtNbList(std::vector<Cell>&, DomainList&, const Box&);
 
         void addXYZ(const Vector3D&);
 
@@ -70,7 +75,7 @@ class Cell
         double checkVolumeCondition(double = 0.0);
         void ajustTurgor(double = 0.0);
 
-        void setVerletR(double);
+        //void setVerletR(double);
         void setInitR(double);
 
         double getInitR() const;
@@ -102,6 +107,8 @@ class Cell
         double getTurgor() const;
         double getStrain(int, int) const;
         void update(double = 0.0);
+        
+        const cell_params_t& get_params();
 
         static bool no_bending;
 

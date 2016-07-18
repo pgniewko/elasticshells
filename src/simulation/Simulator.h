@@ -41,8 +41,6 @@ struct params_t
     double volume_scale;
     double ttime;
     double r_vertex;
-    double verlet_f;
-    double v_disp_cut2;
     bool draw_box;
     bool scale;
     bool dynamics;
@@ -78,7 +76,6 @@ class Simulator
 
         void calcForces();
         void integrate();
-        void rebuildVerletLists();
         void rebuildDomainsList();
 
         void integrateEuler();
@@ -92,7 +89,7 @@ class Simulator
         void updateCells();
         void update_neighbors_list();
 
-        bool verlet_condition();
+        //bool verlet_condition();
 
         void set_min_force();
         bool check_min_force();
