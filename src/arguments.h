@@ -42,7 +42,6 @@ struct arguments
     double eps;
     double ttime;
     double r_vertex;                   /* vertex radius */
-    double verlet_f;
     double init_radius1;
     double init_radius2;
     double volume_scale;

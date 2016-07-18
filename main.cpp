@@ -62,11 +62,10 @@ static struct argp_option options[] =
         "int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], "
         "Gear corrector-predictor[cp] [default: fe]"
     },
-    {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Verlet-list[1], Linked-domains[2] [default: 0]"},
+    {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Linked-domains[2] [default: 0]"},
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
-    {"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato] [default: simple]"},
@@ -111,7 +110,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
     /* Get the input argument from argp_parse, which
      * is a pointer to our arguments structure. */
 
-    //struct arguments* arguments = (struct arguments*) state->input;
     struct arguments* arguments = static_cast<struct arguments*>(state->input);
 
     switch (key)
@@ -147,7 +145,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->eps = 0.0;
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
-            arguments->verlet_f = 3.0;
             arguments->init_radius1 = 2.5;
             arguments->init_radius2 = 2.5;
             arguments->volume_scale = 1.0;
@@ -248,11 +245,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 407:
             arguments->box_step = arg ? atoi (arg) : 10;
-            break;
-
-        case 409:
-            arguments->verlet_f = arg ?  strtod (arg, NULL) : 3.0;
-            arguments->verlet_f = std::max(arguments->verlet_f, 1.0);
             break;
 
         case 410:
@@ -469,14 +461,20 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
 
-    std::cout << " volume_scale=" <<  arguments.volume_scale << " const_vol=" << arguments.const_volume << std::endl;
-    clocks[0].tic();
-    simulation_time = read_timer();
-    Simulator simulator(arguments);
-    simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.model_type);
-    simulator.simulate(arguments.nsteps);
-    clocks[0].toc();
-    simulation_time = read_timer( ) - simulation_time;
+    if (arguments.n_cells == 0)
+    {
+        biofilm_logs << utils::LogLevel::INFO << "NUMBER OF CELLS IS ZERO (0). NOTHING TO DO !"<< "\n";
+    }
+    else
+    {
+        clocks[0].tic();
+        simulation_time = read_timer();
+        Simulator simulator(arguments);
+        simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.model_type);
+        simulator.simulate(arguments.nsteps);
+        clocks[0].toc();
+        simulation_time = read_timer( ) - simulation_time;
+    }
 
 
 #ifdef _OPENMP

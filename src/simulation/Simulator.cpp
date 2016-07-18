@@ -34,14 +34,14 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.volume_scale = args.volume_scale;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
-    params.verlet_f = args.verlet_f;
+    //params.verlet_f = args.verlet_f;
     params.draw_box = args.draw_box;
     params.scale = args.scale_flag;
     params.dynamics = args.dynamics;
     params.const_volume = args.const_volume;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
-    params.v_disp_cut2 = params.r_vertex * params.r_vertex * (args.verlet_f - 1.0) * (args.verlet_f - 1.0);
+    //params.v_disp_cut2 = params.r_vertex * params.r_vertex * (args.verlet_f - 1.0) * (args.verlet_f - 1.0);
     setIntegrator(args.integrator_a);
     setTriangulator(args.tritype);
     box.setX(args.bsx);
@@ -99,7 +99,7 @@ void Simulator::diagnoseParams(arguments args)
 
     if (args.r_vertex <= 0)
         throw DataException("Vertex radius must be larger than 0! \n!"
-                            "Simulation will terminate with exit(1)!\n");
+                            "Simulation will terminate with exit(1)!\n"); 
 
 }
 
@@ -246,7 +246,7 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setDp(params.dp, params.ddp);
         newCell.setConstantVolume(params.volume_scale);
         newCell.setVertexR(params.r_vertex);
-        newCell.setVerletR(params.verlet_f);
+        //newCell.setVerletR(params.verlet_f);
         newCell.setCellId(number_of_cells);
         newCell.setInitR(r0);
 
@@ -268,11 +268,11 @@ void Simulator::simulate(int steps)
 {
     updateCells();
 
-    if (params.nbhandler == 1)
-    {
-        rebuildVerletLists();
-    }
-    else if (params.nbhandler == 2)
+//    if (params.nbhandler == 1)
+//    {
+//        rebuildVerletLists();
+//    }
+    if (params.nbhandler == 2)
     {
         rebuildDomainsList();
     }
@@ -300,7 +300,6 @@ void Simulator::simulate(int steps)
         {
             do
             {
-                update_neighbors_list();
                 integrate();
             }
             while ( check_min_force() );
@@ -372,29 +371,21 @@ void Simulator::calcForces()
         }
 
         // CALCULATE INTER-CELLULAR FORCES
+        if (params.nbhandler == 0)
+        {
         #pragma omp for schedule(guided)
 
-        for (int i = 0; i < number_of_cells; i++)
-        {
-            for (int j = 0; j < number_of_cells; j++)
+            for (int i = 0; i < number_of_cells; i++)
             {
-                if (params.nbhandler == 0)
-                {
-                    cells[i].calcNbForcesON2(cells[j], box);
-                }
-                else if (params.nbhandler == 1)
-                {
-                    cells[i].calcNbForcesVL(cells[j], box);
-                }
-                else if (params.nbhandler == 2)
-                {
-                    cells[i].calcNbForcesVL(cells[j], box);
-                }
-                else
+                for (int j = 0; j < number_of_cells; j++)
                 {
                     cells[i].calcNbForcesON2(cells[j], box);
                 }
             }
+        }
+        else if (params.nbhandler == 2)
+        {
+            domains.calcNbForces(cells, box);
         }
 
         // CALCULATE FORCES BETWEEN CELLS AND BOX
@@ -409,79 +400,24 @@ void Simulator::calcForces()
         }
     }
 }
-
-bool Simulator::verlet_condition()
-{
-    double disp = 0.0;
-
-    for (uint i = 0; i < cells.size(); i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            disp = cells[i].vertices[j].get_verlet_disp2();
-
-            if (disp >= params.v_disp_cut2)
-            {
-                return true;
-            }
-        }
-
-    }
-
-    return false;
-}
-
 void Simulator::update_neighbors_list()
 {
-    if (params.nbhandler == 1)
-    {
-        if ( verlet_condition() )
-        {
-            rebuildVerletLists();
-        }
-    }
-    else if (params.nbhandler == 2)
+    if (params.nbhandler == 2)
     {
         rebuildDomainsList();
-    }
-}
-
-void Simulator::rebuildVerletLists()
-{
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        cells[i].voidVerletLsit();
-    }
-
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < number_of_cells; j ++)
-        {
-            cells[i].builtVerletList(cells[j], box);
-        }
     }
 }
 
 void Simulator::rebuildDomainsList()
 {
     domains.voidDomains();
-
-    for (int i = 0; i < number_of_cells; i++)
+    
+    for (uint i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            domains.assignVertex(cells[i].vertices[j], i);
+            domains.assignVertex(&cells[i].vertices[j]);
         }
-    }
-
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        cells[i].voidVerletLsit();
-    }
-
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        cells[i].builtNbList(cells, domains, box);
     }
 }
 
@@ -648,6 +584,7 @@ bool Simulator::check_const_volume()
 
 void Simulator::integrate()
 {
+    update_neighbors_list();
     (*this.*integrator)();
     updateCells();
 }
