@@ -89,8 +89,6 @@ class Simulator
         void updateCells();
         void update_neighbors_list();
 
-        //bool verlet_condition();
-
         void set_min_force();
         bool check_min_force();
         bool check_const_volume();

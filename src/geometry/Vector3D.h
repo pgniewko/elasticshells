@@ -11,7 +11,6 @@
 class Vector3D
 {
     public:
-        //Vector3D() : x(0), y(0), z(0) {}
         Vector3D() {} // do i need this one ?
         Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
         Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}

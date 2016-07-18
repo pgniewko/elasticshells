@@ -400,58 +400,13 @@ void Simulator::calcForces()
         }
     }
 }
-
-//bool Simulator::verlet_condition()
-//{
-//    double disp = 0.0;
-//
-//    for (uint i = 0; i < cells.size(); i++)
-//    {
-//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-//        {
-//            disp = cells[i].vertices[j].get_verlet_disp2();
-//
-//            if (disp >= params.v_disp_cut2)
-//            {
-//                return true;
-//            }
-//        }
-//
-//    }
-//
-//    return false;
-//}
-
 void Simulator::update_neighbors_list()
 {
-//    if (params.nbhandler == 1)
-//    {
-//        if ( verlet_condition() )
-//        {
-//            rebuildVerletLists();
-//        }
-//    }
     if (params.nbhandler == 2)
     {
         rebuildDomainsList();
     }
 }
-
-//void Simulator::rebuildVerletLists()
-//{
-//    for (int i = 0; i < number_of_cells; i++)
-//    {
-//        cells[i].voidVerletLsit();
-//    }
-//
-//    for (int i = 0; i < number_of_cells; i++)
-//    {
-//        for (int j = 0; j < number_of_cells; j ++)
-//        {
-//            cells[i].builtVerletList(cells[j], box);
-//        }
-//    }
-//}
 
 void Simulator::rebuildDomainsList()
 {
@@ -464,9 +419,6 @@ void Simulator::rebuildDomainsList()
             domains.assignVertex(&cells[i].vertices[j]);
         }
     }
-    
-    //std::cout << "number of assigned vertices="<<domains.numberofAssignedParticles()<< std::endl;
-    
 }
 
 void Simulator::shiftCell(const Vector3D& v3d, int cellid)

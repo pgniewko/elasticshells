@@ -22,11 +22,6 @@ Box::Box(double bsx, double bsy, double bsz) : pbc(false),
     }
 }
 
-//Box::Box(double bsx, double bsy, double bsz, double dbs) : pbc(false),
-//    x(bsx), y(bsy), z(bsz), x_max(bsx), y_max(bsy), z_max(bsz),
-//    x_min(bsx), y_min(bsy), z_min(bsz), E_box(0.0), nu(0.0)
-//{}
-
 Box::Box(const Box& orig) : pbc(orig.pbc),
     x(orig.x), y(orig.y), z(orig.z), x_max(orig.x_max), y_max(orig.y_max), z_max(orig.z_max),
     x_min(orig.x_min), y_min(orig.y_min), z_min(orig.z_min),

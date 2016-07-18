@@ -66,7 +66,6 @@ static struct argp_option options[] =
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
-    //{"verlet-r",  409, "FLOAT", 0, "Verlet radius times r_vertex [default: 3]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato] [default: simple]"},
@@ -111,7 +110,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
     /* Get the input argument from argp_parse, which
      * is a pointer to our arguments structure. */
 
-    //struct arguments* arguments = (struct arguments*) state->input;
     struct arguments* arguments = static_cast<struct arguments*>(state->input);
 
     switch (key)
@@ -147,7 +145,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->eps = 0.0;
             arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
-            //arguments->verlet_f = 3.0;
             arguments->init_radius1 = 2.5;
             arguments->init_radius2 = 2.5;
             arguments->volume_scale = 1.0;
@@ -466,7 +463,7 @@ int main(int argc, char** argv)
 
     if (arguments.n_cells == 0)
     {
-        biofilm_logs << utils::LogLevel::INFO << "NUMBER OF CELLS IS ZERO(0). NOTHING TO DO !"<< "\n";
+        biofilm_logs << utils::LogLevel::INFO << "NUMBER OF CELLS IS ZERO (0). NOTHING TO DO !"<< "\n";
     }
     else
     {

@@ -196,29 +196,6 @@ void DomainList::assignVertex(Vertex* vertex)
     int index = getDomainIndex(vertex);
     vertex->next = head[index];
     head[index] = vertex;
-
-    //try
-    //{
-        //if (vertsInDomains[index] >= MAX_IN_DOMAIN)
-        //    throw MaxSizeException("Trying to add more vertices than it's allowed.\n"
-        //                           "This may significantly affect the simulation accuracy!\n"
-        //                           "Simulation is about to end.");
-
-
-        //domains[index].vertIds[ vertsInDomains[index] ] = vertex.getId();
-        //domains[index].cellsIds[ vertsInDomains[index] ] = cellid;
-        //vertsInDomains[index]++;
-        //vertex.domainIdx = index;
-    //}
-    //catch (MaxSizeException& e)
-    //{
-        //domainlist_logs << utils::LogLevel::INFO << "MY_ID=" << domains[index].myid << "\n";
-        //domainlist_logs << utils::LogLevel::INFO << "NUMBER_OF_VERTICES=" << vertsInDomains[index] << "\n";
-        //domainlist_logs << utils::LogLevel::INFO << "TRYING_TO_ADD:VERTEX_ID=" << vertex.getId() << " CELL_ID=" << cellid << "\n";
-        //domainlist_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
-        //exit(EXIT_FAILURE);
-    //}
-
 }
 
 int DomainList::getDomainIndex(Vertex* vertex)
@@ -320,21 +297,6 @@ int DomainList::getNumberOfNeigh(int dix)
     return domains[dix].neighborDomainNumber;
 }
 
-//int DomainList::getDomainNeighbor(int dix, int nix)
-//{
-//    return domains[dix].neighborDomainIdx[nix];
-//}
-
-//int DomainList::getVertexIdx(int dix, int xpart)
-//{
-//    return domains[dix].vertIds[xpart];
-//}
-
-//int DomainList::getCellIdx(int dix, int xpart)
-//{
-//    return domains[dix].cellsIds[xpart];
-//}
-
 int DomainList::getNumOfParticles(int dix)
 {
     int counter = 0;
@@ -368,12 +330,12 @@ void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box)
     Vertex* partner;
     
     int neighIndex;
-    for (int i = 0; i < N; i++)
+    for (int domainIdx = 0; domainIdx < N; domainIdx++)
     {
-        if (head[i] != 0)
+        if (head[domainIdx] != 0)
         {
             // INTRA-DOMAIN CONTACTS
-            for (target = head[i]; target != 0; target = target->next)
+            for (target = head[domainIdx]; target != 0; target = target->next)
             {
                 for (partner = target->next; partner != 0; partner = partner->next)
                 {
@@ -382,12 +344,12 @@ void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box)
             }
             
             // INTRA-DOMAIN CONTACTS
-            for (target = head[i]; target != 0; target = target->next)
+            for (target = head[domainIdx]; target != 0; target = target->next)
             {
-                for (int k = 0; k < domains[i].neighborDomainNumber; k++)
+                for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
                 {
-                    neighIndex = domains[i].neighborDomainIdx[k];
-                    if (neighIndex > i)
+                    neighIndex = domains[domainIdx].neighborDomainIdx[k];
+                    if (neighIndex > domainIdx)
                     {
                         for (partner = head[neighIndex]; partner != 0; partner = partner->next)
                         {
@@ -409,8 +371,6 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
     
     const struct cell_params_t params1 = cells[cellId_target].get_params();
     const struct cell_params_t params2 = cells[cellId_partner].get_params();
- 
-    
     
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;
@@ -424,9 +384,9 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
     
     if (cellId_target != cellId_partner)
     {
-        newGetDistance(dij, partner->r_c, target->r_c, box);
+        Box::getDistance(dij, partner->r_c, target->r_c, box);
         force = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-        target->f_c += force;
+        target->f_c  += force;
         partner->f_c += -force;
     }
     else
@@ -435,9 +395,9 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
         int j = partner->getId();
         if (i != j && !target->isNeighbor(j))
         {
-            newGetDistance(dij, partner->r_c, target->r_c, box);
+            Box::getDistance(dij, partner->r_c, target->r_c, box);
             force = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
-            target->f_c += force;
+            target->f_c  += force;
             partner->f_c += -force;
         }
     }
