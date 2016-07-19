@@ -22,7 +22,7 @@ class BendingHinge
         double calcRadiusOfCurvature(Vertex[]) const;
         void setThetaZero(const Vertex[]);
         friend bool operator== (BendingHinge&, BendingHinge&);
-
+        
     private:
         double D = 0.0;
         double sinTheta0 = 0.0;
