@@ -107,6 +107,6 @@ double BendingHinge::calcSinTheta(const Vertex vs[]) const
 
     Vector3D cross_n1n2 = cross(n1, n2);
     int sign = SIGN( dot( cross_n1n2 , e) );
-
+    
     return ( sign * cross_n1n2.length() );
 }
