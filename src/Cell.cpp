@@ -1028,7 +1028,12 @@ void Cell::update(double d)
 
 void Cell::setConstantVolume(double scale)
 {
-    params.vol_c = calcVolume() * (scale * scale * scale);
+    //params.vol_c = calcVolume() * (scale*scale*scale);
+    params.vol_c = V0 * (scale*scale*scale);
+    if (calcVolume() != V0)
+    {
+        cell_log << utils::LogLevel::WARNING << "(calcVolume() != V0) @setConstantVolume\n";
+    }
 }
 
 double Cell::checkVolumeCondition(double eps)
@@ -1045,4 +1050,12 @@ void Cell::ajustTurgor(double step)
 const cell_params_t& Cell::get_params()
 {
     return params;
+}
+
+std::ostream& operator<< (std::ostream &out, const Cell& c)
+{
+    out << "CELL " << c.cell_id << ' ';
+    out << c.number_v <<' ' << c.number_t << ' ' << c.number_s << ' ';
+    out << c.nRT << ' ' << c.V0 << ' ' << c.params.init_r << ' ' << c.params.vol_c; 
+    return out;
 }

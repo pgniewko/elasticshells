@@ -75,6 +75,7 @@ static struct argp_option options[] =
     {"dynamics",  416,       0, 0, "[default: false]"},
     {"no-bend",   417,       0, 0, "[default: false]"},
     {"model",     418,   "STR", 0, "Available models: ms_kot, ms_avg, fem [default: ms_kot]"},
+    {"restart",   419,       0, 0, "[default: false]"},
 
     {0,             0,       0, 0, "Cell Options:", 5},
     {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
@@ -164,6 +165,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->dynamics = false;
             arguments->nobending = false;
             arguments->const_volume = false;
+            arguments->restart = false;
             arguments->nb_flag = 0;
             arguments->seed = 0x123;
             break;
@@ -281,6 +283,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 418:
             arguments->model_type = arg;
+            break;
+            
+        case 419:
+            arguments->restart = true;
             break;
 
         case 500:
@@ -449,6 +455,8 @@ int main(int argc, char** argv)
     arguments.output_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".out");
     arguments.surface_file = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".surface.py");
     arguments.stress_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".stress.py");
+    arguments.topology_file= std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".top");
+    arguments.lf_file      = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".lf.xyz");
 
     /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {arguments.seed, 0x234, 0x345, 0x456}, length = 4;

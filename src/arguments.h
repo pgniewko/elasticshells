@@ -9,6 +9,8 @@ struct arguments
     std::string output_file;
     std::string surface_file;
     std::string stress_file;
+    std::string topology_file;
+    std::string lf_file;
 
     char** strings;               /* [string...] */
 
@@ -62,6 +64,7 @@ struct arguments
     bool dynamics;
     bool nobending;
     bool const_volume;
+    bool restart;
     int nb_flag;
 
     ulong seed;

@@ -99,6 +99,8 @@ class Cell
         const cell_params_t& get_params();
 
         static bool no_bending;
+        
+        friend std::ostream& operator<< (std::ostream &, const Cell &);
 
     private:
 
@@ -124,6 +126,5 @@ class Cell
 
         static utils::Logger cell_log;
 };
-
 
 #endif	/* CELL_H */
