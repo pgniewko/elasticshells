@@ -26,6 +26,13 @@ model=fem
 
 export OMP_NUM_THREADS=1
 
+cd $ODIR
+RESULT=$?
+if [ $RESULT -eq 0 ]; then
+   rm *
+   cd -
+fi
+
 simid=1
 PREFIX1="LINKED_LIST_TEST"
 
