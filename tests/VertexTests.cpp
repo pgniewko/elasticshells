@@ -75,7 +75,6 @@ void VertexTests::testConstructor()
     CPPUNIT_ASSERT_EQUAL(-1, v2->getId());
     CPPUNIT_ASSERT_EQUAL(0, v2->numTris);
     CPPUNIT_ASSERT_EQUAL(0, v2->numBonded);
-    CPPUNIT_ASSERT_EQUAL(0, v2->numNbNeighs);
     Vertex tmpv1(*vec1);
     CPPUNIT_ASSERT_EQUAL(-1, tmpv1.getId());
     tmpv1.setId(1);
@@ -100,7 +99,6 @@ void VertexTests::testCopyConstructor()
     CPPUNIT_ASSERT_EQUAL(-1, tmpv1.getId());
     CPPUNIT_ASSERT_EQUAL(0, tmpv1.numTris);
     CPPUNIT_ASSERT_EQUAL(0, tmpv1.numBonded);
-    CPPUNIT_ASSERT_EQUAL(0, tmpv1.numNbNeighs);
     Vertex tmpv2(*v4);
     CPPUNIT_ASSERT_EQUAL(18, tmpv2.getId());
     CPPUNIT_ASSERT_EQUAL(4, tmpv2.getNumNeighs());

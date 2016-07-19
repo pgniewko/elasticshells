@@ -82,16 +82,14 @@ inline double Vector3D::length_sq() const
 
 inline void Vector3D::set_length(double r)
 {
-//    if (length() != 0)
-//    {
-//    double sq_l = length_sq();
-
-//    double rl = r / length();
     double rl = r * inv_length();
-    x *= rl;
-    y *= rl;
-    z *= rl;
-//    }
+    
+    if ( std::isfinite(rl) )
+    {
+        x *= rl;
+        y *= rl;
+        z *= rl;
+    }
 }
 
 inline void Vector3D::normalize()
@@ -193,10 +191,5 @@ inline double dot(const Vector3D& v1, const Vector3D& v2)
 {
     return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 }
-
-//inline double dotd(const Vector3Dd& v1, const Vector3Dd& v2)
-//{
-//    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
-//}
 
 #endif	/* VECTOR3_H */
