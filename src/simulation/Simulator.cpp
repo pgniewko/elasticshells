@@ -1,6 +1,7 @@
 #include "Simulator.h"
 
 utils::Logger Simulator::simulator_logs("simulator");
+ulong Simulator::FORCE_EVALUATION_COUTER(0);
 
 Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
@@ -348,10 +349,13 @@ void Simulator::simulate(int steps)
     sb.saveStrainScript(cells, box);
     traj.close();
     log_sim.close();
+    
+    simulator_logs << utils::LogLevel::FINEST << "Forces have been evaluated "<< FORCE_EVALUATION_COUTER << " times.\n";
 }
 
 void Simulator::calcForces()
 {
+    FORCE_EVALUATION_COUTER++;
     #pragma omp parallel
     {
         // CALC CENTER OF MASS

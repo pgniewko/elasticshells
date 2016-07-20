@@ -114,6 +114,7 @@ class Simulator
         Restarter restarter;
 
         static utils::Logger simulator_logs;
+        static ulong FORCE_EVALUATION_COUTER;
 };
 
 #endif	/* SIMULATOR_H */
