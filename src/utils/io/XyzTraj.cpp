@@ -14,37 +14,55 @@ XyzTraj::~XyzTraj()
 
 void XyzTraj::open()
 {
+    open_traj();
+    open_box();
+}
+
+void XyzTraj::open_traj()
+{
     os = fopen(trajfile.c_str(), "w");
 
-    //if ( os == NULL )
     if ( os == NULL )
     {
         xyztraj_logs << utils::LogLevel::WARNING << "Can not open file:" <<  trajfile << "\n";
     }
 
+}
+
+    
+void XyzTraj::open_box()
+{    
     osb = fopen(boxfile.c_str(), "w");
 
     if ( osb == NULL )
     {
         xyztraj_logs << utils::LogLevel::WARNING << "Can not open file:" <<  boxfile << "\n";
     }
-
 }
 
 void XyzTraj::close()
+{
+    close_traj();
+    close_box();
+}
+
+void XyzTraj::close_traj()
 {
     if ( os != NULL )
     {
         fclose(os);
     }
+}
 
+void XyzTraj::close_box()
+{
     if ( osb != NULL )
     {
         fclose(osb);
     }
 }
 
-void XyzTraj::save(const std::vector<Cell>& cells, int totV, double sx, double sy, double sz)
+void XyzTraj::save_traj(const std::vector<Cell>& cells, int totV, double sx, double sy, double sz)
 {
     int lastCellIndex = 0;
     fprintf(os, "%i\n", totV);

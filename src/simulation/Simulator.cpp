@@ -286,7 +286,7 @@ void Simulator::simulate(int steps)
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
     traj.open();
-    traj.save(cells, getTotalVertices());
+    traj.save_traj(cells, getTotalVertices());
     log_sim.registerObservers();
     log_sim.open();
     log_sim.printHeader();
@@ -318,11 +318,11 @@ void Simulator::simulate(int steps)
         {
             if (!params.scale)
             {
-                traj.save(cells, getTotalVertices());
+                traj.save_traj(cells, getTotalVertices());
             }
             else
             {
-                traj.save(cells, getTotalVertices(), box.getXmax() / box.getX(),
+                traj.save_traj(cells, getTotalVertices(), box.getXmax() / box.getX(),
                           box.getYmax() / box.getY(), box.getZmax() / box.getZ());
             }
 

@@ -57,9 +57,8 @@ void Restarter::saveTopologyFile(const std::vector<Cell>& cells, char* model_t) 
 
 void Restarter::saveLastFrame(const std::vector<Cell>& cells) const
 {
-    std::cout << lastFrameFile << std::endl;
     XyzTraj lf_xyz(lastFrameFile, "NULL");
-    lf_xyz.open();
-    lf_xyz.save(cells, getTotalVertices(cells));
-    lf_xyz.close();
+    lf_xyz.open_traj();
+    lf_xyz.save_traj(cells, getTotalVertices(cells));
+    lf_xyz.close_traj();
 }
