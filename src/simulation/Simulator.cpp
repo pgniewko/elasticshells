@@ -42,7 +42,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.const_volume = args.const_volume;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
-    //params.v_disp_cut2 = params.r_vertex * params.r_vertex * (args.verlet_f - 1.0) * (args.verlet_f - 1.0);
     setIntegrator(args.integrator_a);
     setTriangulator(args.tritype);
     box.setX(args.bsx);
@@ -200,7 +199,7 @@ void Simulator::initCells(int N, double ra, double rb, char* model_t, bool resta
         }
     }
 
-    restarter.saveTopologyFile(cells);
+    restarter.saveTopologyFile(cells, model_t);
     set_min_force();
 }
 
@@ -333,6 +332,7 @@ void Simulator::simulate(int steps)
         if ( (i + 1) % params.log_step == 0)
         {
             log_sim.dumpState(box, cells);
+            restarter.saveLastFrame(cells);
         }
 
         resized = box.resize();
@@ -343,7 +343,8 @@ void Simulator::simulate(int steps)
         }
     }
 
-    log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results
+    log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results, probably there is not force relaxation before dump
+    restarter.saveLastFrame(cells);
     sb.saveStrainScript(cells, box);
     traj.close();
     log_sim.close();

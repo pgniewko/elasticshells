@@ -18,8 +18,8 @@ class XyzTraj
 
         void open();
         void close();
-        void save(std::vector<Cell>&, int, double = 1.0, double = 1.0, double = 1.0);
-        void save_box(Box&, double);
+        void save(const std::vector<Cell>&, int, double = 1.0, double = 1.0, double = 1.0);
+        void save_box(const Box&, double);
 
     private:
         std::string trajfile;

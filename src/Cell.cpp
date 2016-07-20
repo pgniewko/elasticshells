@@ -1028,7 +1028,6 @@ void Cell::update(double d)
 
 void Cell::setConstantVolume(double scale)
 {
-    //params.vol_c = calcVolume() * (scale*scale*scale);
     params.vol_c = V0 * (scale*scale*scale);
     if (calcVolume() != V0)
     {
@@ -1056,6 +1055,25 @@ std::ostream& operator<< (std::ostream &out, const Cell& c)
 {
     out << "CELL " << c.cell_id << ' ';
     out << c.number_v <<' ' << c.number_t << ' ' << c.number_s << ' ';
-    out << c.nRT << ' ' << c.V0 << ' ' << c.params.init_r << ' ' << c.params.vol_c; 
+    out << c.params.vertex_r << ' ' << c.params.ecc << ' ' << c.params.nu << ' ';
+    out << c.params.dp << ' ' << c.params.init_r << ' ' << c.params.vol_c << ' '; 
+    out << c.nRT << ' ' << c.V0;
+    
+    for (int i = 0; i < c.number_v; i++)
+    {
+        out << "CELLVERTEX " <<  c.cell_id << ' ' << c.vertices[i] << '\n';
+    }
+    
+    for (int i = 0; i < c.number_t; i++)
+    {
+        out << "CELLTRIANG " <<  c.cell_id << ' ' << c.triangles[i] << '\n';
+    }
+    
+    for (int i = 0; i < c.number_s; i++)
+    {
+        out << "CELLHINGE " <<  c.cell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
+    }
+    
+    
     return out;
 }

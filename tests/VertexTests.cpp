@@ -92,10 +92,6 @@ void VertexTests::testCopyConstructor()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, tmpv1.r_c.x, constants::delta14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpv1.r_c.y, constants::delta14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, tmpv1.r_c.z, constants::delta14);
-    //CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpv1.v_c.x, constants::delta14);
-    //CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpv1.v_c.y, constants::delta14);
-    //CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpv1.v_c.z, constants::delta14);
-    //CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpv1.getMass(), DELTA14);
     CPPUNIT_ASSERT_EQUAL(-1, tmpv1.getId());
     CPPUNIT_ASSERT_EQUAL(0, tmpv1.numTris);
     CPPUNIT_ASSERT_EQUAL(0, tmpv1.numBonded);

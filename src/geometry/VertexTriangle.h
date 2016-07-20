@@ -31,7 +31,9 @@ class VertexTriangle
         int ia = -1;
         int ib = -1;
         int ic = -1;
-        int myindex = -1;
+        int myid = -1;
+        
+        friend std::ostream& operator<< (std::ostream &, const VertexTriangle &);
 
     private:
         void setL2(const Vertex[]);

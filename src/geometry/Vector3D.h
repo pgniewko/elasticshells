@@ -65,13 +65,11 @@ inline const Vector3D& Vector3D::operator /=(const double a)
 
 inline double Vector3D::length() const
 {
-    //return sqrt(x * x + y * y + z * z);
     return fastmath::fast_sqrt(x * x + y * y + z * z);
 }
 
 inline double Vector3D::inv_length() const
 {
-    //return sqrt(x * x + y * y + z * z);
     return fastmath::fast_invsqrt(x * x + y * y + z * z);
 }
 
@@ -89,6 +87,10 @@ inline void Vector3D::set_length(double r)
         x *= rl;
         y *= rl;
         z *= rl;
+    }
+    else
+    {
+        // PRINT A WARNING
     }
 }
 

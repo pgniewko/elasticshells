@@ -6,7 +6,11 @@ XyzTraj::XyzTraj(std::string tf, std::string bf) : trajfile(tf), boxfile(bf) {}
 
 XyzTraj::XyzTraj(const XyzTraj& orig) : trajfile(orig.trajfile), boxfile(orig.boxfile) {}
 
-XyzTraj::~XyzTraj() {}
+XyzTraj::~XyzTraj() 
+{
+    //delete os;
+    //delete osb;
+}
 
 void XyzTraj::open()
 {
@@ -40,7 +44,7 @@ void XyzTraj::close()
     }
 }
 
-void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, double sz)
+void XyzTraj::save(const std::vector<Cell>& cells, int totV, double sx, double sy, double sz)
 {
     int lastCellIndex = 0;
     fprintf(os, "%i\n", totV);
@@ -60,7 +64,7 @@ void XyzTraj::save(std::vector<Cell>& cells, int totV, double sx, double sy, dou
     fflush(os);
 }
 
-void XyzTraj::save_box(Box& box, double t)
+void XyzTraj::save_box(const Box& box, double t)
 {
     fprintf(osb, "%12.6f %6.4f %6.4f %6.4f \n", t, box.getX(), box.getY(), box.getZ());
     fflush(osb);

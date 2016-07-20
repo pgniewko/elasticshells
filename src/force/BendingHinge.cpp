@@ -1,12 +1,13 @@
 #include "BendingHinge.h"
 
-BendingHinge::BendingHinge() : x1(-1), x2(-1), x3(-1), x4(-1)
+BendingHinge::BendingHinge() : x1(-1), x2(-1), x3(-1), x4(-1), myid(-1)
 {}
 
-BendingHinge::BendingHinge(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_)
+BendingHinge::BendingHinge(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_), myid(-1)
 {}
 
-BendingHinge::BendingHinge(const BendingHinge& orig) : D(orig.D), sinTheta0(orig.sinTheta0), theta0(orig.theta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4)
+BendingHinge::BendingHinge(const BendingHinge& orig) : 
+D(orig.D), sinTheta0(orig.sinTheta0), theta0(orig.theta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4), myid(orig.myid)
 {}
 
 BendingHinge::~BendingHinge()
@@ -109,4 +110,22 @@ double BendingHinge::calcSinTheta(const Vertex vs[]) const
     int sign = SIGN( dot( cross_n1n2 , e) );
     
     return ( sign * cross_n1n2.length() );
+}
+
+void BendingHinge::setId(int idx)
+{
+    myid = idx;
+}
+
+int BendingHinge::getId() const
+{
+    return myid;
+}
+
+std::ostream& operator<< (std::ostream & out, const BendingHinge& bs)
+{
+    out << bs.D << ' ' << bs.sinTheta0 << ' ' << bs.theta0 << ' ';
+    out << bs.x1 << ' ' << bs.x2 << ' ' << bs.x3 << ' ' << bs.x4 << ' ';
+    
+    return out;
 }

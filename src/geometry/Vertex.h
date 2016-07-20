@@ -61,6 +61,9 @@ class Vertex
 
         Vertex* next;
         
+        
+        friend std::ostream& operator<< (std::ostream &, const Vertex&);
+        
     private:
         int myid;
         int myCellId;

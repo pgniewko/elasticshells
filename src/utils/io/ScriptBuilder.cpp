@@ -56,7 +56,7 @@ void ScriptBuilder::saveSurfaceScript(const std::vector<Cell>& cells) const
         int faceCounter = 0;
         int idxa, idxb, idxc;
 
-        for (unsigned int i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberTriangles(); j++)
             {
@@ -109,7 +109,7 @@ void ScriptBuilder::saveRenderScript(const std::vector<Cell>& cells, const Box& 
 
         int lastCellIndex = 0;
 
-        for (unsigned int i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
             {
@@ -122,7 +122,7 @@ void ScriptBuilder::saveRenderScript(const std::vector<Cell>& cells, const Box& 
 
         lastCellIndex = 0;
 
-        for (unsigned int i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
             {
@@ -243,7 +243,7 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
         os << "cmd.do(\"set_color blue9 = [0,0.2,1] \")\n";
         os << "cmd.do(\"set_color blue10= [0,0.1,1] \")\n";
 
-        for (unsigned int i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
             {
@@ -256,7 +256,7 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
 
         lastCellIndex = 0;
 
-        for (unsigned int i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
             {
@@ -276,7 +276,7 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
 
         int counter = 1;
 
-        for (unsigned int i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
             {
@@ -297,7 +297,7 @@ void ScriptBuilder::saveStrainScript(const std::vector<Cell>& cells, const Box& 
         double strain = 0.0;
         double strain_max = 0.5;
 
-        for (unsigned int i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
             {
