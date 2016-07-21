@@ -313,6 +313,7 @@ void Simulator::simulate(int steps)
         }
         while ( check_const_volume() );
 
+        std::cout << "TOTAL ENERGY="<< Energy::calcTotalEnergy(cells, box, domains, "fem") << std::endl;
 
 
         if ( (i + 1) % params.save_step == 0)

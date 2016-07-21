@@ -1,7 +1,7 @@
 #include "Energy.h"
 
 utils::Logger Energy::energy_logs("energy");
-ulong ENERGY_EVALUATION_COUNTER(0);
+ulong Energy::ENERGY_EVALUATION_COUNTER(0);
 
 Energy::Energy() {}
 
@@ -11,15 +11,15 @@ Energy::~Energy() {}
 
 double Energy::calcTotalEnergy(const std::vector<Cell>& cells, const Box& box, const DomainList& domains, char* model_t)
 {
-    
     double totalEnergy  = 0.0;
     
     totalEnergy += calcMembraneEnergy(cells, box, model_t);
     totalEnergy += calcOsmoticEnergy(cells);
     totalEnergy += calcContactEnergy(cells, box, domains);
     
+    ENERGY_EVALUATION_COUNTER++;
+    
     return totalEnergy;
-
 }
 
 double Energy::calcMembraneEnergy(const std::vector<Cell>& cells, const Box& box, char* model_t)
@@ -58,9 +58,12 @@ double Energy::calcBendingEnergy(const std::vector<Cell>& cells)
     
     for (uint i = 0; i < cells.size(); i++)
     {
-        for (int j = 0; j < cells[i].number_s; j++)
+        if (!cells[i].no_bending)
         {
-            bendingEnergy += cells[i].bhinges[j].calcBendingEnergy(cells[i].vertices);
+            for (int j = 0; j < cells[i].number_s; j++)
+            {
+                bendingEnergy += cells[i].bhinges[j].calcBendingEnergy(cells[i].vertices);
+            }
         }
     }
     

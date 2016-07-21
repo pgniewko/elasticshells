@@ -23,6 +23,7 @@
 #include "force/OsmoticForce.h"
 #include "simulation/DomainList.h"
 #include "simulation/Restarter.h"
+#include "simulation/Energy.h"
 
 struct params_t
 {
