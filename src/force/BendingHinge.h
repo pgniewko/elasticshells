@@ -21,6 +21,7 @@ class BendingHinge
         void calcBendingForces(Vertex[]) const;
         double calcRadiusOfCurvature(Vertex[]) const;
         void setThetaZero(const Vertex[]);
+        double calcBendingEnergy(Vertex[]) const;
         
         void setId(int);
         int getId() const;

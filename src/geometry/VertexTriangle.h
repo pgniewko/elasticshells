@@ -22,6 +22,7 @@ class VertexTriangle
 
         Vector3D normal(const Vertex[]) const;
         void calcFemForces(Vertex[]) const;
+        void calcFemEnergy(const Vertex[]) const;
 
         void printVertexTriangle() const;
         void subsVertex(int, int);

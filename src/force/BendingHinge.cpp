@@ -70,7 +70,6 @@ void BendingHinge::calcBendingForces(Vertex vs[]) const
     vs[x2].f_c += (C * u2);
     vs[x3].f_c += (C * u3);
     vs[x4].f_c += (C * u4);
-
 }
 
 void BendingHinge::setThetaZero(const Vertex vs[])
@@ -128,4 +127,25 @@ std::ostream& operator<< (std::ostream & out, const BendingHinge& bs)
     out << bs.x1 << ' ' << bs.x2 << ' ' << bs.x3 << ' ' << bs.x4 << ' ';
     
     return out;
+}
+
+
+void BendingHinge::calcBendingEnergy(Vertex vs[]) const
+{
+    Vector3D E = vs[x4].r_c - vs[x3].r_c;
+    double E_norm = E.length();
+    double E_norm2 = E_norm * E_norm;
+
+    Vector3D A1 = 0.5 * cross(vs[x1].r_c - vs[x3].r_c, vs[x1].r_c - vs[x4].r_c);
+    double area1 = A1.length();
+
+    Vector3D A2 = 0.5 * cross(vs[x2].r_c - vs[x4].r_c, vs[x2].r_c - vs[x3].r_c);
+    double area2 = A2.length();
+
+    double theta = calcTheta(vs);
+
+    double C = D * E_norm2 / (area1 + area2);
+    
+    double bendingEnergy = C * (1.0 + fastmath::fast_cos(theta - theta0));// Grinspun; Discrete Quadratic Curvature Energies, Appendix
+    return bendingEnergy;
 }

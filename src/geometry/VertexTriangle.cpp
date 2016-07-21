@@ -194,3 +194,25 @@ std::ostream& operator<< (std::ostream &out, const VertexTriangle& vt)
     out << vt.ci[0] << ' ' <<vt.ci[1] << ' '  << vt.ci[2] << ' ';
     return out;
 }
+
+double VertexTriangle::calcFemEnergy(const Vertex vs[]) const
+{
+    double energy = 0.0;
+    double l0_sq = (vs[ib].r_c - vs[ic].r_c).length_sq() - L2[0];
+    double l1_sq = (vs[ia].r_c - vs[ic].r_c).length_sq() - L2[1];
+    double l2_sq = (vs[ia].r_c - vs[ib].r_c).length_sq() - L2[2];
+
+    energy += 0.25 * ki[0] * l0_sq * l0_sq;
+    energy += 0.25 * ki[1] * l1_sq * l1_sq;
+    energy += 0.25 * ki[2] * l2_sq * l2_sq;
+    
+    energy += 0.5 * ci[2] * l0_sq * l1_sq;
+    energy += 0.5 * ci[1] * l0_sq * l2_sq; 
+    
+    energy += 0.5 * ci[2] * l1_sq * l0_sq;
+    energy += 0.5 * ci[0] * l1_sq * l2_sq;
+    
+    energy += 0.5 * ci[1] * l2_sq * l0_sq;
+    energy += 0.5 * ci[0] * l2_sq * l1_sq;
+    return energy;
+}

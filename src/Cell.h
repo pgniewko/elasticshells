@@ -16,6 +16,7 @@
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
 #include "simulation/Tinker.h"
+#inclide "simulation/Energy.h"
 
 struct cell_params_t
 {
@@ -31,6 +32,7 @@ class Cell
 {
         friend class Tinker;
         friend class DomainList;
+        friend class Energy;
     public:
 
         Cell(int);
