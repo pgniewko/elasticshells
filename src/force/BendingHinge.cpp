@@ -130,7 +130,7 @@ std::ostream& operator<< (std::ostream & out, const BendingHinge& bs)
 }
 
 
-void BendingHinge::calcBendingEnergy(Vertex vs[]) const
+double BendingHinge::calcBendingEnergy(const Vertex vs[]) const
 {
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
     double E_norm = E.length();

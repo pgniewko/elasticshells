@@ -4,6 +4,7 @@
 #include "Environment.h"
 #include "simulation/Box.h"
 #include "Cell.h"
+#include "simulation/DomainList.h"
 
 class Energy {
 public:
@@ -11,14 +12,14 @@ public:
     Energy(const Energy& orig);
     virtual ~Energy();
     
-    static double calcTotalEnergy(const std::vector<Cell>&, const Box&);
-    static double calcMembraneEnergy(const std::vector<Cell>&, const Box&);
+    static double calcTotalEnergy(const std::vector<Cell>&, const Box&, const DomainList&, char*);
+    static double calcMembraneEnergy(const std::vector<Cell>&, const Box&, char*);
     static double calcOsmoticEnergy(const std::vector<Cell>&);
-    static double calcContactEnergy(const std::vector<Cell>&, const Box&);
+    static double calcContactEnergy(const std::vector<Cell>&, const Box&, const DomainList&);
     
     static double calcBendingEnergy(const std::vector<Cell>&);
     static double calcStretchEnergy(const std::vector<Cell>&, const Box&, char*);
-    static double calcCellCellEnergy(const std::vector<Cell>&, const Box&);
+    static double calcCellCellEnergy(const std::vector<Cell>&, const Box&, const DomainList&);
     static double calcCellBoxEnergy(const std::vector<Cell>&, const Box&);
     
     

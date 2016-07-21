@@ -16,7 +16,7 @@
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
 #include "simulation/Tinker.h"
-#inclide "simulation/Energy.h"
+//#include "simulation/Energy.h"
 
 struct cell_params_t
 {

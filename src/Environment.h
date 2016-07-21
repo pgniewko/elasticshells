@@ -37,6 +37,7 @@ namespace constants
     const double epsilon = 0.001;
     const double p3root2 = 1.25992104989487;
     const double d4_3    = 1.33333333333333;
+    const double d2_5    = 0.40000000000000;
     const char names[26] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
                             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
                            };
