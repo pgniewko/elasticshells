@@ -98,7 +98,7 @@ class Cell
         double getStrain(int, int) const;
         void update(double = 0.0);
         
-        const cell_params_t& get_params();
+        const cell_params_t& get_params() const;
 
         static bool no_bending;
         

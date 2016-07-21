@@ -155,5 +155,5 @@ double Energy::calcCellBoxEnergy(const std::vector<Cell>& cells, const Box& box)
 
 double Energy::calcCellCellEnergy(const std::vector<Cell>& cells, const Box& box, const DomainList& domains)
 {
-    
+    return domains.calcNbEnergy(cells, box);
 }

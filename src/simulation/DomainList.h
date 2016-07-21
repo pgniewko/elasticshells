@@ -50,6 +50,7 @@ class DomainList
         int getNumOfParticles(int);
         
         void calcNbForces(std::vector<Cell>&, const Box&);
+        double calcNbEnergy(const std::vector<Cell>&, const Box&) const;
 
         //private:
         int m;
@@ -73,6 +74,7 @@ class DomainList
         
 private:
     void nbForce(Vertex*, Vertex*, std::vector<Cell>&, const Box&);
+    double nbEnergy(const Vertex*, const Vertex*, const std::vector<Cell>&, const Box&) const;
     bool validateLinkedDomains();
 
 };

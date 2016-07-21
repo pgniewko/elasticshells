@@ -360,7 +360,6 @@ void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box)
             }
         }
     }
-    
 }
 
 
@@ -401,4 +400,82 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
             partner->f_c += -force;
         }
     }
+}
+
+
+double DomainList::calcNbEnergy(const std::vector<Cell>& cells, const Box& box) const 
+{
+    double totalNbEnergy = 0.0;
+    Vertex* target;
+    Vertex* partner;
+    
+    int neighIndex;
+    for (int domainIdx = 0; domainIdx < N; domainIdx++)
+    {
+        if (head[domainIdx] != 0)
+        {
+            // INTRA-DOMAIN CONTACTS
+            for (target = head[domainIdx]; target != 0; target = target->next)
+            {
+                for (partner = target->next; partner != 0; partner = partner->next)
+                {
+                    totalNbEnergy += nbEnergy(target, partner, cells, box);
+                }
+            }
+            
+            // INTRA-DOMAIN CONTACTS
+            for (target = head[domainIdx]; target != 0; target = target->next)
+            {
+                for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
+                {
+                    neighIndex = domains[domainIdx].neighborDomainIdx[k];
+                    if (neighIndex > domainIdx)
+                    {
+                        for (partner = head[neighIndex]; partner != 0; partner = partner->next)
+                        {
+                            totalNbEnergy += nbEnergy(target, partner, cells, box);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+double DomainList::nbEnergy(const Vertex* target, const Vertex* partner, const std::vector<Cell>& cells, const Box& box) const
+{   
+    double nb_energy = 0.0;
+    int cellId_target = target->getCellId();
+    int cellId_partner = partner->getCellId();
+    
+    const struct cell_params_t params1 = cells[cellId_target].get_params();
+    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+    
+    double r1 = params1.vertex_r;
+    double r2 = params2.vertex_r;
+    double e1 = params1.ecc;
+    double e2 = params2.ecc;
+    double nu1 = params1.nu;
+    double nu2 = params2.nu;
+    
+    Vector3D dij;
+    
+    if (cellId_target != cellId_partner)
+    {
+        Box::getDistance(dij, partner->r_c, target->r_c, box);
+        nb_energy = HertzianRepulsion::calcEnergy(dij, r1, r2, e1, e2, nu1, nu2);
+    }
+    else
+    {
+        int i = target->getId();
+        int j = partner->getId();
+        if (i != j && !target->isNeighbor(j))
+        {
+            Box::getDistance(dij, partner->r_c, target->r_c, box);
+            nb_energy = HertzianRepulsion::calcEnergy(dij, r1, r1, e1, e1, nu1, nu1);
+
+        }
+    }
+    
+    return nb_energy;
 }

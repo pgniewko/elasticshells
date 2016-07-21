@@ -1046,7 +1046,7 @@ void Cell::ajustTurgor(double step)
     params.dp = (1.0 + step) * params.dp;
 }
 
-const cell_params_t& Cell::get_params()
+const cell_params_t& Cell::get_params() const
 {
     return params;
 }
