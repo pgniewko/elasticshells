@@ -284,7 +284,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 418:
             arguments->model_type = arg;
             break;
-            
+
         case 419:
             arguments->restart = true;
             break;
@@ -455,7 +455,7 @@ int main(int argc, char** argv)
     arguments.output_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".out");
     arguments.surface_file = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".surface.py");
     arguments.stress_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".stress.py");
-    arguments.topology_file= std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".top");
+    arguments.topology_file = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".top");
     arguments.lf_file      = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".lf.xyz");
 
     /* Initialize MT19937 Pseudo-random-number generator. */
@@ -471,7 +471,7 @@ int main(int argc, char** argv)
 
     if (arguments.n_cells == 0)
     {
-        biofilm_logs << utils::LogLevel::INFO << "NUMBER OF CELLS IS ZERO (0). NOTHING TO DO !"<< "\n";
+        biofilm_logs << utils::LogLevel::INFO << "NUMBER OF CELLS IS ZERO (0). NOTHING TO DO !" << "\n";
     }
     else
     {

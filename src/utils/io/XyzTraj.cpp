@@ -6,7 +6,7 @@ XyzTraj::XyzTraj(std::string tf, std::string bf) : trajfile(tf), boxfile(bf) {}
 
 XyzTraj::XyzTraj(const XyzTraj& orig) : trajfile(orig.trajfile), boxfile(orig.boxfile) {}
 
-XyzTraj::~XyzTraj() 
+XyzTraj::~XyzTraj()
 {
     //delete os;
     //delete osb;
@@ -29,9 +29,9 @@ void XyzTraj::open_traj()
 
 }
 
-    
+
 void XyzTraj::open_box()
-{    
+{
     osb = fopen(boxfile.c_str(), "w");
 
     if ( osb == NULL )

@@ -33,8 +33,8 @@ class VertexTriangle
         int ib = -1;
         int ic = -1;
         int myid = -1;
-        
-        friend std::ostream& operator<< (std::ostream &, const VertexTriangle &);
+
+        friend std::ostream& operator<< (std::ostream&, const VertexTriangle&);
 
     private:
         void setL2(const Vertex[]);

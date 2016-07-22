@@ -245,19 +245,19 @@ void Vertex::printVertex()
     std::cout << std::endl;
 }
 
-std::ostream& operator<< (std::ostream & out, const Vertex& v)
+std::ostream& operator<< (std::ostream& out, const Vertex& v)
 {
     out << ' ' << v.myid << ' ' << v.numBonded << ' ' << v.numTris << ' ';
-    
-    for(int i = 0; i < v.numBonded; i++)
+
+    for (int i = 0; i < v.numBonded; i++)
     {
         out << v.bondedVerts[i] << ' ' << v.r0[i] << ' ' << v.k0[i] << ' ';
     }
-    
-    for(int i = 0; i < v.numTris; i++)
+
+    for (int i = 0; i < v.numTris; i++)
     {
         out << v.bondedTris[i] << ' ';
     }
-    
+
     return out;
 }

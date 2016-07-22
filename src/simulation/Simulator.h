@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdio.h>      /* fprintf*/
 #include <stdlib.h>     /* atoi,  strtod */
+#include <math.h>
 
 #include "Box.h"
 #include "Environment.h"
@@ -61,7 +62,7 @@ class Simulator
 
         void initCells(int, double);
         void initCells(int, double, double);
-        void initCells(int, double, double, char*,bool=false);
+        void initCells(int, double, double, char*, bool = false);
 
     private:
 
@@ -84,6 +85,14 @@ class Simulator
         void heunMethod();
         void midpointRungeKutta();
         void gear_cp();
+
+
+
+        void cg();
+        double func(double[]);
+        void dfunc(double[], double[]);
+
+
 
         int getTotalVertices();
         double getLengthScale();
@@ -111,11 +120,15 @@ class Simulator
         LogSimulation log_sim;
 
         DomainList domains;
-        
+
         Restarter restarter;
 
         static utils::Logger simulator_logs;
         static ulong FORCE_EVALUATION_COUTER;
+
+        //double *g  = 0;
+        //double *h  = 0;
+        //double *xi = 0;
 };
 
 #endif	/* SIMULATOR_H */

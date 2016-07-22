@@ -2,12 +2,13 @@
 
 utils::Logger Restarter::restarter_logs("restarter");
 
-Restarter::Restarter(std::string tf, std::string lff) :topologyFile(tf), lastFrameFile(lff)
+Restarter::Restarter(std::string tf, std::string lff) : topologyFile(tf), lastFrameFile(lff)
 {}
 
 Restarter::Restarter(const Restarter& orig) : topologyFile(orig.topologyFile), lastFrameFile(orig.lastFrameFile) {}
 
-Restarter::~Restarter() {
+Restarter::~Restarter()
+{
 }
 
 int Restarter::getTotalVertices(const std::vector<Cell>& cells) const
@@ -26,17 +27,19 @@ void Restarter::saveTopologyFile(const std::vector<Cell>& cells, char* model_t) 
 {
     std::ofstream os;
     os.open(topologyFile);
+
     if ( os.is_open() )
     {
-        os << "NUMCELLS " << cells.size() << ' ' << model_t<< "\n";
-        for (uint i = 0; i< cells.size(); i++)
+        os << "NUMCELLS " << cells.size() << ' ' << model_t << "\n";
+
+        for (uint i = 0; i < cells.size(); i++)
         {
             os << cells[i];
-            
+
         }
-        
+
         int lastCellIndex = 0;
-        
+
         for (uint i = 0; i < cells.size(); i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -46,7 +49,7 @@ void Restarter::saveTopologyFile(const std::vector<Cell>& cells, char* model_t) 
 
             lastCellIndex += cells[i].getNumberVertices();
         }
-        
+
         os.close();
     }
     else

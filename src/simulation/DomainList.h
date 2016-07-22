@@ -14,10 +14,13 @@ struct domain_t
     {
         myid = -1;
         neighborDomainNumber = 0;
+
         for (int i = 0; i < MAX_D_NEIGH; i++)
+        {
             neighborDomainIdx[i] = -1;
+        }
     }
-    
+
     int myid;
     int neighborDomainNumber;
     int neighborDomainIdx[MAX_D_NEIGH];
@@ -48,7 +51,7 @@ class DomainList
         int getVertexIdx(int, int);
         int getCellIdx(int, int);
         int getNumOfParticles(int);
-        
+
         void calcNbForces(std::vector<Cell>&, const Box&);
         double calcNbEnergy(const std::vector<Cell>&, const Box&) const;
 
@@ -71,11 +74,11 @@ class DomainList
 
         void addNeighDomain(int, int);
         void addVertex(int, int);
-        
-private:
-    void nbForce(Vertex*, Vertex*, std::vector<Cell>&, const Box&);
-    double nbEnergy(const Vertex*, const Vertex*, const std::vector<Cell>&, const Box&) const;
-    bool validateLinkedDomains();
+
+    private:
+        void nbForce(Vertex*, Vertex*, std::vector<Cell>&, const Box&);
+        double nbEnergy(const Vertex*, const Vertex*, const std::vector<Cell>&, const Box&) const;
+        bool validateLinkedDomains();
 
 };
 
