@@ -49,7 +49,7 @@ class Cell
         void calcHarmonicForces();
         void calcFemForces();
         void calcOsmoticForces();
-        
+
         void calcNbForcesON2(const Cell&, const Box&);
         void calcBoxForces(const Box&);
 
@@ -97,12 +97,12 @@ class Cell
         double getTurgor() const;
         double getStrain(int, int) const;
         void update(double = 0.0);
-        
+
         const cell_params_t& get_params() const;
 
         static bool no_bending;
-        
-        friend std::ostream& operator<< (std::ostream &, const Cell &);
+
+        friend std::ostream& operator<< (std::ostream&, const Cell&);
 
     private:
 

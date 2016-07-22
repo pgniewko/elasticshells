@@ -48,7 +48,7 @@ double HertzianRepulsion::calcEnergy(const Vector3D& dij, const double R1, const
     double energy = 0.0;
     double h;
     double r_eff;
-    
+
     if (R1 > 0 && R2 > 0)
     {
         r_eff = R1 * R2 / (R1 + R2);
@@ -61,7 +61,7 @@ double HertzianRepulsion::calcEnergy(const Vector3D& dij, const double R1, const
     }
 
 
-    
+
     double D = 0.75 * ( (1 - nu1 * nu1) / e1 + (1 - nu2 * nu2) / e2 );
 
     if (h > 0)

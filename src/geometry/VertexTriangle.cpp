@@ -185,13 +185,13 @@ void VertexTriangle::calcFemForces(Vertex vs[]) const
 
 }
 
-std::ostream& operator<< (std::ostream &out, const VertexTriangle& vt)
+std::ostream& operator<< (std::ostream& out, const VertexTriangle& vt)
 {
     out << vt.myid << ' ' << vt.ia << ' ' << vt.ib << ' ' << vt.ic << ' ';
-    out << vt.an[0] << ' ' <<vt.an[1] << ' '  << vt.an[2] << ' ';
-    out << vt.L2[0] << ' ' <<vt.L2[1] << ' '  << vt.L2[2] << ' ';
-    out << vt.ki[0] << ' ' <<vt.ki[1] << ' '  << vt.ki[2] << ' ';
-    out << vt.ci[0] << ' ' <<vt.ci[1] << ' '  << vt.ci[2] << ' ';
+    out << vt.an[0] << ' ' << vt.an[1] << ' '  << vt.an[2] << ' ';
+    out << vt.L2[0] << ' ' << vt.L2[1] << ' '  << vt.L2[2] << ' ';
+    out << vt.ki[0] << ' ' << vt.ki[1] << ' '  << vt.ki[2] << ' ';
+    out << vt.ci[0] << ' ' << vt.ci[1] << ' '  << vt.ci[2] << ' ';
     return out;
 }
 
@@ -205,10 +205,10 @@ double VertexTriangle::calcFemEnergy(const Vertex vs[]) const
     energy += 0.25 * ki[0] * l0_sq * l0_sq;
     energy += 0.25 * ki[1] * l1_sq * l1_sq;
     energy += 0.25 * ki[2] * l2_sq * l2_sq;
-    
+
     energy += 0.5 * ci[0] * l1_sq * l2_sq;
-    energy += 0.5 * ci[1] * l0_sq * l2_sq; 
+    energy += 0.5 * ci[1] * l0_sq * l2_sq;
     energy += 0.5 * ci[2] * l0_sq * l1_sq;
-    
+
     return energy;
 }

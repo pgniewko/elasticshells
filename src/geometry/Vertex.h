@@ -60,10 +60,10 @@ class Vertex
         int numTris;                // make it private
 
         Vertex* next;
-        
-        
-        friend std::ostream& operator<< (std::ostream &, const Vertex&);
-        
+
+
+        friend std::ostream& operator<< (std::ostream&, const Vertex&);
+
     private:
         int myid;
         int myCellId;

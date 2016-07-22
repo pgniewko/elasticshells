@@ -404,7 +404,7 @@ void Cell::setSpringConst(double E, double t, double nu_, char* model_t)
 void Cell::setCellId(int ix)
 {
     cell_id = ix;
-    
+
     for (int i = 0; i < number_v; i++)
     {
         vertices[i].setCellId(cell_id);
@@ -1028,7 +1028,8 @@ void Cell::update(double d)
 
 void Cell::setConstantVolume(double scale)
 {
-    params.vol_c = V0 * (scale*scale*scale);
+    params.vol_c = V0 * (scale * scale * scale);
+
     if (calcVolume() != V0)
     {
         cell_log << utils::LogLevel::WARNING << "(calcVolume() != V0) @setConstantVolume\n";
@@ -1051,29 +1052,29 @@ const cell_params_t& Cell::get_params() const
     return params;
 }
 
-std::ostream& operator<< (std::ostream &out, const Cell& c)
+std::ostream& operator<< (std::ostream& out, const Cell& c)
 {
     out << "CELL " << c.cell_id << ' ';
-    out << c.number_v <<' ' << c.number_t << ' ' << c.number_s << ' ';
+    out << c.number_v << ' ' << c.number_t << ' ' << c.number_s << ' ';
     out << c.params.vertex_r << ' ' << c.params.ecc << ' ' << c.params.nu << ' ';
-    out << c.params.dp << ' ' << c.params.init_r << ' ' << c.params.vol_c << ' '; 
+    out << c.params.dp << ' ' << c.params.init_r << ' ' << c.params.vol_c << ' ';
     out << c.nRT << ' ' << c.V0;
-    
+
     for (int i = 0; i < c.number_v; i++)
     {
         out << "CELLVERTEX " <<  c.cell_id << ' ' << c.vertices[i] << '\n';
     }
-    
+
     for (int i = 0; i < c.number_t; i++)
     {
         out << "CELLTRIANG " <<  c.cell_id << ' ' << c.triangles[i] << '\n';
     }
-    
+
     for (int i = 0; i < c.number_s; i++)
     {
         out << "CELLHINGE " <<  c.cell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
     }
-    
-    
+
+
     return out;
 }

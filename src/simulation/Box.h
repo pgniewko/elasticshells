@@ -53,7 +53,7 @@ class Box
 
         void configureScheduler(char*);
         void setDefaultSchedule(int, int, double, double, double, double, double, double);
-        
+
         static void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&);
 
     private:

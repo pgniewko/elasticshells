@@ -6,8 +6,8 @@ BendingHinge::BendingHinge() : x1(-1), x2(-1), x3(-1), x4(-1), myid(-1)
 BendingHinge::BendingHinge(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_), myid(-1)
 {}
 
-BendingHinge::BendingHinge(const BendingHinge& orig) : 
-D(orig.D), sinTheta0(orig.sinTheta0), theta0(orig.theta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4), myid(orig.myid)
+BendingHinge::BendingHinge(const BendingHinge& orig) :
+    D(orig.D), sinTheta0(orig.sinTheta0), theta0(orig.theta0), x1(orig.x1), x2(orig.x2), x3(orig.x3), x4(orig.x4), myid(orig.myid)
 {}
 
 BendingHinge::~BendingHinge()
@@ -107,7 +107,7 @@ double BendingHinge::calcSinTheta(const Vertex vs[]) const
 
     Vector3D cross_n1n2 = cross(n1, n2);
     int sign = SIGN( dot( cross_n1n2 , e) );
-    
+
     return ( sign * cross_n1n2.length() );
 }
 
@@ -121,11 +121,11 @@ int BendingHinge::getId() const
     return myid;
 }
 
-std::ostream& operator<< (std::ostream & out, const BendingHinge& bs)
+std::ostream& operator<< (std::ostream& out, const BendingHinge& bs)
 {
     out << bs.D << ' ' << bs.sinTheta0 << ' ' << bs.theta0 << ' ';
     out << bs.x1 << ' ' << bs.x2 << ' ' << bs.x3 << ' ' << bs.x4 << ' ';
-    
+
     return out;
 }
 
@@ -145,7 +145,7 @@ double BendingHinge::calcBendingEnergy(const Vertex vs[]) const
     double theta = calcTheta(vs);
 
     double C = D * E_norm2 / (area1 + area2);
-    
+
     double bendingEnergy = C * (1.0 - fastmath::fast_cos(theta - theta0));
     return bendingEnergy;
 }

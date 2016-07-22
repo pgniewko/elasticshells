@@ -22,13 +22,13 @@ class BendingHinge
         double calcRadiusOfCurvature(Vertex[]) const;
         void setThetaZero(const Vertex[]);
         double calcBendingEnergy(const Vertex[]) const;
-        
+
         void setId(int);
         int getId() const;
-        
+
         friend bool operator== (BendingHinge&, BendingHinge&);
-        friend std::ostream& operator<< (std::ostream &, const BendingHinge&);
-        
+        friend std::ostream& operator<< (std::ostream&, const BendingHinge&);
+
     private:
         double D = 0.0;
         double sinTheta0 = 0.0;

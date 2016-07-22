@@ -81,7 +81,7 @@ inline double Vector3D::length_sq() const
 inline void Vector3D::set_length(double r)
 {
     double rl = r * inv_length();
-    
+
     if ( std::isfinite(rl) )
     {
         x *= rl;

@@ -51,7 +51,7 @@ bool DomainList::validateLinkedDomains()
             return false;
         }
     }
-    
+
     for (int i = 0; i < N; i++)
     {
         for (int j = 0; j < domains[i].neighborDomainNumber; j++)
@@ -62,6 +62,7 @@ bool DomainList::validateLinkedDomains()
             }
         }
     }
+
     return true;
 }
 
@@ -246,11 +247,12 @@ void DomainList::setM(Box& box)
     N = m * m * m;
     m_assigned = true;
     domains.reserve(N);
+
     for (int i = 0; i < N; i++)
     {
         domains[i] = domain_t();
     }
-    
+
     domainlist_logs << utils::LogLevel::INFO << "NUMBER OF LINKED DOMAINS N_DOMAINS=" << N << "\n";
 }
 
@@ -300,10 +302,12 @@ int DomainList::getNumberOfNeigh(int dix)
 int DomainList::getNumOfParticles(int dix)
 {
     int counter = 0;
+
     for (Vertex* s = head[dix]; s != 0; s = s->next)
     {
         counter++;
     }
+
     return counter;
 }
 
@@ -328,8 +332,9 @@ void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box)
 {
     Vertex* target;
     Vertex* partner;
-    
+
     int neighIndex;
+
     for (int domainIdx = 0; domainIdx < N; domainIdx++)
     {
         if (head[domainIdx] != 0)
@@ -342,13 +347,14 @@ void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box)
                     nbForce(target, partner, cells, box);
                 }
             }
-            
+
             // INTRA-DOMAIN CONTACTS
             for (target = head[domainIdx]; target != 0; target = target->next)
             {
                 for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
                 {
                     neighIndex = domains[domainIdx].neighborDomainIdx[k];
+
                     if (neighIndex > domainIdx)
                     {
                         for (partner = head[neighIndex]; partner != 0; partner = partner->next)
@@ -364,23 +370,23 @@ void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box)
 
 
 void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cells, const Box& box)
-{   
+{
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
-    
+
     const struct cell_params_t params1 = cells[cellId_target].get_params();
     const struct cell_params_t params2 = cells[cellId_partner].get_params();
-    
+
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;
     double e1 = params1.ecc;
     double e2 = params2.ecc;
     double nu1 = params1.nu;
     double nu2 = params2.nu;
-    
-    Vector3D force(0,0,0);
+
+    Vector3D force(0, 0, 0);
     Vector3D dij;
-    
+
     if (cellId_target != cellId_partner)
     {
         Box::getDistance(dij, partner->r_c, target->r_c, box);
@@ -392,6 +398,7 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
     {
         int i = target->getId();
         int j = partner->getId();
+
         if (i != j && !target->isNeighbor(j))
         {
             Box::getDistance(dij, partner->r_c, target->r_c, box);
@@ -403,13 +410,14 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
 }
 
 
-double DomainList::calcNbEnergy(const std::vector<Cell>& cells, const Box& box) const 
+double DomainList::calcNbEnergy(const std::vector<Cell>& cells, const Box& box) const
 {
     double totalNbEnergy = 0.0;
     Vertex* target;
     Vertex* partner;
-    
+
     int neighIndex;
+
     for (int domainIdx = 0; domainIdx < N; domainIdx++)
     {
         if (head[domainIdx] != 0)
@@ -422,13 +430,14 @@ double DomainList::calcNbEnergy(const std::vector<Cell>& cells, const Box& box) 
                     totalNbEnergy += nbEnergy(target, partner, cells, box);
                 }
             }
-            
+
             // INTRA-DOMAIN CONTACTS
             for (target = head[domainIdx]; target != 0; target = target->next)
             {
                 for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
                 {
                     neighIndex = domains[domainIdx].neighborDomainIdx[k];
+
                     if (neighIndex > domainIdx)
                     {
                         for (partner = head[neighIndex]; partner != 0; partner = partner->next)
@@ -443,23 +452,23 @@ double DomainList::calcNbEnergy(const std::vector<Cell>& cells, const Box& box) 
 }
 
 double DomainList::nbEnergy(const Vertex* target, const Vertex* partner, const std::vector<Cell>& cells, const Box& box) const
-{   
+{
     double nb_energy = 0.0;
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
-    
+
     const struct cell_params_t params1 = cells[cellId_target].get_params();
     const struct cell_params_t params2 = cells[cellId_partner].get_params();
-    
+
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;
     double e1 = params1.ecc;
     double e2 = params2.ecc;
     double nu1 = params1.nu;
     double nu2 = params2.nu;
-    
+
     Vector3D dij;
-    
+
     if (cellId_target != cellId_partner)
     {
         Box::getDistance(dij, partner->r_c, target->r_c, box);
@@ -469,6 +478,7 @@ double DomainList::nbEnergy(const Vertex* target, const Vertex* partner, const s
     {
         int i = target->getId();
         int j = partner->getId();
+
         if (i != j && !target->isNeighbor(j))
         {
             Box::getDistance(dij, partner->r_c, target->r_c, box);
@@ -476,6 +486,6 @@ double DomainList::nbEnergy(const Vertex* target, const Vertex* partner, const s
 
         }
     }
-    
+
     return nb_energy;
 }
