@@ -206,13 +206,9 @@ double VertexTriangle::calcFemEnergy(const Vertex vs[]) const
     energy += 0.25 * ki[1] * l1_sq * l1_sq;
     energy += 0.25 * ki[2] * l2_sq * l2_sq;
     
-    energy += 0.5 * ci[2] * l0_sq * l1_sq;
-    energy += 0.5 * ci[1] * l0_sq * l2_sq; 
-    
-    energy += 0.5 * ci[2] * l1_sq * l0_sq;
     energy += 0.5 * ci[0] * l1_sq * l2_sq;
+    energy += 0.5 * ci[1] * l0_sq * l2_sq; 
+    energy += 0.5 * ci[2] * l0_sq * l1_sq;
     
-    energy += 0.5 * ci[1] * l2_sq * l0_sq;
-    energy += 0.5 * ci[0] * l2_sq * l1_sq;
     return energy;
 }

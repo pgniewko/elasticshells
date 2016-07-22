@@ -283,6 +283,8 @@ void Simulator::simulate(int steps)
     {
         rebuildDomainsList();
     }
+    
+    //std::cout << "TOTAL ENERGY="<< Energy::calcTotalEnergy(cells, box, domains, "fem") << std::endl;
 
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
@@ -295,6 +297,7 @@ void Simulator::simulate(int steps)
 
     bool resized = false;
 
+    //calcForces();
     for (int i = 0; i < steps; i++)
     {
 
@@ -306,6 +309,7 @@ void Simulator::simulate(int steps)
         do
         {
             do
+            //while ( check_min_force() )
             {
                 integrate();
             }
@@ -313,7 +317,7 @@ void Simulator::simulate(int steps)
         }
         while ( check_const_volume() );
 
-        std::cout << "TOTAL ENERGY="<< Energy::calcTotalEnergy(cells, box, domains, "fem") << std::endl;
+        //std::cout << "TOTAL ENERGY="<< Energy::calcTotalEnergy(cells, box, domains) << std::endl;
 
 
         if ( (i + 1) % params.save_step == 0)

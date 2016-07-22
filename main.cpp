@@ -476,6 +476,7 @@ int main(int argc, char** argv)
     else
     {
         clocks[0].tic();
+        Energy::setModelType(arguments.model_type);
         simulation_time = read_timer();
         Simulator simulator(arguments);
         simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.model_type);

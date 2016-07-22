@@ -146,6 +146,6 @@ double BendingHinge::calcBendingEnergy(const Vertex vs[]) const
 
     double C = D * E_norm2 / (area1 + area2);
     
-    double bendingEnergy = C * (1.0 + fastmath::fast_cos(theta - theta0));// Grinspun; Discrete Quadratic Curvature Energies, Appendix
+    double bendingEnergy = C * (1.0 - fastmath::fast_cos(theta - theta0));
     return bendingEnergy;
 }
