@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdio.h>      /* fprintf*/
 #include <stdlib.h>     /* atoi,  strtod */
+#include <assert.h>
 
 #include "Box.h"
 #include "Environment.h"
@@ -22,6 +23,10 @@
 #include "utils/Logger.h"
 #include "force/OsmoticForce.h"
 #include "simulation/DomainList.h"
+#include "simulation/Restarter.h"
+#include "simulation/Energy.h"
+#include "utils/nrutil.h"
+//#include "cg/cg.h"
 
 struct params_t
 {
@@ -41,12 +46,10 @@ struct params_t
     double volume_scale;
     double ttime;
     double r_vertex;
-    double verlet_f;
-    double v_disp_cut2;
     bool draw_box;
     bool scale;
     bool dynamics;
-    bool const_volume; 
+    bool const_volume;
 };
 
 class Simulator
@@ -61,7 +64,7 @@ class Simulator
 
         void initCells(int, double);
         void initCells(int, double, double);
-        void initCells(int, double, double, char*);
+        void initCells(int, double, double, char*, bool = false);
 
     private:
 
@@ -78,20 +81,18 @@ class Simulator
 
         void calcForces();
         void integrate();
-        void rebuildVerletLists();
         void rebuildDomainsList();
 
         void integrateEuler();
         void heunMethod();
         void midpointRungeKutta();
+        void gear_cp();
 
         int getTotalVertices();
         double getLengthScale();
 
         void updateCells();
         void update_neighbors_list();
-
-        bool verlet_condition();
 
         void set_min_force();
         bool check_min_force();
@@ -113,8 +114,23 @@ class Simulator
         LogSimulation log_sim;
 
         DomainList domains;
+        Restarter restarter;
 
         static utils::Logger simulator_logs;
+        static ulong FORCE_EVALUATION_COUTER;
+
+        // CONJUGATE GRADIENTS CODE
+        void cg();
+        double func(double[]);
+        void dfunc(double[], double[]);
+        void frprmn(double p[], int n, double ftol, int* iter, double* fret);
+        void linmin(double p[], double xi[], int n, double* fret );
+        void dlinmin(double p[], double xi[], int n, double* fret );
+        void mnbrak(double* ax, double* bx, double* cx, double* fa, double* fb, double* fc);
+        double brent(double ax, double bx, double cx, double tol, double* xmins);
+        double dbrent(double ax, double bx, double cx, double tol, double* xmin);
+        double df1dim(double x);
+        double f1dim(double x);
 };
 
 #endif	/* SIMULATOR_H */

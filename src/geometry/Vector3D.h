@@ -11,7 +11,6 @@
 class Vector3D
 {
     public:
-        //Vector3D() : x(0), y(0), z(0) {}
         Vector3D() {} // do i need this one ?
         Vector3D(double a, double b, double c) : x(a), y(b), z(c) {}
         Vector3D(const Vector3D& orig) : x(orig.x), y(orig.y), z(orig.z) {}
@@ -22,6 +21,7 @@ class Vector3D
         const Vector3D& operator *=(const double a);
         const Vector3D& operator /=(const double a);
         double length() const;
+        double inv_length() const;
         double length_sq() const;
         void set_length(double r);
         void normalize();
@@ -65,7 +65,12 @@ inline const Vector3D& Vector3D::operator /=(const double a)
 
 inline double Vector3D::length() const
 {
-    return sqrt(x * x + y * y + z * z);
+    return fastmath::fast_sqrt(x * x + y * y + z * z);
+}
+
+inline double Vector3D::inv_length() const
+{
+    return fastmath::fast_invsqrt(x * x + y * y + z * z);
 }
 
 inline double Vector3D::length_sq() const
@@ -75,21 +80,26 @@ inline double Vector3D::length_sq() const
 
 inline void Vector3D::set_length(double r)
 {
-    if (length() != 0)
+    double rl = r * inv_length();
+
+    if ( std::isfinite(rl) )
     {
-        double rl = r / length();
         x *= rl;
         y *= rl;
         z *= rl;
+    }
+    else
+    {
+        // PRINT A WARNING
     }
 }
 
 inline void Vector3D::normalize()
 {
-    double len = length();
-    x /= len;
-    y /= len;
-    z /= len;
+    double invlen = inv_length();
+    x *= invlen;
+    y *= invlen;
+    z *= invlen;
 }
 
 template <typename InputStreamT>
@@ -183,10 +193,5 @@ inline double dot(const Vector3D& v1, const Vector3D& v2)
 {
     return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 }
-
-//inline double dotd(const Vector3Dd& v1, const Vector3Dd& v2)
-//{
-//    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
-//}
 
 #endif	/* VECTOR3_H */

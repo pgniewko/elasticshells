@@ -15,7 +15,6 @@
 #include "force/BendingHinge.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
-#include "simulation/DomainList.h"
 #include "simulation/Tinker.h"
 
 struct cell_params_t
@@ -24,7 +23,6 @@ struct cell_params_t
     double ecc;
     double nu;
     double dp;
-    double verlet_f;
     double init_r;
     double vol_c;
 };
@@ -32,6 +30,8 @@ struct cell_params_t
 class Cell
 {
         friend class Tinker;
+        friend class DomainList;
+        friend class Energy;
     public:
 
         Cell(int);
@@ -48,13 +48,9 @@ class Cell
         void calcHarmonicForces();
         void calcFemForces();
         void calcOsmoticForces();
-        void calcNbForcesON2(const Cell&, const Box&);
-        void calcNbForcesVL(const Cell&, const Box&);
-        void calcBoxForces(const Box&);
 
-        void voidVerletLsit();
-        void builtVerletList(const Cell&, const Box&);
-        void builtNbList(std::vector<Cell>&, DomainList&, const Box&);
+        void calcNbForcesON2(const Cell&, const Box&);
+        void calcBoxForces(const Box&);
 
         void addXYZ(const Vector3D&);
 
@@ -66,11 +62,10 @@ class Cell
         void setCellId(int);
         void setNu(double);
         void setBSprings(double, double, double);
-        void setConstantVolume(double=1.0);
-        double checkVolumeCondition(double=0.0);
-        void ajustTurgor(double=0.0);
+        void setConstantVolume(double = 1.0);
+        double checkVolumeCondition(double = 0.0);
+        void ajustTurgor(double = 0.0);
 
-        void setVerletR(double);
         void setInitR(double);
 
         double getInitR() const;
@@ -80,7 +75,6 @@ class Cell
         double getNu() const;
 
         void voidForces();
-        void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&) const;
 
         Vector3D cm_m;
         Vertex vertices[MAX_V];
@@ -103,7 +97,11 @@ class Cell
         double getStrain(int, int) const;
         void update(double = 0.0);
 
+        const cell_params_t& get_params() const;
+
         static bool no_bending;
+
+        friend std::ostream& operator<< (std::ostream&, const Cell&);
 
     private:
 
@@ -129,6 +127,5 @@ class Cell
 
         static utils::Logger cell_log;
 };
-
 
 #endif	/* CELL_H */

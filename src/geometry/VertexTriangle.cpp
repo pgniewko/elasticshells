@@ -7,9 +7,9 @@ double cot(double x)
 
 VertexTriangle::VertexTriangle() {}
 
-VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), myindex(-1) {}
+VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), myid(-1) {}
 
-VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(orig.ib), ic(orig.ic), myindex(orig.myindex)
+VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(orig.ib), ic(orig.ic), myid(orig.myid)
 {
     for (int i = 0; i < 3; i++)
     {
@@ -24,17 +24,17 @@ VertexTriangle::~VertexTriangle() {}
 
 void VertexTriangle::setId(int idx)
 {
-    myindex = idx;
+    myid = idx;
 }
 
 int VertexTriangle::getId() const
 {
-    return myindex;
+    return myid;
 }
 
 void VertexTriangle::printVertexTriangle() const
 {
-    std::cout << "my id=" << myindex << " ";
+    std::cout << "my id=" << myid << " ";
     std::cout << " ia =" << ia << " ib =" << ib << " ic =" << ic << std::endl;
 }
 
@@ -185,3 +185,30 @@ void VertexTriangle::calcFemForces(Vertex vs[]) const
 
 }
 
+std::ostream& operator<< (std::ostream& out, const VertexTriangle& vt)
+{
+    out << vt.myid << ' ' << vt.ia << ' ' << vt.ib << ' ' << vt.ic << ' ';
+    out << vt.an[0] << ' ' << vt.an[1] << ' '  << vt.an[2] << ' ';
+    out << vt.L2[0] << ' ' << vt.L2[1] << ' '  << vt.L2[2] << ' ';
+    out << vt.ki[0] << ' ' << vt.ki[1] << ' '  << vt.ki[2] << ' ';
+    out << vt.ci[0] << ' ' << vt.ci[1] << ' '  << vt.ci[2] << ' ';
+    return out;
+}
+
+double VertexTriangle::calcFemEnergy(const Vertex vs[]) const
+{
+    double energy = 0.0;
+    double l0_sq = (vs[ib].r_c - vs[ic].r_c).length_sq() - L2[0];
+    double l1_sq = (vs[ia].r_c - vs[ic].r_c).length_sq() - L2[1];
+    double l2_sq = (vs[ia].r_c - vs[ib].r_c).length_sq() - L2[2];
+
+    energy += 0.25 * ki[0] * l0_sq * l0_sq;
+    energy += 0.25 * ki[1] * l1_sq * l1_sq;
+    energy += 0.25 * ki[2] * l2_sq * l2_sq;
+
+    energy += 0.5 * ci[0] * l1_sq * l2_sq;
+    energy += 0.5 * ci[1] * l0_sq * l2_sq;
+    energy += 0.5 * ci[2] * l0_sq * l1_sq;
+
+    return energy;
+}

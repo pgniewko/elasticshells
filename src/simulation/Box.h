@@ -6,12 +6,12 @@
 #include "Environment.h"
 #include "utils/Logger.h"
 #include "simulation/Scheduler.h"
+#include "geometry/Vector3D.h"
 
 class Box
 {
     public:
         Box(double, double, double);
-        Box(double, double, double, double);
         Box(const Box& orig);
         virtual ~Box();
 
@@ -54,6 +54,8 @@ class Box
         void configureScheduler(char*);
         void setDefaultSchedule(int, int, double, double, double, double, double, double);
 
+        static void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&);
+
     private:
         double x;
         double y;
@@ -71,5 +73,25 @@ class Box
 
         Scheduler my_schedule;
 };
+
+// TODO: OPTIMIZE THIS FUNCTION - IT'S A CRUCIAL ONE
+inline void Box::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box)
+{
+    dkj = vk - vj;
+
+    if (box.pbc)
+    {
+        double x, y, z;
+        double bsx = 2 * box.getX();
+        double bsy = 2 * box.getY();
+        double bsz = 2 * box.getZ();
+        x = round(dkj.x / bsx) *  bsx;
+        y = round(dkj.y / bsy) *  bsy;
+        z = round(dkj.z / bsz) *  bsz;
+        dkj.x -= x;
+        dkj.y -= y;
+        dkj.z -= z;
+    }
+}
 
 #endif	/* BOX_H */

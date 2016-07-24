@@ -14,6 +14,7 @@ class HertzianRepulsion
         virtual ~HertzianRepulsion();
 
         static Vector3D calcForce(const Vector3D&, const double, const double, const double, const double, const double, const double);
+        static double calcEnergy(const Vector3D&, const double, const double, const double, const double, const double, const double);
     private:
 
 };

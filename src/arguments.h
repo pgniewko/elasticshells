@@ -9,6 +9,8 @@ struct arguments
     std::string output_file;
     std::string surface_file;
     std::string stress_file;
+    std::string topology_file;
+    std::string lf_file;
 
     char** strings;               /* [string...] */
 
@@ -42,7 +44,6 @@ struct arguments
     double eps;
     double ttime;
     double r_vertex;                   /* vertex radius */
-    double verlet_f;
     double init_radius1;
     double init_radius2;
     double volume_scale;
@@ -63,6 +64,7 @@ struct arguments
     bool dynamics;
     bool nobending;
     bool const_volume;
+    bool restart;
     int nb_flag;
 
     ulong seed;

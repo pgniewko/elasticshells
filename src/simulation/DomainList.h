@@ -6,13 +6,23 @@
 #include "Environment.h"
 #include "geometry/Vertex.h"
 #include "simulation/Box.h"
+#include "Cell.h"
 
 struct domain_t
 {
+    domain_t()
+    {
+        myid = -1;
+        neighborDomainNumber = 0;
+
+        for (int i = 0; i < MAX_D_NEIGH; i++)
+        {
+            neighborDomainIdx[i] = -1;
+        }
+    }
+
     int myid;
-    int numberOfNeighs;
-    int vertIds[MAX_IN_DOMAIN];
-    int cellsIds[MAX_IN_DOMAIN];
+    int neighborDomainNumber;
     int neighborDomainIdx[MAX_D_NEIGH];
 };
 
@@ -27,8 +37,8 @@ class DomainList
         void setupDomainsList(double, Box&);
         int getDomainIndex(int, int, int);
         void voidDomains();
-        void assignVertex(Vertex&, int);
-        int getDomainIndex(Vertex&);
+        void assignVertex(Vertex*);
+        int getDomainIndex(Vertex*);
         void setBoxDim(Box&);
         void setM(Box&);
 
@@ -42,6 +52,9 @@ class DomainList
         int getCellIdx(int, int);
         int getNumOfParticles(int);
 
+        void calcNbForces(std::vector<Cell>&, const Box&);
+        double calcNbEnergy(const std::vector<Cell>&, const Box&) const;
+
         //private:
         int m;
         int N;
@@ -53,7 +66,7 @@ class DomainList
         double dx, dy, dz;
         double rc_max;
 
-        short vertsInDomains[MAX_M* MAX_M* MAX_M];
+        Vertex* head[MAX_M* MAX_M* MAX_M];
 
         std::vector<domain_t> domains;
 
@@ -61,6 +74,11 @@ class DomainList
 
         void addNeighDomain(int, int);
         void addVertex(int, int);
+
+    private:
+        void nbForce(Vertex*, Vertex*, std::vector<Cell>&, const Box&);
+        double nbEnergy(const Vertex*, const Vertex*, const std::vector<Cell>&, const Box&) const;
+        bool validateLinkedDomains();
 
 };
 

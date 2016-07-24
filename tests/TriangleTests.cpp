@@ -56,19 +56,19 @@ void TriangleTests::testConstructors()
 
 void TriangleTests::testTriangleArea()
 {
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5 * SQRT3, t1->area(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, t2->area(), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, t3->area(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5 * constants::sqrt3, t1->area(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, t2->area(), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, t3->area(), constants::delta14);
 }
 
 void TriangleTests::testTriangleCopy()
 {
     Triangle tmpt1(*t1);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5 * SQRT3, tmpt1.area(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5 * constants::sqrt3, tmpt1.area(), constants::delta14);
     Triangle tmpt2(*t2);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpt2.area(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpt2.area(), constants::delta14);
     Triangle tmpt3(*t3);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpt3.area(), DELTA14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, tmpt3.area(), constants::delta14);
 }
 
 void TriangleTests::testVConstructors()
@@ -99,11 +99,7 @@ void TriangleTests::testVTriangleCopy()
 void TriangleTests::testVTriangleArea()
 {
     Vertex vxarray[6] = {*v1, *v2, *v3, *v4, *v5, *v6};
-//    cout << vxarray[0].xyz << endl;
-//    cout << vxarray[1].xyz << endl;
-//    cout << vxarray[2].xyz << endl;
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, vt1->area(vxarray), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5 * SQRT3, vt2->area(vxarray), DELTA14);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, vt3->area(vxarray), DELTA14);
-    //vxarray[0] =
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, vt1->area(vxarray), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5 * constants::sqrt3, vt2->area(vxarray), constants::delta14);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, vt3->area(vxarray), constants::delta14);
 }

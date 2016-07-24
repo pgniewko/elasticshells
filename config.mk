@@ -3,7 +3,7 @@
 # License: BSD
 
 # C compiler
-CC	 := gcc
+CC	     := gcc
 
 # C++ compiler
 CXX      := g++-4.9

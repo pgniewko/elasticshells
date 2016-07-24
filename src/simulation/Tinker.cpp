@@ -90,7 +90,7 @@ void Tinker::constructTopology(Cell& cell)
         double abl = ab.length();
         double acl = ac.length();
         double bcl = bc.length();
-        int tid = cell.triangles[i].myindex;
+        int tid = cell.triangles[i].myid;
         cell.vertices[aid].addNeighbor(bid, abl);
         cell.vertices[aid].addNeighbor(cid, acl);
         cell.vertices[bid].addNeighbor(aid, abl);
@@ -140,6 +140,7 @@ void Tinker::constructBSprings(Cell& cell)
                     if ( isBSpringUnique(x1_, x2_, x3_, x4_, cell) )
                     {
                         cell.bhinges[cell.number_s] = BendingHinge(x1_, x2_, x3_, x4_);
+                        cell.bhinges[cell.number_s].setId(cell.number_s);
                         cell.number_s++;
                     }
                 }

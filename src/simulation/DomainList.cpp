@@ -17,17 +17,16 @@ DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.
 {
     for (int i = 0; i < N; i++)
     {
-        vertsInDomains[i] = orig.vertsInDomains[i];
+        head[i] = NULL;
     }
 
     //TODO: implement proper copying.
-    domainlist_logs << "PROGRAM TERMINATION FOR SAFETY REASONS!\n";
+    domainlist_logs <<  utils::LogLevel::SEVERE << "THIS CLASS SHOULD NEVER BE COPIED!\n";
+    domainlist_logs <<  utils::LogLevel::SEVERE << "PROGRAM TERMINATION FOR SAFETY REASONS!\n";
     exit(EXIT_FAILURE);
 }
 
-DomainList::~DomainList()
-{
-}
+DomainList::~DomainList() {}
 
 void DomainList::setupDomainsList(double rcMax, Box& box)
 {
@@ -41,6 +40,30 @@ void DomainList::setupDomainsList(double rcMax, Box& box)
 
     setBoxDim(box);
     initDomains();
+}
+
+bool DomainList::validateLinkedDomains()
+{
+    for (int i = 0; i < N; i++)
+    {
+        if (domains[i].myid < 0)
+        {
+            return false;
+        }
+    }
+
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < domains[i].neighborDomainNumber; j++)
+        {
+            if (domains[i].neighborDomainIdx[j] < 0)
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 void DomainList::initDomains()
@@ -60,14 +83,13 @@ void DomainList::initDomains()
                     index = getDomainIndex(i, j, k);
                     domains[index].myid = index;
 
-                    // EVERY DOMAIN IS ALSO ITS OWN NEIGHBOR
                     for (int l = -1; l <= 1; l++)
                         for (int o = -1; o <= 1; o++)
                             for (int p = -1; p <= 1; p++)
                             {
                                 neighix = getDomainIndex(i + l, j + o, k + p);
 
-                                if (neighix != -1)
+                                if (neighix != -1 && neighix != index)
                                 {
                                     addNeighDomain(index, neighix);
                                 }
@@ -76,8 +98,16 @@ void DomainList::initDomains()
             }
         }
 
-        init_domains = true;
-        domainlist_logs << utils::LogLevel::FINEST << "Linked domains list has been initialized successfully." << "\n";
+        if ( ! validateLinkedDomains() )
+        {
+            domainlist_logs << utils::LogLevel::SEVERE << "DOMAIN INITIALIZATION HAS FAILED!\n";
+            exit(EXIT_FAILURE);
+        }
+        else
+        {
+            init_domains = true;
+            domainlist_logs << utils::LogLevel::FINEST << "Linked domains list has been initialized successfully." << "\n";
+        }
     }
 }
 
@@ -85,17 +115,20 @@ void DomainList::addNeighDomain(int dix, int nidx)
 {
     try
     {
-        if (domains[dix].numberOfNeighs >= MAX_D_NEIGH)
+        if (domains[dix].neighborDomainNumber >= MAX_D_NEIGH)
+        {
             throw MaxSizeException("Trying to add more domain neighbors than it's possible.\n"
                                    "New neighbor will not be added!\n"
-                                   "The code will be terminated due to the bug!\n");
+                                   "The code will be terminated due to the BUG!\n");
+        }
 
-        domains[dix].neighborDomainIdx[ domains[dix].numberOfNeighs ] = nidx;
-        domains[dix].numberOfNeighs++;
+        domains[dix].neighborDomainIdx[ domains[dix].neighborDomainNumber ] = nidx;
+        domains[dix].neighborDomainNumber++;
     }
     catch (MaxSizeException& e)
     {
         domainlist_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
+        domainlist_logs << "domains[" << dix << "].neighborDomainNumber=" << domains[dix].neighborDomainNumber << "\n";
         exit(EXIT_FAILURE);
     }
 }
@@ -159,40 +192,19 @@ int DomainList::getDomainIndex(int i, int j, int k)
     return (i + j * m + k * m * m);
 }
 
-void DomainList::assignVertex(Vertex& vertex, int cellid)
+void DomainList::assignVertex(Vertex* vertex)
 {
     int index = getDomainIndex(vertex);
-
-    try
-    {
-        if (vertsInDomains[index] >= MAX_IN_DOMAIN)
-            throw MaxSizeException("Trying to add more vertices than it's allowed.\n"
-                                   "This may significantly affect the simulation accuracy!\n"
-                                   "Simulation is about to end.");
-
-
-        domains[index].vertIds[ vertsInDomains[index] ] = vertex.getId();
-        domains[index].cellsIds[ vertsInDomains[index] ] = cellid;
-        vertsInDomains[index]++;
-        vertex.domainIdx = index;
-    }
-    catch (MaxSizeException& e)
-    {
-        domainlist_logs << utils::LogLevel::INFO << "MY_ID=" << domains[index].myid << "\n";
-        domainlist_logs << utils::LogLevel::INFO << "NUMBER_OF_VERTICES=" << vertsInDomains[index] << "\n";
-        domainlist_logs << utils::LogLevel::INFO << "TRYING_TO_ADD:VERTEX_ID=" << vertex.getId() << " CELL_ID=" << cellid << "\n";
-        domainlist_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
-        exit(EXIT_FAILURE);
-    }
-
+    vertex->next = head[index];
+    head[index] = vertex;
 }
 
-int DomainList::getDomainIndex(Vertex& vertex)
+int DomainList::getDomainIndex(Vertex* vertex)
 {
     int xix, yix, zix;
-    double delx = vertex.r_c.x - x_min;
-    double dely = vertex.r_c.y - y_min;
-    double delz = vertex.r_c.z - z_min;
+    double delx = vertex->r_c.x - x_min;
+    double dely = vertex->r_c.y - y_min;
+    double delz = vertex->r_c.z - z_min;
     xix = floor(delx / dx);
     yix = floor(dely / dy);
     zix = floor(delz / dz);
@@ -235,6 +247,12 @@ void DomainList::setM(Box& box)
     N = m * m * m;
     m_assigned = true;
     domains.reserve(N);
+
+    for (int i = 0; i < N; i++)
+    {
+        domains[i] = domain_t();
+    }
+
     domainlist_logs << utils::LogLevel::INFO << "NUMBER OF LINKED DOMAINS N_DOMAINS=" << N << "\n";
 }
 
@@ -273,32 +291,24 @@ void DomainList::voidDomains()
 {
     for (int i = 0; i < N; i++)
     {
-        vertsInDomains[i] = 0;
+        head[i] = 0;
     }
 }
 int DomainList::getNumberOfNeigh(int dix)
 {
-    return domains[dix].numberOfNeighs;
-}
-
-int DomainList::getDomainNeighbor(int dix, int nix)
-{
-    return domains[dix].neighborDomainIdx[nix];
-}
-
-int DomainList::getVertexIdx(int dix, int xpart)
-{
-    return domains[dix].vertIds[xpart];
-}
-
-int DomainList::getCellIdx(int dix, int xpart)
-{
-    return domains[dix].cellsIds[xpart];
+    return domains[dix].neighborDomainNumber;
 }
 
 int DomainList::getNumOfParticles(int dix)
 {
-    return vertsInDomains[dix];
+    int counter = 0;
+
+    for (Vertex* s = head[dix]; s != 0; s = s->next)
+    {
+        counter++;
+    }
+
+    return counter;
 }
 
 int DomainList::numberofAssignedParticles()
@@ -307,7 +317,7 @@ int DomainList::numberofAssignedParticles()
 
     for (int i = 0; i < N; i++)
     {
-        sum += vertsInDomains[i];
+        sum += getNumOfParticles(i);
     }
 
     return sum;
@@ -316,4 +326,166 @@ int DomainList::numberofAssignedParticles()
 double DomainList::getMaxScale()
 {
     return rc_max;
+}
+
+void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box)
+{
+    Vertex* target;
+    Vertex* partner;
+
+    int neighIndex;
+
+    for (int domainIdx = 0; domainIdx < N; domainIdx++)
+    {
+        if (head[domainIdx] != 0)
+        {
+            // INTRA-DOMAIN CONTACTS
+            for (target = head[domainIdx]; target != 0; target = target->next)
+            {
+                for (partner = target->next; partner != 0; partner = partner->next)
+                {
+                    nbForce(target, partner, cells, box);
+                }
+            }
+
+            // INTRA-DOMAIN CONTACTS
+            for (target = head[domainIdx]; target != 0; target = target->next)
+            {
+                for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
+                {
+                    neighIndex = domains[domainIdx].neighborDomainIdx[k];
+
+                    if (neighIndex > domainIdx)
+                    {
+                        for (partner = head[neighIndex]; partner != 0; partner = partner->next)
+                        {
+                            nbForce(target, partner, cells, box);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cells, const Box& box)
+{
+    int cellId_target = target->getCellId();
+    int cellId_partner = partner->getCellId();
+
+    const struct cell_params_t params1 = cells[cellId_target].get_params();
+    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+
+    double r1 = params1.vertex_r;
+    double r2 = params2.vertex_r;
+    double e1 = params1.ecc;
+    double e2 = params2.ecc;
+    double nu1 = params1.nu;
+    double nu2 = params2.nu;
+
+    Vector3D force(0, 0, 0);
+    Vector3D dij;
+
+    if (cellId_target != cellId_partner)
+    {
+        Box::getDistance(dij, partner->r_c, target->r_c, box);
+        force = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+        target->f_c  += force;
+        partner->f_c += -force;
+    }
+    else
+    {
+        int i = target->getId();
+        int j = partner->getId();
+
+        if (i != j && !target->isNeighbor(j))
+        {
+            Box::getDistance(dij, partner->r_c, target->r_c, box);
+            force = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
+            target->f_c  += force;
+            partner->f_c += -force;
+        }
+    }
+}
+
+
+double DomainList::calcNbEnergy(const std::vector<Cell>& cells, const Box& box) const
+{
+    double totalNbEnergy = 0.0;
+    Vertex* target;
+    Vertex* partner;
+
+    int neighIndex;
+
+    for (int domainIdx = 0; domainIdx < N; domainIdx++)
+    {
+        if (head[domainIdx] != 0)
+        {
+            // INTRA-DOMAIN CONTACTS
+            for (target = head[domainIdx]; target != 0; target = target->next)
+            {
+                for (partner = target->next; partner != 0; partner = partner->next)
+                {
+                    totalNbEnergy += nbEnergy(target, partner, cells, box);
+                }
+            }
+
+            // INTRA-DOMAIN CONTACTS
+            for (target = head[domainIdx]; target != 0; target = target->next)
+            {
+                for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
+                {
+                    neighIndex = domains[domainIdx].neighborDomainIdx[k];
+
+                    if (neighIndex > domainIdx)
+                    {
+                        for (partner = head[neighIndex]; partner != 0; partner = partner->next)
+                        {
+                            totalNbEnergy += nbEnergy(target, partner, cells, box);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+double DomainList::nbEnergy(const Vertex* target, const Vertex* partner, const std::vector<Cell>& cells, const Box& box) const
+{
+    double nb_energy = 0.0;
+    int cellId_target = target->getCellId();
+    int cellId_partner = partner->getCellId();
+
+    const struct cell_params_t params1 = cells[cellId_target].get_params();
+    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+
+    double r1 = params1.vertex_r;
+    double r2 = params2.vertex_r;
+    double e1 = params1.ecc;
+    double e2 = params2.ecc;
+    double nu1 = params1.nu;
+    double nu2 = params2.nu;
+
+    Vector3D dij;
+
+    if (cellId_target != cellId_partner)
+    {
+        Box::getDistance(dij, partner->r_c, target->r_c, box);
+        nb_energy = HertzianRepulsion::calcEnergy(dij, r1, r2, e1, e2, nu1, nu2);
+    }
+    else
+    {
+        int i = target->getId();
+        int j = partner->getId();
+
+        if (i != j && !target->isNeighbor(j))
+        {
+            Box::getDistance(dij, partner->r_c, target->r_c, box);
+            nb_energy = HertzianRepulsion::calcEnergy(dij, r1, r1, e1, e1, nu1, nu1);
+
+        }
+    }
+
+    return nb_energy;
 }

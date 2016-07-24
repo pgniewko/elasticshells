@@ -10,36 +10,6 @@
 #include "exceptions/MaxSizeException.h"
 #include "exceptions/RunTimeError.h"
 
-struct nblist_t
-{
-    int cell_id;
-    int vertex_id;
-
-    bool operator > (const nblist_t& rhs) const
-    {
-        if (cell_id == rhs.cell_id)
-        {
-            return vertex_id > rhs.vertex_id;
-        }
-        else
-        {
-            return cell_id > rhs.cell_id;
-        }
-    }
-
-    bool operator < (const nblist_t& rhs) const
-    {
-        if (cell_id == rhs.cell_id)
-        {
-            return vertex_id < rhs.vertex_id;
-        }
-        else
-        {
-            return cell_id < rhs.cell_id;
-        }
-    }
-};
-
 class Vertex
 {
         friend class Tinker;
@@ -51,28 +21,23 @@ class Vertex
         virtual ~Vertex();
         int setId(int);
         int getId() const;
+        int setCellId(int);
+        int getCellId() const;
 
         void printVertex();
 
         void addNeighbor(int, double);
         void removeNeighbor(int);
-        void addNbNeighbor(int, int);
         bool isNeighbor(int) const;
         void addTriangle(int);
         void removeTriangle(int);
 
         void voidForce();
-        void voidVelocity();
-
         int getNumNeighs() const;
         int getNumTris() const;
         int getNeighborId(int) const;
         int getTriangleId(int) const;
         double getNeighborR0(int) const;
-
-        void sortNbList();
-
-        double get_verlet_disp2() const;
 
         Vector3D r_c;
         Vector3D f_c;
@@ -80,7 +45,10 @@ class Vertex
         Vector3D r_p;           // make it private
         Vector3D f_p;
 
-        Vector3D r_v;           // for verlet-list purposes
+        Vector3D v_p;
+        Vector3D v_c;
+        Vector3D a_p;
+        Vector3D a_c;
 
         int bondedVerts[NEIGH_MAX];
         double r0[NEIGH_MAX];
@@ -88,23 +56,17 @@ class Vertex
 
         int bondedTris[TRIAN_MAX];
 
-
-        int nbVerts[NBNEI_MAX];
-        int nbCellsIdx[NBNEI_MAX];
-
-        int numBonded;              // make it private       
+        int numBonded;              // make it private
         int numTris;                // make it private
-        int numNbNeighs;            // make it private
 
-        int domainIdx;              // make it private
+        Vertex* next;
+
+
+        friend std::ostream& operator<< (std::ostream&, const Vertex&);
 
     private:
         int myid;
+        int myCellId;
 };
-
-inline double Vertex::get_verlet_disp2() const
-{
-    return (r_c - r_v).length_sq();
-}
 
 #endif	/* VERTEX_H */
