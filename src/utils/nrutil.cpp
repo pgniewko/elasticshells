@@ -9,13 +9,12 @@ void nrerror(char error_text[])
     exit(1);
 }
 
-
 double* darray(long n)
 /* allocate a float vector with subscript range v[nl..nh] */
 {
     double* da;
 
-    da = new double[n];//(double *)malloc((size_t) ((nh-nl+1+NR_END)*sizeof(float)));
+    da = new double[n];
 
     if (!da)
     {
@@ -25,7 +24,7 @@ double* darray(long n)
     return da;
 }
 
-void free_darray(float* da)
+void free_darray(double* da)
 /* free a double vector allocated with vector() */
 {
     delete[] da;
