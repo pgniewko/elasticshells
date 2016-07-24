@@ -48,10 +48,8 @@ double Energy::calcStretchEnergy(const std::vector<Cell>& cells)
     }
     else
     {
-        // EXIT
+        // NOT IMPLEMENTED YET
     }
-
-//    std::cout << "stretchEnergy="<<stretchEnergy<< std::endl;
     return stretchEnergy;
 }
 
@@ -69,8 +67,7 @@ double Energy::calcBendingEnergy(const std::vector<Cell>& cells)
             }
         }
     }
-
-//   std::cout << "bendingEnergy=" << bendingEnergy << std::endl;
+    
     return bendingEnergy;
 }
 
@@ -87,8 +84,6 @@ double Energy::calcOsmoticEnergy(const std::vector<Cell>& cells)
             nRT = cells[i].nRT;
             Ve = cells[i].V0 * OsmoticForce::getEpsilon();
             V = cells[i].calcVolume();
-            //std::cout << "nRT=" << nRT << " Ve=" << Ve << " V=" << V << std::endl;
-            //std::cout << "P_est="<< nRT/V<< std::endl;
             osmoticEnergy += -nRT * std::log(V - Ve);
         }
         else
@@ -98,8 +93,7 @@ double Energy::calcOsmoticEnergy(const std::vector<Cell>& cells)
             osmoticEnergy += -P * V;
         }
     }
-
-//    std::cout << "osmoticEnergy="<<osmoticEnergy<< std::endl;
+    
     return osmoticEnergy;
 }
 
@@ -161,13 +155,11 @@ double Energy::calcCellBoxEnergy(const std::vector<Cell>& cells, const Box& box)
         }
     }
 
-//    std::cout << "cell_box_energy="<<cell_box_energy<< std::endl;
     return cell_box_energy;
 }
 
 double Energy::calcCellCellEnergy(const std::vector<Cell>& cells, const Box& box, const DomainList& domains)
 {
     double cell_cell_energy = domains.calcNbEnergy(cells, box);
-//    std::cout << "cell_cell_energy="<<cell_cell_energy<< std::endl;
     return cell_cell_energy;
 }

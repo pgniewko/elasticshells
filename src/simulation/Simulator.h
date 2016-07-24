@@ -6,7 +6,7 @@
 #include <vector>
 #include <stdio.h>      /* fprintf*/
 #include <stdlib.h>     /* atoi,  strtod */
-#include <math.h>
+#include <assert.h>
 
 #include "Box.h"
 #include "Environment.h"
@@ -25,6 +25,8 @@
 #include "simulation/DomainList.h"
 #include "simulation/Restarter.h"
 #include "simulation/Energy.h"
+#include "utils/nrutil.h"
+//#include "cg/cg.h"
 
 struct params_t
 {
@@ -86,14 +88,6 @@ class Simulator
         void midpointRungeKutta();
         void gear_cp();
 
-
-
-        void cg();
-        double func(double[]);
-        void dfunc(double[], double[]);
-
-
-
         int getTotalVertices();
         double getLengthScale();
 
@@ -120,15 +114,23 @@ class Simulator
         LogSimulation log_sim;
 
         DomainList domains;
-
         Restarter restarter;
 
         static utils::Logger simulator_logs;
         static ulong FORCE_EVALUATION_COUTER;
 
-        //double *g  = 0;
-        //double *h  = 0;
-        //double *xi = 0;
+        // CONJUGATE GRADIENTS CODE
+        void cg();
+        double func(double[]);
+        void dfunc(double[], double[]);
+        void frprmn(double p[], int n, double ftol, int* iter, double* fret);
+        void linmin(double p[], double xi[], int n, double* fret );
+        void dlinmin(double p[], double xi[], int n, double* fret );
+        void mnbrak(double* ax, double* bx, double* cx, double* fa, double* fb, double* fc);
+        double brent(double ax, double bx, double cx, double tol, double* xmins);
+        double dbrent(double ax, double bx, double cx, double tol, double* xmin);
+        double df1dim(double x);
+        double f1dim(double x);
 };
 
 #endif	/* SIMULATOR_H */

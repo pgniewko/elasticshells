@@ -36,7 +36,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.volume_scale = args.volume_scale;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
-    //params.verlet_f = args.verlet_f;
     params.draw_box = args.draw_box;
     params.scale = args.scale_flag;
     params.dynamics = args.dynamics;
@@ -68,26 +67,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
 
 }
 
-Simulator::~Simulator()
-{
-//    if (g)
-//    {
-//        simulator_logs << utils::LogLevel::INFO << "DELETING array: g" << "\n";
-//        delete[] g;
-//    }
-//
-//    if (h)
-//    {
-//        simulator_logs << utils::LogLevel::INFO << "DELETING array: h" << "\n";
-//        delete[] h;
-//    }
-//
-//    if (xi)
-//    {
-//        simulator_logs << utils::LogLevel::INFO << "DELETING array: xi" << "\n";
-//        delete[] xi;
-//    }
-}
+Simulator::~Simulator() {}
 
 void Simulator::diagnoseParams(arguments args)
 {
@@ -272,7 +252,6 @@ void Simulator::addCell(double r0, char* model_t)
         newCell.setDp(params.dp, params.ddp);
         newCell.setConstantVolume(params.volume_scale);
         newCell.setVertexR(params.r_vertex);
-        //newCell.setVerletR(params.verlet_f);
         newCell.setCellId(number_of_cells);
         newCell.setInitR(r0);
 
@@ -303,8 +282,6 @@ void Simulator::simulate(int steps)
         rebuildDomainsList();
     }
 
-    //std::cout << "TOTAL ENERGY="<< Energy::calcTotalEnergy(cells, box, domains, "fem") << std::endl;
-
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
     traj.open();
@@ -328,15 +305,12 @@ void Simulator::simulate(int steps)
         do
         {
             do
-                //while ( check_min_force() )
             {
                 integrate();
             }
             while ( check_min_force() );
         }
         while ( check_const_volume() );
-
-        //std::cout << "TOTAL ENERGY="<< Energy::calcTotalEnergy(cells, box, domains) << std::endl;
 
 
         if ( (i + 1) % params.save_step == 0)
@@ -375,6 +349,7 @@ void Simulator::simulate(int steps)
     log_sim.close();
 
     simulator_logs << utils::LogLevel::FINEST << "Forces have been evaluated " << FORCE_EVALUATION_COUTER << " times.\n";
+//    simulator_logs << utils::LogLevel::FINEST << "Energy has been evaluated " << Energy::ENERGY_EVALUATION_COUNTER << " times.\n";
 }
 
 void Simulator::calcForces()
@@ -573,6 +548,12 @@ bool Simulator::check_min_force()
         return false;
     }
 
+    if (integrator == &Simulator::cg)
+    {
+        return false;
+    }
+
+    
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -583,7 +564,7 @@ bool Simulator::check_min_force()
             }
         }
     }
-
+    
     return false;
 }
 
@@ -620,7 +601,6 @@ bool Simulator::check_const_volume()
  * Viscosity of each vertex is assumed to be 1.0 !
  *
  */
-
 void Simulator::integrate()
 {
     update_neighbors_list();
@@ -758,51 +738,105 @@ void Simulator::gear_cp()
     }
 }
 
-// CONJUGATE GRADIENTS CODE GOES HERE.
+/*
+ * **************************************
+ * CONJUGATE GRADIENTS CODE STARTS HERE *
+ * **************************************
+ */
 void Simulator::cg()
 {
-//    int n = 3 * getTotalVertices();
-//    if (!g)
-//    {
-//        simulator_logs << utils::LogLevel::INFO << "ALLOCATING vector: g" << "\n";
-//        g = new double[n];
-//    }
-//
-//    if (!h)
-//    {
-//        simulator_logs << utils::LogLevel::INFO << "ALLOCATING vector: h" << "\n";
-//        h = new double[n];
-//    }
-//
-//    if (!xi)
-//    {
-//        simulator_logs << utils::LogLevel::INFO << "ALLOCATING vector: xi" << "\n";
-//        xi = new double[n];
-//    }
+    int n = 3 * getTotalVertices();
+    
+    double* p = darray(n);
+    
+    int counter = 0;
+    
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            p[3 * counter + 0] = cells[i].vertices[j].r_c.x;
+            p[3 * counter + 1] = cells[i].vertices[j].r_c.y;
+            p[3 * counter + 2] = cells[i].vertices[j].r_c.z;
+            counter++;
+        }
+    }
+
+    double ftol = 1e-10;
+    int iter;
+    double fret;
+
+    frprmn(p, n, ftol, &iter, &fret);
+    counter = 0;
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].r_c.x = p[3 * counter + 0];
+            cells[i].vertices[j].r_c.y = p[3 * counter + 1];
+            cells[i].vertices[j].r_c.z = p[3 * counter + 2];
+            counter++;
+        }
+    }
 }
+
+static double maxarg1, maxarg2;
 
 double Simulator::func(double _p[])
 {
-    return 0.0;
+    int counter = 0;
+
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].r_c.x = _p[3 * counter + 0];
+            cells[i].vertices[j].r_c.y = _p[3 * counter + 1];
+            cells[i].vertices[j].r_c.z = _p[3 * counter + 2];
+            counter++;
+        }
+    }
+    
+    return Energy::calcTotalEnergy(cells, box, domains);
 }
 
 void Simulator::dfunc(double _p[], double _xi[])
 {
+    int counter = 0;
 
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].r_c.x = _p[3 * counter + 0];
+            cells[i].vertices[j].r_c.y = _p[3 * counter + 1];
+            cells[i].vertices[j].r_c.z = _p[3 * counter + 2];
+            counter++;
+        }
+    }
+
+    calcForces();
+
+    counter = 0;
+
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            _xi[3 * counter + 0] = -cells[i].vertices[j].f_c.x;
+            _xi[3 * counter + 1] = -cells[i].vertices[j].f_c.y;
+            _xi[3 * counter + 2] = -cells[i].vertices[j].f_c.z;
+            counter++;
+        }
+    }
 }
 
-//#include <math.h>
-//#define NRANSI
-#include "utils/nrutil.h"
-#define ITMAX 200
+
+#define ITMAX 100000
 #define EPS 1.0e-10
 #define FREEALL free_darray(xi); free_darray(h); free_darray(g);
-
-void frprmn(double p[], int n, double ftol, int* iter, double* fret,
-            double (*_func)(double []), void (*_dfunc)(double [], double []))
+void Simulator::frprmn(double p[], int n, double ftol, int* iter, double* fret)
 {
-    void linmin(double p[], double xi[], int n, double* fret, double (*_func)(double []));
-
     int j, its;
     double gg, gam, fp, dgg;
     double* g, *h, *xi;
@@ -810,8 +844,8 @@ void frprmn(double p[], int n, double ftol, int* iter, double* fret,
     g = darray(n);
     h = darray(n);
     xi = darray(n);
-    fp = (*_func)(p);
-    (*_dfunc)(p, xi);
+    fp = func(p);
+    dfunc(p, xi);
 
     for (j = 0; j < n; j++)
     {
@@ -819,12 +853,12 @@ void frprmn(double p[], int n, double ftol, int* iter, double* fret,
         xi[j] = h[j] = g[j];
     }
 
-
     for (its = 1; its <= ITMAX; its++)
     {
         *iter = its;
-        linmin(p, xi, n, fret, _func);
-
+        linmin(p, xi, n, fret);
+        //dlinmin(p, xi, n, fret);
+       
         if (2.0 * fabs(*fret - fp) <= ftol * (fabs(*fret) + fabs(fp) + EPS))
         {
             FREEALL
@@ -832,7 +866,7 @@ void frprmn(double p[], int n, double ftol, int* iter, double* fret,
         }
 
         fp = *fret;
-        (*_dfunc)(p, xi);
+        dfunc(p, xi);
         dgg = gg = 0.0;
 
         for (j = 0; j < n; j++)
@@ -861,36 +895,21 @@ void frprmn(double p[], int n, double ftol, int* iter, double* fret,
 #undef ITMAX
 #undef EPS
 #undef FREEALL
-//#undef NRANSI
 
-/* note #undef's at end of file */
-//#define NRANSI
-//#include "nrutil.h"
-#define TOL 2.0e-4
 
-int ncom;
-double* pcom, *xicom, (*nrfunc)(double []);
-void (*nrdfun)(double [], double []);
+#define TOL 1.0e-4
+static int ncom;
+static double* pcom;
+static double* xicom;
 
-void dlinmin(double p[], double xi[], int n, double* fret, double (*_func)(double []),
-             void (*_dfunc)(double [], double []))
+void Simulator::linmin(double p[], double xi[], int n, double* fret)
 {
-    double dbrent(double ax, double bx, double cx,
-                  double (*f)(double), double (*df)(double), double tol, double * xmin);
-
-    double f1dim(double x);
-    double df1dim(double x);
-
-    void mnbrak(double * ax, double * bx, double * cx, double * fa, double * fb,
-                double * fc, double (*_func)(double));
     int j;
     double xx, xmin, fx, fb, fa, bx, ax;
 
     ncom = n;
     pcom = darray(n);
     xicom = darray(n);
-    nrfunc = _func;
-    nrdfun = _dfunc;
 
     for (j = 0; j < n; j++)
     {
@@ -900,10 +919,11 @@ void dlinmin(double p[], double xi[], int n, double* fret, double (*_func)(doubl
 
     ax = 0.0;
     xx = 1.0;
-    mnbrak(&ax, &xx, &bx, &fa, &fx, &fb, f1dim);
-    *fret = dbrent(ax, xx, bx, f1dim, df1dim, TOL, &xmin);
 
-    for (j = 1; j <= n; j++)
+    mnbrak(&ax, &xx, &bx, &fa, &fx, &fb);
+    *fret = brent(ax, xx, bx, TOL, &xmin);
+
+    for (j = 0; j < n; j++)
     {
         xi[j] *= xmin;
         p[j] += xi[j];
@@ -913,25 +933,49 @@ void dlinmin(double p[], double xi[], int n, double* fret, double (*_func)(doubl
     free_darray(pcom);
 }
 #undef TOL
-//#undef NRANSI
 
+#define TOL 1.0e-4
+void Simulator::dlinmin(double p[], double xi[], int n, double* fret)
+{
+    int j;
+    double xx, xmin, fx, fb, fa, bx, ax;
 
+    ncom = n;
+    pcom = darray(n);
+    xicom = darray(n);
 
-//#include <math.h>
-//#define NRANSI
-//#include "nrutil.h"
+    for (j = 0; j < n; j++)
+    {
+        pcom[j] = p[j];
+        xicom[j] = xi[j];
+    }
+
+    ax = 0.0;
+    xx = 1.0;
+    mnbrak(&ax, &xx, &bx, &fa, &fx, &fb);
+    *fret = dbrent(ax, xx, bx, TOL, &xmin);
+
+    for (j = 0; j < n; j++)
+    {
+        xi[j] *= xmin;
+        p[j] += xi[j];
+    }
+
+    free_darray(xicom);
+    free_darray(pcom);
+}
+#undef TOL
+
 #define GOLD 1.618034
 #define GLIMIT 100.0
 #define TINY 1.0e-20
 #define SHFT(a,b,c,d) (a)=(b);(b)=(c);(c)=(d);
-
-void mnbrak(double* ax, double* bx, double* cx, double* fa, double* fb, double* fc,
-            double (*_func)(double))
+void Simulator::mnbrak(double* ax, double* bx, double* cx, double* fa, double* fb, double* fc)
 {
     double ulim, u, r, q, fu, dum;
 
-    *fa = (*_func)(*ax);
-    *fb = (*_func)(*bx);
+    *fa = f1dim(*ax);
+    *fb = f1dim(*bx);
 
     if (*fb > *fa)
     {
@@ -940,7 +984,7 @@ void mnbrak(double* ax, double* bx, double* cx, double* fa, double* fb, double* 
     }
 
     *cx = (*bx) + GOLD * (*bx - *ax);
-    *fc = (*_func)(*cx);
+    *fc = f1dim(*cx);
 
     while (*fb > *fc)
     {
@@ -952,7 +996,7 @@ void mnbrak(double* ax, double* bx, double* cx, double* fa, double* fb, double* 
 
         if ((*bx - u) * (u - *cx) > 0.0)
         {
-            fu = (*_func)(u);
+            fu = f1dim(u);
 
             if (fu < *fc)
             {
@@ -970,27 +1014,27 @@ void mnbrak(double* ax, double* bx, double* cx, double* fa, double* fb, double* 
             }
 
             u = (*cx) + GOLD * (*cx - *bx);
-            fu = (*_func)(u);
+            fu = f1dim(u);
         }
         else if ((*cx - u) * (u - ulim) > 0.0)
         {
-            fu = (*_func)(u);
+            fu = f1dim(u);
 
             if (fu < *fc)
             {
                 SHFT(*bx, *cx, u, *cx + GOLD * (*cx - *bx))
-                SHFT(*fb, *fc, fu, (*_func)(u))
+                SHFT(*fb, *fc, fu, f1dim(u))
             }
         }
         else if ((u - ulim) * (ulim - *cx) >= 0.0)
         {
             u = ulim;
-            fu = (*_func)(u);
+            fu = f1dim(u);
         }
         else
         {
             u = (*cx) + GOLD * (*cx - *bx);
-            fu = (*_func)(u);
+            fu = f1dim(u);
         }
 
         SHFT(*ax, *bx, *cx, u)
@@ -1001,20 +1045,127 @@ void mnbrak(double* ax, double* bx, double* cx, double* fa, double* fb, double* 
 #undef GLIMIT
 #undef TINY
 #undef SHFT
-//#undef NRANSI
 
 
-
-
-//#include <math.h>
-//#define NRANSI
-//#include "nrutil.h"
-#define ITMAX 100
+#define ITMAX 10000
+#define CGOLD 0.3819660
 #define ZEPS 1.0e-10
-#define MOV3(a,b,c, d,e,f) (a)=(d);(b)=(e);(c)=(f);
+#define SHFT(a, b, c, d) (a)=(b);(b)=(c);(c)=(d);
+double Simulator::brent(double ax, double bx, double cx, double tol, double* xmin)
+{
+    int iter;
+    double a, b, d, etemp, fu, fv, fw, fx, p, q, r, tol1, tol2, u, v, w, x, xm;
+    double e = 0.0;
 
-double dbrent(double ax, double bx, double cx, double (*f)(double),
-              double (*df)(double), double tol, double* xmin)
+    a = (ax < cx ? ax : cx);
+    b = (ax > cx ? ax : cx);
+    x = w = v = bx;
+    fw = fv = fx = f1dim(x);
+
+    for (iter = 1; iter <= ITMAX; iter++)
+    {
+        xm = 0.5 * (a + b);
+        tol2 = 2.0 * (tol1 = tol * fabs(x) + ZEPS);
+
+        if (fabs(x - xm) <= (tol2 - 0.5 * (b - a)))
+        {
+            *xmin = x;
+            return fx;
+        }
+
+        if (fabs(e) > tol1)
+        {
+            r = (x - w) * (fx - fv);
+            q = (x - v) * (fx - fw);
+            p = (x - v) * q - (x - w) * r;
+            q = 2.0 * (q - r);
+
+            if (q > 0.0)
+            {
+                p = -p;
+            }
+
+            q = fabs(q);
+            etemp = e;
+            e = d;
+
+            if (fabs(p) >= fabs(0.5 * q * etemp) || p <= q * (a - x) || p >= q * (b - x))
+            {
+                d = CGOLD * (e = (x >= xm ? a - x : b - x));
+            }
+            else
+            {
+                d = p / q;
+                u = x + d;
+
+                if (u - a < tol2 || b - u < tol2)
+                {
+                    d = SIGN2(tol1, xm - x);
+                }
+            }
+        }
+        else
+        {
+            d = CGOLD * (e = (x >= xm ? a - x : b - x));
+        }
+
+        u = (fabs(d) >= tol1 ? x + d : x + SIGN2(tol1, d));
+        fu = f1dim(u);
+
+        if (fu <= fx)
+        {
+            if (u >= x)
+            {
+                a = x;
+            }
+            else
+            {
+                b = x;
+            }
+
+            SHFT(v, w, x, u)
+            SHFT(fv, fw, fx, fu)
+        }
+        else
+        {
+            if (u < x)
+            {
+                a = u;
+            }
+            else
+            {
+                b = u;
+            }
+
+            if (fu <= fw || w == x)
+            {
+                v = w;
+                w = u;
+                fv = fw;
+                fw = fu;
+            }
+            else if (fu <= fv || v == x || v == w)
+            {
+                v = u;
+                fv = fu;
+            }
+        }
+    }
+
+    nrerror("Too many iterations in brent");
+    *xmin = x;
+    return fx;
+}
+#undef ITMAX
+#undef CGOLD
+#undef ZEPS
+#undef SHFT
+
+
+#define ITMAX 10000
+#define ZEPS 1.0e-10
+#define MOV3(a, b, c, d, e, f) (a)=(d);(b)=(e);(c)=(f);
+double Simulator::dbrent(double ax, double bx, double cx, double tol, double* xmin)
 {
     int iter, ok1, ok2;
     double a, b, d, d1, d2, du, dv, dw, dx, e = 0.0;
@@ -1023,8 +1174,8 @@ double dbrent(double ax, double bx, double cx, double (*f)(double),
     a = (ax < cx ? ax : cx);
     b = (ax > cx ? ax : cx);
     x = w = v = bx;
-    fw = fv = fx = (*f)(x);
-    dw = dv = dx = (*df)(x);
+    fw = fv = fx = f1dim(x);
+    dw = dv = dx = df1dim(x);
 
     for (iter = 1; iter <= ITMAX; iter++)
     {
@@ -1102,12 +1253,12 @@ double dbrent(double ax, double bx, double cx, double (*f)(double),
         if (fabs(d) >= tol1)
         {
             u = x + d;
-            fu = (*f)(u);
+            fu = f1dim(u);
         }
         else
         {
             u = x + SIGN2(tol1, d);
-            fu = (*f)(u);
+            fu = f1dim(u);
 
             if (fu > fx)
             {
@@ -1116,7 +1267,7 @@ double dbrent(double ax, double bx, double cx, double (*f)(double),
             }
         }
 
-        du = (*df)(u);
+        du = df1dim(u);
 
         if (fu <= fx)
         {
@@ -1162,43 +1313,8 @@ double dbrent(double ax, double bx, double cx, double (*f)(double),
 #undef ITMAX
 #undef ZEPS
 #undef MOV3
-//#undef NRANSI
 
-/* note #undef's at end of file */
-//#define NRANSI
-//#include "nrutil.h"
-
-extern int ncom;
-extern float* pcom, *xicom, (*nrfunc)(double []);
-
-double f1dim(double x)
-{
-    int j;
-    double f, *xt;
-
-    xt = darray(ncom);
-
-    for (j = 0; j < ncom; j++)
-    {
-        xt[j] = pcom[j] + x * xicom[j];
-    }
-
-    f = (*nrfunc)(xt);
-    free_darray(xt);
-    return f;
-}
-//#undef NRANSI
-
-
-/* note #undef's at end of file */
-//#define NRANSI
-//#include "nrutil.h"
-
-extern int ncom;
-extern double* pcom, *xicom, (*nrfunc)(double []);
-extern void (*nrdfun)(double [], double []);
-
-double df1dim(double x)
+double Simulator::df1dim(double x)
 {
     int j;
     double df1 = 0.0;
@@ -1212,7 +1328,7 @@ double df1dim(double x)
         xt[j] = pcom[j] + x * xicom[j];
     }
 
-    (*nrdfun)(xt, df);
+    dfunc(xt, df);
 
     for (j = 0; j < ncom; j++)
     {
@@ -1223,4 +1339,27 @@ double df1dim(double x)
     free_darray(xt);
     return df1;
 }
-//#undef NRANSI
+
+double Simulator::f1dim(double x)
+{
+    int j;
+    double f, *xt;
+
+    xt = darray(ncom);
+    
+    for (j = 0; j < ncom; j++)
+    {
+        xt[j] = pcom[j] + x * xicom[j];
+    }
+    
+    f = func(xt);
+    free_darray(xt);
+    return f;
+}
+
+/*
+ * ************************************
+ * CONJUGATE GRADIENTS CODE ENDS HERE *
+ * NOTHING SHALL GO BELOW THIS POINT  *
+ * ************************************
+ */
