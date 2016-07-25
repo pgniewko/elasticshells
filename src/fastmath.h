@@ -46,7 +46,7 @@ namespace fastmath
 
     inline double fast_invsqrt(double x)
     {
-        const double xhalf = 0.5F * x;
+        const double xhalf = 0.5d * x;
         union // get bits for floating value
         {
             double x;
@@ -55,9 +55,9 @@ namespace fastmath
 
         u.x = x;
         u.i = SQRT_MAGIC_D - (u.i >> 1);  // gives initial guess y0
-//        u.x = u.x*(1.5F - xhalf*u.x*u.x);
-        u.x = u.x * (1.5F - xhalf * u.x * u.x);
-        return u.x * (1.5F - xhalf * u.x * u.x); // Newton step, repeating increases accuracy
+//        u.x = u.x*(1.5d - xhalf*u.x*u.x);
+        u.x = u.x * (1.5d - xhalf * u.x * u.x);
+        return u.x * (1.5d - xhalf * u.x * u.x); // Newton step, repeating increases accuracy
     }
 
     inline double fast_sqrt(double x)
