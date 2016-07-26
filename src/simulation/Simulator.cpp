@@ -349,7 +349,7 @@ void Simulator::simulate(int steps)
     log_sim.close();
 
     simulator_logs << utils::LogLevel::FINEST << "Forces have been evaluated " << FORCE_EVALUATION_COUTER << " times.\n";
-//    simulator_logs << utils::LogLevel::FINEST << "Energy has been evaluated " << Energy::ENERGY_EVALUATION_COUNTER << " times.\n";
+    simulator_logs << utils::LogLevel::FINEST << "Energy has been evaluated " << Energy::ENERGY_EVALUATION_COUNTER << " times.\n";
 }
 
 void Simulator::calcForces()
@@ -487,6 +487,10 @@ void Simulator::setIntegrator(char* token)
     {
         this->setIntegrator(&Simulator::cg);
     }
+    else if (STRCMP (token, "bcg"))
+    {
+        this->setIntegrator(&Simulator::boost_cg);
+    }
     else
     {
         this->setIntegrator(&Simulator::integrateEuler);
@@ -553,6 +557,10 @@ bool Simulator::check_min_force()
         return false;
     }
 
+    if (integrator == &Simulator::boost_cg) // needed for the do-while loop in simulate function
+    {
+        return false;
+    }
     
     for (int i = 0; i < number_of_cells; i++)
     {
@@ -743,6 +751,31 @@ void Simulator::gear_cp()
  * CONJUGATE GRADIENTS CODE STARTS HERE *
  * **************************************
  */
+void Simulator::boost_cg()
+{ 
+    this->setIntegrator(&Simulator::gear_cp);
+    
+    const int i = 75;
+    int counter = 0;
+    do
+    {
+        integrate();
+        counter++;
+        
+        if (counter > i) break;
+    }
+    while ( check_min_force() );
+    
+    if (counter > i)
+    {
+        this->setIntegrator(&Simulator::cg);
+        cg();
+    }
+
+    this->setIntegrator(&Simulator::boost_cg);
+    return;
+}
+
 void Simulator::cg()
 {
     int n = 3 * getTotalVertices();
@@ -856,8 +889,8 @@ void Simulator::frprmn(double p[], int n, double ftol, int* iter, double* fret)
     for (its = 1; its <= ITMAX; its++)
     {
         *iter = its;
-        linmin(p, xi, n, fret);
-        //dlinmin(p, xi, n, fret);
+        //linmin(p, xi, n, fret);
+        dlinmin(p, xi, n, fret);
        
         if (2.0 * fabs(*fret - fp) <= ftol * (fabs(*fret) + fabs(fp) + EPS))
         {
