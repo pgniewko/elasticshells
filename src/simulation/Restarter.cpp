@@ -65,3 +65,41 @@ void Restarter::saveLastFrame(const std::vector<Cell>& cells) const
     lf_xyz.save_traj(cells, getTotalVertices(cells));
     lf_xyz.close_traj();
 }
+
+void Restarter::readTopologyFile(const std::vector<Cell>&) const
+{
+    
+}
+
+std::pair<int,std::string> Restarter::getNumberOfCells() const
+{
+    
+    std::ifstream os;
+    os.open(topologyFile, std::ifstream::in);
+    std::vector<std::string> list;
+    std::string line;
+    
+
+    if ( os.is_open() )
+    {
+
+        while ( std::getline (os, line) )
+        {
+            if ( !(line.at(0) == '#') && !(line.at(0) == ' ') )
+            {
+                
+            }
+        }
+    }
+    else
+    {
+        
+    }
+
+    os.close();
+   
+        
+    
+    
+    
+}

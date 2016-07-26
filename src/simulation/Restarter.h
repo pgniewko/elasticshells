@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <regex>
+#include <utility>
 
 #include "Cell.h"
 #include "utils/utils.h"
@@ -19,10 +21,12 @@ class Restarter
         void saveLastFrame(const std::vector<Cell>&) const;
         void readTopologyFile(const std::vector<Cell>&) const;
         void readLastFrame(const std::vector<Cell>&) const;
-
+        
     private:
         int getTotalVertices(const std::vector<Cell>&) const;
 
+        std::pair<int,std::string> getNumberOfCells() const;
+        
         std::string topologyFile;
         std::string lastFrameFile;
         static utils::Logger restarter_logs;
