@@ -865,7 +865,7 @@ void Simulator::dfunc(double _p[], double _xi[])
 }
 
 
-#define ITMAX 100000
+#define ITMAX 10000
 #define EPS 1.0e-10
 #define FREEALL free_darray(xi); free_darray(h); free_darray(g);
 void Simulator::frprmn(double p[], int n, double ftol, int* iter, double* fret)
