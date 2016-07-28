@@ -11,6 +11,7 @@
 
 class BendingHinge
 {
+        friend class Restarter;
     public:
         BendingHinge();
         BendingHinge(int, int, int, int);

@@ -264,6 +264,14 @@ void Simulator::addCell(double r0, char* model_t)
     }
 }
 
+void Simulator::restart()
+{
+    restarter.registerVMap();
+    restarter.readTopologyFile(cells);
+    restarter.readLastFrame(cells);
+}
+
+
 void Simulator::simulate()
 {
     simulate(params.nsteps);

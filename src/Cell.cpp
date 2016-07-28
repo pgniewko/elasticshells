@@ -4,6 +4,11 @@ utils::Logger Cell::cell_log("cell");
 
 bool Cell::no_bending = false;
 
+Cell::Cell()
+{
+    
+}
+
 Cell::Cell(int depth)
 {
     SimpleTriangulation sm(depth);
@@ -1058,7 +1063,7 @@ std::ostream& operator<< (std::ostream& out, const Cell& c)
     out << c.number_v << ' ' << c.number_t << ' ' << c.number_s << ' ';
     out << c.params.vertex_r << ' ' << c.params.ecc << ' ' << c.params.nu << ' ';
     out << c.params.dp << ' ' << c.params.init_r << ' ' << c.params.vol_c << ' ';
-    out << c.nRT << ' ' << c.V0;
+    out << c.nRT << ' ' << c.V0 << "\n";
 
     for (int i = 0; i < c.number_v; i++)
     {
@@ -1075,6 +1080,7 @@ std::ostream& operator<< (std::ostream& out, const Cell& c)
         out << "CELLHINGE " <<  c.cell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
     }
 
+    
 
     return out;
 }

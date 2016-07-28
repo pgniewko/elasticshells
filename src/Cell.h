@@ -16,6 +16,7 @@
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
 #include "simulation/Tinker.h"
+//#include "simulation/Restarter.h"
 
 struct cell_params_t
 {
@@ -32,8 +33,10 @@ class Cell
         friend class Tinker;
         friend class DomainList;
         friend class Energy;
+        friend class Restarter;
     public:
 
+        Cell();
         Cell(int);
         Cell(std::list<Triangle>);
         Cell(const Cell& orig);

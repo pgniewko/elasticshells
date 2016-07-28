@@ -65,6 +65,8 @@ class Simulator
         void initCells(int, double);
         void initCells(int, double, double);
         void initCells(int, double, double, char*, bool = false);
+        
+        void restart();
 
     private:
 

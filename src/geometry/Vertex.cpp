@@ -1,11 +1,48 @@
 #include "Vertex.h"
 
-Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), numBonded(0), numTris(0), myid(-1), myCellId(-1) {}
+Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), numBonded(0), numTris(0), myid(-1), myCellId(-1) 
+{
+    for (int i = 0; i < NEIGH_MAX; i++)
+    {
+        bondedVerts[i] = -1;
+        r0[i] = 0.0;
+        k0[i] = 0.0;
+    }
+    
+    for (int i = 0; i < TRIAN_MAX; i++)
+    {
+        bondedTris[i] = -1;
+    }
+}
 
 Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), r_p(x, y, z), numBonded(0), numTris(0),
-    myid(-1), myCellId(-1) {}
+    myid(-1), myCellId(-1) 
+{
+    for (int i = 0; i < NEIGH_MAX; i++)
+    {
+        bondedVerts[i] = -1;
+        r0[i] = 0.0;
+        k0[i] = 0.0;
+    }
+    for (int i = 0; i < TRIAN_MAX; i++)
+    {
+        bondedTris[i] = -1;
+    }
+}
 
-Vertex::Vertex(Vector3D v) : r_c(v), r_p(v), numBonded(0), numTris(0), myid(-1), myCellId(-1) {}
+Vertex::Vertex(Vector3D v) : r_c(v), r_p(v), numBonded(0), numTris(0), myid(-1), myCellId(-1)
+{
+    for (int i = 0; i < NEIGH_MAX; i++)
+    {
+        bondedVerts[i] = -1;
+        r0[i] = 0.0;
+        k0[i] = 0.0;
+    }
+    for (int i = 0; i < TRIAN_MAX; i++)
+    {
+        bondedTris[i] = -1;
+    }
+}
 
 Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p), f_p(orig.f_p),
     v_p(orig.v_p), v_c(orig.v_c), a_p(orig.a_p), a_c(orig.a_c),

@@ -47,3 +47,11 @@ std::vector<std::string> split(const std::string& s, char delim)
     split(s, delim, elems);
     return elems;
 }
+
+std::string trim( const std::string& str )
+{
+    static const std::string ws = " \t\n" ;
+    auto first = str.find_first_not_of(ws) ;
+    auto last = str.find_last_not_of(ws) ;
+    return first == std::string::npos ? "" : str.substr( first, last-first+1 ) ;
+}
