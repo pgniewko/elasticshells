@@ -889,8 +889,8 @@ void Simulator::frprmn(double p[], int n, double ftol, int* iter, double* fret)
     for (its = 1; its <= ITMAX; its++)
     {
         *iter = its;
-        //linmin(p, xi, n, fret);
-        dlinmin(p, xi, n, fret);
+        linmin(p, xi, n, fret);
+        //dlinmin(p, xi, n, fret);
        
         if (2.0 * fabs(*fret - fp) <= ftol * (fabs(*fret) + fabs(fp) + EPS))
         {
