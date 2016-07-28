@@ -93,6 +93,18 @@ void Restarter::readTopologyFile(std::vector<Cell>& cells) const
     {
         initCell(cells, i);
     }
+
+    for (int i = 0; i < nc_mtype.first; i++)
+    {
+        addVertices(cells, i);
+    }
+    
+    
+    for (int i = 0; i < cells[0].number_v; i++)
+    {
+        cells[0].vertices[i].printVertex();
+    }
+    
     
 }
 
@@ -197,7 +209,25 @@ void Restarter::addVertices(std::vector<Cell>& cells, int cix) const
                 if (cell_id == cix)
                 {
                     int v_id = std::stoi(pairs[ 2 ].c_str(), NULL);
-                    //cells[cix].vertices[v_id];
+                    cells[cix].vertices[v_id].setId(v_id);
+                    cells[cix].vertices[v_id].setCellId(cix);
+                    cells[cix].vertices[v_id].numBonded = strtod(pairs[ 3 ].c_str(), NULL);
+                    cells[cix].vertices[v_id].numTris = strtod(pairs[ 4 ].c_str(), NULL);
+                    
+                    int start_ix = 4;
+                    for (int i = 0; i < cells[cix].vertices[v_id].numBonded; i++)
+                    {
+                        cells[cix].vertices[v_id].bondedVerts[i] = std::stoi(pairs[ start_ix + 1 ].c_str(), NULL);
+                        cells[cix].vertices[v_id].r0[i]          = strtod(pairs[ start_ix + 2 ].c_str(), NULL);
+                        cells[cix].vertices[v_id].k0[i]          = strtod(pairs[ start_ix + 3 ].c_str(), NULL);
+                        start_ix += 3;
+                    }
+                    
+                    for (int i = 0; i < cells[cix].vertices[v_id].numTris; i++)
+                    {
+                        cells[cix].vertices[v_id].bondedTris[i] = strtod(pairs[ start_ix ].c_str(), NULL);
+                        start_ix++;
+                    }
                 }
             }
         }
@@ -209,3 +239,16 @@ void Restarter::addVertices(std::vector<Cell>& cells, int cix) const
 
     os.close();    
 }
+
+
+//    out << ' ' << v.myid << ' ' << v.numBonded << ' ' << v.numTris << ' ';
+//
+//    for (int i = 0; i < v.numBonded; i++)
+//    {
+//        out << v.bondedVerts[i] << ' ' << v.r0[i] << ' ' << v.k0[i] << ' ';
+//    }
+//
+//    for (int i = 0; i < v.numTris; i++)
+//    {
+//        out << v.bondedTris[i] << ' ';
+//    }
