@@ -755,7 +755,7 @@ void Simulator::boost_cg()
 { 
     this->setIntegrator(&Simulator::gear_cp);
     
-    const int i = 75;
+    const int i = 123;
     int counter = 0;
     do
     {
@@ -865,7 +865,7 @@ void Simulator::dfunc(double _p[], double _xi[])
 }
 
 
-#define ITMAX 10000
+#define ITMAX 100000
 #define EPS 1.0e-10
 #define FREEALL free_darray(xi); free_darray(h); free_darray(g);
 void Simulator::frprmn(double p[], int n, double ftol, int* iter, double* fret)
@@ -930,7 +930,7 @@ void Simulator::frprmn(double p[], int n, double ftol, int* iter, double* fret)
 #undef FREEALL
 
 
-#define TOL 1.0e-4
+#define TOL 2.0e-4
 static int ncom;
 static double* pcom;
 static double* xicom;
@@ -967,7 +967,7 @@ void Simulator::linmin(double p[], double xi[], int n, double* fret)
 }
 #undef TOL
 
-#define TOL 1.0e-4
+#define TOL 2.0e-4
 void Simulator::dlinmin(double p[], double xi[], int n, double* fret)
 {
     int j;
