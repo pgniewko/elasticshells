@@ -98,12 +98,20 @@ void Restarter::readTopologyFile(std::vector<Cell>& cells) const
     {
         addVertices(cells, i);
     }
-    
-    
-    for (int i = 0; i < cells[0].number_v; i++)
+
+    for (int i = 0; i < nc_mtype.first; i++)
     {
-        cells[0].vertices[i].printVertex();
+        addBHinges(cells, i);
     }
+    
+    //registerVMap();
+    
+    //validateVMap();
+    
+    //for (int i = 0; i < cells[0].number_v; i++)
+    //{
+    //    cells[0].vertices[i].printVertex();
+    //}
     
     
 }
@@ -112,7 +120,6 @@ std::pair<int,std::string> Restarter::getNumberOfCells() const
 {  
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
-    std::vector<std::string> list;
     std::string line;
     
 
@@ -149,7 +156,6 @@ void Restarter::initCell(std::vector<Cell>& cells, int cix) const
 {  
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
-    std::vector<std::string> list;
     std::string line;
     
     if ( os.is_open() )
@@ -194,7 +200,6 @@ void Restarter::addVertices(std::vector<Cell>& cells, int cix) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
-    std::vector<std::string> list;
     std::string line;
     
     if ( os.is_open() )
@@ -222,10 +227,10 @@ void Restarter::addVertices(std::vector<Cell>& cells, int cix) const
                         cells[cix].vertices[v_id].k0[i]          = strtod(pairs[ start_ix + 3 ].c_str(), NULL);
                         start_ix += 3;
                     }
-                    
+                    start_ix++;
                     for (int i = 0; i < cells[cix].vertices[v_id].numTris; i++)
                     {
-                        cells[cix].vertices[v_id].bondedTris[i] = strtod(pairs[ start_ix ].c_str(), NULL);
+                        cells[cix].vertices[v_id].bondedTris[i] = std::stoi(pairs[ start_ix ].c_str(), NULL);
                         start_ix++;
                     }
                 }
@@ -240,15 +245,169 @@ void Restarter::addVertices(std::vector<Cell>& cells, int cix) const
     os.close();    
 }
 
+void Restarter::addVTriangles(std::vector<Cell>& cells, int cix) const
+{
+    std::ifstream os;
+    os.open(topologyFile, std::ifstream::in);
+    std::string line;
+    
+    if ( os.is_open() )
+    {
+        while ( std::getline (os, line) )
+        {
+            if ( line.find("CELLTRIANG ") == 0 )
+            {
+                std::vector<std::string> pairs = split(line, ' ');
+                
+                int cell_id = std::stoi(pairs[ 1 ].c_str(), NULL);
+                if (cell_id == cix)
+                {
+                    int t_id = std::stoi(pairs[ 2 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].myid = t_id;
+                    cells[cix].triangles[t_id].ia = std::stoi(pairs[ 3 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ib = std::stoi(pairs[ 4 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ic = std::stoi(pairs[ 5 ].c_str(), NULL);
+                    
+                    cells[cix].triangles[t_id].an[0] = strtod(pairs[ 6 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].an[1] = strtod(pairs[ 7 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].an[2] = strtod(pairs[ 8 ].c_str(), NULL);
+                    
+                    cells[cix].triangles[t_id].ki[0] = strtod(pairs[ 9 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ki[1] = strtod(pairs[ 10 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ki[2] = strtod(pairs[ 11 ].c_str(), NULL);
+                    
+                    cells[cix].triangles[t_id].ci[0] = strtod(pairs[ 12 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ci[1] = strtod(pairs[ 13 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ci[2] = strtod(pairs[ 14 ].c_str(), NULL);
 
-//    out << ' ' << v.myid << ' ' << v.numBonded << ' ' << v.numTris << ' ';
-//
-//    for (int i = 0; i < v.numBonded; i++)
-//    {
-//        out << v.bondedVerts[i] << ' ' << v.r0[i] << ' ' << v.k0[i] << ' ';
-//    }
-//
-//    for (int i = 0; i < v.numTris; i++)
-//    {
-//        out << v.bondedTris[i] << ' ';
-//    }
+                }
+            }
+        }
+    }
+    else
+    {
+       // print error  
+    }
+
+    os.close();
+}
+
+
+void Restarter::addBHinges(std::vector<Cell>& cells, int cix) const
+{
+    std::ifstream os;
+    os.open(topologyFile, std::ifstream::in);
+    std::string line;
+    
+    if ( os.is_open() )
+    {
+        while ( std::getline (os, line) )
+        {
+            if ( line.find("CELLHINGE ") == 0 )
+            {
+                std::vector<std::string> pairs = split(line, ' ');
+                
+                int cell_id = std::stoi(pairs[ 1 ].c_str(), NULL);
+                if (cell_id == cix)
+                {
+                    int b_id = std::stoi(pairs[ 2 ].c_str(), NULL);
+                    cells[cix].bhinges[b_id].setId(b_id);
+                    
+                    cells[cix].bhinges[b_id].D = strtod(pairs[ 3 ].c_str(), NULL);
+                    cells[cix].bhinges[b_id].sinTheta0 = strtod(pairs[ 4 ].c_str(), NULL);
+                    cells[cix].bhinges[b_id].theta0 = strtod(pairs[ 5 ].c_str(), NULL);
+                    cells[cix].bhinges[b_id].x1 = std::stoi(pairs[ 6 ].c_str(), NULL);
+                    cells[cix].bhinges[b_id].x2 = std::stoi(pairs[ 7 ].c_str(), NULL);
+                    cells[cix].bhinges[b_id].x3 = std::stoi(pairs[ 8 ].c_str(), NULL);
+                    cells[cix].bhinges[b_id].x4 = std::stoi(pairs[ 9 ].c_str(), NULL);
+                }
+            }
+        }
+    }
+    else
+    {
+       // print error  
+    }
+
+    os.close();
+}
+
+void Restarter::registerVMap()
+{
+    std::ifstream os;
+    os.open(topologyFile, std::ifstream::in);
+    std::string line;
+    
+    if ( os.is_open() )
+    {
+        while ( std::getline (os, line) )
+        {
+            if ( line.find("VMAP ") == 0 )
+            {
+                std::vector<std::string> pairs = split(line, ' ');
+                
+                int ci = std::stoi(pairs[ 2 ].c_str(), NULL);
+                int vi = std::stoi(pairs[ 3 ].c_str(), NULL);
+                std::pair<std::string, std::pair<int,int> > new_element(pairs[1], {ci, vi});
+                vmap.insert( new_element );
+
+            }
+        }
+    }
+    else
+    {
+       // print error  
+    }
+
+    os.close();
+    
+}
+
+void Restarter::readLastFrame(std::vector<Cell>& cells) const
+{
+    std::ifstream os;
+    os.open(lastFrameFile, std::ifstream::in);
+    std::string line;
+    
+    if ( os.is_open() )
+    {
+        while ( std::getline (os, line) )
+        {
+
+            std::vector<std::string> pairs = split(line, ' ');
+            
+            if (pairs.size() > 1)
+            {
+                std::string vkey = pairs[ 0 ].c_str();
+                
+                std::cout << " vkey = " << vkey <<std::endl;  
+                
+                double x = strtod(pairs[ 1 ].c_str(), NULL);
+                double y = strtod(pairs[ 2 ].c_str(), NULL);
+                double z = strtod(pairs[ 3 ].c_str(), NULL);
+                
+                std::pair<int,int> value = vmap.at( vkey );
+                
+                int ci = value.first;
+                int vi = value.second;
+                
+                cells[ci].vertices[vi].r_c.x = x;
+                cells[ci].vertices[vi].r_c.y = y;
+                cells[ci].vertices[vi].r_c.z = z;
+                
+                
+                
+                std::cout << ci << " " << vi << " " << x << " " << y << " " << z <<std::endl;  
+                
+            }
+        }
+
+    }
+    
+    else
+    {
+       // print error  
+    }
+
+    os.close(); 
+}

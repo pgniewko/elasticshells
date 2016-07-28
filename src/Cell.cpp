@@ -1080,6 +1080,7 @@ std::ostream& operator<< (std::ostream& out, const Cell& c)
         out << "CELLHINGE " <<  c.cell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
     }
 
+    
 
     return out;
 }

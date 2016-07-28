@@ -482,7 +482,7 @@ int main(int argc, char** argv)
         if (arguments.restart)
         {
             simulator.restart();
-            return (EXIT_SUCCESS);
+        //    return (EXIT_SUCCESS);
         }
         else
         {
