@@ -449,6 +449,8 @@ double DomainList::calcNbEnergy(const std::vector<Cell>& cells, const Box& box) 
             }
         }
     }
+    
+    return totalNbEnergy;
 }
 
 double DomainList::nbEnergy(const Vertex* target, const Vertex* partner, const std::vector<Cell>& cells, const Box& box) const

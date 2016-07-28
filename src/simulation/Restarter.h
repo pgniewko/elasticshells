@@ -5,6 +5,7 @@
 #include <string>
 #include <regex>
 #include <utility>
+#include <typeinfo>
 
 #include "Cell.h"
 #include "utils/utils.h"
@@ -19,13 +20,15 @@ class Restarter
 
         void saveTopologyFile(const std::vector<Cell>&, char*) const;
         void saveLastFrame(const std::vector<Cell>&) const;
-        void readTopologyFile(const std::vector<Cell>&) const;
-        void readLastFrame(const std::vector<Cell>&) const;
+        void readTopologyFile(std::vector<Cell>&) const;
+        void readLastFrame(std::vector<Cell>&) const;
         
     private:
         int getTotalVertices(const std::vector<Cell>&) const;
 
         std::pair<int,std::string> getNumberOfCells() const;
+        void initCell(std::vector<Cell>&, int) const;
+        void addVertices(std::vector<Cell>&, int) const;
         
         std::string topologyFile;
         std::string lastFrameFile;

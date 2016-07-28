@@ -264,6 +264,12 @@ void Simulator::addCell(double r0, char* model_t)
     }
 }
 
+void Simulator::restart()
+{
+    restarter.readTopologyFile(cells);
+}
+
+
 void Simulator::simulate()
 {
     simulate(params.nsteps);
@@ -348,8 +354,8 @@ void Simulator::simulate(int steps)
     traj.close();
     log_sim.close();
 
-    simulator_logs << utils::LogLevel::FINEST << "Forces have been evaluated " << FORCE_EVALUATION_COUTER << " times.\n";
-//    simulator_logs << utils::LogLevel::FINEST << "Energy has been evaluated " << Energy::ENERGY_EVALUATION_COUNTER << " times.\n";
+    simulator_logs << utils::LogLevel::FINEST << "Forces have been evaluated: " << FORCE_EVALUATION_COUTER << " times.\n";
+    simulator_logs << utils::LogLevel::FINEST << "Energy  has been evaluated: " << Energy::ENERGY_EVALUATION_COUNTER << " times.\n";
 }
 
 void Simulator::calcForces()

@@ -4,6 +4,11 @@ utils::Logger Cell::cell_log("cell");
 
 bool Cell::no_bending = false;
 
+Cell::Cell()
+{
+    
+}
+
 Cell::Cell(int depth)
 {
     SimpleTriangulation sm(depth);
