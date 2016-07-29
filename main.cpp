@@ -26,7 +26,7 @@
 
 utils::Logger biofilm_logs("biofilm");
 
-const char* argp_program_version = "biofilm 0.5.1";
+const char* argp_program_version = "biofilm 0.6.0";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
 
 static char doc[] =
