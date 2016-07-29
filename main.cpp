@@ -479,15 +479,16 @@ int main(int argc, char** argv)
         Energy::setModelType(arguments.model_type);
         simulation_time = read_timer();
         Simulator simulator(arguments);
+
         if (arguments.restart)
         {
             simulator.restart();
-        //    return (EXIT_SUCCESS);
         }
         else
         {
             simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.model_type);
         }
+
         simulator.simulate(arguments.nsteps);
         clocks[0].toc();
         simulation_time = read_timer( ) - simulation_time;

@@ -73,6 +73,7 @@ void XyzTraj::save_traj(const std::vector<Cell>& cells, int totV, double sx, dou
         {
             std::string strindex = new_base_index ( lastCellIndex +  cells[i].vertices[j].getId() );
             fprintf(os, "%s %10.5f %10.5f %10.5f \n", strindex.c_str(), sx * cells[i].vertices[j].r_c.x, sy * cells[i].vertices[j].r_c.y, sz * cells[i].vertices[j].r_c.z);
+            //fprintf(os, "%s %10.12f %10.12f %10.12f \n", strindex.c_str(), sx * cells[i].vertices[j].r_c.x, sy * cells[i].vertices[j].r_c.y, sz * cells[i].vertices[j].r_c.z);
 
         }
 

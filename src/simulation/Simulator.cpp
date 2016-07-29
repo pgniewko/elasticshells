@@ -290,9 +290,11 @@ void Simulator::simulate(int steps)
         rebuildDomainsList();
     }
 
+
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
     traj.open();
+
     traj.save_traj(cells, getTotalVertices());
     log_sim.registerObservers();
     log_sim.open();
@@ -301,7 +303,6 @@ void Simulator::simulate(int steps)
 
     bool resized = false;
 
-    //calcForces();
     for (int i = 0; i < steps; i++)
     {
 
@@ -569,7 +570,7 @@ bool Simulator::check_min_force()
     {
         return false;
     }
-    
+
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -580,7 +581,7 @@ bool Simulator::check_min_force()
             }
         }
     }
-    
+
     return false;
 }
 
@@ -760,20 +761,24 @@ void Simulator::gear_cp()
  * **************************************
  */
 void Simulator::boost_cg()
-{ 
+{
     this->setIntegrator(&Simulator::gear_cp);
-    
+
     const int i = 123;
     int counter = 0;
+
     do
     {
         integrate();
         counter++;
-        
-        if (counter > i) break;
+
+        if (counter > i)
+        {
+            break;
+        }
     }
     while ( check_min_force() );
-    
+
     if (counter > i)
     {
         this->setIntegrator(&Simulator::cg);
@@ -787,11 +792,11 @@ void Simulator::boost_cg()
 void Simulator::cg()
 {
     int n = 3 * getTotalVertices();
-    
+
     double* p = darray(n);
-    
+
     int counter = 0;
-    
+
     for (uint i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -809,6 +814,7 @@ void Simulator::cg()
 
     frprmn(p, n, ftol, &iter, &fret);
     counter = 0;
+
     for (uint i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -837,7 +843,7 @@ double Simulator::func(double _p[])
             counter++;
         }
     }
-    
+
     return Energy::calcTotalEnergy(cells, box, domains);
 }
 
@@ -897,9 +903,9 @@ void Simulator::frprmn(double p[], int n, double ftol, int* iter, double* fret)
     for (its = 1; its <= ITMAX; its++)
     {
         *iter = its;
-        linmin(p, xi, n, fret);
-        //dlinmin(p, xi, n, fret);
-       
+        //linmin(p, xi, n, fret);
+        dlinmin(p, xi, n, fret);
+
         if (2.0 * fabs(*fret - fp) <= ftol * (fabs(*fret) + fabs(fp) + EPS))
         {
             FREEALL
@@ -1387,12 +1393,12 @@ double Simulator::f1dim(double x)
     double f, *xt;
 
     xt = darray(ncom);
-    
+
     for (j = 0; j < ncom; j++)
     {
         xt[j] = pcom[j] + x * xicom[j];
     }
-    
+
     f = func(xt);
     free_darray(xt);
     return f;

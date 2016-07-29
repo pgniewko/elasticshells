@@ -24,24 +24,24 @@ class Restarter
         void readTopologyFile(std::vector<Cell>&) const;
         void readLastFrame(std::vector<Cell>&) const;
         void registerVMap();
-        
+
     private:
         int getTotalVertices(const std::vector<Cell>&) const;
 
-        std::pair<int,std::string> getNumberOfCells() const;
+        std::pair<int, std::string> getNumberOfCells() const;
         void initCell(std::vector<Cell>&, int) const;
         void addVertices(std::vector<Cell>&, int) const;
         void addVTriangles(std::vector<Cell>&, int) const;
         void addBHinges(std::vector<Cell>&, int) const;
-        
-        
+
+
         //void validateVMap();
-        
+
         std::string topologyFile;
         std::string lastFrameFile;
-        std::unordered_map< std::string, std::pair<int,int> >  vmap;
+        std::unordered_map< std::string, std::pair<int, int> >  vmap;
         static utils::Logger restarter_logs;
-        
+
 
 };
 

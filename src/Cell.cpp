@@ -6,7 +6,7 @@ bool Cell::no_bending = false;
 
 Cell::Cell()
 {
-    
+
 }
 
 Cell::Cell(int depth)
@@ -1080,7 +1080,7 @@ std::ostream& operator<< (std::ostream& out, const Cell& c)
         out << "CELLHINGE " <<  c.cell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
     }
 
-    
+
 
     return out;
 }

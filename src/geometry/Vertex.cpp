@@ -1,6 +1,6 @@
 #include "Vertex.h"
 
-Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), numBonded(0), numTris(0), myid(-1), myCellId(-1) 
+Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), numBonded(0), numTris(0), myid(-1), myCellId(-1)
 {
     for (int i = 0; i < NEIGH_MAX; i++)
     {
@@ -8,7 +8,7 @@ Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), numBonded(0), numTris(0), myid(-1
         r0[i] = 0.0;
         k0[i] = 0.0;
     }
-    
+
     for (int i = 0; i < TRIAN_MAX; i++)
     {
         bondedTris[i] = -1;
@@ -16,7 +16,7 @@ Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), numBonded(0), numTris(0), myid(-1
 }
 
 Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), r_p(x, y, z), numBonded(0), numTris(0),
-    myid(-1), myCellId(-1) 
+    myid(-1), myCellId(-1)
 {
     for (int i = 0; i < NEIGH_MAX; i++)
     {
@@ -24,6 +24,7 @@ Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), r_p(x, y, z), numBo
         r0[i] = 0.0;
         k0[i] = 0.0;
     }
+
     for (int i = 0; i < TRIAN_MAX; i++)
     {
         bondedTris[i] = -1;
@@ -38,6 +39,7 @@ Vertex::Vertex(Vector3D v) : r_c(v), r_p(v), numBonded(0), numTris(0), myid(-1),
         r0[i] = 0.0;
         k0[i] = 0.0;
     }
+
     for (int i = 0; i < TRIAN_MAX; i++)
     {
         bondedTris[i] = -1;

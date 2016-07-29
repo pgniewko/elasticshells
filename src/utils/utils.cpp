@@ -53,5 +53,5 @@ std::string trim( const std::string& str )
     static const std::string ws = " \t\n" ;
     auto first = str.find_first_not_of(ws) ;
     auto last = str.find_last_not_of(ws) ;
-    return first == std::string::npos ? "" : str.substr( first, last-first+1 ) ;
+    return first == std::string::npos ? "" : str.substr( first, last - first + 1 ) ;
 }

@@ -50,6 +50,7 @@ double Energy::calcStretchEnergy(const std::vector<Cell>& cells)
     {
         // NOT IMPLEMENTED YET
     }
+
     return stretchEnergy;
 }
 
@@ -67,7 +68,7 @@ double Energy::calcBendingEnergy(const std::vector<Cell>& cells)
             }
         }
     }
-    
+
     return bendingEnergy;
 }
 
@@ -93,7 +94,7 @@ double Energy::calcOsmoticEnergy(const std::vector<Cell>& cells)
             osmoticEnergy += -P * V;
         }
     }
-    
+
     return osmoticEnergy;
 }
 
