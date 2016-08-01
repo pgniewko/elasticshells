@@ -271,7 +271,7 @@ void Simulator::restart()
     restarter.readLastFrame(cells);
     number_of_cells = cells.size();
     
-    restarter.saveTopologyFile(cells, "fem");
+    //restarter.saveTopologyFile(cells, "fem");
     set_min_force();
 }
 

@@ -231,10 +231,10 @@ double Box::getNu() const
 
 void Box::configureScheduler(char* schf)
 {
-    std::cout << "=============="<< std::endl;    
-    std::cout << "x="<< x << " y="<< y << " z="<< z << " ";
-    std::cout << "x_min="<< x_min << " y_min="<< y_min << " z_min="<< z_min<< std::endl;
-    std::cout << "=============="<< std::endl;
+    //std::cout << "=============="<< std::endl;    
+    //std::cout << "x="<< x << " y="<< y << " z="<< z << " ";
+    //std::cout << "x_min="<< x_min << " y_min="<< y_min << " z_min="<< z_min<< std::endl;
+    //std::cout << "=============="<< std::endl;
     my_schedule.setFileName(schf);
     my_schedule.registerSchedules();
     my_schedule.configureSchedule();

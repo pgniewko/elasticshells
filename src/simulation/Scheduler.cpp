@@ -65,7 +65,7 @@ void Scheduler::registerSchedules()
         }
     }
     
-    printSchedule();
+    //printSchedule();
 }
 
 void Scheduler::setFileName(char* schf)
