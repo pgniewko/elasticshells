@@ -276,13 +276,22 @@ void Restarter::addVTriangles(std::vector<Cell>& cells, int cix) const
                     cells[cix].triangles[t_id].an[1] = strtod(pairs[ 7 ].c_str(), NULL);
                     cells[cix].triangles[t_id].an[2] = strtod(pairs[ 8 ].c_str(), NULL);
 
-                    cells[cix].triangles[t_id].ki[0] = strtod(pairs[ 9 ].c_str(), NULL);
-                    cells[cix].triangles[t_id].ki[1] = strtod(pairs[ 10 ].c_str(), NULL);
-                    cells[cix].triangles[t_id].ki[2] = strtod(pairs[ 11 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].L2[0] = strtod(pairs[ 9 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].L2[1] = strtod(pairs[ 10 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].L2[2] = strtod(pairs[ 11 ].c_str(), NULL);
+                    
+                    cells[cix].triangles[t_id].ki[0] = strtod(pairs[ 12 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ki[1] = strtod(pairs[ 13 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ki[2] = strtod(pairs[ 14 ].c_str(), NULL);
 
-                    cells[cix].triangles[t_id].ci[0] = strtod(pairs[ 12 ].c_str(), NULL);
-                    cells[cix].triangles[t_id].ci[1] = strtod(pairs[ 13 ].c_str(), NULL);
-                    cells[cix].triangles[t_id].ci[2] = strtod(pairs[ 14 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ci[0] = strtod(pairs[ 15 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ci[1] = strtod(pairs[ 16 ].c_str(), NULL);
+                    cells[cix].triangles[t_id].ci[2] = strtod(pairs[ 17 ].c_str(), NULL);
+                    
+//                        out << vt.an[0] << ' ' << vt.an[1] << ' '  << vt.an[2] << ' ';
+//    out << vt.L2[0] << ' ' << vt.L2[1] << ' '  << vt.L2[2] << ' ';
+//    out << vt.ki[0] << ' ' << vt.ki[1] << ' '  << vt.ki[2] << ' ';
+//    out << vt.ci[0] << ' ' << vt.ci[1] << ' '  << vt.ci[2] << ' ';
 
                 }
             }

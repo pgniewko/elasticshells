@@ -47,9 +47,9 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
-    box.setXmax(args.bsx);
-    box.setYmax(args.bsy);
-    box.setZmax(args.bsz);
+    //box.setXmax(args.bsx);
+    //box.setYmax(args.bsy);
+    //box.setZmax(args.bsz);
     box.setXmin(args.bsxe);
     box.setYmin(args.bsye);
     box.setZmin(args.bsze);
@@ -269,6 +269,10 @@ void Simulator::restart()
     restarter.registerVMap();
     restarter.readTopologyFile(cells);
     restarter.readLastFrame(cells);
+    number_of_cells = cells.size();
+    
+    restarter.saveTopologyFile(cells, "fem");
+    set_min_force();
 }
 
 
@@ -294,18 +298,19 @@ void Simulator::simulate(int steps)
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
     traj.open();
-
+    
     traj.save_traj(cells, getTotalVertices());
     log_sim.registerObservers();
     log_sim.open();
     log_sim.printHeader();
     log_sim.dumpState(box, cells);
+    traj.save_box(box, steps * params.dt);
+    box.saveRemainingSchedule();
 
     bool resized = false;
 
     for (int i = 0; i < steps; i++)
     {
-
         if ( i % (steps / std::min(steps, 10) ) == 0.0 )
         {
             simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
@@ -330,29 +335,39 @@ void Simulator::simulate(int steps)
             }
             else
             {
-                traj.save_traj(cells, getTotalVertices(), box.getXmax() / box.getX(),
-                               box.getYmax() / box.getY(), box.getZmax() / box.getZ());
+//                traj.save_traj(cells, getTotalVertices(), box.getXmax() / box.getX(),
+//                               box.getYmax() / box.getY(), box.getZmax() / box.getZ());
+                
+                traj.save_traj(cells, getTotalVertices(), 1.0, 1.0, 1.0);                
             }
-
-            traj.save_box(box, (i + 1) * params.dt);
         }
 
-        if ( (i + 1) % params.log_step == 0)
+        if ( (i + 1) % params.log_step == 0 )
         {
             log_sim.dumpState(box, cells);
             restarter.saveLastFrame(cells);
+            traj.save_box(box, (i + 1) * params.dt);
         }
 
-        resized = box.resize();
+        
+        if ( i < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
+            resized = box.resize();
+        else
+            resized = false;
+        
+        
 
         if (resized)
         {
             domains.setBoxDim(box);
+            box.saveRemainingSchedule();
         }
     }
 
     log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results, probably there is not force relaxation before dump
     restarter.saveLastFrame(cells);
+    box.saveRemainingSchedule();
+    traj.save_box(box, steps * params.dt);
     sb.saveStrainScript(cells, box);
     traj.close();
     log_sim.close();

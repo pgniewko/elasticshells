@@ -3,27 +3,27 @@
 utils::Logger Box::box_logger("box_logger");
 
 Box::Box(double bsx, double bsy, double bsz) : pbc(false),
-    x(bsx), y(bsy), z(bsz), x_max(bsx), y_max(bsy), z_max(bsz),
+    x(bsx), y(bsy), z(bsz), //, x_max(bsx), y_max(bsy), z_max(bsz),
     x_min(bsx), y_min(bsy), z_min(bsz), E_box(0.0), nu(0.0)
 {
-    if (bsx == 0)
-    {
-        x_max = DBL_MAX;
-    }
-
-    if (bsy == 0)
-    {
-        y_max = DBL_MAX;
-    }
-
-    if (bsz == 0)
-    {
-        z_max = DBL_MAX;
-    }
+//    if (bsx == 0)
+//    {
+//        x_max = DBL_MAX;
+//    }
+//
+//    if (bsy == 0)
+//    {
+//        y_max = DBL_MAX;
+//    }
+//
+//    if (bsz == 0)
+//    {
+//        z_max = DBL_MAX;
+//    }
 }
 
 Box::Box(const Box& orig) : pbc(orig.pbc),
-    x(orig.x), y(orig.y), z(orig.z), x_max(orig.x_max), y_max(orig.y_max), z_max(orig.z_max),
+    x(orig.x), y(orig.y), z(orig.z), //x_max(orig.x_max), y_max(orig.y_max), z_max(orig.z_max),
     x_min(orig.x_min), y_min(orig.y_min), z_min(orig.z_min),
     E_box(orig.E_box), nu(orig.nu), my_schedule(orig.my_schedule)
 {}
@@ -53,20 +53,35 @@ bool Box::resize()
 
     my_schedule.execute(dx, dy, dz);
 
-    if (x + dx >= x_min && x + dx <= x_max)
+//    if (x + dx >= x_min && x + dx <= x_max)
+//    {
+//        x += dx;
+//    }
+//
+//    if (y + dy >= y_min && y + dy <= y_max)
+//    {
+//        y += dy;
+//    }
+//
+//    if (z + dz >= z_min && z + dz <= z_max)
+//    {
+//        z += dz;
+//    }
+    
+    if (x + dx >= x_min)
     {
         x += dx;
     }
 
-    if (y + dy >= y_min && y + dy <= y_max)
+    if (y + dy >= y_min)
     {
         y += dy;
     }
 
-    if (z + dz >= z_min && z + dz <= z_max)
+    if (z + dz >= z_min)
     {
         z += dz;
-    }
+    }    
 
     if (dx == 0 && dy == 0 && dz == 0)
     {
@@ -131,20 +146,20 @@ double Box::getZ() const
     return z;
 }
 
-void Box::setXmax(const double xst)
-{
-    x_max = xst;
-}
-
-void Box::setYmax(const double yst)
-{
-    y_max = yst;
-}
-
-void Box::setZmax(const double zst)
-{
-    z_max = zst;
-}
+//void Box::setXmax(const double xst)
+//{
+//    x_max = xst;
+//}
+//
+//void Box::setYmax(const double yst)
+//{
+//    y_max = yst;
+//}
+//
+//void Box::setZmax(const double zst)
+//{
+//    z_max = zst;
+//}
 
 void Box::setXmin(const double xend)
 {
@@ -161,19 +176,19 @@ void Box::setZmin(const double zend)
     z_min = zend;
 }
 
-double Box::getXmax() const
-{
-    return x_max;
-}
-double Box::getYmax() const
-{
-    return y_max;
-}
-
-double Box::getZmax() const
-{
-    return z_max;
-}
+//double Box::getXmax() const
+//{
+//    return x_max;
+//}
+//double Box::getYmax() const
+//{
+//    return y_max;
+//}
+//
+//double Box::getZmax() const
+//{
+//    return z_max;
+//}
 
 double Box::getXmin() const
 {
@@ -216,14 +231,21 @@ double Box::getNu() const
 
 void Box::configureScheduler(char* schf)
 {
+    std::cout << "=============="<< std::endl;    
+    std::cout << "x="<< x << " y="<< y << " z="<< z << " ";
+    std::cout << "x_min="<< x_min << " y_min="<< y_min << " z_min="<< z_min<< std::endl;
+    std::cout << "=============="<< std::endl;
     my_schedule.setFileName(schf);
-    //my_schedule.readScheduleFile();
     my_schedule.registerSchedules();
     my_schedule.configureSchedule();
-    //my_schedule.printSchedule();
 }
 
 void Box::setDefaultSchedule(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
 {
     my_schedule.setDefault(ns, in, _dx, _dy, _dz, _rx, _ry, _rz);
+}
+
+void Box::saveRemainingSchedule()
+{
+    my_schedule.saveRemainingSchedule();
 }

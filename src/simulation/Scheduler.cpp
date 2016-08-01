@@ -64,6 +64,8 @@ void Scheduler::registerSchedules()
             schedules.push_back(new_schedule);
         }
     }
+    
+    printSchedule();
 }
 
 void Scheduler::setFileName(char* schf)
@@ -90,6 +92,38 @@ void Scheduler::printSchedule()
 
     std::cout << "DEFAULT" << std::endl;
     std::cout << default_schedule.n_steps << " " << default_schedule.interval << " " << default_schedule.dx << " " << default_schedule.dy << " " << default_schedule.dz << " " << default_schedule.rx << " " << default_schedule.ry << " " << default_schedule.rz << std::endl;
+}
+
+void Scheduler::saveRemainingSchedule()
+{
+    std::ofstream ofile;
+    ofile.open(std::string(schedulefile) + std::string(".remain"), std::ifstream::out);
+
+    if ( ofile.is_open() )
+    {
+        for (uint i = 0; i < schedules.size(); i++)
+        {
+            schedule_t s = schedules[i];
+            if (i == 0)
+            {
+                ofile << (s.n_steps - current_schedule.counter)<< " " << s.interval << " "; 
+            }
+            else
+            {
+                ofile << s.n_steps << " " << s.interval << " "; 
+            }
+            
+            ofile << s.dx << " " << s.dy << " " << s.dz << " ";
+            ofile << s.rx << " " << s.ry << " " << s.rz << std::endl;
+        }
+        
+        ofile.close();
+        
+    }
+    else
+    {
+        schedule_logger << utils::LogLevel::WARNING << "Observers configuration file COULD NOT BE FOUND" << "\n";
+    }
 }
 
 void Scheduler::setDefault(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)

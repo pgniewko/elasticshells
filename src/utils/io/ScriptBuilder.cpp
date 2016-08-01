@@ -377,12 +377,12 @@ void ScriptBuilder::saveContactStress(const std::vector<Cell>& cells, const Box&
 
                 if (forceij > 0 and i > j)
                 {
-                    double xi = cmi.x * box.getXmax() / box.getX();
-                    double xj = cmj.x * box.getXmax() / box.getX();
-                    double yi = cmi.y * box.getYmax() / box.getY();
-                    double yj = cmj.y * box.getYmax() / box.getY();
-                    double zi = cmi.z * box.getZmax() / box.getZ();
-                    double zj = cmj.z * box.getZmax() / box.getZ();
+                    double xi = cmi.x;// * box.getXmax() / box.getX();
+                    double xj = cmj.x;// * box.getXmax() / box.getX();
+                    double yi = cmi.y;// * box.getYmax() / box.getY();
+                    double yj = cmj.y;// * box.getYmax() / box.getY();
+                    double zi = cmi.z;// * box.getZmax() / box.getZ();
+                    double zj = cmj.z;// * box.getZmax() / box.getZ();
                     os << "L = Line(";
                     os << "(" << xi << "," << xj << "),";
                     os << "(" << yi << "," << yj << "),";
