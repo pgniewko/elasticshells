@@ -762,7 +762,7 @@ void Simulator::cg()
         }
     }
 
-    double ftol = 1e-10;
+    double ftol = 3e-8; // approx. sqrt(1e-15) - precision of double
     int iter;
     double fret;
 
@@ -872,7 +872,7 @@ void Simulator::frprmn(double p[], int n, double ftol, int* iter, double* fret)
         for (j = 0; j < n; j++)
         {
             gg += g[j] * g[j];
-            dgg += (xi[j] + g[j]) * xi[j];
+            dgg += (xi[j] + g[j]) * xi[j]; // Polak-Ribiere method: works better for functions that are not exactly quadratic
         }
 
         if (gg == 0.0)
