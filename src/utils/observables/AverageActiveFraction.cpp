@@ -8,35 +8,35 @@ AverageActiveFraction::~AverageActiveFraction() {}
 
 void AverageActiveFraction::set_params(const int num, std::vector<std::string> args_)
 {
-    i_param = atoi(args_[ num + 0 ].c_str());
+    d_param = strtod(args_[ num + 0 ].c_str(), NULL);
     return;
 };
 
 double AverageActiveFraction::observe(const Box& box, std::vector<Cell>& cells)
 {
-    bool flag = false;
-
-    if (i_param > 0)
-    {
-        flag = true;
-    }
-
-    uint cellsnumber = cells.size();
+    
     double total_active_f = 0.0;
-    double counter = 0.0;
-
-    for (uint i = 0; i < cellsnumber; i++)
+    double active_a = 0.0;
+    double cell_a = 0.0;
+    double cell_f = 0.0;
+    
+    for (uint i = 0; i < cells.size(); i++)
     {
-        total_active_f += cells[i].activeAreaFraction(box, cells, counter, flag);
-        //counter += 1.0;
+        cells[i].calcCM();
     }
-
-    if (counter == 0.0 )
+    
+    for (uint i = 0; i < cells.size(); i++)
     {
-        return 0.0;
+        active_a = cells[i].activeArea(box, cells, d_param);
+        cell_a = cells[i].calcSurfaceArea(d_param);
+        cell_f = active_a / cell_a;
+        total_active_f += cell_f;
     }
-
-    return (total_active_f /= counter);
+    
+    total_active_f /= cells.size();
+    
+    
+    return total_active_f;
 }
 
 DerivedRegister<AverageActiveFraction> AverageActiveFraction::reg("AverageActiveFraction");

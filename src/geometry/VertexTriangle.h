@@ -10,6 +10,7 @@ class Vertex;
 
 class VertexTriangle
 {
+        friend class Restarter;
     public:
         VertexTriangle();
         VertexTriangle(int, int, int);

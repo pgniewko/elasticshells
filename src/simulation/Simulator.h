@@ -66,6 +66,8 @@ class Simulator
         void initCells(int, double, double);
         void initCells(int, double, double, char*, bool = false);
 
+        void restart();
+
     private:
 
         void (Simulator::*integrator)();
@@ -121,6 +123,8 @@ class Simulator
 
         // CONJUGATE GRADIENTS CODE
         void cg();
+        void boost_cg();
+
         double func(double[]);
         void dfunc(double[], double[]);
         void frprmn(double p[], int n, double ftol, int* iter, double* fret);

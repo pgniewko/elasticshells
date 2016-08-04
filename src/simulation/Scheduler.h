@@ -41,6 +41,7 @@ class Scheduler
         void checkSchedule();
         void changeSchedule();
         void printSchedule();
+        void saveRemainingSchedule();
         void setDefault(int, int, double, double, double, double, double, double);
         void execute(double&, double&, double&);
 

@@ -47,9 +47,9 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
-    box.setXmax(args.bsx);
-    box.setYmax(args.bsy);
-    box.setZmax(args.bsz);
+    //box.setXmax(args.bsx);
+    //box.setYmax(args.bsy);
+    //box.setZmax(args.bsz);
     box.setXmin(args.bsxe);
     box.setYmin(args.bsye);
     box.setZmin(args.bsze);
@@ -264,6 +264,18 @@ void Simulator::addCell(double r0, char* model_t)
     }
 }
 
+void Simulator::restart()
+{
+    restarter.registerVMap();
+    restarter.readTopologyFile(cells);
+    restarter.readLastFrame(cells);
+    number_of_cells = cells.size();
+    
+    //restarter.saveTopologyFile(cells, "fem");
+    set_min_force();
+}
+
+
 void Simulator::simulate()
 {
     simulate(params.nsteps);
@@ -282,21 +294,23 @@ void Simulator::simulate(int steps)
         rebuildDomainsList();
     }
 
+
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     sb.saveSurfaceScript(cells);
     traj.open();
+    
     traj.save_traj(cells, getTotalVertices());
     log_sim.registerObservers();
     log_sim.open();
     log_sim.printHeader();
     log_sim.dumpState(box, cells);
+    traj.save_box(box, steps * params.dt);
+    box.saveRemainingSchedule();
 
     bool resized = false;
 
-    //calcForces();
     for (int i = 0; i < steps; i++)
     {
-
         if ( i % (steps / std::min(steps, 10) ) == 0.0 )
         {
             simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
@@ -321,35 +335,45 @@ void Simulator::simulate(int steps)
             }
             else
             {
-                traj.save_traj(cells, getTotalVertices(), box.getXmax() / box.getX(),
-                               box.getYmax() / box.getY(), box.getZmax() / box.getZ());
+//                traj.save_traj(cells, getTotalVertices(), box.getXmax() / box.getX(),
+//                               box.getYmax() / box.getY(), box.getZmax() / box.getZ());
+                
+                traj.save_traj(cells, getTotalVertices(), 1.0, 1.0, 1.0);                
             }
-
-            traj.save_box(box, (i + 1) * params.dt);
         }
 
-        if ( (i + 1) % params.log_step == 0)
+        if ( (i + 1) % params.log_step == 0 )
         {
             log_sim.dumpState(box, cells);
             restarter.saveLastFrame(cells);
+            traj.save_box(box, (i + 1) * params.dt);
         }
 
-        resized = box.resize();
+        
+        if ( i < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
+            resized = box.resize();
+        else
+            resized = false;
+        
+        
 
         if (resized)
         {
             domains.setBoxDim(box);
+            box.saveRemainingSchedule();
         }
     }
 
     log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results, probably there is not force relaxation before dump
     restarter.saveLastFrame(cells);
+    box.saveRemainingSchedule();
+    traj.save_box(box, steps * params.dt);
     sb.saveStrainScript(cells, box);
     traj.close();
     log_sim.close();
 
     simulator_logs << utils::LogLevel::FINEST << "Forces have been evaluated " << FORCE_EVALUATION_COUTER << " times.\n";
-//    simulator_logs << utils::LogLevel::FINEST << "Energy has been evaluated " << Energy::ENERGY_EVALUATION_COUNTER << " times.\n";
+    simulator_logs << utils::LogLevel::FINEST << "Energy has been evaluated " << Energy::ENERGY_EVALUATION_COUNTER << " times.\n";
 }
 
 void Simulator::calcForces()
@@ -487,6 +511,10 @@ void Simulator::setIntegrator(char* token)
     {
         this->setIntegrator(&Simulator::cg);
     }
+    else if (STRCMP (token, "bcg"))
+    {
+        this->setIntegrator(&Simulator::boost_cg);
+    }
     else
     {
         this->setIntegrator(&Simulator::integrateEuler);
@@ -553,7 +581,11 @@ bool Simulator::check_min_force()
         return false;
     }
 
-    
+    if (integrator == &Simulator::boost_cg) // needed for the do-while loop in simulate function
+    {
+        return false;
+    }
+
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -564,7 +596,7 @@ bool Simulator::check_min_force()
             }
         }
     }
-    
+
     return false;
 }
 
@@ -743,14 +775,43 @@ void Simulator::gear_cp()
  * CONJUGATE GRADIENTS CODE STARTS HERE *
  * **************************************
  */
+void Simulator::boost_cg()
+{
+    this->setIntegrator(&Simulator::gear_cp);
+
+    const int i = 123;
+    int counter = 0;
+
+    do
+    {
+        integrate();
+        counter++;
+
+        if (counter > i)
+        {
+            break;
+        }
+    }
+    while ( check_min_force() );
+
+    if (counter > i)
+    {
+        this->setIntegrator(&Simulator::cg);
+        cg();
+    }
+
+    this->setIntegrator(&Simulator::boost_cg);
+    return;
+}
+
 void Simulator::cg()
 {
     int n = 3 * getTotalVertices();
-    
+
     double* p = darray(n);
-    
+
     int counter = 0;
-    
+
     for (uint i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -768,6 +829,7 @@ void Simulator::cg()
 
     frprmn(p, n, ftol, &iter, &fret);
     counter = 0;
+
     for (uint i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -796,7 +858,7 @@ double Simulator::func(double _p[])
             counter++;
         }
     }
-    
+
     return Energy::calcTotalEnergy(cells, box, domains);
 }
 
@@ -856,9 +918,9 @@ void Simulator::frprmn(double p[], int n, double ftol, int* iter, double* fret)
     for (its = 1; its <= ITMAX; its++)
     {
         *iter = its;
-        linmin(p, xi, n, fret);
-        //dlinmin(p, xi, n, fret);
-       
+        //linmin(p, xi, n, fret);
+        dlinmin(p, xi, n, fret);
+
         if (2.0 * fabs(*fret - fp) <= ftol * (fabs(*fret) + fabs(fp) + EPS))
         {
             FREEALL
@@ -897,7 +959,7 @@ void Simulator::frprmn(double p[], int n, double ftol, int* iter, double* fret)
 #undef FREEALL
 
 
-#define TOL 1.0e-4
+#define TOL 2.0e-4
 static int ncom;
 static double* pcom;
 static double* xicom;
@@ -934,7 +996,7 @@ void Simulator::linmin(double p[], double xi[], int n, double* fret)
 }
 #undef TOL
 
-#define TOL 1.0e-4
+#define TOL 2.0e-4
 void Simulator::dlinmin(double p[], double xi[], int n, double* fret)
 {
     int j;
@@ -1346,12 +1408,12 @@ double Simulator::f1dim(double x)
     double f, *xt;
 
     xt = darray(ncom);
-    
+
     for (j = 0; j < ncom; j++)
     {
         xt[j] = pcom[j] + x * xicom[j];
     }
-    
+
     f = func(xt);
     free_darray(xt);
     return f;

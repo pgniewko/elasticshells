@@ -4,6 +4,11 @@ utils::Logger Cell::cell_log("cell");
 
 bool Cell::no_bending = false;
 
+Cell::Cell()
+{
+
+}
+
 Cell::Cell(int depth)
 {
     SimpleTriangulation sm(depth);
@@ -176,6 +181,18 @@ void Cell::voidForces()
     {
         vertices[i].voidForce();
     }
+}
+
+double Cell::calcSurfaceArea(double d_param) const
+{
+    double totalSurface = 0.0;
+
+    for (int i = 0; i < number_t; i++)
+    {
+        totalSurface += triangles[i].area(vertices, cm_m, d_param);
+    }
+
+    return totalSurface;
 }
 
 double Cell::calcSurfaceArea() const
@@ -732,15 +749,14 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box) const
         }
     }
 
-    fc1 = force_collector1.length();
-    fc2 = force_collector2.length();
-    fc3 = force_collector3.length();
+    fc1 = force_collector1.length_sq();
+    fc2 = force_collector2.length_sq();
+    fc3 = force_collector3.length_sq();
 
     if (fc1 * fc2 * fc3 > 0)
     {
         return true;
     }
-
 
     return false;
 }
@@ -768,7 +784,40 @@ bool Cell::isInContact(int t_idx, const Box& box) const
     return false;
 }
 
-double Cell::contactArea(const Cell& other_cell, const Box& box) const
+double Cell::activeArea(const Box& box, const std::vector<Cell>& cells, double d_param) const
+{
+    double total_surface = calcSurfaceArea(d_param);
+
+    double total_cell_cell_area = 0.0;
+    for (uint cid = 0; cid < cells.size(); cid++)
+    {
+        if (cell_id != cells[cid].cell_id)
+        {
+            total_cell_cell_area += contactArea(cells[cid], box, d_param);
+        }
+    }
+
+    double total_cell_box_area = contactArea2(box, d_param);
+    double total_contact_area = total_cell_cell_area + total_cell_box_area;
+    
+    return std::max(0.0, total_surface - total_contact_area);
+}
+
+//double Cell::activeAreaFraction(const Box& box, const std::vector<Cell>& cells, double& counter, bool flag) const
+//{
+//    double total_surface = 0.0;
+//
+//    for (int t_idx = 0; t_idx < number_t; t_idx++)
+//    {
+//        total_surface += triangles[t_idx].area(vertices, cm_m, params.vertex_r);
+//    }
+//
+//    double active_area = activeArea(box, cells, counter, flag);
+//
+//    return std::min(1.0, active_area / total_surface);
+//}
+
+double Cell::contactArea(const Cell& other_cell, const Box& box, const double d_param) const
 {
     double contact_area = 0.0;
 
@@ -776,77 +825,16 @@ double Cell::contactArea(const Cell& other_cell, const Box& box) const
     {
         if ( isInContact(t_idx, other_cell, box) )
         {
-            contact_area += triangles[t_idx].area(vertices, cm_m, params.vertex_r);
+            contact_area += triangles[t_idx].area(vertices, cm_m, d_param);
         }
     }
 
     return contact_area;
 }
 
-double Cell::activeArea(const Box& box, const std::vector<Cell>& cells,  double& counter, bool flag) const
+double Cell::contactArea(const Cell& other_cell, const Box& box) const
 {
-    double total_surface = 0.0;
-
-    for (int t_idx = 0; t_idx < number_t; t_idx++)
-    {
-        total_surface += triangles[t_idx].area(vertices, cm_m, params.vertex_r);
-    }
-
-    double total_cell_cell_area = 0.0;
-
-    for (uint cid = 0; cid < cells.size(); cid++)
-    {
-        if (cell_id != cells[cid].cell_id)
-        {
-            total_cell_cell_area += contactArea(cells[cid], box);
-        }
-    }
-
-    double total_cell_box_area = contactArea(box, 0.0);
-
-
-    double total_contact_area = 0.0;
-
-    if (flag) // ONLY BOX TOUCHING CELLS
-    {
-        if (total_cell_box_area > 0)
-        {
-            total_contact_area = total_cell_box_area + total_cell_cell_area;
-            counter += 1.0;
-        }
-        else
-        {
-            return 0.0;
-        }
-    }
-    else  // ONLY BOX NON-TOUCHING CELLS
-    {
-        if (total_cell_box_area > 0)
-        {
-            return 0.0;
-        }
-        else
-        {
-            total_contact_area = total_cell_cell_area;
-            counter += 1.0;
-        }
-    }
-
-    return std::max(0.0, total_surface - total_contact_area);
-}
-
-double Cell::activeAreaFraction(const Box& box, const std::vector<Cell>& cells, double& counter, bool flag) const
-{
-    double total_surface = 0.0;
-
-    for (int t_idx = 0; t_idx < number_t; t_idx++)
-    {
-        total_surface += triangles[t_idx].area(vertices, cm_m, params.vertex_r);
-    }
-
-    double active_area = activeArea(box, cells, counter, flag);
-
-    return std::min(1.0, active_area / total_surface);
+    return contactArea(other_cell, box, params.vertex_r);
 }
 
 double Cell::contactArea(const Box& box, double d_param) const
@@ -867,6 +855,22 @@ double Cell::contactArea(const Box& box, double d_param) const
             }
 
             contact_area += triangles[t_id].area(vertices, cm_m, eps);
+        }
+    }
+
+    return contact_area;
+}
+
+double Cell::contactArea2(const Box& box, double d_param) const
+{
+    double contact_area = 0.0;
+
+    for (int t_id = 0; t_id < number_t; t_id++)
+    {
+        if ( isInContact(t_id, box) )
+        {
+            // Two classes are affected by this code: ActiveActiveArea and ActiveActiveFraction.
+            contact_area += triangles[t_id].area(vertices, cm_m, d_param);
         }
     }
 
@@ -1058,7 +1062,7 @@ std::ostream& operator<< (std::ostream& out, const Cell& c)
     out << c.number_v << ' ' << c.number_t << ' ' << c.number_s << ' ';
     out << c.params.vertex_r << ' ' << c.params.ecc << ' ' << c.params.nu << ' ';
     out << c.params.dp << ' ' << c.params.init_r << ' ' << c.params.vol_c << ' ';
-    out << c.nRT << ' ' << c.V0;
+    out << c.nRT << ' ' << c.V0 << "\n";
 
     for (int i = 0; i < c.number_v; i++)
     {
@@ -1074,6 +1078,7 @@ std::ostream& operator<< (std::ostream& out, const Cell& c)
     {
         out << "CELLHINGE " <<  c.cell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
     }
+
 
 
     return out;

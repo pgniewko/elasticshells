@@ -26,7 +26,7 @@
 
 utils::Logger biofilm_logs("biofilm");
 
-const char* argp_program_version = "biofilm 0.5.1";
+const char* argp_program_version = "biofilm 0.6.0";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
 
 static char doc[] =
@@ -60,7 +60,7 @@ static struct argp_option options[] =
     {"dt",        402, "FLOAT", 0, "Time step [default: 0.001]"},
     {
         "int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], "
-        "Gear corrector-predictor[cp] [default: fe]"
+        "Gear corrector-predictor[cp], Conjugate Gradients [cg], Boost-CG [bcg] [default: fe]"
     },
     {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Linked-domains[2] [default: 0]"},
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
@@ -479,7 +479,16 @@ int main(int argc, char** argv)
         Energy::setModelType(arguments.model_type);
         simulation_time = read_timer();
         Simulator simulator(arguments);
-        simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.model_type);
+
+        if (arguments.restart)
+        {
+            simulator.restart();
+        }
+        else
+        {
+            simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.model_type);
+        }
+
         simulator.simulate(arguments.nsteps);
         clocks[0].toc();
         simulation_time = read_timer( ) - simulation_time;

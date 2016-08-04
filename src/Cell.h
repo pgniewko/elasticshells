@@ -16,6 +16,7 @@
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
 #include "simulation/Tinker.h"
+//#include "simulation/Restarter.h"
 
 struct cell_params_t
 {
@@ -32,8 +33,10 @@ class Cell
         friend class Tinker;
         friend class DomainList;
         friend class Energy;
+        friend class Restarter;
     public:
 
+        Cell();
         Cell(int);
         Cell(std::list<Triangle>);
         Cell(const Cell& orig);
@@ -85,10 +88,17 @@ class Cell
         double contactForce(const Cell&, const Box&) const;
         double contactForce(const Box&) const;
         double contactForceSF(const Box&) const; // for Surface Force use
+        
         double contactArea(const Cell&, const Box&) const;
+        double contactArea(const Cell&, const Box&, const double) const;
         double contactArea(const Box&, double = 0.0) const;
-        double activeArea(const Box&, const std::vector<Cell>&, double&, bool = false) const;
-        double activeAreaFraction(const Box&, const std::vector<Cell>&, double&, bool = false) const;
+        
+        
+        double activeArea(const Box&, const std::vector<Cell>&, double = 0.0) const;
+        double calcSurfaceArea(double) const;
+        double contactArea2(const Box&, double = 0.0) const;
+        //double activeAreaFraction(const Box&, const std::vector<Cell>&, double&, double = 0.0) const;
+        
         double strainEnergy(const Box&) const;
         double maxStrain() const;
         double minStrain() const;
