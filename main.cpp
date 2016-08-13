@@ -60,7 +60,7 @@ static struct argp_option options[] =
     {"dt",        402, "FLOAT", 0, "Time step [default: 0.001]"},
     {
         "int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], "
-        "Gear corrector-predictor[cp], Conjugate Gradients [cg], Boost-CG [bcg] [default: fe]"
+        "Gear corrector-predictor[cp], Conjugate Gradients [cg], Boost-CG [bcg], FIRE [fire] [default: fe]"
     },
     {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Linked-domains[2] [default: 0]"},
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},

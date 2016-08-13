@@ -3,6 +3,13 @@
 utils::Logger Simulator::simulator_logs("simulator");
 ulong Simulator::FORCE_EVALUATION_COUTER(0);
 
+
+int Simulator::FIRE_Nmin(5);
+int Simulator::FIRE_N(0);
+double Simulator::FIRE_DT(0.0);
+double Simulator::FIRE_ALPHA(0.1);
+double Simulator::FIRE_DTMAX(0.0);
+        
 Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
     traj(args.traj_file, args.box_file), log_sim(args.output_file, args.ob_config_file),
@@ -307,6 +314,18 @@ void Simulator::simulate(int steps)
     traj.save_box(box, steps * params.dt);
     box.saveRemainingSchedule();
 
+    
+    //================
+    calcForces();
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].f_p = cells[i].vertices[j].f_c;
+        }
+    }
+    //===============
+    
     bool resized = false;
 
     for (int i = 0; i < steps; i++)
@@ -326,6 +345,22 @@ void Simulator::simulate(int steps)
         }
         while ( check_const_volume() );
 
+        
+        // TEMPORARY  FIRE CODE
+        FIRE_DT = params.dt;
+        FIRE_ALPHA = 0.1;
+        FIRE_N = 0;
+        
+        for (int i = 0; i < number_of_cells; i++)
+        {
+            for (int j = 0; j < cells[i].getNumberVertices(); j++)
+            {
+                cells[i].vertices[j].v_c *= 0.0; // freeze the system
+                cells[i].vertices[j].a_c *= 0.0; // freeze the system
+            }
+        }
+        // END FIRE
+        
 
         if ( (i + 1) % params.save_step == 0)
         {
@@ -515,6 +550,17 @@ void Simulator::setIntegrator(char* token)
     {
         this->setIntegrator(&Simulator::boost_cg);
     }
+    else if (STRCMP (token, "fire"))
+    {
+        this->setIntegrator(&Simulator::fire);
+        
+        FIRE_DT = params.dt;
+        FIRE_DTMAX = 12.0 * params.dt;
+        FIRE_ALPHA = 0.1;
+        FIRE_Nmin = 5;
+        FIRE_N = 0;
+        
+    }
     else
     {
         this->setIntegrator(&Simulator::integrateEuler);
@@ -596,7 +642,9 @@ bool Simulator::check_min_force()
             }
         }
     }
-
+    
+    //std::cout << "FIRE_DT="<< FIRE_DT << std::endl;
+    //std::cout << "FORCE_EVALUATION_COUTER="<< FORCE_EVALUATION_COUTER << std::endl;
     return false;
 }
 
@@ -746,6 +794,7 @@ void Simulator::gear_cp()
             cells[i].vertices[j].a_p = cells[i].vertices[j].a_c;
         }
     }
+    
 
     calcForces();
 
@@ -769,6 +818,161 @@ void Simulator::gear_cp()
         }
     }
 }
+
+void Simulator::fire()
+{
+    double f_inc = 1.1;
+    double f_dec = 0.5;
+    double a_start = 0.1;
+    double f_a = 0.99;
+    
+    // MD step
+    //calcForces();
+    
+    double dt = FIRE_DT;
+
+    // UPDATE POSITIONS
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c + 0.5 * dt * dt * cells[i].vertices[j].f_p;
+            //cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c + 0.5 * dt * dt * cells[i].vertices[j].f_c;
+            //std::cout << "(cells[i].vertices[j].f_c - cells[i].vertices[j].f_p).length()="<< (cells[i].vertices[j].f_c - cells[i].vertices[j].f_p).length() << std::endl;
+            //assert( (cells[i].vertices[j].f_c - cells[i].vertices[j].f_p).length() == 0);
+        }
+    }
+    
+    // UPDATE VELOCITIES
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
+        }
+    }
+    
+    calcForces();
+    // UPDATE VELOCITIES
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
+            cells[i].vertices[j].f_p = cells[i].vertices[j].f_c; 
+        }
+    }
+    
+        // CALC P PARAMETER
+    double P = 0.0;
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            P += dot( cells[i].vertices[j].f_c, cells[i].vertices[j].v_c);
+        }
+    }
+    
+    //=========================
+    
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            double v_norm = cells[i].vertices[j].v_c.length();
+            Vector3D F = cells[i].vertices[j].f_c;
+            F.normalize();
+            
+            cells[i].vertices[j].v_c *= (1 - FIRE_ALPHA);
+            cells[i].vertices[j].v_c += FIRE_ALPHA * F * v_norm;
+        }
+    }
+    
+    
+    if (P > 0 && FIRE_N > FIRE_Nmin)
+    {
+        FIRE_DT = std::min(FIRE_DTMAX, FIRE_DT*f_inc);
+        FIRE_ALPHA *= f_a;
+    }
+    
+    FIRE_N++;
+    
+    if (P <= 0.0)
+    {
+        FIRE_DT *= f_dec;
+        FIRE_ALPHA = a_start;
+        
+        for (int i = 0; i < number_of_cells; i++)
+        {
+            for (int j = 0; j < cells[i].getNumberVertices(); j++)
+            {
+                cells[i].vertices[j].v_c *= 0.0; // freeze the system
+                cells[i].vertices[j].a_c *= 0.0; // freeze the system
+            }
+        }
+        FIRE_N = 0;
+    }
+}
+
+//void Simulator::velocityVerlet()
+//{
+//    calcForces();
+//    
+//    double dt = FIRE_DT;
+//
+//    for (int i = 0; i < number_of_cells; i++)
+//    {
+//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+//        {
+//            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c + 0.5 * dt * dt * cells[i].vertices[j].f_c;
+//        }
+//    }    
+//}
+
+// Three-value, 2nd order corrector-predictor
+// similar to velocity-verlet algorithm but with a corrector step
+//void Simulator::fire_gear_cp2nd()
+//{
+//    double dt = FIRE_DT;
+//    double C1, C2;
+//
+//    C1 = dt;
+//    C2 = dt * dt / 2.0;
+//
+//    for (int i = 0; i < number_of_cells; i++)
+//    {
+//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+//        {
+//            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c + C1 * cells[i].vertices[j].v_c + C2 * cells[i].vertices[j].a_c;
+//            cells[i].vertices[j].v_p = cells[i].vertices[j].v_c + C1 * cells[i].vertices[j].a_c;
+//            cells[i].vertices[j].a_p = cells[i].vertices[j].a_c;
+//        }
+//    }
+//    
+//    calcForces();
+//
+//    double gear0 = 0.0;
+//    double gear1 = 1.0;
+//    double gear2 = 1.0;
+//
+//    double CR = gear0 * C2;
+//    double CV = gear1 * C1;
+//    double CA = gear2;
+//
+//    Vector3D corr_a;
+//
+//    for (int i = 0; i < number_of_cells; i++)
+//    {
+//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+//        {
+//            corr_a = cells[i].vertices[j].f_c - cells[i].vertices[j].a_p; // mass = 1.0
+//
+//            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + CR * corr_a;
+//            cells[i].vertices[j].v_c = cells[i].vertices[j].v_p + CV * corr_a;
+//            cells[i].vertices[j].a_c = cells[i].vertices[j].a_p + CA * corr_a;
+//        }
+//    }
+//}
 
 /*
  * **************************************
