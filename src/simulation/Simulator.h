@@ -89,6 +89,8 @@ class Simulator
         void heunMethod();
         void midpointRungeKutta();
         void gear_cp();
+        //void velocityVerlet();
+        void fire();
 
         int getTotalVertices();
         double getLengthScale();
@@ -120,6 +122,14 @@ class Simulator
 
         static utils::Logger simulator_logs;
         static ulong FORCE_EVALUATION_COUTER;
+        
+        
+        static int FIRE_Nmin;
+        static int FIRE_N;
+        static double FIRE_DT;
+        static double FIRE_ALPHA;
+        static double FIRE_DTMAX;
+        
 
         // CONJUGATE GRADIENTS CODE
         void cg();
