@@ -71,6 +71,10 @@ EXTERNAL LIBRARIES
 brew install argp-standalone
 ```
 
+On linux argp.h is a part of ```libc6-dev``` library. It can be installed with a command (on Ubuntu):
+```
+sudo apt-get install libc6-dev
+```
 
 * GNU Scientific Library ([GSL](http://www.gnu.org/software/gsl/)).
 On Ubuntu you can install it by running:
