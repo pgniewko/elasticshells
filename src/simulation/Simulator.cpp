@@ -613,6 +613,8 @@ void Simulator::set_min_force()
 
     MIN_FORCE_SQ = FORCE_FRAC * max_turgor * average_area;
     MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
+    
+    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
 }
 
 bool Simulator::check_min_force()
@@ -643,8 +645,6 @@ bool Simulator::check_min_force()
         }
     }
     
-    //std::cout << "FIRE_DT="<< FIRE_DT << std::endl;
-    //std::cout << "FORCE_EVALUATION_COUTER="<< FORCE_EVALUATION_COUTER << std::endl;
     return false;
 }
 
@@ -829,39 +829,38 @@ void Simulator::fire()
     // MD step
     //calcForces();
     
-    double dt = FIRE_DT;
-
-    // UPDATE POSITIONS
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c + 0.5 * dt * dt * cells[i].vertices[j].f_p;
-            //cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c + 0.5 * dt * dt * cells[i].vertices[j].f_c;
-            //std::cout << "(cells[i].vertices[j].f_c - cells[i].vertices[j].f_p).length()="<< (cells[i].vertices[j].f_c - cells[i].vertices[j].f_p).length() << std::endl;
-            //assert( (cells[i].vertices[j].f_c - cells[i].vertices[j].f_p).length() == 0);
-        }
-    }
+    velocityVerlet();
     
-    // UPDATE VELOCITIES
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
-        }
-    }
-    
-    calcForces();
-    // UPDATE VELOCITIES
-    for (int i = 0; i < number_of_cells; i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
-            cells[i].vertices[j].f_p = cells[i].vertices[j].f_c; 
-        }
-    }
+//    double dt = FIRE_DT;
+//
+//    // UPDATE POSITIONS
+//    for (int i = 0; i < number_of_cells; i++)
+//    {
+//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+//        {
+//            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c + 0.5 * dt * dt * cells[i].vertices[j].f_p;
+//        }
+//    }
+//    
+//    // UPDATE VELOCITIES
+//    for (int i = 0; i < number_of_cells; i++)
+//    {
+//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+//        {
+//            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
+//        }
+//    }
+//    
+//    calcForces();
+//    // UPDATE VELOCITIES
+//    for (int i = 0; i < number_of_cells; i++)
+//    {
+//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+//        {
+//            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
+//            cells[i].vertices[j].f_p = cells[i].vertices[j].f_c; 
+//        }
+//    }
     
         // CALC P PARAMETER
     double P = 0.0;
@@ -914,20 +913,39 @@ void Simulator::fire()
     }
 }
 
-//void Simulator::velocityVerlet()
-//{
-//    calcForces();
-//    
-//    double dt = FIRE_DT;
-//
-//    for (int i = 0; i < number_of_cells; i++)
-//    {
-//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-//        {
-//            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c + 0.5 * dt * dt * cells[i].vertices[j].f_c;
-//        }
-//    }    
-//}
+void Simulator::velocityVerlet()
+{
+    double dt = FIRE_DT;
+
+    // UPDATE POSITIONS
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c + 0.5 * dt * dt * cells[i].vertices[j].f_p; // use previously calculated forces
+        }
+    }
+    
+    // UPDATE VELOCITIES
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
+        }
+    }
+    
+    calcForces();
+    // UPDATE VELOCITIES
+    for (int i = 0; i < number_of_cells; i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
+            cells[i].vertices[j].f_p = cells[i].vertices[j].f_c; // copy forces for the next time step integration
+        }
+    }  
+}
 
 // Three-value, 2nd order corrector-predictor
 // similar to velocity-verlet algorithm but with a corrector step

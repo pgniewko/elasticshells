@@ -89,7 +89,7 @@ class Simulator
         void heunMethod();
         void midpointRungeKutta();
         void gear_cp();
-        //void velocityVerlet();
+        void velocityVerlet();
         void fire();
 
         int getTotalVertices();
@@ -103,7 +103,7 @@ class Simulator
         bool check_const_volume();
 
         double MIN_FORCE_SQ = 0.0;
-        double FORCE_FRAC = 0.01;
+        double FORCE_FRAC = 0.001;
 
         int number_of_cells;
         std::string triangulator;
