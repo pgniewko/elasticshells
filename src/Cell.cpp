@@ -772,11 +772,15 @@ bool Cell::isInContact(int t_idx, const Box& box) const
     int idx2 = triangles[t_idx].ib;
     int idx3 = triangles[t_idx].ic;
 
-    Vector3D fc1 = box_force(box, idx1);
-    Vector3D fc2 = box_force(box, idx2);
-    Vector3D fc3 = box_force(box, idx3);
+    Vector3D fc1v = box_force(box, idx1);
+    Vector3D fc2v = box_force(box, idx2);
+    Vector3D fc3v = box_force(box, idx3);
 
-    if ( (fc1.length() * fc2.length()* fc3.length()) > 0)
+    double fc1 = fc1v.length_sq();
+    double fc2 = fc2v.length_sq();
+    double fc3 = fc3v.length_sq();
+    
+    if ( fc1*fc2*fc3 > 0)
     {
         return true;
     }
@@ -819,8 +823,15 @@ double Cell::activeArea(const Box& box, const std::vector<Cell>& cells, double d
 
 double Cell::contactArea(const Cell& other_cell, const Box& box, const double d_param) const
 {
+    double dist = ( cm_m - other_cell.getCm() ).length();
+    
+    if (dist > 4.0 * params.init_r)
+    {
+        return 0.0;
+    }
+    
     double contact_area = 0.0;
-
+    
     for (int t_idx = 0; t_idx < number_t; t_idx++)
     {
         if ( isInContact(t_idx, other_cell, box) )
