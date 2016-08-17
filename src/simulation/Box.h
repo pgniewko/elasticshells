@@ -51,7 +51,7 @@ class Box
         double getNu() const;
         double getE() const;
 
-        void configureScheduler(char*);
+        void configureScheduler(std::string);
         void setDefaultSchedule(int, int, double, double, double, double, double, double);
 
         static void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&);
