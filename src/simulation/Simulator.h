@@ -26,7 +26,7 @@
 #include "simulation/Restarter.h"
 #include "simulation/Energy.h"
 #include "utils/nrutil.h"
-//#include "cg/cg.h"
+#include "../Timer.h"
 
 struct params_t
 {
@@ -50,6 +50,7 @@ struct params_t
     bool scale;
     bool dynamics;
     bool const_volume;
+    std::string model_t;
 };
 
 class Simulator
@@ -63,8 +64,7 @@ class Simulator
         void simulate(int);
 
         void initCells(int, double);
-        void initCells(int, double, double);
-        void initCells(int, double, double, char*, bool = false);
+        void initCells(int, double, double, bool = false);
 
         void restart();
 
@@ -79,7 +79,7 @@ class Simulator
         void logParams();
 
         void pushCell(const Cell&);
-        void addCell(double, char*);
+        void addCell(double);
 
         void calcForces();
         void integrate();
@@ -103,7 +103,7 @@ class Simulator
         bool check_const_volume();
 
         double MIN_FORCE_SQ = 0.0;
-        double FORCE_FRAC = 0.001;
+        double FORCE_FRAC = 0.005;
 
         int number_of_cells;
         std::string triangulator;
@@ -121,7 +121,7 @@ class Simulator
         Restarter restarter;
 
         static utils::Logger simulator_logs;
-        static ulong FORCE_EVALUATION_COUTER;
+        static unsigned long FORCE_EVALUATION_COUTER;
         
         
         static int FIRE_Nmin;

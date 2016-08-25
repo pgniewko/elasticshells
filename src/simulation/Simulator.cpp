@@ -1,7 +1,7 @@
 #include "Simulator.h"
 
 utils::Logger Simulator::simulator_logs("simulator");
-ulong Simulator::FORCE_EVALUATION_COUTER(0);
+unsigned long Simulator::FORCE_EVALUATION_COUTER(0);
 
 
 int Simulator::FIRE_Nmin(5);
@@ -49,14 +49,12 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.const_volume = args.const_volume;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
+    params.model_t = std::string(args.model_type);
     setIntegrator(args.integrator_a);
     setTriangulator(args.tritype);
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
-    //box.setXmax(args.bsx);
-    //box.setYmax(args.bsy);
-    //box.setZmax(args.bsz);
     box.setXmin(args.bsxe);
     box.setYmin(args.bsye);
     box.setZmin(args.bsze);
@@ -144,12 +142,7 @@ void Simulator::initCells(int N, double r0)
     initCells(N, r0, r0);
 }
 
-void Simulator::initCells(int N, double ra, double rb)
-{
-    initCells(N, ra, rb, (char*)&"ms_kot", false);
-}
-
-void Simulator::initCells(int N, double ra, double rb, char* model_t, bool restart_flag)
+void Simulator::initCells(int N, double ra, double rb, bool restart_flag)
 {
     if (ra > rb)
     {
@@ -162,7 +155,8 @@ void Simulator::initCells(int N, double ra, double rb, char* model_t, bool resta
         simulator_logs << utils::LogLevel::INFO  << "Cells are initialized from the topology file\n";
     }
 
-    simulator_logs << utils::LogLevel::INFO  << "CELL MODEL: " << model_t << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "CELL MODEL: " << params.model_t << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (!Cell::no_bending ? "true" : "false") << "\n";
 
     double nx, ny, nz;
     bool flag = true;
@@ -201,12 +195,12 @@ void Simulator::initCells(int N, double ra, double rb, char* model_t, bool resta
 
         if (flag)
         {
-            addCell(r0, model_t);
+            addCell(r0);
             shiftCell(shift, number_of_cells - 1);
         }
     }
 
-    restarter.saveTopologyFile(cells, model_t);
+    restarter.saveTopologyFile(cells, params.model_t);
     set_min_force();
 }
 
@@ -228,7 +222,7 @@ void Simulator::pushCell(const Cell& newCell)
     }
 }
 
-void Simulator::addCell(double r0, char* model_t)
+void Simulator::addCell(double r0)
 {
     try
     {
@@ -254,7 +248,7 @@ void Simulator::addCell(double r0, char* model_t)
 
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
-        newCell.setSpringConst(params.E_cell, params.th, params.nu, model_t);
+        newCell.setSpringConst(params.E_cell, params.th, params.nu, params.model_t);
         newCell.setBSprings(params.E_cell, params.th, params.nu);
         newCell.setDp(params.dp, params.ddp);
         newCell.setConstantVolume(params.volume_scale);
@@ -369,11 +363,8 @@ void Simulator::simulate(int steps)
                 traj.save_traj(cells, getTotalVertices());
             }
             else
-            {
-//                traj.save_traj(cells, getTotalVertices(), box.getXmax() / box.getX(),
-//                               box.getYmax() / box.getY(), box.getZmax() / box.getZ());
-                
-                traj.save_traj(cells, getTotalVertices(), 1.0, 1.0, 1.0);                
+            {                
+                traj.save_traj(cells, getTotalVertices(), 1.0, 1.0, 1.0);
             }
         }
 
@@ -382,6 +373,7 @@ void Simulator::simulate(int steps)
             log_sim.dumpState(box, cells);
             restarter.saveLastFrame(cells);
             traj.save_box(box, (i + 1) * params.dt);
+            restarter.saveTopologyFile(cells, params.model_t);
         }
 
         
@@ -389,7 +381,6 @@ void Simulator::simulate(int steps)
             resized = box.resize();
         else
             resized = false;
-        
         
 
         if (resized)
@@ -401,6 +392,7 @@ void Simulator::simulate(int steps)
 
     log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results, probably there is not force relaxation before dump
     restarter.saveLastFrame(cells);
+    traj.save_traj(cells, getTotalVertices(), 1.0, 1.0, 1.0);
     box.saveRemainingSchedule();
     traj.save_box(box, steps * params.dt);
     sb.saveStrainScript(cells, box);
@@ -408,7 +400,7 @@ void Simulator::simulate(int steps)
     log_sim.close();
 
     simulator_logs << utils::LogLevel::FINEST << "Forces have been evaluated " << FORCE_EVALUATION_COUTER << " times.\n";
-    simulator_logs << utils::LogLevel::FINEST << "Energy has been evaluated " << Energy::ENERGY_EVALUATION_COUNTER << " times.\n";
+    simulator_logs << utils::LogLevel::FINEST << "Energy has been evaluated "  << Energy::ENERGY_EVALUATION_COUNTER << " times.\n";
 }
 
 void Simulator::calcForces()
@@ -555,7 +547,7 @@ void Simulator::setIntegrator(char* token)
         this->setIntegrator(&Simulator::fire);
         
         FIRE_DT = params.dt;
-        FIRE_DTMAX = 12.0 * params.dt;
+        FIRE_DTMAX = 15.0 * params.dt;
         FIRE_ALPHA = 0.1;
         FIRE_Nmin = 5;
         FIRE_N = 0;
@@ -829,39 +821,8 @@ void Simulator::fire()
     // MD step
     //calcForces();
     
-    velocityVerlet();
-    
-//    double dt = FIRE_DT;
-//
-//    // UPDATE POSITIONS
-//    for (int i = 0; i < number_of_cells; i++)
-//    {
-//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-//        {
-//            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c + 0.5 * dt * dt * cells[i].vertices[j].f_p;
-//        }
-//    }
-//    
-//    // UPDATE VELOCITIES
-//    for (int i = 0; i < number_of_cells; i++)
-//    {
-//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-//        {
-//            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
-//        }
-//    }
-//    
-//    calcForces();
-//    // UPDATE VELOCITIES
-//    for (int i = 0; i < number_of_cells; i++)
-//    {
-//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-//        {
-//            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
-//            cells[i].vertices[j].f_p = cells[i].vertices[j].f_c; 
-//        }
-//    }
-    
+    velocityVerlet(); 
+   
         // CALC P PARAMETER
     double P = 0.0;
     for (int i = 0; i < number_of_cells; i++)
@@ -946,51 +907,6 @@ void Simulator::velocityVerlet()
         }
     }  
 }
-
-// Three-value, 2nd order corrector-predictor
-// similar to velocity-verlet algorithm but with a corrector step
-//void Simulator::fire_gear_cp2nd()
-//{
-//    double dt = FIRE_DT;
-//    double C1, C2;
-//
-//    C1 = dt;
-//    C2 = dt * dt / 2.0;
-//
-//    for (int i = 0; i < number_of_cells; i++)
-//    {
-//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-//        {
-//            cells[i].vertices[j].r_p = cells[i].vertices[j].r_c + C1 * cells[i].vertices[j].v_c + C2 * cells[i].vertices[j].a_c;
-//            cells[i].vertices[j].v_p = cells[i].vertices[j].v_c + C1 * cells[i].vertices[j].a_c;
-//            cells[i].vertices[j].a_p = cells[i].vertices[j].a_c;
-//        }
-//    }
-//    
-//    calcForces();
-//
-//    double gear0 = 0.0;
-//    double gear1 = 1.0;
-//    double gear2 = 1.0;
-//
-//    double CR = gear0 * C2;
-//    double CV = gear1 * C1;
-//    double CA = gear2;
-//
-//    Vector3D corr_a;
-//
-//    for (int i = 0; i < number_of_cells; i++)
-//    {
-//        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-//        {
-//            corr_a = cells[i].vertices[j].f_c - cells[i].vertices[j].a_p; // mass = 1.0
-//
-//            cells[i].vertices[j].r_c = cells[i].vertices[j].r_p + CR * corr_a;
-//            cells[i].vertices[j].v_c = cells[i].vertices[j].v_p + CV * corr_a;
-//            cells[i].vertices[j].a_c = cells[i].vertices[j].a_p + CA * corr_a;
-//        }
-//    }
-//}
 
 /*
  * **************************************

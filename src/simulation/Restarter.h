@@ -19,7 +19,7 @@ class Restarter
         Restarter(const Restarter& orig);
         virtual ~Restarter();
 
-        void saveTopologyFile(const std::vector<Cell>&, char*) const;
+        void saveTopologyFile(const std::vector<Cell>&, std::string) const;
         void saveLastFrame(const std::vector<Cell>&) const;
         void readTopologyFile(std::vector<Cell>&) const;
         void readLastFrame(std::vector<Cell>&) const;
@@ -33,7 +33,6 @@ class Restarter
         void addVertices(std::vector<Cell>&, int) const;
         void addVTriangles(std::vector<Cell>&, int) const;
         void addBHinges(std::vector<Cell>&, int) const;
-
 
         //void validateVMap();
 

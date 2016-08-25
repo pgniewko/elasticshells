@@ -486,7 +486,7 @@ int main(int argc, char** argv)
         }
         else
         {
-            simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.model_type);
+            simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2);
         }
 
         simulator.simulate(arguments.nsteps);

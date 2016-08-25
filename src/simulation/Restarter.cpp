@@ -23,14 +23,14 @@ int Restarter::getTotalVertices(const std::vector<Cell>& cells) const
     return totalnumber;
 }
 
-void Restarter::saveTopologyFile(const std::vector<Cell>& cells, char* model_t) const
+void Restarter::saveTopologyFile(const std::vector<Cell>& cells, std::string model_t) const
 {
     std::ofstream os;
     os.open(topologyFile);
 
     if ( os.is_open() )
     {
-        os << "NUMCELLS " << cells.size() << ' ' << model_t << "\n";
+        os << "NUMCELLS " << cells.size() << ' ' << model_t << ' ' << (Cell::no_bending ? "true" : "false") << "\n";
 
         for (uint i = 0; i < cells.size(); i++)
         {

@@ -61,7 +61,7 @@ class Cell
         void setEcc(double);
         void setDp(double);
         void setDp(double, double);
-        void setSpringConst(double, double, double, char*);
+        void setSpringConst(double, double, double, std::string);
         void setCellId(int);
         void setNu(double);
         void setBSprings(double, double, double);
@@ -133,7 +133,7 @@ class Cell
         double V0 = 0.0;
 
         bool fem_flag = false;
-        bool bending_flag = true;
+        //bool bending_flag = true;
 
         static utils::Logger cell_log;
 };
