@@ -7,7 +7,16 @@ double cot(double x)
 
 VertexTriangle::VertexTriangle() {}
 
-VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), myid(-1) {}
+VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), myid(-1) 
+{
+    for (int i = 0; i < 3; i++)
+    {
+        an[i] = 0.0;
+        L2[i] = 0.0;
+        ki[i] = 0.0;
+        ci[i] = 0.0;
+    }
+}
 
 VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(orig.ib), ic(orig.ic), myid(orig.myid)
 {
