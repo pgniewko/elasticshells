@@ -34,6 +34,16 @@ void XyzTraj::open_traj()
 
 }
 
+void XyzTraj::open_lf()
+{ 
+    os = fopen(trajfile.c_str(), "w");
+
+    if ( os == NULL )
+    {
+        xyztraj_logs << utils::LogLevel::WARNING << "Can not open last-frame file:" <<  trajfile << "\n";
+    }
+
+}
 
 void XyzTraj::open_box()
 {

@@ -18,6 +18,7 @@ class XyzTraj
 
         void open();
         void open_traj();
+        void open_lf();
         void open_box();
         void close();
         void close_traj();
