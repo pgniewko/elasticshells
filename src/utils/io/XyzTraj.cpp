@@ -19,8 +19,13 @@ void XyzTraj::open()
 }
 
 void XyzTraj::open_traj()
-{
-    os = fopen(trajfile.c_str(), "w");
+{ 
+    os = fopen(trajfile.c_str(), "a");
+
+    if ( os == NULL )
+    {
+        os = fopen(trajfile.c_str(), "w");
+    }
 
     if ( os == NULL )
     {
@@ -32,8 +37,13 @@ void XyzTraj::open_traj()
 
 void XyzTraj::open_box()
 {
-    osb = fopen(boxfile.c_str(), "w");
+    osb = fopen(boxfile.c_str(), "a");
 
+    if ( osb == NULL )
+    {
+        osb = fopen(boxfile.c_str(), "w");
+    }
+    
     if ( osb == NULL )
     {
         xyztraj_logs << utils::LogLevel::WARNING << "Can not open file:" <<  boxfile << "\n";
