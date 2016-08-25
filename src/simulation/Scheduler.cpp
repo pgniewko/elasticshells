@@ -68,9 +68,9 @@ void Scheduler::registerSchedules()
     //printSchedule();
 }
 
-void Scheduler::setFileName(char* schf)
+void Scheduler::setFileName(std::string schf)
 {
-    schedulefile = std::string(schf);
+    schedulefile = schf;
 }
 
 void Scheduler::configureSchedule()

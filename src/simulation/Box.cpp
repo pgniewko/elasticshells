@@ -229,7 +229,7 @@ double Box::getNu() const
     return nu;
 }
 
-void Box::configureScheduler(char* schf)
+void Box::configureScheduler(std::string schf)
 {
     //std::cout << "=============="<< std::endl;    
     //std::cout << "x="<< x << " y="<< y << " z="<< z << " ";

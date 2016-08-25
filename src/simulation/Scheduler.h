@@ -35,7 +35,7 @@ class Scheduler
         Scheduler(const Scheduler& orig);
         virtual ~Scheduler();
         std::vector<std::string> readScheduleFile();
-        void setFileName(char*);
+        void setFileName(std::string);
         void configureSchedule();
         void registerSchedules();
         void checkSchedule();

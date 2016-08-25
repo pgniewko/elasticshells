@@ -19,8 +19,8 @@ struct arguments
     char* files_prefix;
     char* output_dir;
     char* input_dir;
-    char* ob_config_file;
-    char* sch_config_file;
+    std::string ob_config_file;
+    std::string sch_config_file;
 
     char* integrator_a;
     char* tritype;
