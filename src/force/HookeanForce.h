@@ -6,9 +6,9 @@
 class HookeanForce
 {
     public:
-        HookeanForce();
-        HookeanForce(const HookeanForce& orig);
-        virtual ~HookeanForce();
+        HookeanForce() = delete;
+        HookeanForce(const HookeanForce& orig) = delete;
+        virtual ~HookeanForce() = delete;
 
         static Vector3D calcForce(const Vector3D&, const Vector3D&, const double, const double);
 

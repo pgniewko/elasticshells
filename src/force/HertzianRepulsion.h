@@ -9,9 +9,9 @@
 class HertzianRepulsion
 {
     public:
-        HertzianRepulsion();
-        HertzianRepulsion(const HertzianRepulsion& orig);
-        virtual ~HertzianRepulsion();
+        HertzianRepulsion() = delete;
+        HertzianRepulsion(const HertzianRepulsion& orig) = delete;
+        virtual ~HertzianRepulsion() = delete;
 
         static Vector3D calcForce(const Vector3D&, const double, const double, const double, const double, const double, const double);
         static double calcEnergy(const Vector3D&, const double, const double, const double, const double, const double, const double);

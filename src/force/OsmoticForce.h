@@ -8,9 +8,10 @@
 class OsmoticForce
 {
     public:
-        OsmoticForce();
-        OsmoticForce(const OsmoticForce& orig);
-        virtual ~OsmoticForce();
+        OsmoticForce() = delete;
+        OsmoticForce(const OsmoticForce& orig) = delete;
+        virtual ~OsmoticForce() = delete;
+        
         static Vector3D calcForce(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&, const double);
         static void setVolumeFlag(bool);
         static void setEpsilon(double);
