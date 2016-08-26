@@ -6,7 +6,7 @@
 class AverageContactArea : public Observer
 {
     public:
-        AverageContactArea(const char*, const char*);
+        explicit AverageContactArea(const char*, const char*);
         AverageContactArea(const AverageContactArea& orig);
         virtual ~AverageContactArea();
 

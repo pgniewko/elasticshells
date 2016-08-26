@@ -6,7 +6,7 @@
 class MaxStrain : public Observer
 {
     public:
-        MaxStrain(const char*, const char*);
+        explicit MaxStrain(const char*, const char*);
         MaxStrain(const MaxStrain& orig);
         virtual ~MaxStrain();
 

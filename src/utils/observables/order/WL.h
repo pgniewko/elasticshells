@@ -10,7 +10,7 @@
 class WL : public Observer
 {
     public:
-        WL(const char*, const char*);
+        explicit WL(const char*, const char*);
         WL(const WL& orig);
         virtual ~WL();
 

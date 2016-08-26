@@ -13,7 +13,7 @@ class VertexTriangle
         friend class Restarter;
     public:
         VertexTriangle();
-        VertexTriangle(int, int, int);
+        explicit VertexTriangle(int, int, int);
         VertexTriangle(const VertexTriangle& orig);
         virtual ~VertexTriangle();
         void setId(int);

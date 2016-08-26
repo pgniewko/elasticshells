@@ -6,7 +6,7 @@
 class AverageTurgor : public Observer
 {
     public:
-        AverageTurgor(const char*, const char*);
+        explicit AverageTurgor(const char*, const char*);
         AverageTurgor(const AverageTurgor& orig);
         virtual ~AverageTurgor();
 

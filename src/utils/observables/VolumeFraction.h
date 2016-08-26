@@ -6,7 +6,7 @@
 class VolumeFraction : public Observer
 {
     public:
-        VolumeFraction(const char*, const char*);
+        explicit VolumeFraction(const char*, const char*);
         VolumeFraction(const VolumeFraction& orig);
         virtual ~VolumeFraction();
 

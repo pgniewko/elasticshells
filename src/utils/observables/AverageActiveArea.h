@@ -6,7 +6,7 @@
 class AverageActiveArea : public Observer
 {
     public:
-        AverageActiveArea(const char*, const char*);
+        explicit AverageActiveArea(const char*, const char*);
         AverageActiveArea(const AverageActiveArea& orig);
         virtual ~AverageActiveArea();
 

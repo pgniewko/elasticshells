@@ -6,7 +6,7 @@
 class AverageActiveFraction : public Observer
 {
     public:
-        AverageActiveFraction(const char*, const char*);
+        explicit AverageActiveFraction(const char*, const char*);
         AverageActiveFraction(const AverageActiveFraction& orig);
         virtual ~AverageActiveFraction();
 

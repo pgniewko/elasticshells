@@ -6,7 +6,7 @@
 class CellBoxStress : public Observer
 {
     public:
-        CellBoxStress(const char*, const char*);
+        explicit CellBoxStress(const char*, const char*);
         CellBoxStress(const CellBoxStress& orig);
         virtual ~CellBoxStress();
 

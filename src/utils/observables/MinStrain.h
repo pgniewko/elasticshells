@@ -6,7 +6,7 @@
 class MinStrain : public Observer
 {
     public:
-        MinStrain(const char*, const char*);
+        explicit MinStrain(const char*, const char*);
         MinStrain(const MinStrain& orig);
         virtual ~MinStrain();
 

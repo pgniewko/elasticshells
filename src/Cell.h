@@ -37,7 +37,7 @@ class Cell
     public:
 
         Cell();
-        Cell(int);
+        explicit Cell(int);
         Cell(std::list<Triangle>);
         Cell(const Cell& orig);
         virtual ~Cell();

@@ -6,7 +6,7 @@
 class TotalStrainEnergy : public Observer
 {
     public:
-        TotalStrainEnergy(const char*, const char*);
+        explicit TotalStrainEnergy(const char*, const char*);
         TotalStrainEnergy(const TotalStrainEnergy& orig);
         virtual ~TotalStrainEnergy();
 

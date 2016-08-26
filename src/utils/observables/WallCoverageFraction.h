@@ -6,7 +6,7 @@
 class WallCoverageFraction : public Observer
 {
     public:
-        WallCoverageFraction(const char*, const char*);
+        explicit WallCoverageFraction(const char*, const char*);
         WallCoverageFraction(const WallCoverageFraction& orig);
         virtual ~WallCoverageFraction();
 

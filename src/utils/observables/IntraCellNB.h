@@ -6,7 +6,7 @@
 class IntraCellNB : public Observer
 {
     public:
-        IntraCellNB(const char*, const char*);
+        explicit IntraCellNB(const char*, const char*);
         IntraCellNB(const IntraCellNB& orig);
         virtual ~IntraCellNB();
 

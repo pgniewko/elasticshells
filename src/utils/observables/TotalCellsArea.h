@@ -6,7 +6,7 @@
 class TotalCellsArea : public Observer
 {
     public:
-        TotalCellsArea(const char*, const char*);
+        explicit TotalCellsArea(const char*, const char*);
         TotalCellsArea(const TotalCellsArea& orig);
         virtual ~TotalCellsArea();
 

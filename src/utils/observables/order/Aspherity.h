@@ -7,7 +7,7 @@
 class Aspherity : public Observer
 {
     public:
-        Aspherity(const char*, const char*);
+        explicit Aspherity(const char*, const char*);
         Aspherity(const Aspherity& orig);
         virtual ~Aspherity();
 

@@ -7,7 +7,7 @@ class BoxVolume : public Observer
 {
     public:
     public:
-        BoxVolume(const char*, const char*);
+        explicit BoxVolume(const char*, const char*);
         BoxVolume(const BoxVolume& orig);
         virtual ~BoxVolume();
 

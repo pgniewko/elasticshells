@@ -6,7 +6,7 @@
 class CellsVolume : public Observer
 {
     public:
-        CellsVolume(const char*, const char*);
+        explicit CellsVolume(const char*, const char*);
         CellsVolume(const CellsVolume& orig);
         virtual ~CellsVolume();
 

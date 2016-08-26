@@ -6,7 +6,7 @@
 class BoxSizeObserver : public Observer
 {
     public:
-        BoxSizeObserver(const char*, const char*);
+        explicit BoxSizeObserver(const char*, const char*);
         BoxSizeObserver(const BoxSizeObserver& orig);
         virtual ~BoxSizeObserver();
 

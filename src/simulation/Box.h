@@ -11,7 +11,7 @@
 class Box
 {
     public:
-        Box(double, double, double);
+        explicit Box(double, double, double);
         Box(const Box& orig);
         virtual ~Box();
 

@@ -14,7 +14,7 @@ class BendingHinge
         friend class Restarter;
     public:
         BendingHinge();
-        BendingHinge(int, int, int, int);
+        explicit BendingHinge(int, int, int, int);
         BendingHinge(const BendingHinge& orig);
         virtual ~BendingHinge();
 

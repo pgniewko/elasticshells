@@ -7,7 +7,7 @@
 class SurfacePressure : public Observer
 {
     public:
-        SurfacePressure(const char*, const char*);
+        explicit SurfacePressure(const char*, const char*);
         SurfacePressure(const SurfacePressure& orig);
         virtual ~SurfacePressure();
 

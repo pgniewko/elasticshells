@@ -10,7 +10,7 @@ class SurfaceForce : public Observer
 {
         friend class SurfacePressure;
     public:
-        SurfaceForce(const char*, const char*);
+        explicit SurfaceForce(const char*, const char*);
         SurfaceForce(const SurfaceForce& orig);
         virtual ~SurfaceForce();
 

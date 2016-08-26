@@ -6,7 +6,7 @@
 class TotalContactArea : public Observer
 {
     public:
-        TotalContactArea(const char*, const char*);
+        explicit TotalContactArea(const char*, const char*);
         TotalContactArea(const TotalContactArea& orig);
         virtual ~TotalContactArea();
 

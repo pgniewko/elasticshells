@@ -6,7 +6,7 @@
 class AverageVolume : public Observer
 {
     public:
-        AverageVolume (const char*, const char*);
+        explicit AverageVolume (const char*, const char*);
         AverageVolume (const AverageVolume& orig);
         virtual ~AverageVolume();
 

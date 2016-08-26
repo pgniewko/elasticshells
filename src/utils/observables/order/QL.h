@@ -10,7 +10,7 @@
 class QL : public Observer
 {
     public:
-        QL(const char*, const char*);
+        explicit QL(const char*, const char*);
         QL(const QL& orig);
         virtual ~QL();
 

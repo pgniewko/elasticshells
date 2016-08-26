@@ -14,7 +14,7 @@
 class Observer
 {
     public:
-        Observer(const char*, const char*);
+        explicit Observer(const char*, const char*);
         Observer(const Observer& orig);
         virtual ~Observer();
 
