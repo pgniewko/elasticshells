@@ -20,12 +20,13 @@ DBGFLAGS := -DDEBUG -g
 
 # Relative include and library paths for compilation of the examples
 INCLUDE  := -I/usr/local/include -I$(CURDIR)/src
-LIB      := -L/usr/lib -L/usr/local/lib
+#LIB      := -L/usr/local/lib -L/usr/lib
+LIB      := -L/usr/local/lib
 DFLAGS   := -DTESTS
 
-CXXFLAGS := -lm -Wall -O3 -std=gnu++0x -fopenmp -fpermissive $(INCLUDE) -Duint="unsigned int" -Dulong="unsigned long"
+CXXFLAGS := -Wall -O3 -std=c++11 -fopenmp -fpermissive $(INCLUDE) -Duint="unsigned int" -Dulong="unsigned long"
 LDFLAGS  := $(LIB)
-LDLIBS   := -largp -lcppunit -ldl -lsteinhardt -lgsl -lgslcblas
+LDLIBS   := -lm -largp -lcppunit -ldl -lsteinhardt -lgsl -lgslcblas
 
 
 # Local dirs 
