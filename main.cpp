@@ -14,15 +14,11 @@
 #include <climits>
 
 #include "Environment.h"
-#include "src/Timer.h"
-#include "src/arguments.h"
-#include "src/geometry/Vector3D.h"
-#include "src/simulation/Simulator.h"
-
+#include "Timer.h"
+#include "arguments.h"
+#include "simulation/Simulator.h"
 #include "utils/Logger.h"
-#include "src/utils/LogManager.h"
-
-#include "src/geometry/algorithms/MembraneTriangulation.h"
+#include "utils/LogManager.h"
 
 utils::Logger biofilm_logs("biofilm");
 

@@ -2,9 +2,9 @@
 #define	VERTEXTRIANGLE_H
 
 #include "Environment.h"
-#include "Vertex.h"
-#include "Triangle.h"
+#include "geometry/Triangle.h"
 #include "geometry/Vector3D.h"
+#include "geometry/Vertex.h"
 
 class Vertex;
 

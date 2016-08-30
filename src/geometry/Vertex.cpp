@@ -262,7 +262,7 @@ double Vertex::getNeighborR0(int idx) const
 // zamien te funkcje na przeciazony >> operator
 // http://www.learncpp.com/cpp-tutorial/93-overloading-the-io-operators/
 
-void Vertex::printVertex()
+void Vertex::printVertex() const
 {
     std::cout << "myid=" << myid << " ";
     std::cout << "nneigh= " << numBonded << " ntrian=" << numTris << " ";
@@ -282,6 +282,7 @@ void Vertex::printVertex()
     }
 
     std::cout << std::endl;
+    return;
 }
 
 std::ostream& operator<< (std::ostream& out, const Vertex& v)
