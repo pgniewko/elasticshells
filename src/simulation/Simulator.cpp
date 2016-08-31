@@ -116,10 +116,10 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::INFO  << "TRIANGULATOR="  << triangulator << "\n";
     simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << " [s]\n";
     simulator_logs << utils::LogLevel::FINE  << "DEPTH="  << params.d << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "DP="  << params.dp << " [bar]\n";
-    simulator_logs << utils::LogLevel::FINE  << "DDP="  << params.ddp << " [bar]\n";
-    simulator_logs << utils::LogLevel::FINE  << "E CELL="  << 0.1 * params.E_cell << " [MPa]\n";
-    simulator_logs << utils::LogLevel::FINE  << "E BOX="  << 0.1 * box.getE() << " [MPa]\n";
+    simulator_logs << utils::LogLevel::FINE  << "DP="  << params.dp << " [MPa]\n";
+    simulator_logs << utils::LogLevel::FINE  << "DDP="  << params.ddp << " [MPa]\n";
+    simulator_logs << utils::LogLevel::FINE  << "E CELL="  << params.E_cell << " [MPa]\n";
+    simulator_logs << utils::LogLevel::FINE  << "E BOX="  << box.getE() << " [MPa]\n";
     simulator_logs << utils::LogLevel::FINE  << "SURFACE_MODULUS="  << (params.E_cell * params.th) << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (CELL)="  << params.nu << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (BOX)="  << box.getNu() << "\n";
