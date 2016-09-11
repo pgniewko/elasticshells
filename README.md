@@ -25,11 +25,10 @@ To build executables run:
 ```
 make
 ```
-To change compilation settings edit `config.mk` file.
-Executables will be located in `./bin` directory.
-For a correct compilation g++ >= 4.9 is necessary.
-To built on OS X systems `arpg.h` library must be installed and
-linked (`LDLIBS   := ... largp ...`) in `config.mk` file.
+To change compilation settings edit `config.mk` file.  
+Executables will be located in `./bin` directory.  
+For a correct compilation g++ >= 4.9 is necessary.  
+To built on OS X systems `arpg.h` library must be installed and linked (`LDLIBS   := ... largp ...`) in `config.mk` file.
 
 * Installation
 
@@ -111,9 +110,10 @@ USAGE
 
 COPYRIGHT NOTICE
 ================
-Copyright (C) 2014-2015,  Pawel Gniewek
-All rights reserved.
-License: BSD
+Copyright (C) 2014-2016,  Pawel Gniewek  
+Email  : pawel.gniewek@berkeley.edu  
+All rights reserved.  
+License: BSD  
 
 ACKNOWLEDGMENTS
 ===============

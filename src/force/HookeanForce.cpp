@@ -1,10 +1,10 @@
 #include "HookeanForce.h"
 
-HookeanForce::HookeanForce() {}
+//HookeanForce::HookeanForce() {}
 
-HookeanForce::HookeanForce(const HookeanForce& orig) {}
+//HookeanForce::HookeanForce(const HookeanForce& orig) {}
 
-HookeanForce::~HookeanForce() {}
+//HookeanForce::~HookeanForce() {}
 
 Vector3D HookeanForce::calcForce(const Vector3D& va, const Vector3D& vb, const double R0, const double gamma)
 {
