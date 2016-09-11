@@ -3,12 +3,12 @@
 
 #include <vector>
 #include <string>
-#include <regex>
 #include <utility>
 #include <typeinfo>
 #include <unordered_map>
 
 #include "Cell.h"
+#include "geometry/Vertex.h"
 #include "utils/utils.h"
 #include "utils/io/XyzTraj.h"
 

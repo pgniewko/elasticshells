@@ -14,15 +14,11 @@
 #include <climits>
 
 #include "Environment.h"
-#include "src/Timer.h"
-#include "src/arguments.h"
-#include "src/geometry/Vector3D.h"
-#include "src/simulation/Simulator.h"
-
+#include "Timer.h"
+#include "arguments.h"
+#include "simulation/Simulator.h"
 #include "utils/Logger.h"
-#include "src/utils/LogManager.h"
-
-#include "src/geometry/algorithms/MembraneTriangulation.h"
+#include "utils/LogManager.h"
 
 utils::Logger biofilm_logs("biofilm");
 
@@ -70,7 +66,7 @@ static struct argp_option options[] =
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato] [default: simple]"},
     {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
-    {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], ico[1], hexa[2], iso[3] [default: 0]"},
+    {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], hexa[2], ico[3] [default: 0]"},
     {"scale",     415,       0, 0, "Scale the saved coordinates upon compression [default: false]"},
     {"dynamics",  416,       0, 0, "[default: false]"},
     {"no-bend",   417,       0, 0, "[default: false]"},

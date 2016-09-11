@@ -24,7 +24,7 @@ class Vertex
         int setCellId(int);
         int getCellId() const;
 
-        void printVertex();
+        void printVertex() const;
 
         void addNeighbor(int, double);
         void removeNeighbor(int);
