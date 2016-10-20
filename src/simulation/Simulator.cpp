@@ -932,7 +932,7 @@ void Simulator::saveTurgors()
         turgor = cells[i].getTurgor();
         cm = cells[i].getCm();
         
-        fprintf(os, "%5.4f %6.4f %6.4f %6.4f", turgor, cm.x, cm.y, cm.z);
+        fprintf(os, "%5.4f %6.4f %6.4f %6.4f ", turgor, cm.x, cm.y, cm.z);
     }
     fprintf(os, "%s", "\n");
     
