@@ -101,6 +101,8 @@ class Simulator
         void set_min_force();
         bool check_min_force();
         bool check_const_volume();
+        
+        void saveTurgors();
 
         double MIN_FORCE_SQ = 0.0;
         double FORCE_FRAC = 0.005;

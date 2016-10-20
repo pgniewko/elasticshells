@@ -27,6 +27,8 @@ class LogSimulation
         void registerObservers();
         void printHeader();
         void dumpState(Box&, std::vector<Cell>&);
+        
+        const std::string getFileName() const;
 
     private:
         std::string logfile;

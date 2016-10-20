@@ -112,3 +112,8 @@ void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells)
     fprintf(os, "%s" , "\n");
     fflush(os);
 }
+
+const std::string LogSimulation::getFileName() const
+{
+    return logfile;
+}

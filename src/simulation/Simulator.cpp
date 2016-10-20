@@ -374,6 +374,7 @@ void Simulator::simulate(int steps)
             restarter.saveLastFrame(cells);
             traj.save_box(box, (i + 1) * params.dt);
             restarter.saveTopologyFile(cells, params.model_t);
+            saveTurgors();
         }
 
         
@@ -906,6 +907,39 @@ void Simulator::velocityVerlet()
             cells[i].vertices[j].f_p = cells[i].vertices[j].f_c; // copy forces for the next time step integration
         }
     }  
+}
+
+void Simulator::saveTurgors()
+{
+    std::string turgorDumpFile = log_sim.getFileName() + ".turgor.out";
+    
+    FILE* os = fopen(turgorDumpFile.c_str(), "a");
+
+    if ( os == NULL )
+    {
+        os = fopen(turgorDumpFile.c_str(), "w");
+    }
+
+    if ( os == NULL )
+    {
+        simulator_logs << utils::LogLevel::WARNING << "Can not open file:<<" << turgorDumpFile << "for writing.\n";
+    }
+    
+    double turgor;
+    Vector3D cm;
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        turgor = cells[i].getTurgor();
+        cm = cells[i].getCm();
+        
+        fprintf(os, "%5.4f %6.4f %6.4f %6.4f", turgor, cm.x, cm.y, cm.z);
+    }
+    fprintf(os, "%s", "\n");
+    
+    if ( os != NULL )
+    {
+        fclose(os);
+    }
 }
 
 /*
