@@ -176,9 +176,9 @@ void PlatonicTriangulatoin::subdivide()
 
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)  // go through all triangles
     {
-        Vector3D abh = (i->a + i->b) * 0.5f; // point between points A and B
-        Vector3D ach = (i->a + i->c) * 0.5f; // point between points A and C
-        Vector3D bch = (i->b + i->c) * 0.5f; // point between points B and C
+        Vector3D abh = (i->a + i->b) * 0.5; // point between points A and B
+        Vector3D ach = (i->a + i->c) * 0.5; // point between points A and C
+        Vector3D bch = (i->b + i->c) * 0.5; // point between points B and C
         abh.set_length(l);
         ach.set_length(l);
         bch.set_length(l);

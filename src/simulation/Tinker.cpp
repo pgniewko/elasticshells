@@ -48,6 +48,12 @@ void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
             cell.number_v++;
         }
     }
+    
+    std::cout << " Number of vertices= " << cell.number_v << std::endl;
+    //for (int i = 0; i < cell.number_v; i++)
+    //{
+    //    std::cout << " i=" << i << " " << cell.vertices[i].getId() << std::endl;
+    //}
 }
 
 void Tinker::constructVTriangles(Cell& cell, std::list<Triangle>& tris)
@@ -73,7 +79,8 @@ int Tinker::getVertex(Cell& cell, const Vector3D& v, double e)
             return cell.vertices[i].getId();
         }
     }
-
+    
+    std::cout << " v = " << v<< std::endl;
     return -1;
 }
 
