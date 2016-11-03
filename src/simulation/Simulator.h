@@ -80,7 +80,7 @@ class Simulator
         void logParams();
 
         void pushCell(const Cell&);
-        void addCell(double);
+        void addCell(double, double);
 
         void calcForces();
         void integrate();

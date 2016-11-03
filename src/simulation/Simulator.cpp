@@ -142,12 +142,12 @@ void Simulator::initCells(int N, double r0)
     initCells(N, r0, r0);
 }
 
-void Simulator::initCells(int N, double ra, double rb, bool restart_flag)
+void Simulator::initCells(int N, double r_min, double r_max, bool restart_flag)
 {
-    if (ra > rb)
+    if (r_min > r_max)
     {
         simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: ra > rb. Simulator will set: rb = ra \n";
-        rb = ra;
+        r_max = r_min;
     }
 
     if (restart_flag)
@@ -166,7 +166,7 @@ void Simulator::initCells(int N, double ra, double rb, bool restart_flag)
 
     while (number_of_cells < N)
     {
-        r0 = uniform(ra, rb);
+        r0 = uniform(r_min, r_max);
         flag = true;
         nx = uniform(-box.getX() + r0 + rc, box.getX() - r0 - rc);
         ny = uniform(-box.getY() + r0 + rc, box.getY() - r0 - rc);
@@ -195,7 +195,7 @@ void Simulator::initCells(int N, double ra, double rb, bool restart_flag)
 
         if (flag)
         {
-            addCell(r0);
+            addCell(r0, r_max);
             shiftCell(shift, number_of_cells - 1);
         }
     }
@@ -222,7 +222,7 @@ void Simulator::pushCell(const Cell& newCell)
     }
 }
 
-void Simulator::addCell(double r0)
+void Simulator::addCell(double r0, double r_max)
 {
     try
     {
@@ -262,7 +262,7 @@ void Simulator::addCell(double r0)
         newCell.setSpringConst(params.E_cell, params.th, params.nu, params.model_t);
         newCell.setBSprings(params.E_cell, params.th, params.nu);
         newCell.setDp(params.dp, params.ddp);
-        newCell.setConstantVolume(params.volume_scale);
+        newCell.setConstantVolume( (r0 / r_max) * params.volume_scale);
         newCell.setVertexR(params.r_vertex);
         newCell.setCellId(number_of_cells);
         newCell.setInitR(r0);
