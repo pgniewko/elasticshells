@@ -17,6 +17,7 @@
 #include "exceptions/NotImplementedException.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "geometry/algorithms/PlatonicTriangulatoin.h"
+#include "geometry/algorithms/RandomTriangulation.h"
 #include "utils/io/ScriptBuilder.h"
 #include "utils/io/XyzTraj.h"
 #include "utils/io/LogSimulation.h"

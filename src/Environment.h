@@ -18,8 +18,8 @@
 #define SIGN(a) (a >= 0 ? 1 : -1)
 
 #define MAX_CELLS 100
-#define MAX_V 100
-#define MAX_T 2000
+#define MAX_V 1200
+#define MAX_T 2400
 #define NEIGH_MAX 20
 #define TRIAN_MAX 40
 #define MAX_M 50 // maximum number of linked-domains - in each direction

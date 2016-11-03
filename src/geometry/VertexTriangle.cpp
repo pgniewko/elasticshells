@@ -9,12 +9,31 @@ VertexTriangle::VertexTriangle() {}
 
 VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), myid(-1) 
 {
+    try
+    {
+    if (a < 0)
+        throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
+                               "Runtime data is incorrect. Simulation will be terminated.\n");
+    if (b < 0)
+        throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
+                               "Runtime data is incorrect. Simulation will be terminated.\n");
+    if (c < 0)
+        throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
+                               "Runtime data is incorrect. Simulation will be terminated.\n");
+            
     for (int i = 0; i < 3; i++)
     {
         an[i] = 0.0;
         L2[i] = 0.0;
         ki[i] = 0.0;
         ci[i] = 0.0;
+    }
+    }
+    
+    catch (RunTimeError& e)
+    {
+        std::cerr << e.what() << std::endl;
+        //exit(EXIT_FAILURE);
     }
 }
 

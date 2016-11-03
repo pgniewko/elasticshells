@@ -13,6 +13,7 @@ void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
     std::list<Vector3D> vectors;
     double xtmp, ytmp, ztmp;
 
+    
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
         if ( Tinker::isUnique(vectors, i->a) )
@@ -47,9 +48,17 @@ void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
             cell.vertices[cell.number_v].setId(cell.number_v);
             cell.number_v++;
         }
+        
+        if (cell.number_v > MAX_V)
+        {
+            tinker_log << utils::LogLevel::CRITICAL  << "The number of vertices is larger than allowed in Environment.h\n";
+            tinker_log << utils::LogLevel::CRITICAL  << "The simulation will be terminated ! \n";
+            exit(EXIT_SUCCESS);
+        }
+        //std::cout << "cell.number_v=" << cell.number_v<< std::endl;
     }
     
-    std::cout << " Number of vertices= " << cell.number_v << std::endl;
+    //std::cout << " Number of vertices= " << cell.number_v << std::endl;
     //for (int i = 0; i < cell.number_v; i++)
     //{
     //    std::cout << " i=" << i << " " << cell.vertices[i].getId() << std::endl;
@@ -58,6 +67,14 @@ void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
 
 void Tinker::constructVTriangles(Cell& cell, std::list<Triangle>& tris)
 {
+    
+    if (tris.size() > MAX_T)
+    {
+        tinker_log << utils::LogLevel::CRITICAL  << "The number of triangles is larger than allowed in Environment.h\n";
+        tinker_log << utils::LogLevel::CRITICAL  << "The simulation will be terminated ! \n";
+        exit(EXIT_SUCCESS);
+    }
+        
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
         int va = getVertex(cell, i->a);
@@ -80,7 +97,7 @@ int Tinker::getVertex(Cell& cell, const Vector3D& v, double e)
         }
     }
     
-    std::cout << " v = " << v<< std::endl;
+    //std::cout << " v = " << v<< std::endl;
     return -1;
 }
 

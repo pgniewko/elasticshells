@@ -243,9 +243,20 @@ void Simulator::addCell(double r0)
             SimpleTriangulation sm(params.d);
             tris = sm.triangulate(r0);
         }
+        
+        else if ( !triangulator.compare("rnd") )
+        {
+            RandomTriangulation rnd(25, 100, 0.0001, 1000.0, params.r_vertex);
+            tris = rnd.triangulate(r0);
+        }
 
         Cell newCell(tris);
 
+        if ( !triangulator.compare("rnd") )
+        {
+            simulator_logs << utils::LogLevel::FINEST << "Cell initialized with RandomTriangulation ! r = " << r0 << " number of nodes=" << newCell.getNumberVertices() << "\n";
+        }
+        
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
         newCell.setSpringConst(params.E_cell, params.th, params.nu, params.model_t);
@@ -574,6 +585,10 @@ void Simulator::setTriangulator(char* token)
         triangulator = std::string(token);
     }
     else if (STRCMP (token, "plato"))
+    {
+        triangulator = std::string(token);
+    }
+    else if (STRCMP (token, "rnd"))
     {
         triangulator = std::string(token);
     }
