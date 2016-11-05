@@ -19,7 +19,7 @@ std::list<Triangle> RandomTriangulation::triangulate(double r0)
 {
     int n_ = 4.0 * (r0/r_vertex) * (r0/r_vertex);
     int nrow = 6;
-    double scaled_sigma = 1.5 * r_vertex * (1.0 / r0);
+    double scaled_sigma = 1.25 * r_vertex * (1.0 / r0);
     
     double* xyz = new double[3 * n_];
     int* ltri = new int[nrow * 2 * (n_ - 2)];
@@ -36,10 +36,11 @@ std::list<Triangle> RandomTriangulation::triangulate(double r0)
     
     for (int i = 0; i < 2 * (n_ - 2); i++)
     {
+
         tidx = i;
-        v1_idx = ltri[nrow * i + 0];
-        v2_idx = ltri[nrow * i + 1];
-        v3_idx = ltri[nrow * i + 2];
+        v1_idx = ltri[nrow * i + 0]-1;
+        v2_idx = ltri[nrow * i + 1]-1;
+        v3_idx = ltri[nrow * i + 2]-1;
         
         Vector3D va = Vector3D(xyz[3*v1_idx + 0], xyz[3*v1_idx + 1], xyz[3*v1_idx + 2]);
         Vector3D vb = Vector3D(xyz[3*v2_idx + 0], xyz[3*v2_idx + 1], xyz[3*v2_idx + 2]);

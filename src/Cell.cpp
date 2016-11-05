@@ -24,13 +24,9 @@ Cell::Cell(std::list<Triangle> tris) : cell_id(-1), number_v(0), number_t(0), nu
     V0(0), fem_flag(false)//, bending_flag(true)
 {
     Tinker::constructVertices(*this, tris);
-    std::cout << "constructVertices DONE" << std::endl;
     Tinker::constructVTriangles(*this, tris);
-    std::cout << "constructVTriangles DONE" << std::endl;
     Tinker::constructTopology(*this);
-    std::cout << "constructTopology DONE" << std::endl;
     Tinker::constructBSprings(*this);
-    std::cout << "constructBSprings DONE" << std::endl;
     randomRotate();
 
 }

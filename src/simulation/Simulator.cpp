@@ -251,11 +251,6 @@ void Simulator::addCell(double r0, double r_max)
         }
 
         Cell newCell(tris);
-
-        if ( !triangulator.compare("rnd") )
-        {
-            simulator_logs << utils::LogLevel::FINEST << "Cell initialized with RandomTriangulation ! r = " << r0 << " number of nodes=" << newCell.getNumberVertices() << "\n";
-        }
         
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
@@ -316,6 +311,9 @@ void Simulator::simulate(int steps)
     log_sim.open();
     log_sim.printHeader();
     log_sim.dumpState(box, cells);
+    saveTurgors();
+    restarter.saveLastFrame(cells);
+    restarter.saveTopologyFile(cells, params.model_t);        
     traj.save_box(box, steps * params.dt);
     box.saveRemainingSchedule();
 
@@ -382,10 +380,10 @@ void Simulator::simulate(int steps)
         if ( (i + 1) % params.log_step == 0 )
         {
             log_sim.dumpState(box, cells);
-            restarter.saveLastFrame(cells);
-            traj.save_box(box, (i + 1) * params.dt);
-            restarter.saveTopologyFile(cells, params.model_t);
             saveTurgors();
+            traj.save_box(box, (i + 1) * params.dt);
+            restarter.saveLastFrame(cells);
+            restarter.saveTopologyFile(cells, params.model_t);
         }
 
         
@@ -403,10 +401,13 @@ void Simulator::simulate(int steps)
     }
 
     log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results, probably there is not force relaxation before dump
+    saveTurgors();
+    traj.save_box(box, steps * params.dt);
+    restarter.saveLastFrame(cells);
     restarter.saveLastFrame(cells);
     traj.save_traj(cells, getTotalVertices(), 1.0, 1.0, 1.0);
     box.saveRemainingSchedule();
-    traj.save_box(box, steps * params.dt);
+
     sb.saveStrainScript(cells, box);
     traj.close();
     log_sim.close();
@@ -928,6 +929,12 @@ void Simulator::saveTurgors()
 {
     std::string turgorDumpFile = log_sim.getFileName() + ".turgor.out";
     
+    double box_volume = box.getVolume();
+    double box_x = box.getX(); 
+    double box_y = box.getY();
+    double box_z = box.getZ();
+    double cells_vol = 0.0;
+    
     FILE* os = fopen(turgorDumpFile.c_str(), "a");
 
     if ( os == NULL )
@@ -942,6 +949,14 @@ void Simulator::saveTurgors()
     
     double turgor;
     Vector3D cm;
+    
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        cells_vol += cells[i].calcVolume();
+    }
+    fprintf(os, "%7.4f %5.3f %5.3f %5.3f %7.4f ", box_volume, box_x, box_y, box_z, cells_vol);
+    
+    
     for (uint i = 0; i < cells.size(); i++)
     {
         turgor = cells[i].getTurgor();
