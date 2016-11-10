@@ -81,17 +81,9 @@ On Ubuntu you can install it by running:
 apt-get install libgsl0-dev
 ```
 
-* Steinhardt order parameters [library](https://github.com/nquesada/steinhardt).
-The library can be found in `lib/steinhardt` directory.
-First we compile a library, then combine objects into a static library, create an index within the library,
-and finally we can install it in `/usr/local/lib`:
-```
-$ g++ -O3 -Wall -lm -lgsl -lgslcblas -c -o steinhardt.o steinhardt.c 
-$ ar -rcs libsteinhardt.a steinhardt.o
-$ ranlib libsteinhardt.a
-$ sudo cp libsteinhardt.a /usr/local/lib
-$ sudo cp steinhardt.h /usr/local/include
-```
+* Steinhardt library for order parameters parameters calculations.
+The original code can be downloaded from [github](https://github.com/nquesada/steinhardt),
+or from the local [copy](https://bitbucket.org/pawelgniewek/steinhardt). 
 
 
 CONTENTS

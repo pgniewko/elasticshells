@@ -6,7 +6,7 @@
 CC	     := gcc
 
 # C++ compiler
-CXX      := g++
+CXX      := g++-4.9
 
 # Flags for the C++ compiler
 # -g --Enable debugging
@@ -24,9 +24,9 @@ INCLUDE  := -I/usr/local/include -I$(CURDIR)/src
 LIB      := -L/usr/local/lib
 DFLAGS   := -DTESTS
 
-CXXFLAGS := -lm -Wall -O3 -std=gnu++0x -fopenmp -fpermissive $(INCLUDE) 
+CXXFLAGS := -lm -Wall -O3 -Dulong="unsigned long" -Duint="unsigned int" -std=gnu++11 -fopenmp -fpermissive $(INCLUDE)
 LDFLAGS  := $(LIB)
-LDLIBS   := -lcppunit -ldl -lsteinhardt -lgsl -lgslcblas
+LDLIBS   := -lcppunit -ldl -largp -lsteinhardt -lrndmesh -lgfortran -lgsl -lgslcblas
 
 
 # Local dirs 
