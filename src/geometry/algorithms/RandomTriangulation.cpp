@@ -17,14 +17,15 @@ std::list<Triangle> RandomTriangulation::triangulate()
 }
 std::list<Triangle> RandomTriangulation::triangulate(double r0)
 {
-    int n_ = 4.0 * (r0/r_vertex) * (r0/r_vertex);
+    int n_ = 4.0 * (r0 / r_vertex) * (r0 / r_vertex);
     int nrow = 6;
-    double scaled_sigma = 1.25 * r_vertex * (1.0 / r0);
+    
+    //std::cout << "RANDOM TRIANGUILATION; n_ =" << n_ << " r0=" << r0 << std::endl;
     
     double* xyz = new double[3 * n_];
     int* ltri = new int[nrow * 2 * (n_ - 2)];
     
-    generate_random_points(n_, xyz, n_steps, n_anneals, T_min, T_max, scaled_sigma);
+    generate_random_points(n_, xyz, n_steps, n_anneals, T_min, T_max, r_vertex);
     
     traingulate_points(n_, xyz, ltri);
     

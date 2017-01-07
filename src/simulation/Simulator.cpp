@@ -246,7 +246,7 @@ void Simulator::addCell(double r0, double r_max)
         
         else if ( !triangulator.compare("rnd") )
         {
-            RandomTriangulation rnd(25, 100, 0.0001, 1000.0, params.r_vertex);
+            RandomTriangulation rnd(10, 100, 0.1, 1000.0, params.r_vertex);
             tris = rnd.triangulate(r0);
         }
 
@@ -398,6 +398,8 @@ void Simulator::simulate(int steps)
             domains.setBoxDim(box);
             box.saveRemainingSchedule();
         }
+        
+        recenterCells();
     }
 
     log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results, probably there is not force relaxation before dump
@@ -970,6 +972,20 @@ void Simulator::saveTurgors()
     {
         fclose(os);
     }
+}
+
+void Simulator::recenterCells()
+{
+    if (box.pbc)
+    {
+        for(uint i = 0; i < cells.size(); i++)
+        {
+            Vector3D shift = Box::recenteringVector( cells[i].getCm(), box );
+            cells[i].addXYZ(shift);
+        }
+    }
+    
+    return;
 }
 
 /*

@@ -13,6 +13,11 @@ void CellBoxStress::set_params(const int num, std::vector<std::string> args_)
 
 double CellBoxStress::observe(const Box& box, std::vector<Cell>& cells)
 {
+    if (box.pbc)
+    {
+        return 0.0;
+    }
+        
     uint cellsnumber = cells.size();
     double contact_force = 0.0;
     double contact_area = 0.0;

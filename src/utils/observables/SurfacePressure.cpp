@@ -13,6 +13,11 @@ void SurfacePressure::set_params(const int num, std::vector<std::string> args_)
 
 double SurfacePressure::observe(const Box& box, std::vector<Cell>& cells)
 {
+    if (box.pbc)
+    {
+        return 0.0;
+    }
+    
     double totalForce = SurfaceForce::calcTotalForce(box, cells);
     double area = box.getArea(d_param);
     return totalForce / area;

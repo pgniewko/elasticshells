@@ -13,6 +13,11 @@ void WallCoverageFraction::set_params(const int num, std::vector<std::string> ar
 
 double WallCoverageFraction::observe(const Box& box, std::vector<Cell>& cells)
 {
+    if (box.pbc)
+    {
+        return 0.0;
+    }
+    
     double box_area = box.getArea(d_param);
     uint cells_number = cells.size();
     double coverage = 0.0;

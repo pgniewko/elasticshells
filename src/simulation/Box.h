@@ -55,6 +55,7 @@ class Box
         void setDefaultSchedule(int, int, double, double, double, double, double, double);
 
         static void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&);
+        static Vector3D recenteringVector(const Vector3D&, const Box& box);
 
         void saveRemainingSchedule();
         
@@ -93,6 +94,27 @@ inline void Box::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& 
         dkj.x -= x;
         dkj.y -= y;
         dkj.z -= z;
+    }
+}
+
+inline Vector3D Box::recenteringVector(const Vector3D& cm, const Box& box)
+{
+    if (box.pbc)
+    {
+        double x, y, z;
+        double bsx = 2 * box.getX();
+        double bsy = 2 * box.getY();
+        double bsz = 2 * box.getZ();
+        x = round(cm.x / bsx) *  bsx;
+        y = round(cm.y / bsy) *  bsy;
+        z = round(cm.z / bsz) *  bsz;
+        Vector3D v_shift(-x, -y, -z);
+        return v_shift;
+    }
+    else
+    {
+        Vector3D v_shift;
+        return v_shift;
     }
 }
 
