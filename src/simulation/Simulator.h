@@ -44,7 +44,6 @@ struct params_t
     double dt;
     double dp;
     double ddp;
-    double volume_scale;
     double ttime;
     double r_vertex;
     bool draw_box;
@@ -80,7 +79,7 @@ class Simulator
         void logParams();
 
         void pushCell(const Cell&);
-        void addCell(double, double);
+        void addCell(double);
 
         void calcForces();
         void integrate();

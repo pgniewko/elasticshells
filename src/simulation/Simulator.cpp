@@ -40,7 +40,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.dt = args.dt;
     params.dp = args.dp;
     params.ddp = args.ddp;
-    params.volume_scale = args.volume_scale;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     params.draw_box = args.draw_box;
@@ -195,7 +194,7 @@ void Simulator::initCells(int N, double r_min, double r_max, bool restart_flag)
 
         if (flag)
         {
-            addCell(r0, r_max);
+            addCell(r0);
             shiftCell(shift, number_of_cells - 1);
         }
     }
@@ -222,7 +221,7 @@ void Simulator::pushCell(const Cell& newCell)
     }
 }
 
-void Simulator::addCell(double r0, double r_max)
+void Simulator::addCell(double r0)
 {
     try
     {
@@ -257,7 +256,10 @@ void Simulator::addCell(double r0, double r_max)
         newCell.setSpringConst(params.E_cell, params.th, params.nu, params.model_t);
         newCell.setBSprings(params.E_cell, params.th, params.nu);
         newCell.setDp(params.dp, params.ddp);
-        newCell.setConstantVolume( (r0 / r_max) * params.volume_scale);
+        
+        double radial_eps = 1.0 + (0.5 * (1 - params.nu)  * (newCell.getTurgor() * r0) / (params.E_cell * params.th));
+        newCell.setConstantVolume( radial_eps );
+        
         newCell.setVertexR(params.r_vertex);
         newCell.setCellId(number_of_cells);
         newCell.setInitR(r0);
