@@ -388,9 +388,8 @@ void Simulator::simulate(int steps)
             restarter.saveTopologyFile(cells, params.model_t);
         }
 
-        
         if ( i < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
-            resized = box.resize();
+            resized = box.resize( volumeFraction() );
         else
             resized = false;
         
@@ -402,6 +401,12 @@ void Simulator::simulate(int steps)
         }
         
         recenterCells();
+        
+        if ( box.nthTodo() )
+        {
+            simulator_logs << utils::LogLevel::INFO << "The simulation has reached the end on the schedule @ the step " << i << "/" << steps << ".\n";
+            break;
+        }
     }
 
     log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results, probably there is not force relaxation before dump
@@ -503,6 +508,17 @@ void Simulator::shiftCell(const Vector3D& v3d, int cellid)
 {
     cells[cellid].addXYZ(v3d);
     cells[cellid].update();
+}
+
+double Simulator::volumeFraction()
+{
+    double box_vol = box.getVolume();
+    double cells_vol = 0.0;
+    for (uint i = 0; i < cells.size(); i++)
+        cells_vol += cells[i].calcVolume();
+    
+    return (cells_vol/box_vol);
+        
 }
 
 int Simulator::getTotalVertices()

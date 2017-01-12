@@ -45,13 +45,13 @@ void Box::setNu(double n)
     nu = n;
 }
 
-bool Box::resize()
+bool Box::resize(double vf_)
 {
     double dx = 0.0;
     double dy = 0.0;
     double dz = 0.0;
 
-    my_schedule.execute(dx, dy, dz);
+    my_schedule.execute(dx, dy, dz, vf_);
 
 //    if (x + dx >= x_min && x + dx <= x_max)
 //    {
@@ -244,4 +244,9 @@ void Box::setDefaultSchedule(int ns, int in, double _dx, double _dy, double _dz,
 void Box::saveRemainingSchedule()
 {
     my_schedule.saveRemainingSchedule();
+}
+
+bool Box::nthTodo()
+{
+    return my_schedule.nthTodo();
 }

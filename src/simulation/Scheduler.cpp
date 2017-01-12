@@ -44,6 +44,11 @@ std::vector<std::string> Scheduler::readScheduleFile()
 void Scheduler::registerSchedules()
 {
     std::vector<std::string> list = readScheduleFile();
+    if( list.size() > 0)
+    {
+        schedule_registered = true;
+    }
+    
     std::vector<std::string> single_line;
 
     for (std::vector<std::string>::iterator it = list.begin(); it != list.end(); ++it)
@@ -52,7 +57,16 @@ void Scheduler::registerSchedules()
 
         if (single_line.size() >= 8)
         {
-            int ns = std::stoi(single_line[ 0 ].c_str(), NULL);
+            int ns;
+            if ( (STRCMP (single_line[ 0 ].c_str(), "INF") ) )
+            {
+               ns = INT_MAX;
+            }
+            else
+            {
+                ns = std::stoi(single_line[ 0 ].c_str(), NULL);
+            }
+            
             int i = std::stoi(single_line[ 1 ].c_str(), NULL);
             double v1 = strtod(single_line[ 2 ].c_str(), NULL);
             double v2 = strtod(single_line[ 3 ].c_str(), NULL);
@@ -60,7 +74,9 @@ void Scheduler::registerSchedules()
             double v4 = strtod(single_line[ 5 ].c_str(), NULL);
             double v5 = strtod(single_line[ 6 ].c_str(), NULL);
             double v6 = strtod(single_line[ 7 ].c_str(), NULL);
-            schedule_t new_schedule(ns, i, v1, v2, v3, v4, v5, v6);
+            double v7 = strtod(single_line[ 8 ].c_str(), NULL);
+            v7 = fmax(1.0, abs( v7 ) );
+            schedule_t new_schedule(ns, i, v1, v2, v3, v4, v5, v6, v7);
             schedules.push_back(new_schedule);
         }
     }
@@ -87,7 +103,7 @@ void Scheduler::printSchedule()
     for (uint i = 0; i < schedules.size(); i++)
     {
         schedule_t s = schedules[i];
-        std::cout << s.n_steps << " " << s.interval << " " << s.dx << " " << s.dy << " " << s.dz << " " << s.rx << " " << s.ry << " " << s.rz << std::endl;
+        std::cout << s.n_steps << " " << s.interval << " " << s.dx << " " << s.dy << " " << s.dz << " " << s.rx << " " << s.ry << " " << s.rz << " " << s.vf << std::endl;
     }
 
     std::cout << "DEFAULT" << std::endl;
@@ -114,7 +130,7 @@ void Scheduler::saveRemainingSchedule()
             }
             
             ofile << s.dx << " " << s.dy << " " << s.dz << " ";
-            ofile << s.rx << " " << s.ry << " " << s.rz << std::endl;
+            ofile << s.rx << " " << s.ry << " " << s.rz << " " << s.vf << std::endl;
         }
         
         ofile.close();
@@ -128,23 +144,31 @@ void Scheduler::saveRemainingSchedule()
 
 void Scheduler::setDefault(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
 {
-    default_schedule = schedule_t(ns, in, _dx, _dy, _dz, _rx, _ry, _rz);
+    default_schedule = schedule_t(ns, in, _dx, _dy, _dz, _rx, _ry, _rz, 1.0);
 }
 
-void Scheduler::execute(double& dx, double& dy, double& dz)
+void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
 {
     if (schedules.size() > 0)
     {
-        if ((current_schedule.counter + 1) % current_schedule.interval == 0)
+        current_schedule.counter++;
+        
+        if (current_schedule.counter % current_schedule.interval == 0)
         {
             dx = current_schedule.dx + uniform(-current_schedule.rx, current_schedule.rx);
             dy = current_schedule.dy + uniform(-current_schedule.ry, current_schedule.ry);
             dz = current_schedule.dz + uniform(-current_schedule.rz, current_schedule.rz);
         }
 
-        current_schedule.counter++;
 
-        if (current_schedule.counter > current_schedule.n_steps)
+        if (vf_ >= current_schedule.vf)
+        {
+            dx = 0.0;
+            dy = 0.0;
+            dz = 0.0;
+        }
+        
+        if (current_schedule.counter > current_schedule.n_steps || vf_ >= current_schedule.vf)
         {
 
             schedules.erase(schedules.begin());
@@ -169,4 +193,12 @@ void Scheduler::execute(double& dx, double& dy, double& dz)
         default_schedule.counter++;
     }
 
+}
+
+bool Scheduler::nthTodo()
+{
+    if ( schedules.size() == 0 && schedule_registered )
+        return true;
+    
+    return false;
 }

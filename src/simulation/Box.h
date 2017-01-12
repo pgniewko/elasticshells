@@ -36,7 +36,7 @@ class Box
         double getYmin() const;
         double getZmin() const;
 
-        bool resize();
+        bool resize(double=1.0);
 
         double getVolume(const double = 0.0) const;
         double getArea(const double = 0.0) const;
@@ -58,6 +58,8 @@ class Box
         static Vector3D recenteringVector(const Vector3D&, const Box& box);
 
         void saveRemainingSchedule();
+        
+        bool nthTodo();
         
     private:
         double x;

@@ -105,6 +105,8 @@ class Simulator
         void saveTurgors();
         
         void recenterCells();
+        
+        double volumeFraction();
 
         double MIN_FORCE_SQ = 0.0;
         double FORCE_FRAC = 0.005;
