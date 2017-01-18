@@ -327,6 +327,7 @@ void Simulator::analyze()
         restarter.readFrame(traj.getTrajFile(), cells, i);
         restarter.assignTurgors(turgor_list[i-1], cells);
         restarter.assignBoxSize(boxsize_list[i-1], box);
+        updateCells();
         
         log_sim.dumpState(box, cells);
     }
