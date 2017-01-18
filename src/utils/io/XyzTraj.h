@@ -28,6 +28,8 @@ class XyzTraj
         void save_box(const Box&, double);
         
         const std::vector<std::string> read_saved_box() const;
+        uint countFramesNumber() const;
+        const std::string getTrajFile() const {return trajfile;} 
 
     private:
         std::string trajfile;

@@ -418,3 +418,80 @@ void Restarter::readLastFrame(std::vector<Cell>& cells) const
 
     os.close();
 }
+
+void Restarter::readFrame(std::string trajFile, std::vector<Cell>& cells, int frameNumber) const
+{
+    std::ifstream os;
+    os.open(trajFile, std::ifstream::in);
+    std::string line;
+
+    int frames_counter = 0;
+    
+    if ( os.is_open() )
+    {
+        while ( std::getline (os, line) )
+        {
+
+            std::vector<std::string> pairs = split(line, ' ');
+
+            if (pairs.size() == 1)
+            {
+                frames_counter++;
+                continue;
+            }
+            
+            if (pairs.size() > 1 && frameNumber == frames_counter )
+            {
+                std::string vkey = pairs[ 0 ].c_str();
+
+                double x = strtod(pairs[ 1 ].c_str(), NULL);
+                double y = strtod(pairs[ 2 ].c_str(), NULL);
+                double z = strtod(pairs[ 3 ].c_str(), NULL);
+
+                std::pair<int, int> value = vmap.at( vkey );
+
+                int ci = value.first;
+                int vi = value.second;
+
+                cells[ci].vertices[vi].r_c.x = x;
+                cells[ci].vertices[vi].r_c.y = y;
+                cells[ci].vertices[vi].r_c.z = z;
+            }
+        }
+    }
+
+    else
+    {
+        // print error
+    }
+
+    os.close();
+}
+
+
+void Restarter::assignTurgors(std::string turgor_line, std::vector<Cell>& cells) const
+{
+    std::vector<std::string> pairs = split(turgor_line, ' ');
+    double turgor;
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        turgor = strtod(pairs[ 4 + 4*i + 1 ].c_str(), NULL);
+        std::cout << "cell_idx="<<i<< "turgor =" << turgor << std::endl;
+        cells[i].pushDp(turgor);
+    }
+}
+
+void Restarter::assignBoxSize(std::string box_line, Box& box) const
+{
+    std::vector<std::string> pairs = split(box_line, ' ');
+    double x, y, z;
+    x = strtod(pairs[ 0 ].c_str(), NULL);
+    y = strtod(pairs[ 1 ].c_str(), NULL);
+    z = strtod(pairs[ 2 ].c_str(), NULL);
+    
+    std::cout << "x=" << x << " y=" << y << " z=" << z << std::endl;
+    box.setX(x);
+    box.setY(y);
+    box.setZ(z);
+
+}

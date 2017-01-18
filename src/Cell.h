@@ -60,6 +60,7 @@ class Cell
         void setVertexR(double);
         void setEcc(double);
         void setDp(double);
+        void pushDp(double dp_) {params.dp = dp_;}
         void setDp(double, double);
         void setSpringConst(double, double, double, std::string);
         void setCellId(int);

@@ -106,7 +106,7 @@ void XyzTraj::save_traj(const std::vector<Cell>& cells, int totV, double sx, dou
 void XyzTraj::save_box(const Box& box, double t)
 {
     //fprintf(osb, "%12.6f %6.4f %6.4f %6.4f \n", t, box.getX(), box.getY(), box.getZ());
-    fprintf(osb, "%%12.10f %12.10f %12.10f \n", t, box.getX(), box.getY(), box.getZ());
+    fprintf(osb, "%12.10f %12.10f %12.10f \n", box.getX(), box.getY(), box.getZ());
     fflush(osb);
 }
 
@@ -136,4 +136,33 @@ const std::vector<std::string> XyzTraj::read_saved_box() const
 
     cfile.close();
     return list;
+}
+
+uint XyzTraj::countFramesNumber() const
+{
+    std::ifstream os;
+    os.open(trajfile, std::ifstream::in);
+    std::string line;
+
+    uint frames_counter = 0;
+    if ( os.is_open() )
+    {
+        while ( std::getline (os, line) )
+        {
+            std::vector<std::string> pairs = split(line, ' ');
+
+            if (pairs.size() == 1)
+            {
+                frames_counter++;
+            }
+        }
+    }
+    else
+    {
+        // print error
+    }
+    
+    os.close();
+    
+    return frames_counter;
 }

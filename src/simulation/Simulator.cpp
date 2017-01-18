@@ -291,6 +291,11 @@ void Simulator::analyze()
     number_of_cells = cells.size();
     set_min_force();
     
+    uint frames_number = traj.countFramesNumber();
+    
+    std::cout << "number of vertices=" << getTotalVertices() << std::endl;
+    std::cout << "number of frames=" << frames_number << std::endl;
+    
     std::vector<std::string> turgor_list = log_sim.readTurgorsFile();
     std::vector<std::string> boxsize_list = traj.read_saved_box();
     
@@ -298,10 +303,33 @@ void Simulator::analyze()
     
     std::cout << "boxsize_list.size()=" << boxsize_list.size() << std::endl;
     
-    //log_sim.registerObservers();
-    //log_sim.open();
-    //log_sim.printHeader();
+    if (turgor_list.size() != frames_number)
+    {
+        // report problem and terminate
+    }
     
+    if (boxsize_list.size() != frames_number)
+    {
+        // report problem and terminate
+    }
+    
+    log_sim.registerObservers();
+    log_sim.open();
+    log_sim.printHeader();
+    
+    std::cout << turgor_list[0] <<  std::endl;
+    restarter.assignTurgors(turgor_list[0], cells);
+    
+    restarter.assignBoxSize(boxsize_list[0], box);
+    
+    for (int i = 1; i <= frames_number; i++)
+    {
+        restarter.readFrame(traj.getTrajFile(), cells, i);
+        restarter.assignTurgors(turgor_list[i-1], cells);
+        restarter.assignBoxSize(boxsize_list[i-1], box);
+        
+        log_sim.dumpState(box, cells);
+    }
 }
 
 
