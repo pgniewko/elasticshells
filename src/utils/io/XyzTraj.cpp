@@ -56,7 +56,7 @@ void XyzTraj::open_box()
     
     if ( osb == NULL )
     {
-        xyztraj_logs << utils::LogLevel::WARNING << "Can not open file:" <<  boxfile << "\n";
+        xyztraj_logs << utils::LogLevel::WARNING << "Can not open the file:" <<  boxfile << "\n";
     }
 }
 
@@ -106,6 +106,34 @@ void XyzTraj::save_traj(const std::vector<Cell>& cells, int totV, double sx, dou
 void XyzTraj::save_box(const Box& box, double t)
 {
     //fprintf(osb, "%12.6f %6.4f %6.4f %6.4f \n", t, box.getX(), box.getY(), box.getZ());
-    fprintf(osb, "%12.6f %12.10f %12.10f %12.10f \n", t, box.getX(), box.getY(), box.getZ());
+    fprintf(osb, "%%12.10f %12.10f %12.10f \n", t, box.getX(), box.getY(), box.getZ());
     fflush(osb);
+}
+
+const std::vector<std::string> XyzTraj::read_saved_box() const
+{
+    std::string boxFile = boxfile.c_str();
+    std::cout << "boxFile:" << boxFile<< std::endl;
+    std::ifstream cfile;
+    cfile.open(boxFile, std::ifstream::in);
+    std::vector<std::string> list;
+    std::string line;
+
+    if ( cfile.is_open() )
+    {
+        while ( std::getline (cfile, line) )
+        {
+            if ( !(line.at(0) == '#') && !(line.at(0) == ' ') )
+            {
+                list.push_back(line);
+            }
+        }
+    }
+    else
+    {
+        xyztraj_logs << utils::LogLevel::SEVERE << "Box-sizes file: " << boxFile << " cannot be found" << "\n";
+    }
+
+    cfile.close();
+    return list;
 }

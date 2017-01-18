@@ -284,6 +284,26 @@ void Simulator::restart()
     set_min_force();
 }
 
+void Simulator::analyze()
+{
+    restarter.registerVMap();
+    restarter.readTopologyFile(cells);
+    number_of_cells = cells.size();
+    set_min_force();
+    
+    std::vector<std::string> turgor_list = log_sim.readTurgorsFile();
+    std::vector<std::string> boxsize_list = traj.read_saved_box();
+    
+    std::cout << "turgor_list.size()=" << turgor_list.size() << std::endl;
+    
+    std::cout << "boxsize_list.size()=" << boxsize_list.size() << std::endl;
+    
+    //log_sim.registerObservers();
+    //log_sim.open();
+    //log_sim.printHeader();
+    
+}
+
 
 void Simulator::simulate()
 {
@@ -294,10 +314,6 @@ void Simulator::simulate(int steps)
 {
     updateCells();
 
-//    if (params.nbhandler == 1)
-//    {
-//        rebuildVerletLists();
-//    }
     if (params.nbhandler == 2)
     {
         rebuildDomainsList();
@@ -335,6 +351,12 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i < steps; i++)
     {
+        if ( box.nthTodo() )
+        {
+            simulator_logs << utils::LogLevel::INFO << "The simulation has reached the end of the schedule @ the step " << i << "/" << steps << ".\n";
+            break;
+        }
+        
         if ( i % (steps / std::min(steps, 10) ) == 0.0 )
         {
             simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
@@ -402,11 +424,6 @@ void Simulator::simulate(int steps)
         
         recenterCells();
         
-        if ( box.nthTodo() )
-        {
-            simulator_logs << utils::LogLevel::INFO << "The simulation has reached the end on the schedule @ the step " << i << "/" << steps << ".\n";
-            break;
-        }
     }
 
     log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results, probably there is not force relaxation before dump
@@ -517,6 +534,7 @@ double Simulator::volumeFraction()
     for (uint i = 0; i < cells.size(); i++)
         cells_vol += cells[i].calcVolume();
     
+    //std::cout  << "vol frac=" << (cells_vol/box_vol) << std::endl;
     return (cells_vol/box_vol);
         
 }
@@ -974,7 +992,7 @@ void Simulator::saveTurgors()
     {
         cells_vol += cells[i].calcVolume();
     }
-    fprintf(os, "%7.4f %5.3f %5.3f %5.3f %7.4f ", box_volume, box_x, box_y, box_z, cells_vol);
+    fprintf(os, "%-7.4f %5.3f %5.3f %5.3f %7.4f ", box_volume, box_x, box_y, box_z, cells_vol);
     
     
     for (uint i = 0; i < cells.size(); i++)

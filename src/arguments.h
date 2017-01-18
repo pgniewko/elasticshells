@@ -64,6 +64,7 @@ struct arguments
     bool nobending;
     bool const_volume;
     bool restart;
+    bool analyze;
     int nb_flag;
 
     ulong seed;

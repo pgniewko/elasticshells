@@ -57,17 +57,9 @@ void Scheduler::registerSchedules()
 
         if (single_line.size() >= 8)
         {
-            int ns;
-            if ( (STRCMP (single_line[ 0 ].c_str(), "INF") ) )
-            {
-               ns = INT_MAX;
-            }
-            else
-            {
-                ns = std::stoi(single_line[ 0 ].c_str(), NULL);
-            }
-            
-            int i = std::stoi(single_line[ 1 ].c_str(), NULL);
+
+            int ns = std::stoi(single_line[ 0 ].c_str(), NULL);
+            int i  = std::stoi(single_line[ 1 ].c_str(), NULL);
             double v1 = strtod(single_line[ 2 ].c_str(), NULL);
             double v2 = strtod(single_line[ 3 ].c_str(), NULL);
             double v3 = strtod(single_line[ 4 ].c_str(), NULL);
@@ -75,7 +67,8 @@ void Scheduler::registerSchedules()
             double v5 = strtod(single_line[ 6 ].c_str(), NULL);
             double v6 = strtod(single_line[ 7 ].c_str(), NULL);
             double v7 = strtod(single_line[ 8 ].c_str(), NULL);
-            v7 = fmax(1.0, abs( v7 ) );
+            v7 = fmin(1.0, fabs( v7 ) );
+            //std::cout << "v7="<<v7<< std::endl;
             schedule_t new_schedule(ns, i, v1, v2, v3, v4, v5, v6, v7);
             schedules.push_back(new_schedule);
         }
@@ -145,6 +138,7 @@ void Scheduler::saveRemainingSchedule()
 void Scheduler::setDefault(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
 {
     default_schedule = schedule_t(ns, in, _dx, _dy, _dz, _rx, _ry, _rz, 1.0);
+    //printSchedule();
 }
 
 void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
@@ -167,6 +161,8 @@ void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
             dy = 0.0;
             dz = 0.0;
         }
+        
+        //std::cout << current_schedule.counter << " "<< current_schedule.n_steps << " " << vf_  << " " << current_schedule.vf << std::endl;
         
         if (current_schedule.counter > current_schedule.n_steps || vf_ >= current_schedule.vf)
         {

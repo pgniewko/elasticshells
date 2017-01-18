@@ -29,6 +29,8 @@ class LogSimulation
         void dumpState(Box&, std::vector<Cell>&);
         
         const std::string getFileName() const;
+        
+        const std::vector<std::string> readTurgorsFile() const;
 
     private:
         std::string logfile;

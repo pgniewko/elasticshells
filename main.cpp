@@ -72,6 +72,7 @@ static struct argp_option options[] =
     {"no-bend",   417,       0, 0, "[default: false]"},
     {"model",     418,   "STR", 0, "Available models: ms_kot, ms_avg, fem [default: ms_kot]"},
     {"restart",   419,       0, 0, "[default: false]"},
+    {"analyze",   420,       0, 0, "[default: false]"},
 
     {0,             0,       0, 0, "Cell Options:", 5},
     {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
@@ -160,6 +161,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->nobending = false;
             arguments->const_volume = false;
             arguments->restart = false;
+            arguments->analyze = false;
             arguments->nb_flag = 0;
             arguments->seed = 0x123;
             break;
@@ -283,6 +285,10 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->restart = true;
             break;
 
+        case 420:
+            arguments->analyze = true;
+            break;            
+            
         case 500:
             arguments->E_cell = arg ? strtod (arg, NULL) : 1500.0;
             break;
@@ -473,18 +479,27 @@ int main(int argc, char** argv)
         simulation_time = read_timer();
         Simulator simulator(arguments);
 
-        if (arguments.restart)
+        if (arguments.analyze)
         {
-            simulator.restart();
+            simulator.analyze();
         }
         else
         {
-            simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2);
+            if (arguments.restart)
+            {
+                simulator.restart();
+            }
+            else
+            {
+                simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2);
+            }
+        
+            simulator.simulate(arguments.nsteps);
         }
-
-        simulator.simulate(arguments.nsteps);
+        
         clocks[0].toc();
         simulation_time = read_timer( ) - simulation_time;
+        
     }
 
 

@@ -67,6 +67,7 @@ class Simulator
         void initCells(int, double, double, bool = false);
 
         void restart();
+        void analyze();
 
     private:
 

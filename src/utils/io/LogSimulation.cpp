@@ -65,6 +65,33 @@ std::vector<std::string> LogSimulation::readConfigFile()
     return list;
 }
 
+const std::vector<std::string> LogSimulation::readTurgorsFile() const
+{
+    std::string turgorsFile = getFileName() + ".turgor.out";
+    std::ifstream cfile;
+    cfile.open(turgorsFile, std::ifstream::in);
+    std::vector<std::string> list;
+    std::string line;
+
+    if ( cfile.is_open() )
+    {
+        while ( std::getline (cfile, line) )
+        {
+            if ( !(line.at(0) == '#') && !(line.at(0) == ' ') )
+            {
+                list.push_back(line);
+            }
+        }
+    }
+    else
+    {
+        log_logger << utils::LogLevel::SEVERE << "Turgors file: " << turgorsFile << " cannot be found" << "\n";
+    }
+
+    cfile.close();
+    return list;
+}
+
 void LogSimulation::registerObservers()
 {
     std::vector<std::string> list = readConfigFile();
