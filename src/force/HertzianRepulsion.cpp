@@ -1,16 +1,5 @@
 #include "HertzianRepulsion.h"
 
-//HertzianRepulsion::HertzianRepulsion() {}
-
-//HertzianRepulsion::HertzianRepulsion(const HertzianRepulsion& orig) {}
-
-//HertzianRepulsion::~HertzianRepulsion() {}
-
-//Vector3D HertzianRepulsion::calcForce(const Vector3D& dij, const double R, const double E)
-//{
-//    return calcForce(dij, R, 0, E, E, 0.5, 0.5);
-//}
-
 Vector3D HertzianRepulsion::calcForce(const Vector3D& dij, const double R1, const double R2, const double e1, const double e2, const double nu1, const double nu2)
 {
     double h;
