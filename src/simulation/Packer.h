@@ -2,9 +2,10 @@
 #define PACKER_H
 
 #include "Environment.h"
-#include "Vector3D.h"
+#include "geometry/Vector3D.h"
 #include "Cell.h"
 #include "simulation/Box.h"
+#include "force/HertzianRepulsion.h"
 
 struct point_t
 {
@@ -20,6 +21,7 @@ struct box_t
     double x;
     double y;
     double z;
+    bool pbc;
 };
 
 class Packer {
@@ -28,14 +30,16 @@ public:
     Packer(const Packer& orig);
     virtual ~Packer();
     
-    static void packCells(Box&, std::vector<Cell>&);
+    static void packCells(Box&, std::vector<Cell>&, double);
     
 private:
     
-    static void fire(point_t*, int);
-    static void velocityVerlet(point_t*, int);
-    static void calcForces(point_t*, box_t&, int);
-    static bool check_min_force(point_t* , int);
+    static void fire(std::vector<point_t>&, box_t&);
+    static void velocityVerlet(std::vector<point_t>&, box_t&);
+    static void calcForces(std::vector<point_t>&, box_t&);
+    static bool check_min_force(std::vector<point_t>&, box_t&);
+    
+    static bool jammed(std::vector<point_t>&, box_t&);
     
     static int FIRE_Nmin;
     static int FIRE_N;
@@ -44,7 +48,7 @@ private:
     static double FIRE_DTMAX;
     
     static double MIN_FORCE_SQ;
-    static double delta_r;
+    static double r_ext;
     
 };
 

@@ -1,7 +1,7 @@
 #include "Packer.h"
 
 double Packer::MIN_FORCE_SQ(1.0e-12);
-double Packer::delta_r(1.0e-2);
+double Packer::r_ext(5.0e-2);
 
 int Packer::FIRE_Nmin(5);
 int Packer::FIRE_N(0);
@@ -18,35 +18,70 @@ Packer::Packer(const Packer& orig) {
 Packer::~Packer() {
 }
 
-void Packer::packCells(Box& boc, std::vector<Cell>& cells)
+void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
 {
     int n = cells.size();
-    point_t* points = new point_t[n];
+    std::vector<point_t> points;
+    for (int i = 0; i < n; i++)
+    {
+        point_t new_point;
+        points.push_back(new_point);
+    }
+    
+    box_t sim_box;
+    sim_box.x = box.getXmin();
+    sim_box.y = box.getYmin();
+    sim_box.z = box.getZmin();
+    sim_box.pbc = box.pbc;
+    
+    double radius_i;
+    
+    double E,t,P,r0, rv, nu;
+    
+    for (int i = 0; i < n; i++)
+    {
+        points[i].r_c.x = uniform(-sim_box.x, sim_box.x);
+        points[i].r_c.y = uniform(-sim_box.y, sim_box.y);
+        points[i].r_c.z = uniform(-sim_box.z, sim_box.z);
+    }
+    
+    for (int i = 0; i < n; i++)
+    {
+        E = cells[i].getE();
+        t = thickness;
+        P = cells[i].getTurgor();
+        r0 = cells[i].getInitR();
+        rv = cells[i].getVertexR();
+        nu = cells[i].getNu();
+        radius_i = r0 * (1-nu) * P * r0 / (2.0*E*t) + rv;
+                
+        points[i].radius = 0.01 * radius_i;
+    }
     
     do
     {
         
         do
         {
-            fire(points, n);
+            Packer::fire(points, sim_box);
         }
-        while ( check_min_force() );
+        while ( Packer::check_min_force(points, sim_box) );
     }
-    while(true); // warunek jammingu, niezerowe cisnienie, bardzo male
-    
-    delete points;
+    while( Packer::jammed(points, sim_box) ); // warunek jammingu, niezerowe cisnienie, bardzo male
+
     
 }
 
-void Packer::fire(point_t* points, box_t& box, int n)
+void Packer::fire(std::vector<point_t>& points, box_t& box)
 {
+    int n = points.size();
     double f_inc = 1.1;
     double f_dec = 0.5;
     double a_start = 0.1;
     double f_a = 0.99;
     
     // MD step
-    velocityVerlet(points, box, n); 
+    Packer::velocityVerlet(points, box); 
    
         // CALC P PARAMETER
     double P = 0.0;
@@ -64,35 +99,118 @@ void Packer::fire(point_t* points, box_t& box, int n)
         Vector3D F = points[i].f_c;
         F.normalize();
             
-        points[i].v_c *= (1 - FIRE_ALPHA);
-        points[i].v_c += FIRE_ALPHA * F * v_norm;
+        points[i].v_c *= (1 - Packer::FIRE_ALPHA);
+        points[i].v_c += Packer::FIRE_ALPHA * F * v_norm;
     }
     
     
-    if (P > 0 && FIRE_N > FIRE_Nmin)
+    if (P > 0 && Packer::FIRE_N > Packer::FIRE_Nmin)
     {
-        FIRE_DT = std::min(FIRE_DTMAX, FIRE_DT*f_inc);
-        FIRE_ALPHA *= f_a;
+        Packer::FIRE_DT = std::min(Packer::FIRE_DTMAX, Packer::FIRE_DT*f_inc);
+        Packer::FIRE_ALPHA *= f_a;
     }
     
-    FIRE_N++;
+    Packer::FIRE_N++;
     
     if (P <= 0.0)
     {
-        FIRE_DT *= f_dec;
-        FIRE_ALPHA = a_start;
+        Packer::FIRE_DT *= f_dec;
+        Packer::FIRE_ALPHA = a_start;
         
         for (int i = 0; i < n; i++)
         {
             points[i].v_c *= 0.0; // freeze the system
         }
-        FIRE_N = 0;
+        Packer::FIRE_N = 0;
     }
 }
 
-void Packer::velocityVerlet(point_t* points, box_t& box, int n)
+void getDistance(Vector3D& dij, const Vector3D& vi, const Vector3D& vj, const box_t& box)
 {
-    double dt = FIRE_DT;
+    dij = vj - vi;
+
+    if (box.pbc)
+    {
+        double x, y, z;
+        double bsx = 2 * box.x;
+        double bsy = 2 * box.y;
+        double bsz = 2 * box.z;
+        x = round(dij.x / bsx) *  bsx;
+        y = round(dij.y / bsy) *  bsy;
+        z = round(dij.z / bsz) *  bsz;
+        dij.x -= x;
+        dij.y -= y;
+        dij.z -= z;
+    }
+}
+
+void calcBoxForces(std::vector<point_t>& points, const box_t& box)
+{
+    int n = points.size();
+    Vector3D wallYZ, wallXZ, wallXY;
+    Vector3D dij;
+    double sgnx, sgny, sgnz;
+    double bsx = box.x;
+    double bsy = box.y;
+    double bsz = box.z;
+    double eb  = 1.0;
+    double nub = 0.5;
+    double rb_ = 0.0;
+    double e1 = 1.0;
+    double nu1 = 0.5;
+
+    double r1;
+    
+    for (int i = 0; i < n; i++)
+    {
+        r1 = points[i].radius;
+        sgnx = SIGN(points[i].r_c.x);
+        wallYZ.x = sgnx * bsx;
+        wallYZ.y = points[i].r_c.y;
+        wallYZ.z = points[i].r_c.z;
+        dij = points[i].r_c - wallYZ;
+        points[i].f_c += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+        sgny = SIGN(points[i].r_c.y);
+        wallXZ.x = points[i].r_c.x;
+        wallXZ.y = sgny * bsy;
+        wallXZ.z = points[i].r_c.z;
+        dij = points[i].r_c - wallXZ;
+        points[i].f_c += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+        sgnz = SIGN(points[i].r_c.z);
+        wallXY.x = points[i].r_c.x;
+        wallXY.y = points[i].r_c.y;
+        wallXY.z = sgnz * bsz;
+        dij = points[i].r_c - wallXY;
+        points[i].f_c += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    }
+}
+
+void Packer::calcForces(std::vector<point_t>& points, box_t& box)
+{
+    int n = points.size();
+    Vector3D force_ij;
+    Vector3D dij;
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i+1; j < n; j++)
+        {
+            getDistance(dij, points[i].r_c, points[j].r_c, box);
+            force_ij = HertzianRepulsion::calcForce(dij, points[i].radius, points[j].radius, 1.0, 1.0, 0.5, 0.5);
+            points[i].f_c +=  force_ij;
+            points[j].f_c += -force_ij; 
+        }
+    }
+    
+    if (!box.pbc)
+    {
+        calcBoxForces(points, box);
+    }
+}
+
+void Packer::velocityVerlet(std::vector<point_t>& points, box_t& box)
+{
+    int n = points.size();    
+    double dt = Packer::FIRE_DT;
 
     // UPDATE POSITIONS
     for (int i = 0; i < n; i++)
@@ -106,7 +224,7 @@ void Packer::velocityVerlet(point_t* points, box_t& box, int n)
         points[i].v_c += 0.5 * dt * points[i].f_c;
     }
     
-    calcForces(points, box, n);
+    calcForces(points, box);
     // UPDATE VELOCITIES
     for (int i = 0; i < n; i++)
     {
@@ -115,17 +233,22 @@ void Packer::velocityVerlet(point_t* points, box_t& box, int n)
     }  
 }
 
-bool Packer::check_min_force(point_t* points, int n)
+bool Packer::check_min_force(std::vector<point_t>& points, box_t& box)
 {
+    int n = points.size();    
     for (int i = 0; i < n; i++)
     {
-
-        if (points[i].f_c.length_sq() > MIN_FORCE_SQ)
+        if (points[i].f_c.length_sq() > Packer::MIN_FORCE_SQ)
         {
             return true;
         }
-
     }
     
     return false;
+}
+
+bool Packer::jammed(std::vector<point_t>& points, box_t& box)
+{
+    int n = points.size();
+    return true;
 }
