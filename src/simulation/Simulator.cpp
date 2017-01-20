@@ -202,8 +202,10 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
     
     if(jam)
     {
+        simulator_logs << utils::LogLevel::INFO  << "JAMMING JAZDA\n";
         Packer::packCells(box, cells, params.th);
         simulator_logs << utils::LogLevel::INFO  << "SIMULATION STARTS FROM THE JAMMED PACKING\n";
+        exit(EXIT_FAILURE);
     }
 
     

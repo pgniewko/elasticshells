@@ -48,6 +48,10 @@ private:
     static double calcPressure(std::vector<point_t>&, box_t&);
     static double boxForce(point_t&, box_t&);
     
+    static void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const box_t&);
+    static void calcBoxForces(std::vector<point_t>&, const box_t&);
+    
+    
     static int FIRE_Nmin;
     static int FIRE_N;
     static double FIRE_DT;
