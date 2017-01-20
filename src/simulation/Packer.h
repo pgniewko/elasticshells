@@ -43,6 +43,8 @@ private:
     static void inflatePoints(std::vector<point_t>&);
     static void recenterCells(std::vector<point_t>&, box_t&);
     
+    static double calcPressure(std::vector<point_t>&, box_t&);
+    
     static int FIRE_Nmin;
     static int FIRE_N;
     static double FIRE_DT;

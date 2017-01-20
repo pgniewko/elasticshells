@@ -1,7 +1,7 @@
 #include "Packer.h"
 
 double Packer::MIN_FORCE_SQ(1.0e-12);
-double Packer::r_ext(5.0e-2);
+double Packer::r_ext(5.0e-1);
 double Packer::P_MIN(2e-6);
 double Packer::P_MAX(1e-6);
 
@@ -72,7 +72,7 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
         
         Packer::recenterCells(points, sim_box);
     }
-    while( Packer::jammed(points, sim_box) ); // warunek jammingu, niezerowe cisnienie, bardzo male
+    while( !Packer::jammed(points, sim_box) ); // warunek jammingu, niezerowe cisnienie, bardzo male
 
     
 }
@@ -130,15 +130,15 @@ void Packer::fire(std::vector<point_t>& points, box_t& box)
     }
     
     
-        // RESET BEFORE YOU LEAVE THE INTEGRATION
-        FIRE_DT = 0.001;
-        FIRE_ALPHA = 0.1;
-        FIRE_N = 0;
+    // RESET BEFORE YOU LEAVE THE INTEGRATION
+    FIRE_DT = 0.001;
+    FIRE_ALPHA = 0.1;
+    FIRE_N = 0;
         
-        for (int i = 0; i < n; i++)
-        {
-            points[i].v_c *= 0.0; // freeze the system
-        }
+    for (int i = 0; i < n; i++)
+    {
+        points[i].v_c *= 0.0; // freeze the system
+    }
 }
 
 void getDistance(Vector3D& dij, const Vector3D& vi, const Vector3D& vj, const box_t& box)
@@ -276,7 +276,25 @@ bool Packer::check_min_force(std::vector<point_t>& points, box_t& box)
 bool Packer::jammed(std::vector<point_t>& points, box_t& box)
 {
     int n = points.size();
-    return true;
+    
+    double pressure = Packer::calcPressure( points, box);
+    
+    if (pressure > Packer::P_MIN && pressure < Packer::P_MAX)
+    {
+        return true;
+    }
+    
+    if (pressure > Packer::P_MAX)
+    {
+        Packer::r_ext = -0.5 * Packer::r_ext;
+    }
+    
+    if (pressure < Packer::P_MIN && Packer::r_ext < 0.0)
+    {
+        Packer::r_ext = -0.5 * Packer::r_ext;
+    }
+    
+    return false;
 }
 
 void Packer::inflatePoints(std::vector<point_t>& points)
@@ -307,4 +325,9 @@ void Packer::recenterCells(std::vector<point_t>& points, box_t& box)
     }
     
     return;
+}
+
+double Packer::calcPressure(std::vector<point_t>& points, box_t& box)
+{
+    return 0.0;
 }
