@@ -7,9 +7,9 @@ double Packer::P_MAX(1e-6);
 
 int Packer::FIRE_Nmin(5);
 int Packer::FIRE_N(0);
-double Packer::FIRE_DT(0.0);
+double Packer::FIRE_DT(0.001);
 double Packer::FIRE_ALPHA(0.1);
-double Packer::FIRE_DTMAX(0.0);
+double Packer::FIRE_DTMAX(0.015);
     
 Packer::Packer() {
 }
@@ -63,11 +63,14 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
     return;
     do
     {
+        Packer::inflatePoints(points);
         do
         {
             Packer::fire(points, sim_box);
         }
         while ( Packer::check_min_force(points, sim_box) );
+        
+        Packer::recenterCells(points, sim_box);
     }
     while( Packer::jammed(points, sim_box) ); // warunek jammingu, niezerowe cisnienie, bardzo male
 
@@ -125,6 +128,17 @@ void Packer::fire(std::vector<point_t>& points, box_t& box)
         }
         Packer::FIRE_N = 0;
     }
+    
+    
+        // RESET BEFORE YOU LEAVE THE INTEGRATION
+        FIRE_DT = 0.001;
+        FIRE_ALPHA = 0.1;
+        FIRE_N = 0;
+        
+        for (int i = 0; i < n; i++)
+        {
+            points[i].v_c *= 0.0; // freeze the system
+        }
 }
 
 void getDistance(Vector3D& dij, const Vector3D& vi, const Vector3D& vj, const box_t& box)
@@ -190,6 +204,14 @@ void calcBoxForces(std::vector<point_t>& points, const box_t& box)
 void Packer::calcForces(std::vector<point_t>& points, box_t& box)
 {
     int n = points.size();
+    
+    for (int i = 0; i < n; i++)
+    {
+        points[i].f_c.x = 0.0;
+        points[i].f_c.y = 0.0;
+        points[i].f_c.z = 0.0;
+    }
+    
     Vector3D force_ij;
     Vector3D dij;
     for (int i = 0; i < n; i++)
@@ -237,7 +259,9 @@ void Packer::velocityVerlet(std::vector<point_t>& points, box_t& box)
 
 bool Packer::check_min_force(std::vector<point_t>& points, box_t& box)
 {
-    int n = points.size();    
+    calcForces(points, box);
+    
+    int n = points.size();
     for (int i = 0; i < n; i++)
     {
         if (points[i].f_c.length_sq() > Packer::MIN_FORCE_SQ)
@@ -253,4 +277,34 @@ bool Packer::jammed(std::vector<point_t>& points, box_t& box)
 {
     int n = points.size();
     return true;
+}
+
+void Packer::inflatePoints(std::vector<point_t>& points)
+{
+    int n = points.size();
+    for(int i = 0; i < n; i++)
+    {
+        points[i].radius *= (1 + Packer::r_ext);
+    }
+}
+
+void Packer::recenterCells(std::vector<point_t>& points, box_t& box)
+{
+    if (box.pbc)
+    {
+        double x, y, z;
+        double bsx = 2 * box.x;
+        double bsy = 2 * box.y;
+        double bsz = 2 * box.z;
+        for(uint i = 0; i < points.size(); i++)
+        {
+            x = round(points[i].r_c.x / bsx) *  bsx;
+            y = round(points[i].r_c.y / bsy) *  bsy;
+            z = round(points[i].r_c.z / bsz) *  bsz;
+            Vector3D p_shift(-x, -y, -z);
+            points[i].r_c += p_shift;
+        }
+    }
+    
+    return;
 }

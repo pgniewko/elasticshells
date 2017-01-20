@@ -40,6 +40,8 @@ private:
     static bool check_min_force(std::vector<point_t>&, box_t&);
     
     static bool jammed(std::vector<point_t>&, box_t&);
+    static void inflatePoints(std::vector<point_t>&);
+    static void recenterCells(std::vector<point_t>&, box_t&);
     
     static int FIRE_Nmin;
     static int FIRE_N;
