@@ -277,7 +277,7 @@ bool Packer::jammed(std::vector<point_t>& points, box_t& box)
 {
     int n = points.size();
     
-    double pressure = Packer::calcPressure( points, box);
+    double pressure = Packer::calcPressure(points, box);
     
     if (pressure > Packer::P_MIN && pressure < Packer::P_MAX)
     {
@@ -329,5 +329,79 @@ void Packer::recenterCells(std::vector<point_t>& points, box_t& box)
 
 double Packer::calcPressure(std::vector<point_t>& points, box_t& box)
 {
-    return 0.0;
+    double pressure;
+    
+    if (box.pbc)
+    {
+        double volume = 2.0 * box.x  * 2.0 * box.y * 2.0 * box.z;
+        Vector3D rij;
+        Vector3D fij;
+        
+        int n = points.size();
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i+1; j < n; j++)
+            {
+                getDistance(rij, points[i].r_c, points[j].r_c, box);
+                fij = HertzianRepulsion::calcForce(rij, points[i].radius, points[j].radius, 1.0, 1.0, 0.5, 0.5);
+                pressure += dot(rij, fij);
+            }
+        }
+        
+        pressure /= (3*volume);
+        return pressure;
+    }
+    else
+    {
+        double boxArea = 2.0 * box.x  * 2.0 * box.y * 2.0 * box.z;
+        double totalForce = 0.0;
+        
+        for (uint i = 0; i < points.size(); i++)
+        {
+            totalForce += Packer::boxForce(points[i], box);
+        }
+        
+        pressure = totalForce / boxArea; 
+    }
+    
+    return pressure;
+}
+
+double Packer::boxForce(point_t& point, box_t& box)
+{
+    Vector3D wallYZ, wallXZ, wallXY;
+    Vector3D dij;
+    double sgnx, sgny, sgnz;
+    double bsx = box.x;
+    double bsy = box.y;
+    double bsz = box.z;
+    double eb  = 1.0;
+    double nub = 0.5;
+    double rb_ = 0.0;
+    double e1 = 1.0;
+    double nu1 = 0.5;
+    
+    Vector3D force_collector;
+    
+    double r1 = point.radius;
+    sgnx = SIGN(point.r_c.x);
+    wallYZ.x = sgnx * bsx;
+    wallYZ.y = point.r_c.y;
+    wallYZ.z = point.r_c.z;
+    dij = point.r_c - wallYZ;
+    force_collector += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    sgny = SIGN(point.r_c.y);
+    wallXZ.x = point.r_c.x;
+    wallXZ.y = sgny * bsy;
+    wallXZ.z = point.r_c.z;
+    dij = point.r_c - wallXZ;
+    force_collector += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    sgnz = SIGN(point.r_c.z);
+    wallXY.x = point.r_c.x;
+    wallXY.y = point.r_c.y;
+    wallXY.z = sgnz * bsz;
+    dij = point.r_c - wallXY;
+    force_collector += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+        
+    return force_collector.length();
 }

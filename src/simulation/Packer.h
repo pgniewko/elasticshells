@@ -1,6 +1,8 @@
 #ifndef PACKER_H
 #define PACKER_H
 
+// TODO: at some point this class should become an independent library.
+
 #include "Environment.h"
 #include "geometry/Vector3D.h"
 #include "Cell.h"
@@ -44,6 +46,7 @@ private:
     static void recenterCells(std::vector<point_t>&, box_t&);
     
     static double calcPressure(std::vector<point_t>&, box_t&);
+    static double boxForce(point_t&, box_t&);
     
     static int FIRE_Nmin;
     static int FIRE_N;
