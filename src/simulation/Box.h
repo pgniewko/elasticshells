@@ -22,16 +22,10 @@ class Box
         void setZ(const double);
         double getZ() const;
 
-        //void setXmax(const double);
-        //void setYmax(const double);
-        //void setZmax(const double);
         void setXmin(const double);
         void setYmin(const double);
         void setZmin(const double);
 
-        //double getXmax() const;
-        //double getYmax() const;
-        //double getZmax() const;
         double getXmin() const;
         double getYmin() const;
         double getZmin() const;
@@ -65,9 +59,6 @@ class Box
         double x;
         double y;
         double z;
-        //double x_max;
-        //double y_max;
-        //double z_max;
         double x_min;
         double y_min;
         double z_min;

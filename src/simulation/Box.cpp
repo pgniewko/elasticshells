@@ -3,30 +3,13 @@
 utils::Logger Box::box_logger("box_logger");
 
 Box::Box(double bsx, double bsy, double bsz) : pbc(false),
-    x(bsx), y(bsy), z(bsz), //, x_max(bsx), y_max(bsy), z_max(bsz),
-    x_min(bsx), y_min(bsy), z_min(bsz), E_box(0.0), nu(0.0)
-{
-//    if (bsx == 0)
-//    {
-//        x_max = DBL_MAX;
-//    }
-//
-//    if (bsy == 0)
-//    {
-//        y_max = DBL_MAX;
-//    }
-//
-//    if (bsz == 0)
-//    {
-//        z_max = DBL_MAX;
-//    }
-}
+        x(bsx), y(bsy), z(bsz), x_min(bsx), y_min(bsy), z_min(bsz), 
+        E_box(0.0), nu(0.0) {}
 
 Box::Box(const Box& orig) : pbc(orig.pbc),
-    x(orig.x), y(orig.y), z(orig.z), //x_max(orig.x_max), y_max(orig.y_max), z_max(orig.z_max),
-    x_min(orig.x_min), y_min(orig.y_min), z_min(orig.z_min),
-    E_box(orig.E_box), nu(orig.nu), my_schedule(orig.my_schedule)
-{}
+        x(orig.x), y(orig.y), z(orig.z), 
+        x_min(orig.x_min), y_min(orig.y_min), z_min(orig.z_min),
+        E_box(orig.E_box), nu(orig.nu), my_schedule(orig.my_schedule) {}
 
 Box::~Box() {}
 
@@ -52,21 +35,6 @@ bool Box::resize(double vf_)
     double dz = 0.0;
 
     my_schedule.execute(dx, dy, dz, vf_);
-
-//    if (x + dx >= x_min && x + dx <= x_max)
-//    {
-//        x += dx;
-//    }
-//
-//    if (y + dy >= y_min && y + dy <= y_max)
-//    {
-//        y += dy;
-//    }
-//
-//    if (z + dz >= z_min && z + dz <= z_max)
-//    {
-//        z += dz;
-//    }
     
     if (x + dx >= x_min)
     {
@@ -106,16 +74,6 @@ double Box::getArea(const double rv) const
     return 2 * (4 * xc * yc + 4 * xc * zc + 4 * yc * zc);
 }
 
-//double Box::getVolume()
-//{
-//    return 2.0 * x * 2.0 * y * 2.0 * z;
-//}
-
-//double Box::getArea()
-//{
-//    return 2 * (4 * x * y + 4 * x * z + 4 * y * z);
-//}
-
 void Box::setX(const double newx)
 {
     x = newx;
@@ -146,21 +104,6 @@ double Box::getZ() const
     return z;
 }
 
-//void Box::setXmax(const double xst)
-//{
-//    x_max = xst;
-//}
-//
-//void Box::setYmax(const double yst)
-//{
-//    y_max = yst;
-//}
-//
-//void Box::setZmax(const double zst)
-//{
-//    z_max = zst;
-//}
-
 void Box::setXmin(const double xend)
 {
     x_min = xend;
@@ -175,20 +118,6 @@ void Box::setZmin(const double zend)
 {
     z_min = zend;
 }
-
-//double Box::getXmax() const
-//{
-//    return x_max;
-//}
-//double Box::getYmax() const
-//{
-//    return y_max;
-//}
-//
-//double Box::getZmax() const
-//{
-//    return z_max;
-//}
 
 double Box::getXmin() const
 {
