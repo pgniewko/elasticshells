@@ -73,6 +73,7 @@ static struct argp_option options[] =
     {"model",     418,   "STR", 0, "Available models: ms_kot, ms_avg, fem [default: ms_kot]"},
     {"restart",   419,       0, 0, "[default: false]"},
     {"analyze",   420,       0, 0, "[default: false]"},
+    {"jam",       'j',       0, 0, "[default: false]"},
 
     {0,             0,       0, 0, "Cell Options:", 5},
     {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
@@ -162,6 +163,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->const_volume = false;
             arguments->restart = false;
             arguments->analyze = false;
+            arguments->jam = false;
             arguments->nb_flag = 0;
             arguments->seed = 0x123;
             break;
@@ -287,7 +289,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 420:
             arguments->analyze = true;
-            break;            
+            break;
+        
+        case 'j':
+            arguments->jam = true;
+            break;  
             
         case 500:
             arguments->E_cell = arg ? strtod (arg, NULL) : 1500.0;
@@ -491,7 +497,7 @@ int main(int argc, char** argv)
             }
             else
             {
-                simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2);
+                simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.jam);
             }
         
             simulator.simulate(arguments.nsteps);

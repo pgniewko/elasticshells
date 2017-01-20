@@ -65,6 +65,7 @@ struct arguments
     bool const_volume;
     bool restart;
     bool analyze;
+    bool jam;
     int nb_flag;
 
     ulong seed;

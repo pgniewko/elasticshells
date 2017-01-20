@@ -1,4 +1,5 @@
 #include "Simulator.h"
+#include "Packer.h"
 
 utils::Logger Simulator::simulator_logs("simulator");
 unsigned long Simulator::FORCE_EVALUATION_COUTER(0);
@@ -141,7 +142,7 @@ void Simulator::initCells(int N, double r0)
     initCells(N, r0, r0);
 }
 
-void Simulator::initCells(int N, double r_min, double r_max, bool restart_flag)
+void Simulator::initCells(int N, double r_min, double r_max, bool jam)
 {
     if (r_min > r_max)
     {
@@ -149,10 +150,10 @@ void Simulator::initCells(int N, double r_min, double r_max, bool restart_flag)
         r_max = r_min;
     }
 
-    if (restart_flag)
-    {
-        simulator_logs << utils::LogLevel::INFO  << "Cells are initialized from the topology file\n";
-    }
+    //if (restart_flag)
+    //{
+    //    simulator_logs << utils::LogLevel::INFO  << "Cells are initialized from the topology file\n";
+    //}
 
     simulator_logs << utils::LogLevel::INFO  << "CELL MODEL: " << params.model_t << "\n";
     simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (!Cell::no_bending ? "true" : "false") << "\n";
@@ -198,9 +199,18 @@ void Simulator::initCells(int N, double r_min, double r_max, bool restart_flag)
             shiftCell(shift, number_of_cells - 1);
         }
     }
+    
+    if(jam)
+    {
+        Packer::packCells(box, cells, params.th);
+        simulator_logs << utils::LogLevel::INFO  << "SIMULATION STARTS FROM THE JAMMED PACKING\n";
+    }
 
+    
     restarter.saveTopologyFile(cells, params.model_t);
     set_min_force();
+    
+    
 }
 
 void Simulator::pushCell(const Cell& newCell)

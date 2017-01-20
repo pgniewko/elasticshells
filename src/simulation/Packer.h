@@ -50,6 +50,9 @@ private:
     static double MIN_FORCE_SQ;
     static double r_ext;
     
+    static double P_MIN;
+    static double P_MAX;
+    
 };
 
 #endif /* PACKER_H */

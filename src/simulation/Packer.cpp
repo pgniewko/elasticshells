@@ -2,6 +2,8 @@
 
 double Packer::MIN_FORCE_SQ(1.0e-12);
 double Packer::r_ext(5.0e-2);
+double Packer::P_MIN(2e-6);
+double Packer::P_MAX(1e-6);
 
 int Packer::FIRE_Nmin(5);
 int Packer::FIRE_N(0);
@@ -58,9 +60,9 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
         points[i].radius = 0.01 * radius_i;
     }
     
+    return;
     do
     {
-        
         do
         {
             Packer::fire(points, sim_box);

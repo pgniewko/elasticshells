@@ -26,6 +26,7 @@
 #include "simulation/DomainList.h"
 #include "simulation/Restarter.h"
 #include "simulation/Energy.h"
+#include "simulation/Packer.h"
 #include "utils/nrutil.h"
 #include "../Timer.h"
 
