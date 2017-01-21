@@ -107,11 +107,20 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
     while( !Packer::jammed(points, sim_box) ); // warunek jammingu, niezerowe cisnienie, bardzo male
 
     
-//    double box_scale = points[0].radius_f / points[0].radius;
-//    
-//    box.setX(box_scale * sim_box.x);
-//    box.setY(box_scale * sim_box.y);
-//    box.setZ(box_scale * sim_box.z);
+    double box_scale = points[0].radius_f / points[0].radius;
+    
+    box.setX(box_scale * sim_box.x);
+    box.setY(box_scale * sim_box.y);
+    box.setZ(box_scale * sim_box.z);
+    
+    for (int i = 0; i < n; i++)
+    {
+        Vector3D new_position = box_scale * points[i].r_c;
+        cells[i].addXYZ( -cells[i].getCm() );
+        cells[i].addXYZ( new_position );
+        cells[i].update();
+    }
+    
 //    for (int i = 0; i < points.size(); i++)
 //    {
 //        //assert( box_scale == points[i].radius_f / points[i].radius);
