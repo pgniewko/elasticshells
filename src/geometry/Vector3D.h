@@ -60,6 +60,7 @@ inline const Vector3D& Vector3D::operator *=(const double a)
 
 inline const Vector3D& Vector3D::operator /=(const double a)
 {
+    assert(a != 0.0);
     return *this *= 1.0 / a;
 }
 
@@ -81,7 +82,7 @@ inline double Vector3D::length_sq() const
 inline void Vector3D::set_length(double r)
 {
     double rl = r * inv_length();
-
+    
     if ( std::isfinite(rl) )
     {
         x *= rl;
@@ -90,16 +91,29 @@ inline void Vector3D::set_length(double r)
     }
     else
     {
-        // PRINT A WARNING
+        x = 0.0;
+        y = 0.0;
+        z = 0.0;
     }
 }
 
 inline void Vector3D::normalize()
 {
     double invlen = inv_length();
-    x *= invlen;
-    y *= invlen;
-    z *= invlen;
+
+    if( std::isfinite(invlen) )
+    {
+        x *= invlen;
+        y *= invlen;
+        z *= invlen;
+        
+    }
+    else
+    {
+        x = 0.0;
+        y = 0.0;
+        z = 0.0;
+    }
 }
 
 template <typename InputStreamT>
@@ -159,6 +173,7 @@ inline Vector3D operator *(const double a, const Vector3D& v)
 
 inline Vector3D operator /(const Vector3D& v, const double a)
 {
+    assert(a != 0.0);
     return v * (1.0 / a);
 }
 
@@ -185,6 +200,7 @@ inline double Vector3D::angle(const Vector3D& v) const
     double d = *this * v;
     double l1 = length();
     double l2 = v.length();
+    assert(l1*l2 != 0.0);
     double angle = acos(d / (l1 * l2));
     return angle;
 }
