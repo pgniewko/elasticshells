@@ -1,24 +1,25 @@
 #include "Packer.h"
 
-double Packer::MIN_FORCE_SQ(1.0e-10);
+
+utils::Logger Packer::packer_logs("packer");
+
+
+double Packer::MIN_FORCE_SQ(1.0e-12);
 double Packer::r_ext(1.0e-2);
-double Packer::P_MIN(1e-5);
-double Packer::P_MAX(2e-5);
+double Packer::P_MIN(1e-6);
+double Packer::P_MAX(2e-6);
 
 int Packer::FIRE_Nmin(5);
 int Packer::FIRE_N(0);
 double Packer::FIRE_DT(0.1);
 double Packer::FIRE_ALPHA(0.1);
-double Packer::FIRE_DTMAX(1.0);
-double Packer::FIRE_ITERS(0);
+double Packer::FIRE_DTMAX(1.5);
     
-Packer::Packer() {
-}
+Packer::Packer() {}
 
 Packer::Packer(const Packer& orig) {}
 
-Packer::~Packer() {
-}
+Packer::~Packer() {}
 
 void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
 {
@@ -60,49 +61,27 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
         points[i].radius_f = radius_i;
     }
     
-    int loop_counter = 1;
-    //return;
-    
-    
     do
     {
-        std::cout << "-------------\nLOOP NUMBER=" << loop_counter << std::endl;
         Packer::inflatePoints(points);
         Packer::recenterCells(points, sim_box);
-
         
-        std::cout << "RUNNING FIRE" << std::endl;
         do
         {
             Packer::fire(points, sim_box);
         }
         while ( Packer::check_min_force(points, sim_box) );
        
-        
-        //std::cout <<points.size()  << std::endl;
-        
-        for(int i = 0; i < points.size(); i++)
-        {
-            std::cout <<   points[i].r_c.x << " " << points[i].r_c.y << " " << points[i].r_c.z << " " << points[i].radius<< std::endl;
-            //std::cout <<  "H "<<points[i].r_c.x << " " << points[i].r_c.y << " " << points[i].r_c.z << std::endl;
-        }
-        
-        Packer::FIRE_ITERS = 0;
         Packer::FIRE_DT = 0.1;
         Packer::FIRE_ALPHA = 0.1;
         Packer::FIRE_N = 0;
-        
-        loop_counter++;
+
         
         for (int i = 0; i < n; i++)
         {
             points[i].v_c *= 0.0; // freeze the system
         }
-
-        if ( points[0].radius > 2.0 || loop_counter > 400)
-            break;
        
-        //std::cout << "----------------------" << loop_counter << std::endl;
     }
     while( !Packer::jammed(points, sim_box) ); // warunek jammingu, niezerowe cisnienie, bardzo male
 
@@ -120,19 +99,10 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
         cells[i].addXYZ( new_position );
         cells[i].update();
     }
-    
-//    for (int i = 0; i < points.size(); i++)
-//    {
-//        //assert( box_scale == points[i].radius_f / points[i].radius);
-//        std::cout << box_scale<< " i: " << i << "r_f/r=" << points[i].radius_f / points[i].radius << std::endl;
-//    }
 }
 
 void Packer::fire(std::vector<point_t>& points, box_t& box)
 {
-    Packer::FIRE_ITERS++;
-    std::cout << "Packer::FIRE_DT=" << Packer::FIRE_DT << " Packer::FIRE_N=" << Packer::FIRE_N << " Packer::FIRE_ALPHA=" << Packer::FIRE_ALPHA  << std::endl;
-//    //std::cout << "FIRE "<< std::endl;
     int n = points.size();
     double f_inc = 1.1;
     double f_dec = 0.5;
@@ -141,28 +111,22 @@ void Packer::fire(std::vector<point_t>& points, box_t& box)
     
     // MD step
     Packer::velocityVerlet(points, box); 
-//   
-//        // CALC P PARAMETER
+
+    
+    // CALC P PARAMETER
     double P = 0.0;
     for (int i = 0; i < n; i++)
     {
         P += dot( points[i].f_c, points[i].v_c);
-        std::cout << " i="<< i << " P=" << P << " f_c=" << points[i].f_c << " v_c=" <<  points[i].v_c;
     }
-    std::cout << std::endl;
-    
-    //=========================
     
     for (int i = 0; i < n; i++)
     {
 
         double v_length = points[i].v_c.length();
         Vector3D F = points[i].f_c;
-        //std::cout << "BEFORE F=" << F << std::endl;
         
         F.normalize();
-        
-        //std::cout << "AFTER F=" << F << std::endl;
             
         points[i].v_c *= (1 - Packer::FIRE_ALPHA);
         points[i].v_c += Packer::FIRE_ALPHA * F * v_length;
@@ -182,7 +146,6 @@ void Packer::fire(std::vector<point_t>& points, box_t& box)
         
         Packer::FIRE_DT *= f_dec;
         Packer::FIRE_ALPHA = a_start;
-        //std::cout <<"FIRE_DT=" << Packer::FIRE_DT  << std::endl;
         for (int i = 0; i < n; i++)
         {
             points[i].v_c *= 0.0; // freeze the system
@@ -296,8 +259,6 @@ void Packer::calcForces(std::vector<point_t>& points, box_t& box)
             
             Packer::getDistance(dij, points[j].r_c, points[i].r_c, box);
             force_ij = HertzianRepulsion::calcForce(dij, points[i].radius, points[j].radius, 1.0, 1.0, 0.5, 0.5);
-            
-            std::cout << "force_ij="<<force_ij << " distance="<< dij.length() << std::endl;
             points[i].f_c +=  force_ij;
             points[j].f_c += -force_ij; 
         }
@@ -341,12 +302,6 @@ void Packer::velocityVerlet(std::vector<point_t>& points, box_t& box)
 
 bool Packer::check_min_force(std::vector<point_t>& points, box_t& box)
 {
-//    if (Packer::FIRE_ITERS > 1e3)
-//    {
-//        std::cout << "dupa" << std::endl;
-//        exit(1);
-//    }
-        
     Packer::calcForces(points, box);
     
     int n = points.size();
@@ -364,14 +319,12 @@ bool Packer::check_min_force(std::vector<point_t>& points, box_t& box)
 
 bool Packer::jammed(std::vector<point_t>& points, box_t& box)
 {
-    int n = points.size();
     
     double pressure = Packer::calcPressure(points, box);
     
-    std::cout << "jammed(...)" <<  Packer::P_MIN <<" " << pressure << " " << Packer::P_MAX << std::endl;
-    
     if (pressure > Packer::P_MIN && pressure < Packer::P_MAX)
     {
+        packer_logs <<  utils::LogLevel::INFO << "Jamemd packing is generated:"  << " P_MIN="<< Packer::P_MIN <<" <= P=" << pressure << " <= P_AX=" << Packer::P_MAX << "\n";
         return true;
     }
     
@@ -385,8 +338,6 @@ bool Packer::jammed(std::vector<point_t>& points, box_t& box)
         Packer::r_ext = -0.5 * Packer::r_ext;
     }
     
-    std::cout << " New Packer::r_ext="<< Packer::r_ext <<std::endl;
-    
     return false;
 }
 
@@ -396,9 +347,7 @@ void Packer::inflatePoints(std::vector<point_t>& points)
     
     for(int i = 0; i < n; i++)
     {
-        std::cout << "inflatePoints =; i=" << i << " " <<points[i].radius << " ";
         points[i].radius *= (1.0 + Packer::r_ext);
-        std::cout << points[i].radius << " Packer::r_ext="<< Packer::r_ext <<std::endl;
     }
 }
 
@@ -425,7 +374,7 @@ void Packer::recenterCells(std::vector<point_t>& points, box_t& box)
 
 double Packer::calcPressure(std::vector<point_t>& points, box_t& box)
 {
-    double pressure;
+    double pressure = 0.0;
     
     if (box.pbc)
     {
@@ -444,7 +393,7 @@ double Packer::calcPressure(std::vector<point_t>& points, box_t& box)
             }
         }
         
-        pressure /= (3*volume);
+        pressure /= (3.0*volume);
         return pressure;
     }
     else
@@ -460,7 +409,6 @@ double Packer::calcPressure(std::vector<point_t>& points, box_t& box)
         pressure = totalForce / boxArea; 
     }
     
-    std::cout << "pressure=" << pressure<< std::endl;
     return pressure;
 }
 
@@ -525,7 +473,6 @@ double Packer::boxForce(point_t& point, box_t& box)
     dij = point.r_c - wallXY;
     force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
     force_collector += force.length();
-        
-    //std::cout << "force_collector=" << force_collector << std::endl;
+
     return force_collector;
 }

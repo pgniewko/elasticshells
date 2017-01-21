@@ -8,6 +8,7 @@
 #include "Cell.h"
 #include "simulation/Box.h"
 #include "force/HertzianRepulsion.h"
+#include "utils/io/LogSimulation.h"
 
 struct point_t
 {
@@ -58,13 +59,14 @@ private:
     static double FIRE_DT;
     static double FIRE_ALPHA;
     static double FIRE_DTMAX;
-    static double FIRE_ITERS;
     
     static double MIN_FORCE_SQ;
     static double r_ext;
     
     static double P_MIN;
     static double P_MAX;
+    
+    static utils::Logger packer_logs;
     
 };
 
