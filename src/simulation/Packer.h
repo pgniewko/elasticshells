@@ -16,6 +16,7 @@ struct point_t
     Vector3D f_c;
     Vector3D f_p;
     double radius;
+    double radius_f;
 };
 
 struct box_t
@@ -57,6 +58,7 @@ private:
     static double FIRE_DT;
     static double FIRE_ALPHA;
     static double FIRE_DTMAX;
+    static double FIRE_ITERS;
     
     static double MIN_FORCE_SQ;
     static double r_ext;

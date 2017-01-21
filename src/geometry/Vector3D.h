@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <assert.h>
 
 #include "Environment.h"
 #include "exceptions/DataException.h"

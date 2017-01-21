@@ -202,6 +202,13 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
     
     if(jam)
     {
+        
+        if (box.pbc)
+        {
+            //std::cout <<  "pbc, kurwa mac" << std::endl;
+            //exit(1);
+        }
+        
         simulator_logs << utils::LogLevel::INFO  << "JAMMING JAZDA\n";
         Packer::packCells(box, cells, params.th);
         simulator_logs << utils::LogLevel::INFO  << "SIMULATION STARTS FROM THE JAMMED PACKING\n";
@@ -935,12 +942,12 @@ void Simulator::fire()
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            double v_norm = cells[i].vertices[j].v_c.length();
+            double v_length = cells[i].vertices[j].v_c.length();
             Vector3D F = cells[i].vertices[j].f_c;
             F.normalize();
             
             cells[i].vertices[j].v_c *= (1 - FIRE_ALPHA);
-            cells[i].vertices[j].v_c += FIRE_ALPHA * F * v_norm;
+            cells[i].vertices[j].v_c += FIRE_ALPHA * F * v_length;
         }
     }
     
