@@ -14,7 +14,6 @@ int Packer::FIRE_N(0);
 double Packer::FIRE_DT(0.1);
 double Packer::FIRE_ALPHA(0.1);
 double Packer::FIRE_DTMAX(1.5);
-//double Packer::RATTLERS_FRAC(0.01);
     
 Packer::Packer() {}
 
@@ -47,7 +46,6 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
     
     do
     {
-        //std::cout << "number of particles="<< points.size() << std::endl;
         Packer::r_ext = 1.0e-2;
         for (int i = 0; i < n; i++)
         {

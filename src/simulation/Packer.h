@@ -71,8 +71,6 @@ private:
     static double P_MIN;
     static double P_MAX;
     
-    //static double RATTLERS_FRAC;
-    
     static utils::Logger packer_logs;
     
 };
