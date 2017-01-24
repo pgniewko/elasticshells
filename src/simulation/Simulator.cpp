@@ -145,14 +145,9 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
 {
     if (r_min > r_max)
     {
-        simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: ra > rb. Simulator will set: rb = ra \n";
+        simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: r_min > r_max. Simulator will set: r_min = r_max \n";
         r_max = r_min;
     }
-
-    //if (restart_flag)
-    //{
-    //    simulator_logs << utils::LogLevel::INFO  << "Cells are initialized from the topology file\n";
-    //}
 
     simulator_logs << utils::LogLevel::INFO  << "CELL MODEL: " << params.model_t << "\n";
     simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (!Cell::no_bending ? "true" : "false") << "\n";
@@ -332,7 +327,6 @@ void Simulator::analyze()
         log_sim.dumpState(box, cells);
     }
 }
-
 
 void Simulator::simulate()
 {

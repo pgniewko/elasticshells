@@ -20,8 +20,6 @@ std::list<Triangle> RandomTriangulation::triangulate(double r0)
     int n_ = 4.0 * (r0 / r_vertex) * (r0 / r_vertex);
     int nrow = 6;
     
-    //std::cout << "RANDOM TRIANGUILATION; n_ =" << n_ << " r0=" << r0 << std::endl;
-    
     double* xyz = new double[3 * n_];
     int* ltri = new int[nrow * 2 * (n_ - 2)];
     

@@ -68,7 +68,7 @@ struct arguments
     bool jam;
     int nb_flag;
 
-    ulong seed;
+    unsigned long seed;
 };
 
 #endif	/* ARGUMENTS_H */

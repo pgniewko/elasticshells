@@ -45,8 +45,6 @@ static struct argp_option options[] =
     {"in-dir",      302,  "STR",  0, "... [default: ./input]" },
     {"prefix",      303,  "STR",  0, "... [default: biofilm]" },
     {"seed",        304, "LONG",  0, "Random generator seed [default: 0x123] " },
-    //{"oc",          305, "FILE",  0, "Input file to configure observers [default: ./observers.config ]" },
-    //{"sch",         306, "FILE",  0, "Input file to configure compression schedule [default: ./schedule.config ]" },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0,             0,       0, 0, "Simulation Options:", 4},
@@ -121,8 +119,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->files_prefix = (char*)&"biofilm";
             arguments->output_dir = (char*)&"./output/";
             arguments->input_dir  = (char*)&"./input/";
-            //arguments->ob_config_file = (char*)&"observers.config";
-            //arguments->sch_config_file = (char*)&"schedule.config";
             arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
             arguments->model_type = (char*)&"ms_kot";
@@ -202,14 +198,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 304:
             arguments->seed =  arg ? atol (arg) : 0x123;
             break;
-
-//        case 305:
-//            arguments->ob_config_file = arg;
-//            break;
-//
-//        case 306:
-//            arguments->sch_config_file = arg;
-//            break;
 
         case 'n':
             arguments->n_cells = arg ? atoi (arg) : 1;
