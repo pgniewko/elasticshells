@@ -292,11 +292,11 @@ void Simulator::analyze()
     restarter.readTopologyFile(cells);
     number_of_cells = cells.size();
     
-    MIN_FORCE_SQ = 1e-8.0;
+    MIN_FORCE_SQ = 1e-8;
     simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE ARBITRARILY(in <<analyze>> mode) SET= "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
     
     uint frames_number = traj.countFramesNumber();
-    simulator_logs << utils::LogLevel::INFO << " Number of frames in a trajectory file: " << frames_number << "\n" ;
+    simulator_logs << utils::LogLevel::INFO << " Number of frames in a trajectory file: " << (int) frames_number << "\n" ;
     
     std::vector<std::string> turgor_list = log_sim.readTurgorsFile();
     std::vector<std::string> boxsize_list = traj.read_saved_box();
@@ -317,7 +317,7 @@ void Simulator::analyze()
     log_sim.open();
     log_sim.printHeader();
     
-    for (int i = 1; i <= frames_number; i++)
+    for (std::size_t i = 1; i <= frames_number; i++)
     {
         restarter.readFrame(traj.getTrajFile(), cells, i);
         restarter.assignTurgors(turgor_list[i - 1], cells);
