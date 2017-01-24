@@ -288,8 +288,6 @@ void Simulator::restart()
     restarter.readTopologyFile(cells);
     restarter.readLastFrame(cells);
     number_of_cells = cells.size();
-    
-    //restarter.saveTopologyFile(cells, "fem");
     set_min_force();
 }
 
@@ -298,44 +296,37 @@ void Simulator::analyze()
     restarter.registerVMap();
     restarter.readTopologyFile(cells);
     number_of_cells = cells.size();
-    set_min_force();
+    
+    MIN_FORCE_SQ = 1e-8.0;
+    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE ARBITRARILY(in <<analyze>> mode) SET= "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
     
     uint frames_number = traj.countFramesNumber();
-    
-    std::cout << "number of vertices=" << getTotalVertices() << std::endl;
-    std::cout << "number of frames=" << frames_number << std::endl;
+    simulator_logs << utils::LogLevel::INFO << " Number of frames in a trajectory file: " << frames_number << "\n" ;
     
     std::vector<std::string> turgor_list = log_sim.readTurgorsFile();
     std::vector<std::string> boxsize_list = traj.read_saved_box();
-    
-    std::cout << "turgor_list.size()=" << turgor_list.size() << std::endl;
-    
-    std::cout << "boxsize_list.size()=" << boxsize_list.size() << std::endl;
-    
+
     if (turgor_list.size() != frames_number)
     {
-        // report problem and terminate
+        simulator_logs << utils::LogLevel::SEVERE  << "CORRUOTED DATA: Turgor data doesn't match the number of frames. Observation analysis exists!";
+        exit(EXIT_FAILURE);
     }
     
     if (boxsize_list.size() != frames_number)
     {
-        // report problem and terminate
+        simulator_logs << utils::LogLevel::SEVERE  << "CORRUPTED DATA: Box size data doesn't match the number of frames. Observation analysis exists!";
+         exit(EXIT_FAILURE);
     }
     
     log_sim.registerObservers();
     log_sim.open();
     log_sim.printHeader();
     
-    std::cout << turgor_list[0] <<  std::endl;
-    restarter.assignTurgors(turgor_list[0], cells);
-    
-    restarter.assignBoxSize(boxsize_list[0], box);
-    
     for (int i = 1; i <= frames_number; i++)
     {
         restarter.readFrame(traj.getTrajFile(), cells, i);
-        restarter.assignTurgors(turgor_list[i-1], cells);
-        restarter.assignBoxSize(boxsize_list[i-1], box);
+        restarter.assignTurgors(turgor_list[i - 1], cells);
+        restarter.assignBoxSize(boxsize_list[i - 1], box);
         updateCells();
         
         log_sim.dumpState(box, cells);
