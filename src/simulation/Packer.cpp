@@ -42,10 +42,11 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
     
     double E, t, P, r0, rv, nu;
     
+    double Z = 0.0;
     
     do
     {
-        std::cout << "number of particles="<< points.size() << std::endl;
+        //std::cout << "number of particles="<< points.size() << std::endl;
         Packer::r_ext = 1.0e-2;
         for (int i = 0; i < n; i++)
         {
@@ -97,8 +98,9 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
         while( !Packer::jammed(points, sim_box) ); // warunek jammingu, niezerowe cisnienie, bardzo male
 
     }
-    while(  anyRattlers(points, sim_box) );
+    while( anyRattlers(points, sim_box, Z) );
     
+    packer_logs <<  utils::LogLevel::FINEST << "<Z>=" << Z << "\n";
     
     double box_scale = points[0].radius_f / points[0].radius;
     
@@ -490,34 +492,34 @@ double Packer::boxForce(point_t& point, box_t& box)
     return force_collector;
 }
 
-bool Packer::anyRattlers(const std::vector<point_t>& points, const box_t& box)
+bool Packer::anyRattlers(const std::vector<point_t>& points, const box_t& box, double& Z)
 {
-    std::cout << "Checking for rattlers" << std::endl;
-    bool thereIsNoRattler = true;
-    double counter;
+//    std::cout << "Checking for rattlers" << std::endl;
+    bool thereIsRattler = false;
+//    double counter;
     
-    int N = points.size();
+//    int N = points.size();
     
-    std::vector<point_t> points_copy;
+    //std::vector<point_t> points_copy;
+//    
+//    for (int i = 0; i < points.size(); i++)
+//    {
+//        point_t new_point;
+//        new_point.r_c.x = points[i].r_c.x;
+//        new_point.r_c.y = points[i].r_c.y;
+//        new_point.r_c.z = points[i].r_c.z;
+//                        
+//        points_copy.push_back(new_point);
+//    }
     
-    for (int i = 0; i < points.size(); i++)
-    {
-        point_t new_point;
-        new_point.r_c.x = points[i].r_c.x;
-        new_point.r_c.y = points[i].r_c.y;
-        new_point.r_c.z = points[i].r_c.z;
-                        
-        points_copy.push_back(new_point);
-    }
-    
-    int loop_number = 1;
+//    int loop_number = 1;
     double contacts_sum = 0;
     
-    do
-    {
-        std::cout <<  "loop number=" << loop_number << " points_copy.size()=" << points_copy.size() << std::endl;
+    //do
+    //{
+//        std::cout <<  "loop number=" << loop_number << " points_copy.size()=" << points_copy.size() << std::endl;
         
-        int n = points_copy.size();
+        int n = points.size();
         int* num_contacts = new int[n];
     
         for (int i = 0; i < n ; i++)
@@ -541,14 +543,14 @@ bool Packer::anyRattlers(const std::vector<point_t>& points, const box_t& box)
             }
         }
     
-        thereIsNoRattler = false;
-        contacts_sum = 0;
+//        thereIsNoRattler = false;
+//        contacts_sum = 0;
         for (int i = n - 1; i >= 0 ; i--)
         {
             if (num_contacts[i] <= 3)  // simple criteria for rattlers
             {
-                thereIsNoRattler = true;
-                points_copy.erase( points_copy.begin() + i, points_copy.begin() + i+1 );
+                thereIsRattler = true;
+              //  points_copy.erase( points_copy.begin() + i, points_copy.begin() + i+1 );
             }
             contacts_sum += (double) num_contacts[i];
             //else
@@ -556,31 +558,24 @@ bool Packer::anyRattlers(const std::vector<point_t>& points, const box_t& box)
             //    counter += 1.0;
             //}
         }
-        delete[] num_contacts;
-        loop_number++;
+    delete[] num_contacts;
+    Z = contacts_sum / (double)n;
+        //loop_number++;
         
-    } while(thereIsNoRattler);
+    //} while(thereIsNoRattler);
     
-    counter = points_copy.size();
+    //counter = points_copy.size();
 //    average /= counter;
-    packer_logs <<  utils::LogLevel::FINEST << "<Z>=" << contacts_sum / (double)N << "\n";
+//    packer_logs <<  utils::LogLevel::FINEST << "<Z>=" << contacts_sum / (double)N << "\n";
     
 
 //    delete[] num_contacts;
     
     
-    double rattlers_frac = (double)(N - counter) / (double)N;
-    std::cout << "NUMBER OF RATTLERS=" <<  (N - counter) << std::endl;
+    //double rattlers_frac = (double)(N - counter) / (double)N;
+    //std::cout << "NUMBER OF RATTLERS=" <<  (N - counter) << std::endl;
     
-    if ( rattlers_frac > 0.0 )
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-    
+    return thereIsRattler;
 }
 
 int Packer::boxContacts(const point_t& point, const box_t& box)

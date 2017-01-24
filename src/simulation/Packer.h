@@ -54,7 +54,7 @@ private:
     static void calcBoxForces(std::vector<point_t>&, const box_t&);
     
     
-    static bool anyRattlers(const std::vector<point_t>&, const box_t&);
+    static bool anyRattlers(const std::vector<point_t>&, const box_t&, double&);
     static int boxContacts(const point_t&, const box_t&);
     static int cellContacts(const point_t&, const point_t&, const box_t&);
     
