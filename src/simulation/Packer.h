@@ -54,13 +54,18 @@ private:
     static void calcBoxForces(std::vector<point_t>&, const box_t&);
     
     
+    static bool anyRattlers(std::vector<point_t>&, box_t&);
+    static int boxContacts(point_t&, box_t&);
+    static int cellContacts(point_t&, point_t&, box_t&);
+    
+    
     static int FIRE_Nmin;
     static int FIRE_N;
     static double FIRE_DT;
     static double FIRE_ALPHA;
     static double FIRE_DTMAX;
     
-    static double MIN_FORCE_SQ;
+    static double MIN_FORCE;
     static double r_ext;
     
     static double P_MIN;

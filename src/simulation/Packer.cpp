@@ -4,10 +4,10 @@
 utils::Logger Packer::packer_logs("packer");
 
 
-double Packer::MIN_FORCE_SQ(1.0e-12);
+double Packer::MIN_FORCE(1.0e-16);
 double Packer::r_ext(1.0e-2);
-double Packer::P_MIN(1e-6);
-double Packer::P_MAX(2e-6);
+double Packer::P_MIN(1e-8);
+double Packer::P_MAX(2e-8);
 
 int Packer::FIRE_Nmin(5);
 int Packer::FIRE_N(0);
@@ -85,6 +85,7 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
     }
     while( !Packer::jammed(points, sim_box) ); // warunek jammingu, niezerowe cisnienie, bardzo male
 
+    anyRattlers(points, sim_box);
     
     double box_scale = points[0].radius_f / points[0].radius;
     
@@ -307,8 +308,7 @@ bool Packer::check_min_force(std::vector<point_t>& points, box_t& box)
     int n = points.size();
     for (int i = 0; i < n; i++)
     {
-        
-        if (points[i].f_c.length_sq() > Packer::MIN_FORCE_SQ)
+        if (points[i].f_c.length() > Packer::MIN_FORCE)
         {
             return true;
         }
@@ -324,7 +324,7 @@ bool Packer::jammed(std::vector<point_t>& points, box_t& box)
     
     if (pressure > Packer::P_MIN && pressure < Packer::P_MAX)
     {
-        packer_logs <<  utils::LogLevel::INFO << "Jamemd packing is generated:"  << " P_MIN="<< Packer::P_MIN <<" <= P=" << pressure << " <= P_AX=" << Packer::P_MAX << "\n";
+        packer_logs <<  utils::LogLevel::INFO << "Jamemd packing is generated:"  << " P_MIN="<< Packer::P_MIN <<" <= P=" << pressure << " <= P_MAX=" << Packer::P_MAX << "\n";
         return true;
     }
     
@@ -475,4 +475,163 @@ double Packer::boxForce(point_t& point, box_t& box)
     force_collector += force.length();
 
     return force_collector;
+}
+
+bool Packer::anyRattlers(std::vector<point_t>& points, box_t& box)
+{
+    int n = points.size();
+    int* num_contacts = new int[n];
+    
+    for (int i = 0; i < n ; i++)
+    {
+        num_contacts[i] = 0;
+    }
+    
+    for (int i = 0; i < n ; i++)
+    {  
+        for(int j = 0; j < n; j++)
+        {
+            if (i != j)
+            {
+                num_contacts[i] += cellContacts(points[i], points[j], box);
+            }
+        }
+        
+        if (!box.pbc)
+        {
+            num_contacts[i] += boxContacts(points[i], box);
+        }
+    }
+    
+    
+    bool thereisRattler = false;
+    
+    double average = 0;
+    double counter;
+    
+    for (int i = 0; i < n ; i++)
+    {
+        //std::cout << " i= " << i << " num_contacts=" << num_contacts[i] << std::endl;
+        if (num_contacts[i] <= 3)
+        {
+            thereisRattler = true;
+        }
+        else
+        {
+            average += num_contacts[i];
+            counter += 1.0;
+        }
+    }
+    
+    average /= counter;
+    std::cout << "Average=" << average<< " counter="<< counter << std::endl;
+    
+    delete[] num_contacts;
+    
+    return thereisRattler;
+}
+
+int Packer::boxContacts(point_t& point, box_t& box)
+{
+    Vector3D wallYZ, wallXZ, wallXY;
+    Vector3D dij;
+    int number_of_contacs = 0;
+    double sgnx, sgny, sgnz;
+    double bsx = box.x;
+    double bsy = box.y;
+    double bsz = box.z;
+    double eb  = 1.0;
+    double nub = 0.5;
+    double rb_ = 0.0;
+    double e1 = 1.0;
+    double nu1 = 0.5;
+    
+    Vector3D force;
+    
+    double r1 = point.radius;
+    sgnx = SIGN(point.r_c.x);
+    wallYZ.x = sgnx * bsx;
+    wallYZ.y = point.r_c.y;
+    wallYZ.z = point.r_c.z;
+    dij = point.r_c - wallYZ;
+    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    if ( force.length() )
+    {
+        number_of_contacs++;
+    }
+    
+
+    sgny = SIGN(point.r_c.y);
+    wallXZ.x = point.r_c.x;
+    wallXZ.y = sgny * bsy;
+    wallXZ.z = point.r_c.z;
+    dij = point.r_c - wallXZ;
+    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    if ( force.length() )
+    {
+        number_of_contacs++;
+    }
+    
+    sgnz = SIGN(point.r_c.z);
+    wallXY.x = point.r_c.x;
+    wallXY.y = point.r_c.y;
+    wallXY.z = sgnz * bsz;
+    dij = point.r_c - wallXY;
+    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    if ( force.length() )
+    {
+        number_of_contacs++;
+    }
+    
+    sgnx = SIGN(point.r_c.x);
+    wallYZ.x = -sgnx * bsx;
+    wallYZ.y = point.r_c.y;
+    wallYZ.z = point.r_c.z;
+    dij = point.r_c - wallYZ;
+    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    if ( force.length() )
+    {
+        number_of_contacs++;
+    }
+    
+    sgny = SIGN(point.r_c.y);
+    wallXZ.x = point.r_c.x;
+    wallXZ.y = -sgny * bsy;
+    wallXZ.z = point.r_c.z;
+    dij = point.r_c - wallXZ;
+    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    if ( force.length() )
+    {
+        number_of_contacs++;
+    }
+    
+    sgnz = SIGN(point.r_c.z);
+    wallXY.x = point.r_c.x;
+    wallXY.y = point.r_c.y;
+    wallXY.z = -sgnz * bsz;
+    dij = point.r_c - wallXY;
+    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    if ( force.length() )
+    {
+        number_of_contacs++;
+    }
+    
+
+    return number_of_contacs;
+}
+
+int Packer::cellContacts(point_t& point_1, point_t& point_2, box_t& box)
+{
+    Vector3D force_ij;
+    Vector3D dij;
+
+    Packer::getDistance(dij, point_2.r_c, point_1.r_c, box);
+    force_ij = HertzianRepulsion::calcForce(dij, point_1.radius, point_2.radius, 1.0, 1.0, 0.5, 0.5);
+            
+    if ( force_ij.length_sq() > 0)
+    {
+        return 1;
+    }        
+            
+    return 0;
 }
