@@ -14,6 +14,7 @@ int Packer::FIRE_N(0);
 double Packer::FIRE_DT(0.1);
 double Packer::FIRE_ALPHA(0.1);
 double Packer::FIRE_DTMAX(1.5);
+//double Packer::RATTLERS_FRAC(0.01);
     
 Packer::Packer() {}
 
@@ -41,51 +42,63 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
     
     double E, t, P, r0, rv, nu;
     
-    for (int i = 0; i < n; i++)
-    {
-        points[i].r_c.x = uniform(-sim_box.x, sim_box.x);
-        points[i].r_c.y = uniform(-sim_box.y, sim_box.y);
-        points[i].r_c.z = uniform(-sim_box.z, sim_box.z);
-    }
-    
-    for (int i = 0; i < n; i++)
-    {
-        E = cells[i].getE();
-        t = thickness;
-        P = cells[i].getTurgor();
-        r0 = cells[i].getInitR();
-        rv = cells[i].getVertexR();
-        nu = cells[i].getNu();
-        radius_i = r0 * ( 1 + (1-nu) * P * r0 / (2.0*E*t)) + rv;
-        points[i].radius = 0.01 * radius_i;
-        points[i].radius_f = radius_i;
-    }
     
     do
     {
-        Packer::inflatePoints(points);
-        Packer::recenterCells(points, sim_box);
-        
-        do
+        std::cout << "number of particles="<< points.size() << std::endl;
+        Packer::r_ext = 1.0e-2;
+        for (int i = 0; i < n; i++)
         {
-            Packer::fire(points, sim_box);
+            points[i].r_c.x = uniform(-sim_box.x, sim_box.x);
+            points[i].r_c.y = uniform(-sim_box.y, sim_box.y);
+            points[i].r_c.z = uniform(-sim_box.z, sim_box.z);
+            points[i].f_c *= 0.0;
+            points[i].f_p *= 0.0;
+            points[i].radius *= 0.0;
+            points[i].radius_f;
+            
         }
-        while ( Packer::check_min_force(points, sim_box) );
-       
-        Packer::FIRE_DT = 0.1;
-        Packer::FIRE_ALPHA = 0.1;
-        Packer::FIRE_N = 0;
-
         
         for (int i = 0; i < n; i++)
         {
-            points[i].v_c *= 0.0; // freeze the system
+            E = cells[i].getE();
+            t = thickness;
+            P = cells[i].getTurgor();
+            r0 = cells[i].getInitR();
+            rv = cells[i].getVertexR();
+            nu = cells[i].getNu();
+            radius_i = r0 * ( 1 + (1-nu) * P * r0 / (2.0*E*t)) + rv;
+            points[i].radius = 0.01 * radius_i;
+            points[i].radius_f = radius_i;
         }
+    
+        do
+        {
+            Packer::inflatePoints(points);
+            Packer::recenterCells(points, sim_box);
+        
+            do
+            {
+                Packer::fire(points, sim_box);
+            }
+            while ( Packer::check_min_force(points, sim_box) );
        
-    }
-    while( !Packer::jammed(points, sim_box) ); // warunek jammingu, niezerowe cisnienie, bardzo male
+            Packer::FIRE_DT = 0.1;
+            Packer::FIRE_ALPHA = 0.1;
+            Packer::FIRE_N = 0;
 
-    anyRattlers(points, sim_box);
+        
+            for (int i = 0; i < n; i++)
+            {
+                points[i].v_c *= 0.0; // freeze the system
+            }
+       
+        }
+        while( !Packer::jammed(points, sim_box) ); // warunek jammingu, niezerowe cisnienie, bardzo male
+
+    }
+    while(  anyRattlers(points, sim_box) );
+    
     
     double box_scale = points[0].radius_f / points[0].radius;
     
@@ -477,61 +490,100 @@ double Packer::boxForce(point_t& point, box_t& box)
     return force_collector;
 }
 
-bool Packer::anyRattlers(std::vector<point_t>& points, box_t& box)
+bool Packer::anyRattlers(const std::vector<point_t>& points, const box_t& box)
 {
-    int n = points.size();
-    int* num_contacts = new int[n];
-    
-    for (int i = 0; i < n ; i++)
-    {
-        num_contacts[i] = 0;
-    }
-    
-    for (int i = 0; i < n ; i++)
-    {  
-        for(int j = 0; j < n; j++)
-        {
-            if (i != j)
-            {
-                num_contacts[i] += cellContacts(points[i], points[j], box);
-            }
-        }
-        
-        if (!box.pbc)
-        {
-            num_contacts[i] += boxContacts(points[i], box);
-        }
-    }
-    
-    
-    bool thereisRattler = false;
-    
-    double average = 0;
+    std::cout << "Checking for rattlers" << std::endl;
+    bool thereIsNoRattler = true;
     double counter;
     
-    for (int i = 0; i < n ; i++)
+    int N = points.size();
+    
+    std::vector<point_t> points_copy;
+    
+    for (int i = 0; i < points.size(); i++)
     {
-        //std::cout << " i= " << i << " num_contacts=" << num_contacts[i] << std::endl;
-        if (num_contacts[i] <= 3)
-        {
-            thereisRattler = true;
-        }
-        else
-        {
-            average += num_contacts[i];
-            counter += 1.0;
-        }
+        point_t new_point;
+        new_point.r_c.x = points[i].r_c.x;
+        new_point.r_c.y = points[i].r_c.y;
+        new_point.r_c.z = points[i].r_c.z;
+                        
+        points_copy.push_back(new_point);
     }
     
-    average /= counter;
-    std::cout << "Average=" << average<< " counter="<< counter << std::endl;
+    int loop_number = 1;
+    double contacts_sum = 0;
     
-    delete[] num_contacts;
+    do
+    {
+        std::cout <<  "loop number=" << loop_number << " points_copy.size()=" << points_copy.size() << std::endl;
+        
+        int n = points_copy.size();
+        int* num_contacts = new int[n];
     
-    return thereisRattler;
+        for (int i = 0; i < n ; i++)
+        {
+            num_contacts[i] = 0;
+        }
+    
+        for (int i = 0; i < n ; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                if (i != j)
+                {
+                    num_contacts[i] += cellContacts(points[i], points[j], box);
+                }
+            }
+        
+            if (!box.pbc)
+            {
+                num_contacts[i] += boxContacts(points[i], box);
+            }
+        }
+    
+        thereIsNoRattler = false;
+        contacts_sum = 0;
+        for (int i = n - 1; i >= 0 ; i--)
+        {
+            if (num_contacts[i] <= 3)  // simple criteria for rattlers
+            {
+                thereIsNoRattler = true;
+                points_copy.erase( points_copy.begin() + i, points_copy.begin() + i+1 );
+            }
+            contacts_sum += (double) num_contacts[i];
+            //else
+            //{
+            //    counter += 1.0;
+            //}
+        }
+        delete[] num_contacts;
+        loop_number++;
+        
+    } while(thereIsNoRattler);
+    
+    counter = points_copy.size();
+//    average /= counter;
+    packer_logs <<  utils::LogLevel::FINEST << "<Z>=" << contacts_sum / (double)N << "\n";
+    
+
+//    delete[] num_contacts;
+    
+    
+    double rattlers_frac = (double)(N - counter) / (double)N;
+    std::cout << "NUMBER OF RATTLERS=" <<  (N - counter) << std::endl;
+    
+    if ( rattlers_frac > 0.0 )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
 }
 
-int Packer::boxContacts(point_t& point, box_t& box)
+int Packer::boxContacts(const point_t& point, const box_t& box)
 {
     Vector3D wallYZ, wallXZ, wallXY;
     Vector3D dij;
@@ -620,7 +672,7 @@ int Packer::boxContacts(point_t& point, box_t& box)
     return number_of_contacs;
 }
 
-int Packer::cellContacts(point_t& point_1, point_t& point_2, box_t& box)
+int Packer::cellContacts(const point_t& point_1, const point_t& point_2, const box_t& box)
 {
     Vector3D force_ij;
     Vector3D dij;

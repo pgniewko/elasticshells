@@ -54,9 +54,9 @@ private:
     static void calcBoxForces(std::vector<point_t>&, const box_t&);
     
     
-    static bool anyRattlers(std::vector<point_t>&, box_t&);
-    static int boxContacts(point_t&, box_t&);
-    static int cellContacts(point_t&, point_t&, box_t&);
+    static bool anyRattlers(const std::vector<point_t>&, const box_t&);
+    static int boxContacts(const point_t&, const box_t&);
+    static int cellContacts(const point_t&, const point_t&, const box_t&);
     
     
     static int FIRE_Nmin;
@@ -70,6 +70,8 @@ private:
     
     static double P_MIN;
     static double P_MAX;
+    
+    //static double RATTLERS_FRAC;
     
     static utils::Logger packer_logs;
     
