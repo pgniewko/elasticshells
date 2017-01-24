@@ -43,7 +43,7 @@ private:
     static void calcForces(std::vector<point_t>&, box_t&);
     static bool check_min_force(std::vector<point_t>&, box_t&);
     
-    static bool jammed(std::vector<point_t>&, box_t&);
+    static bool jammed(std::vector<point_t>&, box_t&, double&);
     static void inflatePoints(std::vector<point_t>&);
     static void recenterCells(std::vector<point_t>&, box_t&);
     
