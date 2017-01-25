@@ -196,8 +196,8 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
     
     if(jam)
     {
-        Packer::packCells(box, cells, params.th);
         simulator_logs << utils::LogLevel::INFO  << "SIMULATION STARTS FROM THE JAMMED PACKING\n";
+        Packer::packCells(box, cells, params.th);
     }
 
     
