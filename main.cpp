@@ -27,7 +27,7 @@ const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
 
 static char doc[] =
     "General information about the software goes *here*\
-    \vCopyright (C) 2014-2016, Pawel Gniewek. \nAll rights reserved.";
+    \vCopyright (C) 2014-2017, Pawel Gniewek. \nAll rights reserved.";
 
 static char args_doc[] = "";
 
