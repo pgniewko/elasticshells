@@ -17,9 +17,6 @@ class ScriptBuilder
         virtual ~ScriptBuilder();
 
         void saveRenderScript(const std::vector<Cell>&, const Box&, bool = false, double = 0.1) const;
-        void saveSurfaceScript(const std::vector<Cell>&) const;
-        void saveContactStress(const std::vector<Cell>&, const Box&) const;
-        void saveStrainScript(const std::vector<Cell>&, const Box&) const;
 
     private:
         void printBox(const Box&, std::ofstream&) const;
