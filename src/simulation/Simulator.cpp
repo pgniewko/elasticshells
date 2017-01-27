@@ -344,7 +344,6 @@ void Simulator::simulate(int steps)
 
 
     sb.saveRenderScript(cells, box, params.draw_box, 0.1);
-    sb.saveSurfaceScript(cells);
     traj.open();
     
     traj.save_traj(cells, getTotalVertices());
@@ -457,7 +456,6 @@ void Simulator::simulate(int steps)
     traj.save_traj(cells, getTotalVertices(), 1.0, 1.0, 1.0);
     box.saveRemainingSchedule();
 
-    sb.saveStrainScript(cells, box);
     traj.close();
     log_sim.close();
 
