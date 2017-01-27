@@ -1,10 +1,8 @@
 #include "QL.h"
 
-QL::QL(const char* name, const char* format) : Observer(name, format)
-{}
+QL::QL(const char* name, const char* format) : Observer(name, format) {}
 
-QL::QL(const QL& orig) : Observer(orig)
-{}
+QL::QL(const QL& orig) : Observer(orig) {}
 
 QL::~QL() {}
 
@@ -49,7 +47,8 @@ double QL::calcQl(Cell& cell)
 
     qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
     qlIm = (double*) malloc ((i_param + 1) * sizeof (double));
-    count = qlm (i_param, n, d_param, x, y, z, qlRe, qlIm);
+    double r_cutoff = cell.getInitR() * d_param;
+    count = qlm (i_param, n, r_cutoff, x, y, z, qlRe, qlIm);
     qss = qsum (i_param, qlRe, qlIm);
 
     double qlval = 0.0;
