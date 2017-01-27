@@ -113,7 +113,6 @@ void XyzTraj::save_box(const Box& box, double t)
 const std::vector<std::string> XyzTraj::read_saved_box() const
 {
     std::string boxFile = boxfile.c_str();
-    std::cout << "boxFile:" << boxFile<< std::endl;
     std::ifstream cfile;
     cfile.open(boxFile, std::ifstream::in);
     std::vector<std::string> list;
