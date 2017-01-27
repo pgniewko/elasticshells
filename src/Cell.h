@@ -98,6 +98,7 @@ class Cell
         double activeArea(const Box&, const std::vector<Cell>&, double = 0.0) const;
         double calcSurfaceArea(double) const;
         double contactArea2(const Box&, double = 0.0) const;
+        bool isInContact(const Cell&, const Box&) const;
         //double activeAreaFraction(const Box&, const std::vector<Cell>&, double&, double = 0.0) const;
         
         double strainEnergy(const Box&) const;
@@ -120,6 +121,7 @@ class Cell
 
         bool isInContact(const int, const Cell&, const Box&) const;
         bool isInContact(const int, const Box&) const;
+        
         double project_force(const Cell&, const Box&, const Vector3D&, const int) const;
         double project_force(const Box&, const Vector3D&, const int) const;
         Vector3D box_force(const Box&, const int) const;

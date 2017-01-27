@@ -788,6 +788,55 @@ bool Cell::isInContact(int t_idx, const Box& box) const
     return false;
 }
 
+bool Cell::isInContact(const Cell& other_cell, const Box& box) const
+{
+
+    if (cell_id == other_cell.cell_id)
+    {
+        return false;
+    }
+    
+    double r0i = params.init_r;
+    double r0j = other_cell.params.init_r;
+    
+    Vector3D cmi = getCm();
+    Vector3D cmj = other_cell.getCm();
+    
+    if ( (cmi - cmj).length() > 2.0*(r0i+r0j) )
+    {
+        return false;
+    }
+    
+    Vector3D dij;
+    Vector3D force_ij(0, 0, 0);
+
+
+    double r1 = params.vertex_r;
+    double r2 = other_cell.params.vertex_r;
+    double e1 = params.ecc;
+    double e2 = other_cell.params.ecc;
+    double nu1 = params.nu;
+    double nu2 = other_cell.params.nu;
+
+
+    for (int i = 0; i < number_v; i++)
+    {
+        for (int j = 0; j < other_cell.number_v; j++)
+        {
+            Box::getDistance(dij, other_cell.vertices[j].r_c, vertices[i].r_c, box);
+            force_ij = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+            if (force_ij.length_sq() > 0)
+            {
+                return true;
+            }
+
+        }
+    }
+    
+    return false;
+
+}
+
 double Cell::activeArea(const Box& box, const std::vector<Cell>& cells, double d_param) const
 {
     double total_surface = calcSurfaceArea(d_param);
