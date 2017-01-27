@@ -103,17 +103,6 @@ void Restarter::readTopologyFile(std::vector<Cell>& cells) const
     {
         addBHinges(cells, i);
     }
-
-    //registerVMap();
-
-    //validateVMap();
-
-    //for (int i = 0; i < cells[0].number_v; i++)
-    //{
-    //    cells[0].vertices[i].printVertex();
-    //}
-
-
 }
 
 std::pair<int, std::string> Restarter::getNumberOfCells() const
@@ -476,7 +465,6 @@ void Restarter::assignTurgors(std::string turgor_line, std::vector<Cell>& cells)
     for (uint i = 0; i < cells.size(); i++)
     {
         turgor = strtod(pairs[ 4 + 4*i + 1 ].c_str(), NULL);
-        std::cout << "cell_idx="<<i<< "turgor =" << turgor << std::endl;
         cells[i].pushDp(turgor);
     }
 }
@@ -489,9 +477,7 @@ void Restarter::assignBoxSize(std::string box_line, Box& box) const
     y = strtod(pairs[ 1 ].c_str(), NULL);
     z = strtod(pairs[ 2 ].c_str(), NULL);
     
-    std::cout << "x=" << x << " y=" << y << " z=" << z << std::endl;
     box.setX(x);
     box.setY(y);
     box.setZ(z);
-
 }
