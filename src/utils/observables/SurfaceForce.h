@@ -4,11 +4,11 @@
 #include "force/HertzianRepulsion.h"
 #include "utils/observables/Observer.h"
 
-class SurfacePressure;
+class Pressure;
 
 class SurfaceForce : public Observer
 {
-        friend class SurfacePressure;
+        friend class Pressure;
     public:
         explicit SurfaceForce(const char*, const char*);
         SurfaceForce(const SurfaceForce& orig);

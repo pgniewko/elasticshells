@@ -1,20 +1,20 @@
-#include "SurfacePressure.h"
+#include "Pressure.h"
 
-utils::Logger SurfacePressure::sp_log("surface_press");
+utils::Logger Pressure::sp_log("pressure");
 
-SurfacePressure::SurfacePressure(const char* name, const char* format) : Observer(name, format) {}
+Pressure::Pressure(const char* name, const char* format) : Observer(name, format) {}
 
-SurfacePressure::SurfacePressure(const SurfacePressure& orig) : Observer(orig) {}
+Pressure::Pressure(const Pressure& orig) : Observer(orig) {}
 
-SurfacePressure::~SurfacePressure() {}
+Pressure::~Pressure() {}
 
-void SurfacePressure::set_params(const int num, std::vector<std::string> args_)
+void Pressure::set_params(const int num, std::vector<std::string> args_)
 {
     i_param = atoi(args_[ num + 0 ].c_str());
     d_param = strtod(args_[ num + 1 ].c_str(), NULL);
 }
 
-double SurfacePressure::observe(const Box& box, std::vector<Cell>& cells)
+double Pressure::observe(const Box& box, std::vector<Cell>& cells)
 {
     double pressure = 0.0;
     
@@ -84,4 +84,4 @@ double SurfacePressure::observe(const Box& box, std::vector<Cell>& cells)
     return pressure;
 }
 
-DerivedRegister<SurfacePressure> SurfacePressure::reg("SurfacePressure");
+DerivedRegister<Pressure> Pressure::reg("Pressure");
