@@ -279,6 +279,7 @@ void Simulator::addCell(double r0)
 
 void Simulator::restart()
 {
+    simulator_logs << utils::LogLevel::INFO << "Simulation runs in [restart] mode. \n" ;
     restarter.registerVMap();
     restarter.readTopologyFile(cells);
     restarter.readLastFrame(cells);
