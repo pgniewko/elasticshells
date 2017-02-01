@@ -1,5 +1,7 @@
 #include "SurfacePressure.h"
 
+utils::Logger SurfacePressure::sp_log("surface_press");
+
 SurfacePressure::SurfacePressure(const char* name, const char* format) : Observer(name, format) {}
 
 SurfacePressure::SurfacePressure(const SurfacePressure& orig) : Observer(orig) {}
@@ -40,6 +42,7 @@ double SurfacePressure::observe(const Box& box, std::vector<Cell>& cells)
                 e2 = cells[l].getE();
                 nu1 = cells[k].getNu();
                 nu2 = cells[l].getNu();
+                
                 for (int i = 0; i < cells[k].getNumberVertices(); i++ )
                 {
                     for (int j = 0; j < cells[l].getNumberVertices(); j++ )
@@ -53,12 +56,22 @@ double SurfacePressure::observe(const Box& box, std::vector<Cell>& cells)
             }
         }
         
+        // Two other terms missing:
+        // i) box-vertex interaction
+        // ii) strains in the finite-elements
+        
         pressure /= (3.0*volume);
         return pressure;
     }
     
     else if ( i_param == 1)
     {
+        if (box.pbc)
+        {
+            sp_log << utils::LogLevel::INFO << "\n";
+            return 0.0;
+        }
+        
         double totalForce = SurfaceForce::calcTotalForce(box, cells);
         double area = box.getArea(d_param);
         pressure = totalForce / area;    

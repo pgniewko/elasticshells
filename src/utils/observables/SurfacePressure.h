@@ -3,6 +3,7 @@
 
 #include "utils/observables/SurfaceForce.h"
 #include "utils/observables/Observer.h"
+#include "utils/Logger.h"
 
 class SurfacePressure : public Observer
 {
@@ -16,6 +17,7 @@ class SurfacePressure : public Observer
 
     private:
         static DerivedRegister<SurfacePressure> reg;
+        static utils::Logger sp_log;
 };
 
 #endif	/* SURFACEPRESSURE_H */
