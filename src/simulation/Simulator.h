@@ -48,7 +48,6 @@ struct params_t
     double ttime;
     double r_vertex;
     bool draw_box;
-    bool scale;
     bool dynamics;
     bool const_volume;
     std::string model_t;

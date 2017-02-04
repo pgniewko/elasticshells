@@ -65,7 +65,6 @@ static struct argp_option options[] =
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato], Random[rnd] [default: simple]"},
     {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
     {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], hexa[2], ico[3] [default: 0]"},
-    {"scale",     415,       0, 0, "Scale the saved coordinates upon compression [default: false]"},
     {"dynamics",  416,       0, 0, "[default: false]"},
     {"no-bend",   417,       0, 0, "[default: false]"},
     {"model",     418,   "STR", 0, "Available models: ms_kot, ms_avg, fem [default: ms_kot]"},
@@ -153,7 +152,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->pbc = false;
             arguments->draw_box = true;
             arguments->osmotic_flag = false;
-            arguments->scale_flag = false;
             arguments->dynamics = false;
             arguments->nobending = false;
             arguments->const_volume = false;
@@ -253,10 +251,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 414:
             arguments->platotype = arg ? atoi (arg) : 0;
-            break;
-
-        case 415:
-            arguments->scale_flag = true;
             break;
 
         case 416:

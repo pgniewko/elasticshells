@@ -43,7 +43,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     params.draw_box = args.draw_box;
-    params.scale = args.scale_flag;
     params.dynamics = args.dynamics;
     params.const_volume = args.const_volume;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
@@ -415,14 +414,8 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % params.save_step == 0)
         {
-            if (!params.scale)
-            {
-                traj.save_traj(cells, getTotalVertices());
-            }
-            else
-            {                
-                traj.save_traj(cells, getTotalVertices(), 1.0, 1.0, 1.0);
-            }
+
+            traj.save_traj(cells, getTotalVertices());
         }
 
         if ( (i + 1) % params.log_step == 0 )
@@ -455,7 +448,7 @@ void Simulator::simulate(int steps)
     traj.save_box(box, steps * params.dt);
     restarter.saveLastFrame(cells);
     restarter.saveLastFrame(cells);
-    traj.save_traj(cells, getTotalVertices(), 1.0, 1.0, 1.0);
+    traj.save_traj(cells, getTotalVertices());
     box.saveRemainingSchedule();
 
     traj.close();

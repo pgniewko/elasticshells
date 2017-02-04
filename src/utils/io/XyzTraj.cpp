@@ -82,7 +82,7 @@ void XyzTraj::close_box()
     }
 }
 
-void XyzTraj::save_traj(const std::vector<Cell>& cells, int totV, double sx, double sy, double sz)
+void XyzTraj::save_traj(const std::vector<Cell>& cells, int totV)
 {
     int lastCellIndex = 0;
     fprintf(os, "%i\n", totV);
@@ -92,8 +92,7 @@ void XyzTraj::save_traj(const std::vector<Cell>& cells, int totV, double sx, dou
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             std::string strindex = new_base_index ( lastCellIndex +  cells[i].vertices[j].getId() );
-            //fprintf(os, "%s %10.5f %10.5f %10.5f \n", strindex.c_str(), sx * cells[i].vertices[j].r_c.x, sy * cells[i].vertices[j].r_c.y, sz * cells[i].vertices[j].r_c.z);
-            fprintf(os, "%s %10.12f %10.12f %10.12f \n", strindex.c_str(), sx * cells[i].vertices[j].r_c.x, sy * cells[i].vertices[j].r_c.y, sz * cells[i].vertices[j].r_c.z);
+            fprintf(os, "%s %10.12f %10.12f %10.12f \n", strindex.c_str(), cells[i].vertices[j].r_c.x, cells[i].vertices[j].r_c.y, cells[i].vertices[j].r_c.z);
 
         }
 
@@ -105,7 +104,6 @@ void XyzTraj::save_traj(const std::vector<Cell>& cells, int totV, double sx, dou
 
 void XyzTraj::save_box(const Box& box, double t)
 {
-    //fprintf(osb, "%12.6f %6.4f %6.4f %6.4f \n", t, box.getX(), box.getY(), box.getZ());
     fprintf(osb, "%12.10f %12.10f %12.10f \n", box.getX(), box.getY(), box.getZ());
     fflush(osb);
 }
