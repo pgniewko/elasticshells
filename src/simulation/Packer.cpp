@@ -98,8 +98,19 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
 
     }
     while( anyRattlers(points, sim_box, Z) );
+   
+//    double tot_vol = 8.0 * sim_box.x * sim_box.y * sim_box.z;
+//    double points_vol = 0.0;
+//    for (int i = 0; i < n; i++)
+//    {
+//        points_vol += 4.0 * M_PI * points[i].radius * points[i].radius * points[i].radius / 3.0;
+//    }
+//    
+//    double vol_frac = points_vol / tot_vol;
+//    packer_logs <<  utils::LogLevel::INFO << "N= "<< n << " <Z>= " << Z << " PHI= " << vol_frac<< "\n";
     
     packer_logs <<  utils::LogLevel::INFO << "Jammed packing generated @:"  << " P_MIN="<< Packer::P_MIN <<" <= P=" << P_final << " <= P_MAX=" << Packer::P_MAX << " and <Z>=" << Z << "\n";
+    
     
     double box_scale = points[0].radius_f / points[0].radius;
     
@@ -537,7 +548,12 @@ bool Packer::anyRattlers(const std::vector<point_t>& points, const box_t& box, d
     
     Z = contacts_sum / (double)n;
     
-    return thereIsRattler;
+    double overpacked = false;
+    if (Z >= 6.5 )
+    {
+        overpacked = true;
+    }
+    return (thereIsRattler || overpacked );
 }
 
 int Packer::boxContacts(const point_t& point, const box_t& box)
