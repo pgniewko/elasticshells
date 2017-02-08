@@ -6,8 +6,8 @@ utils::Logger Packer::packer_logs("packer");
 
 double Packer::MIN_FORCE(1.0e-16);
 double Packer::r_ext(1.0e-2);
-double Packer::P_MIN(1e-8);
-double Packer::P_MAX(2e-8);
+double Packer::P_MIN(1e-9);
+double Packer::P_MAX(2e-9);
 
 int Packer::FIRE_Nmin(5);
 int Packer::FIRE_N(0);
