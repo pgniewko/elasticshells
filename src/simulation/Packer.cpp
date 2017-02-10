@@ -94,22 +94,15 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
             }
        
         }
-        while( !Packer::jammed(points, sim_box, P_final) ); // warunek jammingu, niezerowe cisnienie, bardzo male
+        while( !Packer::jammed(points, sim_box, P_final) ); // jamming condition, very small, residual pressure
 
     }
-    while( anyRattlers(points, sim_box, Z) );
-   
-//    double tot_vol = 8.0 * sim_box.x * sim_box.y * sim_box.z;
-//    double points_vol = 0.0;
-//    for (int i = 0; i < n; i++)
-//    {
-//        points_vol += 4.0 * M_PI * points[i].radius * points[i].radius * points[i].radius / 3.0;
-//    }
-//    
-//    double vol_frac = points_vol / tot_vol;
-//    packer_logs <<  utils::LogLevel::INFO << "N= "<< n << " <Z>= " << Z << " PHI= " << vol_frac<< "\n";
+    while( anyRattlerOrCrowder(points, sim_box, Z) );
     
-    packer_logs <<  utils::LogLevel::INFO << "Jammed packing generated @:"  << " P_MIN="<< Packer::P_MIN <<" <= P=" << P_final << " <= P_MAX=" << Packer::P_MAX << " and <Z>=" << Z << "\n";
+    
+    packer_logs << utils::LogLevel::INFO << "Jammed packing generated @:";
+    packer_logs << utils::LogLevel::INFO << " P_MIN=" << Packer::P_MIN <<" <= P=" << P_final << " <= P_MAX=" << Packer::P_MAX ;
+    packer_logs << utils::LogLevel::INFO << " and <Z>=" << Z << "\n";
     
     
     double box_scale = points[0].radius_f / points[0].radius;
@@ -502,7 +495,7 @@ double Packer::boxForce(point_t& point, box_t& box)
     return force_collector;
 }
 
-bool Packer::anyRattlers(const std::vector<point_t>& points, const box_t& box, double& Z)
+bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t& box, double& Z)
 {
 
     bool thereIsRattler = false;
