@@ -34,7 +34,7 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells)
         std::size_t n = cells.size();
         for (std::size_t k = 0; k < n; k++)
         {
-            for (std::size_t l = k+1; l < n; l++)
+            for (std::size_t l = k+1; l < n; l++) // that's why we don't multiply pressure by extra 0.5
             {
                 r1 = cells[k].getVertexR();
                 r2 = cells[l].getVertexR();
@@ -57,7 +57,7 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells)
         }
         
         // Two other terms missing:
-        // i) box-vertex interaction
+        // i) box-vertex interaction - if (!box.pbc)
         // ii) strains in the finite-elements
         
         pressure /= (3.0*volume);
