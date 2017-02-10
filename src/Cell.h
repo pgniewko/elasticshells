@@ -98,12 +98,7 @@ class Cell
         double calcSurfaceArea(double) const;
         double contactArea2(const Box&, double = 0.0) const;
         bool isInContact(const Cell&, const Box&) const;
-        //double activeAreaFraction(const Box&, const std::vector<Cell>&, double&, double = 0.0) const;
-        
-        double strainEnergy(const Box&) const;
-        double maxStrain() const;
-        double minStrain() const;
-        double nbIntra(const Box&) const;
+
         double getTurgor() const;
         double getStrain(int, int) const;
         void update(double = 0.0);
@@ -125,8 +120,6 @@ class Cell
         double project_force(const Box&, const Vector3D&, const int) const;
         Vector3D box_force(const Box&, const int) const;
 
-        double sumL2() const;
-
         cell_params_t params;
         int number_v = 0;
         int number_t = 0;
@@ -135,7 +128,6 @@ class Cell
         double V0 = 0.0;
 
         bool fem_flag = false;
-        //bool bending_flag = true;
 
         static utils::Logger cell_log;
 };

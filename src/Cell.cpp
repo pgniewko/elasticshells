@@ -304,7 +304,20 @@ void Cell::setSpringConst(double E, double t, double nu_, std::string model_t)
 {
     if ( model_t.compare("ms_kot") == 0 )
     {
-        double g = E * t * ( 2.0 / (1.0 - nu_) ) * calcSurfaceArea() / sumL2();
+        
+ 
+        double sum_L2 = 0.0;
+        for (int i = 0; i < number_v; i++)
+        {
+            for (int j = 0; j < vertices[i].numBonded; j++)
+            {
+                sum_L2 += vertices[i].r0[j] * vertices[i].r0[j];
+            }
+        }
+
+        sum_L2 /= 2.0;
+
+        double g = E * t * ( 2.0 / (1.0 - nu_) ) * calcSurfaceArea() / sum_L2;
 
         for (int i = 0; i < number_v; i++ )
         {
@@ -456,22 +469,6 @@ double Cell::getE() const
 double Cell::getNu() const
 {
     return params.nu;
-}
-
-double Cell::sumL2() const
-{
-    double sum_l2 = 0.0;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        for (int j = 0; j < vertices[i].numBonded; j++)
-        {
-            sum_l2 += vertices[i].r0[j] * vertices[i].r0[j];
-        }
-    }
-
-    sum_l2 /= 2.0;
-    return sum_l2;
 }
 
 void Cell::randomRotate()
@@ -937,81 +934,6 @@ double Cell::contactArea2(const Box& box, double d_param) const
     return contact_area;
 }
 
-double Cell::strainEnergy(const Box& box) const
-{
-    double deps = 0.0;
-    double r0, r, k0;
-    int neigh_idx;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        for (int j = 0; j < vertices[i].numBonded; j++)
-        {
-            r0 = vertices[i].r0[j];
-            k0 = vertices[i].k0[j];
-            neigh_idx = vertices[i].bondedVerts[j];
-            Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
-
-            r = dR.length();
-            deps += 0.5 * k0 * (r0 - r) * (r0 - r);
-        }
-    }
-
-    return deps;
-}
-
-double Cell::maxStrain() const
-{
-    double max_strain = -10.0;
-    double eps = 0.0;
-    double r0, r;
-    int neigh_idx;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        for (int j = 0; j < vertices[i].numBonded; j++)
-        {
-            r0 = vertices[i].r0[j];
-            neigh_idx = vertices[i].bondedVerts[j];
-            Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
-
-            r = dR.length();
-            eps = (r - r0) / r0;
-
-            max_strain = std::max(max_strain, eps );
-
-        }
-    }
-
-    return max_strain;
-}
-
-double Cell::minStrain() const
-{
-    double max_strain = 10.0;
-    double eps = 0.0;
-    double r0, r;
-    int neigh_idx;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        for (int j = 0; j < vertices[i].numBonded; j++)
-        {
-            r0 = vertices[i].r0[j];
-            neigh_idx = vertices[i].bondedVerts[j];
-            Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
-
-            r = dR.length();
-            eps = (r - r0) / r0;
-
-            max_strain = std::min(max_strain, eps);
-
-        }
-    }
-
-    return max_strain;
-}
-
 double Cell::getStrain(int i, int j) const
 {
     double r0 = vertices[i].r0[j];
@@ -1021,41 +943,6 @@ double Cell::getStrain(int i, int j) const
     double r = dR.length();
     double eps = (r - r0) / r0;
     return eps;
-}
-
-double Cell::nbIntra(const Box& box) const
-{
-    return 0.0;
-//    Vector3D dij;
-//    Vector3D fij;
-//    double r1 = params.vertex_r;
-//    double e1 = params.ecc;
-//    double nu1 = params.nu;
-//
-//    double nb_energy = 0.0;
-//
-//    int vertid;
-//
-//    for (int i = 0; i < number_v; i++)
-//    {
-//        for (int j = 0; j < vertices[i].numNbNeighs; j++)
-//        {
-//            if (vertices[i].nbCellsIdx[j] == cell_id)
-//            {
-//                vertid = vertices[i].nbVerts[j];
-//                getDistance(dij, vertices[vertid].r_c, vertices[i].r_c, box);
-//                fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
-//
-//                if ( fij.length() > 0.0 )
-//                {
-//                    dij.set_length( 2 * r1 - dij.length() );
-//                    nb_energy += fabs( fij.x * dij.x + fij.y * dij.y + fij.z * dij.z );
-//                }
-//            }
-//        }
-//    }
-//
-//    return nb_energy;
 }
 
 double Cell::getTurgor() const
