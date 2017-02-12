@@ -68,13 +68,10 @@ void Scheduler::registerSchedules()
             double v6 = strtod(single_line[ 7 ].c_str(), NULL);
             double v7 = strtod(single_line[ 8 ].c_str(), NULL);
             v7 = fmin(1.0, fabs( v7 ) );
-            //std::cout << "v7="<<v7<< std::endl;
             schedule_t new_schedule(ns, i, v1, v2, v3, v4, v5, v6, v7);
             schedules.push_back(new_schedule);
         }
     }
-    
-    //printSchedule();
 }
 
 void Scheduler::setFileName(std::string schf)
@@ -137,8 +134,7 @@ void Scheduler::saveRemainingSchedule()
 
 void Scheduler::setDefault(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
 {
-    default_schedule = schedule_t(ns, in, _dx, _dy, _dz, _rx, _ry, _rz, 1.0);
-    //printSchedule();
+    default_schedule = schedule_t(ns, in, _dx, _dy, _dz, _rx, _ry, _rz, 0.90);
 }
 
 void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
@@ -161,8 +157,6 @@ void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
             dy = 0.0;
             dz = 0.0;
         }
-        
-        //std::cout << current_schedule.counter << " "<< current_schedule.n_steps << " " << vf_  << " " << current_schedule.vf << std::endl;
         
         if (current_schedule.counter > current_schedule.n_steps || vf_ >= current_schedule.vf)
         {
