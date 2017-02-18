@@ -13,7 +13,7 @@ void CvTurgor::set_params(const int num, std::vector<std::string> args_)
 
 double CvTurgor::observe(const Box& box, std::vector<Cell>& cells)
 {
-    int N = cells.size();
+    uint N = cells.size();
     double av_turgor = 0.0;
     double av_turgor2 = 0.0;
 
