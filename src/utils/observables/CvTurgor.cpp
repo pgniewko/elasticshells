@@ -17,13 +17,13 @@ double CvTurgor::observe(const Box& box, std::vector<Cell>& cells)
     double av_turgor = 0.0;
     double av_turgor2 = 0.0;
 
-    for (int i = 0; i < N; i++)
+    for (uint i = 0; i < N; i++)
     {
         av_turgor  += cells[i].getTurgor();
         av_turgor2 += cells[i].getTurgor() * cells[i].getTurgor();
     }
 
-    av_turgor /= N;
+    av_turgor  /= N;
     av_turgor2 /= N;
     
     double stdev = sqrt( av_turgor2 - av_turgor*av_turgor );

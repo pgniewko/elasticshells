@@ -34,12 +34,12 @@ double CvContactForce::observe(const Box& box, std::vector<Cell>& cells)
         } 
     }
     
-    average_cf  /= N;
-    average_cf2 /= N;
+    average_cf  /= counter;
+    average_cf2 /= counter;
     
     double stdev = sqrt( average_cf2 - average_cf * average_cf );
     double cv = stdev / average_cf;
     return cv;
-    
-    
 }
+
+DerivedRegister<CvContactForce> CvContactForce::reg("CvContactForce");

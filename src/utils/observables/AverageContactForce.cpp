@@ -29,13 +29,11 @@ double AverageContactForce::observe(const Box& box, std::vector<Cell>& cells)
                 average_cf += cf;
                 counter += 1.0;
             }
-        } 
+        }
     }
     
     average_cf /= counter;
     return average_cf;
-    
-    
 }
 
 
