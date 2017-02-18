@@ -7,7 +7,7 @@ class CvTurgor : public Observer
 {
     
     public:
-        CvTurgor(const char* name, const char* format) : Observer(name, format) {}
+        CvTurgor(const char* name, const char* format);
         CvTurgor(const CvTurgor& orig);
         virtual ~CvTurgor();
     

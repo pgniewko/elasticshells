@@ -1,14 +1,10 @@
 #include "CvContactForce.h"
 
-CvContactForce::CvContactForce() {
-}
+CvContactForce::CvContactForce(const char* name, const char* format) : Observer(name, format) {}
 
-CvContactForce::CvContactForce(const CvContactForce& orig) {
-}
+CvContactForce::CvContactForce(const CvContactForce& orig) : Observer(orig) {}
 
-CvContactForce::~CvContactForce() {
-}
-
+CvContactForce::~CvContactForce() {}
 
 void CvContactForce::set_params(const int num, std::vector<std::string> args_)
 {
@@ -33,7 +29,7 @@ double CvContactForce::observe(const Box& box, std::vector<Cell>& cells)
             {
                 average_cf  += cf;
                 average_cf2 += (cf*cf);
-                counter + 1.0;
+                counter += 1.0;
             }
         } 
     }

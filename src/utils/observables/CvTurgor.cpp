@@ -2,7 +2,7 @@
 
 CvTurgor::CvTurgor(const char* name, const char* format) : Observer(name, format) {}
 
-CvTurgor::CvTurgor(const CvTurgor& orig)  : Observer(orig) {}
+CvTurgor::CvTurgor(const CvTurgor& orig) : Observer(orig) {}
 
 CvTurgor::~CvTurgor() {}
 

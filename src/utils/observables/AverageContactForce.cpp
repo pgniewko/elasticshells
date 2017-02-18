@@ -4,8 +4,7 @@ AverageContactForce::AverageContactForce(const char* name, const char* format) :
 
 AverageContactForce::AverageContactForce(const AverageContactForce& orig) : Observer(orig) {}
 
-AverageContactForce::~AverageContactForce() {
-}
+AverageContactForce::~AverageContactForce() {}
 
 void AverageContactForce::set_params(const int num, std::vector<std::string> args_)
 {
@@ -24,10 +23,10 @@ double AverageContactForce::observe(const Box& box, std::vector<Cell>& cells)
     {
         for (uint j = i+1; j < N; j++)
         {
-            cf = cells[i].;
+            cf = cells[i].contactForce(cells[j], box);
             if (cf > 0.0)
             {
-                cells[i].contactForce(cells[j], box);
+                average_cf += cf;
                 counter += 1.0;
             }
         } 
