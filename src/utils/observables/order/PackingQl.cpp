@@ -17,7 +17,7 @@ void PackingQl::set_params(const int num, std::vector<std::string> args_)
 
 double PackingQl::observe(const Box& box, std::vector<Cell>& cells)
 {
-    
+    return 0.0;
 }
 
 
