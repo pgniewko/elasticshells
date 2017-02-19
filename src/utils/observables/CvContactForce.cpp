@@ -34,6 +34,11 @@ double CvContactForce::observe(const Box& box, std::vector<Cell>& cells)
         } 
     }
     
+    if (counter == 0)
+    {
+        return 0.0;
+    } 
+        
     average_cf  /= counter;
     average_cf2 /= counter;
     
