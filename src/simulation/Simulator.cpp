@@ -344,7 +344,7 @@ void Simulator::simulate(int steps)
     }
 
 
-    sb.saveRenderScript(cells, box, params.draw_box, 0.1);
+    //sb.saveRenderScript(cells, box, params.draw_box, 0.1);
     traj.open();
     
     traj.save_traj(cells, getTotalVertices());
