@@ -81,10 +81,14 @@ void Scheduler::setFileName(std::string schf)
 
 void Scheduler::configureSchedule()
 {
-    if (!schedules.empty())
+    if ( !schedules.empty() )
     {
         schedule_logger << utils::LogLevel::FINEST << "FIRST SCHEDULE ON THE STACK !\n";
         current_schedule = schedules[0];
+    }
+    else
+    {
+        current_schedule = NULL;
     }
 }
 
@@ -128,7 +132,7 @@ void Scheduler::saveRemainingSchedule()
     }
     else
     {
-        schedule_logger << utils::LogLevel::WARNING << "Observers configuration file COULD NOT BE FOUND" << "\n";
+        schedule_logger << utils::LogLevel::WARNING << "Observers' configuration file COULD NOT BE FOUND" << "\n";
     }
 }
 
@@ -139,10 +143,9 @@ void Scheduler::setDefault(int ns, int in, double _dx, double _dy, double _dz, d
 
 void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
 {
-    if (schedules.size() > 0)
-    {
-        current_schedule.counter++;
-        
+//    if (schedules.size() > 0)
+    if ( !schedules.empty() )
+    {   
         if (current_schedule.counter % current_schedule.interval == 0)
         {
             dx = current_schedule.dx + uniform(-current_schedule.rx, current_schedule.rx);
@@ -158,26 +161,44 @@ void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
             dz = 0.0;
         }
         
+        current_schedule.counter++;
+        
         if (current_schedule.counter > current_schedule.n_steps || vf_ >= current_schedule.vf)
         {
-
             schedules.erase(schedules.begin());
 
             if ( !schedules.empty() )
             {
                 current_schedule = schedules[0];
+                current_schedule.counter = 0;
+                schedule_logger << utils::LogLevel::FINEST << "NEW SCHEDULE ON THE STACK\n";
             }
-
-            schedule_logger << utils::LogLevel::FINEST << "NEW SCHEDULE ON THE STACK\n";
+            else
+            {
+                schedule_logger << utils::LogLevel::FINEST << "SCHEDULES LIST REACHED THE END. SWITCH TO THE DEFAULT SCHEDULE\n";
+            }
         }
     }
     else
     {
-        if ((default_schedule.counter + 1) % default_schedule.interval == 0)
+        if (default_schedule.counter == 0)
+        {
+            schedule_logger << utils::LogLevel::INFO << "NO MORE SCHEDULES ON THE STACK. DEFAULT SCHEDULE IS EXECUTED.\n";
+        }
+        
+        if ( default_schedule.counter % default_schedule.interval == 0)
         {
             dx = default_schedule.dx + uniform(-default_schedule.rx, default_schedule.rx);
             dy = default_schedule.dy + uniform(-default_schedule.ry, default_schedule.ry);
             dz = default_schedule.dz + uniform(-default_schedule.rz, default_schedule.rz);
+        }
+        
+        if (vf_ >= default_schedule.vf)
+        {
+            dx = 0.0;
+            dy = 0.0;
+            dz = 0.0;
+            default_schedule.counter = default_schedule.n_steps; // THIS WILL TERMINATE THE SIMULATION
         }
 
         default_schedule.counter++;
@@ -187,7 +208,19 @@ void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
 
 bool Scheduler::nthTodo()
 {
-    if ( schedules.size() == 0 && schedule_registered )
+    if ( schedules.empty() && schedule_registered )
+        return true;
+    
+    if ( default_schedule.dx == 0.0 && default_schedule.dy == 0.0 && default_schedule.dz == 0.0 && schedules.empty() )
+        return true;
+    
+    if ( default_schedule.dx == 0.0 && default_schedule.dy == 0.0 && default_schedule.dz == 0.0 && !schedule_registered )
+        return true;
+    
+    if ( default_schedule.n_steps == 0 && !schedule_registered )
+        return true;
+   
+    if ( default_schedule.counter > default_schedule.n_steps )
         return true;
     
     return false;

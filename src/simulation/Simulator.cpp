@@ -59,7 +59,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setPbc(args.pbc);
     box.setEwall(args.E_wall);
     box.setNu(args.nu);
-    box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
+    box.setDefaultSchedule(params.nsteps, args.box_step, args.bsxe, args.bsye, args.bsze, 0.0, 0.0, 0.0);
     box.configureScheduler(args.sch_config_file);
 
     domains.setupDomainsList(getLengthScale(), box);
@@ -351,8 +351,8 @@ void Simulator::simulate(int steps)
     log_sim.registerObservers();
     log_sim.open();
     log_sim.printHeader();
-    log_sim.dumpState(box, cells);
-    saveTurgors();
+    log_sim.dumpState(box, cells); // ONLY IF RESTARTED FROM MINIMIZED STRUCTURE. CANNOT BE STARTING STRUCTURE SINCE IT'S NOT MECH. STABLE
+    saveTurgors();  // SAME AS ABOVE
     restarter.saveLastFrame(cells);
     restarter.saveTopologyFile(cells, params.model_t);        
     traj.save_box(box, steps * params.dt);
@@ -432,7 +432,6 @@ void Simulator::simulate(int steps)
         else
             resized = false;
         
-
         if (resized)
         {
             domains.setBoxDim(box);
@@ -443,10 +442,9 @@ void Simulator::simulate(int steps)
         
     }
 
-    log_sim.dumpState(box, cells); // TODO: fix that. the forces are not updated etc. That's causing weird results, probably there is not force relaxation before dump
+    log_sim.dumpState(box, cells);
     saveTurgors();
     traj.save_box(box, steps * params.dt);
-    restarter.saveLastFrame(cells);
     restarter.saveLastFrame(cells);
     traj.save_traj(cells, getTotalVertices());
     box.saveRemainingSchedule();
