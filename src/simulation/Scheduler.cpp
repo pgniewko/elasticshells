@@ -86,10 +86,6 @@ void Scheduler::configureSchedule()
         schedule_logger << utils::LogLevel::FINEST << "FIRST SCHEDULE ON THE STACK !\n";
         current_schedule = schedules[0];
     }
-    else
-    {
-        current_schedule = NULL;
-    }
 }
 
 void Scheduler::printSchedule()
