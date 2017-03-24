@@ -1,5 +1,5 @@
-#ifndef QL_H
-#define	QL_H
+#ifndef SHAPEQL_H
+#define	SHAPEQL_H
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -7,22 +7,20 @@
 
 #include "utils/observables/Observer.h"
 
-class QL : public Observer
+class ShapeQl : public Observer
 {
     public:
-        explicit QL(const char*, const char*);
-        QL(const QL& orig);
-        virtual ~QL();
+        explicit ShapeQl(const char*, const char*);
+        ShapeQl(const ShapeQl& orig);
+        virtual ~ShapeQl();
 
         void set_params(const int, std::vector<std::string>);
         double observe(const Box&, std::vector<Cell>&);
 
     private:
-        static DerivedRegister<QL> reg;
-
         double calcQl(Cell&);
-
+        static DerivedRegister<ShapeQl> reg;
 };
 
-#endif	/* QL_H */
+#endif	/* SHAPEQL_H */
 

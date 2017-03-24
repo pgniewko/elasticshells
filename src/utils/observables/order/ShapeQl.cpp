@@ -1,33 +1,33 @@
-#include "WL.h"
+#include "ShapeQl.h"
 
-WL::WL(const char* name, const char* format) : Observer(name, format) {}
+ShapeQl::ShapeQl(const char* name, const char* format) : Observer(name, format) {}
 
-WL::WL(const WL& orig) : Observer(orig) {}
+ShapeQl::ShapeQl(const ShapeQl& orig) : Observer(orig) {}
 
-WL::~WL() {}
+ShapeQl::~ShapeQl() {}
 
-void WL::set_params(const int num, std::vector<std::string> args_)
+void ShapeQl::set_params(const int num, std::vector<std::string> args_)
 {
     i_param = atoi(args_[ num + 0 ].c_str());
     d_param = strtod(args_[ num + 1 ].c_str(), NULL);
 }
 
-double WL::observe(const Box& box, std::vector<Cell>& cells)
+double ShapeQl::observe(const Box& box, std::vector<Cell>& cells)
 {
-    double wlsum = 0.0;
+    double qlsum = 0.0;
     double N = 0.0;
 
     for (uint i = 0; i < cells.size(); i++)
     {
-        wlsum += WL::calcWl(cells[i]);
+        qlsum += ShapeQl::calcQl(cells[i]);
         N += 1.0;
     }
 
-    wlsum /= N;
-    return wlsum;
+    qlsum /= N;
+    return qlsum;
 }
 
-double WL::calcWl(Cell& cell)
+double ShapeQl::calcQl(Cell& cell)
 {
     int count;
     int n = cell.getNumberVertices();
@@ -51,11 +51,11 @@ double WL::calcWl(Cell& cell)
     count = qlm (i_param, n, r_cutoff, x, y, z, qlRe, qlIm);
     qss = qsum (i_param, qlRe, qlIm);
 
-    double wlval = 0.0;
+    double qlval = 0.0;
 
     if (qss > 1e-3)
     {
-        wlval = wl (i_param, qlRe, qlIm) / (qss * qss * qss);
+        qlval = Ql (i_param, count, qlRe, qlIm);
     }
 
     free (qlRe);
@@ -63,7 +63,7 @@ double WL::calcWl(Cell& cell)
     free (x);
     free (y);
     free (z);
-    return wlval;
+    return qlval;
 }
 
-DerivedRegister<WL> WL::reg("WL");
+DerivedRegister<ShapeQl> ShapeQl::reg("ShapeQl");

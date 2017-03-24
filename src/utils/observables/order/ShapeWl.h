@@ -7,19 +7,19 @@
 
 #include "utils/observables/Observer.h"
 
-class WL : public Observer
+class ShapeWl : public Observer
 {
     public:
-        explicit WL(const char*, const char*);
-        WL(const WL& orig);
-        virtual ~WL();
+        explicit ShapeWl(const char*, const char*);
+        ShapeWl(const ShapeWl& orig);
+        virtual ~ShapeWl();
 
         double observe(const Box&, std::vector<Cell>&);
         void set_params(const int, std::vector<std::string>);
 
     private:
         double calcWl(Cell&);
-        static DerivedRegister<WL> reg;
+        static DerivedRegister<ShapeWl> reg;
 };
 
 #endif	/* WL_H */
