@@ -22,7 +22,7 @@ double PackingQl::observe(const Box& box, std::vector<Cell>& cells)
 
     for (uint i = 0; i < cells.size(); i++)
     {
-        qlsum += PackingQl::calcQl(cells[i]);
+        qlsum += PackingQl::calcQl(box, cells, i);
     }
 
     qlsum /= (double) cells.size();

@@ -22,7 +22,7 @@ double PackingWl::observe(const Box& box, std::vector<Cell>& cells)
 
     for (uint i = 0; i < cells.size(); i++)
     {
-        qlsum += PackingWl::calcWl(cells[i]);
+        qlsum += PackingWl::calcWl(box, cells, i);
     }
 
     qlsum /= (double) cells.size();
