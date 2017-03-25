@@ -18,6 +18,7 @@ class PackingQl : public Observer
         void set_params(const int, std::vector<std::string>);
         
     private:
+        double calcQl(const Box&, std::vector<Cell>&, unsigned int);
         static DerivedRegister<PackingQl> reg;
 
 };

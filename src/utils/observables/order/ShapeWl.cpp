@@ -50,12 +50,12 @@ double ShapeWl::calcWl(Cell& cell)
     qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
     qlIm = (double*) malloc ((i_param + 1) * sizeof (double));
     
-    qlm (i_param, nk, xc, yc, zc, x, y, z, qlRe, qlIm);
-    qss = qsum (i_param, qlRe, qlIm);
+    qlm(i_param, nk, xc, yc, zc, x, y, z, qlRe, qlIm);
+    qss = qsum(i_param, qlRe, qlIm);
 
     double wlval = 0.0;
 
-    if (qss > 1e-3)
+    if (qss > 1e-4)
     {
         wlval = Wl (i_param, qlRe, qlIm) / (qss * qss * qss);
     }

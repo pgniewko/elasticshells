@@ -55,7 +55,7 @@ double ShapeQl::calcQl(Cell& cell)
 
     double qlval = 0.0;
 
-    if (qss > 1e-3)
+    if (qss > 1e-4)
     {
         qlval = Ql(i_param, nk, qlRe, qlIm);
     }
