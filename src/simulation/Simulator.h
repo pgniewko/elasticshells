@@ -137,6 +137,8 @@ class Simulator
         static double FIRE_ALPHA;
         static double FIRE_DTMAX;
         
+        static bool RESTART_FLAG;
+        
 
         // CONJUGATE GRADIENTS CODE
         void cg();

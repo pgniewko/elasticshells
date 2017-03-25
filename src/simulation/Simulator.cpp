@@ -9,6 +9,8 @@ int Simulator::FIRE_N(0);
 double Simulator::FIRE_DT(0.0);
 double Simulator::FIRE_ALPHA(0.1);
 double Simulator::FIRE_DTMAX(0.0);
+
+bool Simulator::RESTART_FLAG(false);
         
 Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
@@ -284,6 +286,7 @@ void Simulator::restart()
     restarter.readLastFrame(cells);
     number_of_cells = cells.size();
     set_min_force();
+    Simulator::RESTART_FLAG = true;
 }
 
 void Simulator::analyze()
@@ -343,20 +346,25 @@ void Simulator::simulate(int steps)
         rebuildDomainsList();
     }
 
-
-    //sb.saveRenderScript(cells, box, params.draw_box, 0.1);
-    traj.open();
-    
-    traj.save_traj(cells, getTotalVertices());
+    // LOGER READY TO WORK
     log_sim.registerObservers();
     log_sim.open();
     log_sim.printHeader();
-    log_sim.dumpState(box, cells); // ONLY IF RESTARTED FROM MINIMIZED STRUCTURE. CANNOT BE STARTING STRUCTURE SINCE IT'S NOT MECH. STABLE
-    saveTurgors();  // SAME AS ABOVE
-    restarter.saveLastFrame(cells);
-    restarter.saveTopologyFile(cells, params.model_t);        
-    traj.save_box(box, steps * params.dt);
-    box.saveRemainingSchedule();
+
+    // TRAJECTORY FILE OPEND FOR DUMP
+    traj.open();
+    
+    // IF SIMULATION RESTART - DON'T DUMP THE STAT
+    if (!Simulator::RESTART_FLAG)
+    {
+        traj.save_traj(cells, getTotalVertices());
+        log_sim.dumpState(box, cells);
+        saveTurgors();
+        restarter.saveLastFrame(cells);
+        restarter.saveTopologyFile(cells, params.model_t);        
+        traj.save_box(box, steps * params.dt);
+        box.saveRemainingSchedule();
+    }
 
     
     //================
@@ -385,11 +393,17 @@ void Simulator::simulate(int steps)
             simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
         }
 
+        unsigned long loop_couter = 0;
         do
         {
             do
             {
                 integrate();
+                loop_couter++;
+                if ( (loop_couter+1) % 10000 == 0)
+                {
+                    restarter.saveLastFrame(cells); // SO RESTARTING IS PRODUCTIVE
+                }
             }
             while ( check_min_force() );
         }
