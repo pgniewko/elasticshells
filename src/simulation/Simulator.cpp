@@ -400,7 +400,7 @@ void Simulator::simulate(int steps)
             {
                 integrate();
                 loop_couter++;
-                if ( (loop_couter+1) % 10000 == 0)
+                if ( (loop_couter+1) % 5000 == 0)
                 {
                     restarter.saveLastFrame(cells); // SO RESTARTING IS PRODUCTIVE
                 }
