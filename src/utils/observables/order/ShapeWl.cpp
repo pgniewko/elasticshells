@@ -29,8 +29,8 @@ double ShapeWl::calcWl(Cell& cell)
     int nk = cell.getNumberVertices();
     
     double qss = 0.0;
-    double* x, *y, *z;
-    double* qlRe, *qlIm;
+    double *x, *y, *z;
+    double *qlRe, *qlIm;
     x = (double*) malloc (nk * sizeof (double));
     y = (double*) malloc (nk * sizeof (double));
     z = (double*) malloc (nk * sizeof (double));

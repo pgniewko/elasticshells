@@ -71,7 +71,7 @@ class Box
 };
 
 // TODO: OPTIMIZE THIS FUNCTION - IT'S A CRUCIAL ONE
-inline void Box::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box)
+inline void Box::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box) // Vector pointing from vk to vj
 {
     dkj = vk - vj;
 

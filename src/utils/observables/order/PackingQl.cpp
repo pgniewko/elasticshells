@@ -31,6 +31,7 @@ double PackingQl::observe(const Box& box, std::vector<Cell>& cells)
 
 double PackingQl::calcQl(const Box& box, std::vector<Cell>& cells, unsigned int ci)
 {
+    Vector3D ci_cm = cells[ci].getCm();
     std::vector<Vector3D> neighs_cm;
     for (uint i = 0; i < cells.size(); i++)
     {
@@ -38,7 +39,10 @@ double PackingQl::calcQl(const Box& box, std::vector<Cell>& cells, unsigned int 
         {
             if ( cells[ci].isInContact(cells[i], box) )
             {
+                Vector3D dij;
                 Vector3D cm = cells[i].getCm();
+                Box::getDistance(dij, ci_cm, cm, box);
+                cm = ci_cm + dij;
                 neighs_cm.push_back(cm);
             }
         }
@@ -47,8 +51,8 @@ double PackingQl::calcQl(const Box& box, std::vector<Cell>& cells, unsigned int 
     int nk = neighs_cm.size();
     
     double qss = 0.0;
-    double* x, *y, *z;
-    double* qlRe, *qlIm;
+    double *x, *y, *z;
+    double *qlRe, *qlIm;
     x = (double*) malloc (nk * sizeof (double));
     y = (double*) malloc (nk * sizeof (double));
     z = (double*) malloc (nk * sizeof (double));
@@ -60,10 +64,9 @@ double PackingQl::calcQl(const Box& box, std::vector<Cell>& cells, unsigned int 
         z[i] = neighs_cm[i].z;
     }
 
-    Vector3D cm = cells[ci].getCm();
-    double xc = cm.x;
-    double yc = cm.y;
-    double zc = cm.z;
+    double xc = ci_cm.x;
+    double yc = ci_cm.y;
+    double zc = ci_cm.z;
     
     qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
     qlIm = (double*) malloc ((i_param + 1) * sizeof (double));

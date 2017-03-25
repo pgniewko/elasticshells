@@ -18,6 +18,7 @@ class PackingWl  : public Observer
         void set_params(const int, std::vector<std::string>);
         
     private:
+        double calcWl(const Box&, std::vector<Cell>&, unsigned int);
         static DerivedRegister<PackingWl> reg;
 
 };
