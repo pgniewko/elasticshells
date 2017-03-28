@@ -11,7 +11,7 @@ void AverageTurgor::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double AverageTurgor::observe(const Box& box, std::vector<Cell>& cells)
+double AverageTurgor::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     int N = cells.size();
     double av_turgor = 0.0;

@@ -11,7 +11,7 @@ void CellBoxStress::set_params(const int num, std::vector<std::string> args_)
     d_param = strtod(args_[ num + 0 ].c_str(), NULL);
 };
 
-double CellBoxStress::observe(const Box& box, std::vector<Cell>& cells)
+double CellBoxStress::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     if (box.pbc)
     {

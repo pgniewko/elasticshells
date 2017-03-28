@@ -11,7 +11,7 @@ void AverageContactsNumber::set_params(const int num, std::vector<std::string> a
     return;
 };
 
-double AverageContactsNumber::observe(const Box& box, std::vector<Cell>& cells)
+double AverageContactsNumber::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     double contact_number = 0;
     std::size_t n = cells.size();

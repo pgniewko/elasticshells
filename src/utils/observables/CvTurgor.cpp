@@ -11,7 +11,7 @@ void CvTurgor::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double CvTurgor::observe(const Box& box, std::vector<Cell>& cells)
+double CvTurgor::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     uint N = cells.size();
     double av_turgor = 0.0;

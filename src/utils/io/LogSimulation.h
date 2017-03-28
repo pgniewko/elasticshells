@@ -12,6 +12,7 @@
 #include "utils/Logger.h"
 #include "utils/utils.h"
 #include "simulation/Box.h"
+#include "simulation/DomainList.h"
 #include "utils/observables/Observer.h"
 
 class LogSimulation
@@ -26,7 +27,7 @@ class LogSimulation
 
         void registerObservers();
         void printHeader();
-        void dumpState(Box&, std::vector<Cell>&);
+        void dumpState(Box&, std::vector<Cell>&, const DomainList&);
         
         const std::string getFileName() const;
         

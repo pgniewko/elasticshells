@@ -11,7 +11,7 @@ void ShapeQl::set_params(const int num, std::vector<std::string> args_)
     i_param = atoi(args_[ num + 0 ].c_str());
 }
 
-double ShapeQl::observe(const Box& box, std::vector<Cell>& cells)
+double ShapeQl::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     double qlsum = 0.0;
 

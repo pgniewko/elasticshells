@@ -13,7 +13,7 @@ class Pressure : public Observer
         virtual ~Pressure();
 
         void set_params(const int, std::vector<std::string>);
-        double observe(const Box&, std::vector<Cell>&);
+        double observe(const Box&, std::vector<Cell>&, const DomainList&);
 
     private:
         static DerivedRegister<Pressure> reg;

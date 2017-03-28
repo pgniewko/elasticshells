@@ -128,11 +128,11 @@ void LogSimulation::printHeader()
     fflush(os);
 }
 
-void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells)
+void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     for (std::vector<Observer*>::iterator it = observers.begin(); it != observers.end(); ++it)
     {
-        fprintf(os, (*it)->getFormat(), (*it)->observe(box, cells) );
+        fprintf(os, (*it)->getFormat(), (*it)->observe(box, cells, dl) );
         fprintf(os, "%s", " ");
     }
 

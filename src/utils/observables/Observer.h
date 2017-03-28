@@ -10,6 +10,7 @@
 #include "Cell.h"
 #include "Environment.h"
 #include "simulation/Box.h"
+#include "simulation/DomainList.h"
 
 class Observer
 {
@@ -19,7 +20,7 @@ class Observer
         virtual ~Observer();
 
         virtual void set_params(const int, std::vector<std::string>) = 0;
-        virtual double observe(const Box&, std::vector<Cell>&) = 0;
+        virtual double observe(const Box&, std::vector<Cell>&, const DomainList&) = 0;
 
         const char* getFormat();
         const char* getName();

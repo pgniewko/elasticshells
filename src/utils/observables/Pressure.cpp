@@ -14,7 +14,7 @@ void Pressure::set_params(const int num, std::vector<std::string> args_)
     d_param = strtod(args_[ num + 1 ].c_str(), NULL);
 }
 
-double Pressure::observe(const Box& box, std::vector<Cell>& cells)
+double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     double pressure = 0.0;
     

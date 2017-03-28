@@ -11,7 +11,7 @@ void WallCoverageFraction::set_params(const int num, std::vector<std::string> ar
     d_param = strtod(args_[ num + 0 ].c_str(), NULL);
 }
 
-double WallCoverageFraction::observe(const Box& box, std::vector<Cell>& cells)
+double WallCoverageFraction::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     if (box.pbc)
     {

@@ -12,7 +12,7 @@ void AverageActiveFraction::set_params(const int num, std::vector<std::string> a
     return;
 };
 
-double AverageActiveFraction::observe(const Box& box, std::vector<Cell>& cells)
+double AverageActiveFraction::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     
     double total_active_f = 0.0;

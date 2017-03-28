@@ -11,7 +11,7 @@ void PackingWl::set_params(const int num, std::vector<std::string> args_)
     i_param = atoi(args_[ num + 0 ].c_str());
 }
 
-double PackingWl::observe(const Box& box, std::vector<Cell>& cells)
+double PackingWl::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
    if (box.pbc == false)
     {
