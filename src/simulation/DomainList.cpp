@@ -410,6 +410,169 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
 }
 
 
+
+
+
+//**********************
+//**********************
+
+Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vector<Cell>& cells, const Box& box)
+{    
+    int cellId_target = target->getCellId();
+    int cellId_partner = partner->getCellId();
+
+    const struct cell_params_t params1 = cells[cellId_target].get_params();
+    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+
+    double r1 = params1.vertex_r;
+    double r2 = params2.vertex_r;
+    double e1 = params1.ecc;
+    double e2 = params2.ecc;
+    double nu1 = params1.nu;
+    double nu2 = params2.nu;
+
+    Vector3D force(0, 0, 0);
+    Vector3D dij;
+
+    if (cellId_target != cellId_partner)
+    {
+        Box::getDistance(dij, partner->r_c, target->r_c, box);
+        force = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+    }
+    else
+    {
+        int i = target->getId();
+        int j = partner->getId();
+
+        if (i != j && !target->isNeighbor(j))
+        {
+            Box::getDistance(dij, partner->r_c, target->r_c, box);
+            force = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
+        }
+    }
+    
+    return force;
+}
+
+double DomainList::calcContactForce(const int cell1id, const int cell2id, const std::vector<Cell>& cells, const Box& box)
+{
+    Vertex* target;
+    Vertex* partner;
+
+    int neighIndex;
+    
+    Vector3D force;
+    
+    std::vector<Vector3D> verts_forces;
+    for (int vix = 0; vix < cells[cell1id].getNumberVertices(); vix++)
+    {
+        Vector3D new_one(0, 0, 0);
+        verts_forces.push_back(  new_one );
+    }
+
+
+    for (int domainIdx = 0; domainIdx < N; domainIdx++)
+    {
+        if (head[domainIdx] != 0)
+        {
+            // INTRA-DOMAIN CONTACTS
+            for (target = head[domainIdx]; target != 0; target = target->next)
+            {
+                for (partner = target->next; partner != 0; partner = partner->next)
+                {
+                    if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
+                    {
+                        force = getNbForce(target, partner, cells, box);
+                        verts_forces[ target->getId() ] += force;
+                    }
+                }
+            }
+
+            // INTRA-DOMAIN CONTACTS
+            for (target = head[domainIdx]; target != 0; target = target->next)
+            {
+                for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
+                {
+                    neighIndex = domains[domainIdx].neighborDomainIdx[k];
+
+                    for (partner = head[neighIndex]; partner != 0; partner = partner->next)
+                    {
+                        if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
+                        {
+                            force = getNbForce(target, partner, cells, box);
+                            verts_forces[ target->getId() ] += force;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    double contact_force = 0.0;
+    double fi;
+    for (int vix = 0; vix < cells[cell1id].getNumberVertices(); vix++)
+    {
+        if (verts_forces[vix].length_sq() > 0)
+        {
+            fi = cells[cell1id].project_force(cells[cell2id], box, verts_forces[vix], vix);
+            contact_force += fi;
+        }
+    }
+    return contact_force;
+}
+
+bool DomainList::isInContact(const int cell1id, const int cell2id, const std::vector<Cell>& cells, const Box& box)
+{
+    Vertex* target;
+    Vertex* partner;
+
+    int neighIndex;
+   
+    Vector3D force;
+    
+
+    for (int domainIdx = 0; domainIdx < N; domainIdx++)
+    {
+        if (head[domainIdx] != 0)
+        {
+            // INTRA-DOMAIN CONTACTS
+            for (target = head[domainIdx]; target != 0; target = target->next)
+            {
+                for (partner = target->next; partner != 0; partner = partner->next)
+                {
+                    if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
+                    {
+                        force = getNbForce(target, partner, cells, box);
+                        if (force.length_sq() > 0 )
+                            return true;
+                    }
+                }
+            }
+
+            // INTRA-DOMAIN CONTACTS
+            for (target = head[domainIdx]; target != 0; target = target->next)
+            {
+                for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
+                {
+                    neighIndex = domains[domainIdx].neighborDomainIdx[k];
+
+                    for (partner = head[neighIndex]; partner != 0; partner = partner->next)
+                    {
+                        if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
+                        {
+                            force = getNbForce(target, partner, cells, box);
+                            if (force.length_sq() > 0 )
+                                return true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
 double DomainList::calcNbEnergy(const std::vector<Cell>& cells, const Box& box) const
 {
     double totalNbEnergy = 0.0;

@@ -33,6 +33,7 @@ class Cell
         friend class DomainList;
         friend class Energy;
         friend class Restarter;
+        
     public:
 
         Cell();
@@ -100,7 +101,7 @@ class Cell
         bool isInContact(const Cell&, const Box&) const;
 
         double getTurgor() const;
-        double getStrain(int, int) const;
+        //double getStrain(int, int) const;
         void update(double = 0.0);
 
         const cell_params_t& get_params() const;

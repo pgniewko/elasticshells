@@ -590,40 +590,6 @@ double Cell::project_force(const Box& box, const Vector3D& force_collector, cons
     return fi;
 }
 
-double Cell::contactForce(const Cell& other_cell, const Box& box) const
-{
-    int ocellid = other_cell.cell_id;
-    Vector3D dij;
-    Vector3D force_collector(0, 0, 0);
-    double contact_force = 0.0;
-    double r1 = params.vertex_r;
-    double r2 = other_cell.params.vertex_r;
-    double e1 = params.ecc;
-    double e2 = other_cell.params.ecc;
-    double nu1 = params.nu;
-    double nu2 = other_cell.params.nu;
-
-    double fi;
-
-    for (int i = 0; i < number_v; i++)
-    {
-        for (int j = 0; j < other_cell.number_v; j++)
-        {
-            if (cell_id != ocellid)
-            {
-                Box::getDistance(dij, other_cell.vertices[j].r_c, vertices[i].r_c, box);
-                force_collector += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-            }
-        }
-
-        fi = project_force(other_cell, box, force_collector, i);
-        contact_force += fi;
-        force_collector = Vector3D(0, 0, 0);
-    }
-
-    return contact_force;
-}
-
 Vector3D Cell::box_force(const Box& box, const int vix) const
 {
     Vector3D wallYZ(0, 0, 0);
@@ -667,6 +633,40 @@ Vector3D Cell::box_force(const Box& box, const int vix) const
     force_collector += HertzianRepulsion::calcForce(djk, r1, rb_, e1, eb, nu1, nub);
 
     return force_collector;
+}
+
+double Cell::contactForce(const Cell& other_cell, const Box& box) const
+{
+    int ocellid = other_cell.cell_id;
+    Vector3D dij;
+    Vector3D force_collector(0, 0, 0);
+    double contact_force = 0.0;
+    double r1 = params.vertex_r;
+    double r2 = other_cell.params.vertex_r;
+    double e1 = params.ecc;
+    double e2 = other_cell.params.ecc;
+    double nu1 = params.nu;
+    double nu2 = other_cell.params.nu;
+
+    double fi;
+
+    for (int i = 0; i < number_v; i++)
+    {
+        for (int j = 0; j < other_cell.number_v; j++)
+        {
+            if (cell_id != ocellid)
+            {
+                Box::getDistance(dij, other_cell.vertices[j].r_c, vertices[i].r_c, box);
+                force_collector += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+            }
+        }
+
+        fi = project_force(other_cell, box, force_collector, i);
+        contact_force += fi;
+        force_collector = Vector3D(0, 0, 0);
+    }
+
+    return contact_force;
 }
 
 double Cell::contactForce(const Box& box) const
@@ -934,16 +934,16 @@ double Cell::contactArea2(const Box& box, double d_param) const
     return contact_area;
 }
 
-double Cell::getStrain(int i, int j) const
-{
-    double r0 = vertices[i].r0[j];
-    int neigh_idx = vertices[i].bondedVerts[j];
-    Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
-
-    double r = dR.length();
-    double eps = (r - r0) / r0;
-    return eps;
-}
+//double Cell::getStrain(int i, int j) const
+//{
+//    double r0 = vertices[i].r0[j];
+//    int neigh_idx = vertices[i].bondedVerts[j];
+//    Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
+// 
+//    double r = dR.length();
+//    double eps = (r - r0) / r0;
+//    return eps;
+//}
 
 double Cell::getTurgor() const
 {

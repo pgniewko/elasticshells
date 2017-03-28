@@ -276,12 +276,6 @@ void Restarter::addVTriangles(std::vector<Cell>& cells, int cix) const
                     cells[cix].triangles[t_id].ci[0] = strtod(pairs[ 15 ].c_str(), NULL);
                     cells[cix].triangles[t_id].ci[1] = strtod(pairs[ 16 ].c_str(), NULL);
                     cells[cix].triangles[t_id].ci[2] = strtod(pairs[ 17 ].c_str(), NULL);
-                    
-//                        out << vt.an[0] << ' ' << vt.an[1] << ' '  << vt.an[2] << ' ';
-//    out << vt.L2[0] << ' ' << vt.L2[1] << ' '  << vt.L2[2] << ' ';
-//    out << vt.ki[0] << ' ' << vt.ki[1] << ' '  << vt.ki[2] << ' ';
-//    out << vt.ci[0] << ' ' << vt.ci[1] << ' '  << vt.ci[2] << ' ';
-
                 }
             }
         }
@@ -399,7 +393,6 @@ void Restarter::readLastFrame(std::vector<Cell>& cells) const
         }
 
     }
-
     else
     {
         // print error
@@ -448,7 +441,6 @@ void Restarter::readFrame(std::string trajFile, std::vector<Cell>& cells, int fr
             }
         }
     }
-
     else
     {
         // print error

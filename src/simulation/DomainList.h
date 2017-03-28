@@ -8,6 +8,8 @@
 #include "simulation/Box.h"
 #include "Cell.h"
 
+typedef std::vector<double> row; 
+
 struct domain_t
 {
     domain_t()
@@ -53,6 +55,8 @@ class DomainList
         int getNumOfParticles(int);
 
         void calcNbForces(std::vector<Cell>&, const Box&);
+        double calcContactForce(const int, const int, const std::vector<Cell>&, const Box&);
+        bool isInContact(const int, const int, const std::vector<Cell>&, const Box&);
         double calcNbEnergy(const std::vector<Cell>&, const Box&) const;
 
         //private:
@@ -77,6 +81,7 @@ class DomainList
 
     private:
         void nbForce(Vertex*, Vertex*, std::vector<Cell>&, const Box&);
+        Vector3D getNbForce(Vertex*, Vertex*, const std::vector<Cell>&, const Box&);
         double nbEnergy(const Vertex*, const Vertex*, const std::vector<Cell>&, const Box&) const;
         bool validateLinkedDomains();
 
