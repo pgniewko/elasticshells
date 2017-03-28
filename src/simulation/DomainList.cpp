@@ -328,7 +328,7 @@ double DomainList::getMaxScale()
     return rc_max;
 }
 
-void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box)
+void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box) const
 {
     Vertex* target;
     Vertex* partner;
@@ -369,7 +369,7 @@ void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box)
 }
 
 
-void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cells, const Box& box)
+void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cells, const Box& box) const
 {
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
@@ -416,7 +416,7 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
 //**********************
 //**********************
 
-Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vector<Cell>& cells, const Box& box)
+Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vector<Cell>& cells, const Box& box) const
 {    
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
@@ -454,7 +454,7 @@ Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vect
     return force;
 }
 
-double DomainList::calcContactForce(const int cell1id, const int cell2id, const std::vector<Cell>& cells, const Box& box)
+double DomainList::calcContactForce(const int cell1id, const int cell2id, const std::vector<Cell>& cells, const Box& box) const
 {
     Vertex* target;
     Vertex* partner;
@@ -521,7 +521,7 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
     return contact_force;
 }
 
-bool DomainList::isInContact(const int cell1id, const int cell2id, const std::vector<Cell>& cells, const Box& box)
+bool DomainList::isInContact(const int cell1id, const int cell2id, const std::vector<Cell>& cells, const Box& box) const
 {
     Vertex* target;
     Vertex* partner;

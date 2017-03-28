@@ -54,9 +54,9 @@ class DomainList
         int getCellIdx(int, int);
         int getNumOfParticles(int);
 
-        void calcNbForces(std::vector<Cell>&, const Box&);
-        double calcContactForce(const int, const int, const std::vector<Cell>&, const Box&);
-        bool isInContact(const int, const int, const std::vector<Cell>&, const Box&);
+        void calcNbForces(std::vector<Cell>&, const Box&) const;
+        double calcContactForce(const int, const int, const std::vector<Cell>&, const Box&) const;
+        bool isInContact(const int, const int, const std::vector<Cell>&, const Box&) const;
         double calcNbEnergy(const std::vector<Cell>&, const Box&) const;
 
         //private:
@@ -80,8 +80,8 @@ class DomainList
         void addVertex(int, int);
 
     private:
-        void nbForce(Vertex*, Vertex*, std::vector<Cell>&, const Box&);
-        Vector3D getNbForce(Vertex*, Vertex*, const std::vector<Cell>&, const Box&);
+        void nbForce(Vertex*, Vertex*, std::vector<Cell>&, const Box&) const;
+        Vector3D getNbForce(Vertex*, Vertex*, const std::vector<Cell>&, const Box&) const;
         double nbEnergy(const Vertex*, const Vertex*, const std::vector<Cell>&, const Box&) const;
         bool validateLinkedDomains();
 
