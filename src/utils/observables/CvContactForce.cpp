@@ -8,7 +8,7 @@ CvContactForce::~CvContactForce() {}
 
 void CvContactForce::set_params(const int num, std::vector<std::string> args_)
 {
-    return;
+    i_param = atoi(args_[ num + 0 ].c_str());
 };
 
 double CvContactForce::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
@@ -24,7 +24,14 @@ double CvContactForce::observe(const Box& box, std::vector<Cell>& cells, const D
     {
         for (uint j = i+1; j < N; j++)
         {
-            cf = cells[i].contactForce(cells[j], box);
+            if (i_param == 0)
+            {
+                cf = cells[i].contactForce(cells[j], box);
+            } 
+            else if (i_param == 1)
+            {
+                cf = dl.calcContactForce(i, j, cells, box);
+            }
             if (cf > 0.0)
             {
                 average_cf  += cf;

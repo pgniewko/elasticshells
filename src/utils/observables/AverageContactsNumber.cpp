@@ -8,7 +8,7 @@ AverageContactsNumber::~AverageContactsNumber() {}
 
 void AverageContactsNumber::set_params(const int num, std::vector<std::string> args_)
 {
-    return;
+    i_param = atoi(args_[ num + 0 ].c_str());
 };
 
 double AverageContactsNumber::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
@@ -20,9 +20,19 @@ double AverageContactsNumber::observe(const Box& box, std::vector<Cell>& cells, 
     {
         for (std::size_t j = i+1; j < n; j++)
         {
-            if ( cells[i].isInContact(cells[j], box) )
+            if ( i_param == 0)
             {
-                contact_number += 2.0;
+                if ( cells[i].isInContact(cells[j], box) )
+                {
+                    contact_number += 2.0;
+                }
+            }
+            else if (i_param == 1)
+            {
+                if ( dl.isInContact(i, j, cells, box)  )
+                {
+                    contact_number += 2.0;
+                }
             }
         }
     }
