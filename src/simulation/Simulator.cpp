@@ -328,8 +328,8 @@ void Simulator::analyze()
         restarter.assignBoxSize(boxsize_list[i - 1], box);
         updateCells();
         
-        update_neighbors_list();
         domains.setBoxDim(box);
+        update_neighbors_list();
         log_sim.dumpState(box, cells, domains);
     }
 }
