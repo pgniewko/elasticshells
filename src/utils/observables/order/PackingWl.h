@@ -14,13 +14,12 @@ class PackingWl  : public Observer
         PackingWl(const PackingWl& orig);
         virtual ~PackingWl();
     
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
         void set_params(const int, std::vector<std::string>);
+        double observe(const Box&, std::vector<Cell>&, const DomainList&);
         
     private:
-        double calcWl(const Box&, std::vector<Cell>&, unsigned int);
+        double calcWl(const Box&, std::vector<Cell>&, unsigned int, const DomainList&);
         static DerivedRegister<PackingWl> reg;
-
 };
 
 #endif /* PACKINGWL_H */

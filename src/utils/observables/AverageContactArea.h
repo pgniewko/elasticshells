@@ -15,7 +15,6 @@ class AverageContactArea : public Observer
 
     private:
         static DerivedRegister<AverageContactArea> reg;
-
 };
 
 #endif	/* AVERAGECONTACTAREA_H */

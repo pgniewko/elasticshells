@@ -15,7 +15,6 @@ class AverageActiveArea : public Observer
 
     private:
         static DerivedRegister<AverageActiveArea> reg;
-
 };
 
 #endif	/* AVERAGEACTIVEAREA_H */

@@ -52,7 +52,6 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainL
                          pressure += dot(rij, fij);
                     }
                 }
-               
             }
         }
         
@@ -63,8 +62,23 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainL
         pressure /= (3.0*volume);
         return pressure;
     }
-    
-    else if ( i_param == 1)
+    else if (i_param == 1)
+    {
+        double volume = box.getVolume(d_param);
+        
+        std::size_t n = cells.size();
+        for (std::size_t k = 0; k < n; k++)
+        {
+            for (std::size_t l = k+1; l < n; l++) // that's why we don't multiply pressure by extra 0.5
+            {
+                pressure += dl.virialPressure(k, l, cells, box);
+            }
+        }
+        
+        pressure /= (3.0*volume);
+        return pressure;
+    }
+    else if ( i_param == 2)
     {
         if (box.pbc)
         {

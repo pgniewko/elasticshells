@@ -22,14 +22,14 @@ double PackingWl::observe(const Box& box, std::vector<Cell>& cells, const Domain
 
     for (uint i = 0; i < cells.size(); i++)
     {
-        qlsum += PackingWl::calcWl(box, cells, i);
+        qlsum += PackingWl::calcWl(box, cells, i, dl);
     }
 
     qlsum /= (double) cells.size();
     return qlsum;
 }
 
-double PackingWl::calcWl(const Box& box, std::vector<Cell>& cells, unsigned int ci)
+double PackingWl::calcWl(const Box& box, std::vector<Cell>& cells, unsigned int ci, const DomainList& dl)
 {
     Vector3D ci_cm = cells[ci].getCm();
     std::vector<Vector3D> neighs_cm;
@@ -37,7 +37,8 @@ double PackingWl::calcWl(const Box& box, std::vector<Cell>& cells, unsigned int 
     {
         if (i != ci)
         {
-            if ( cells[ci].isInContact(cells[i], box) )
+            //if ( cells[ci].isInContact(cells[i], box) )
+            if ( dl.isInContact(ci, i, cells, box) );
             {
                 Vector3D dij;
                 Vector3D cm = cells[i].getCm();

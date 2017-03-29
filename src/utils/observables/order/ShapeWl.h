@@ -14,8 +14,8 @@ class ShapeWl : public Observer
         ShapeWl(const ShapeWl& orig);
         virtual ~ShapeWl();
 
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
         void set_params(const int, std::vector<std::string>);
+        double observe(const Box&, std::vector<Cell>&, const DomainList&);
 
     private:
         double calcWl(Cell&);

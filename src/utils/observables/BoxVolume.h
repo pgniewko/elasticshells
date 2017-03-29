@@ -11,8 +11,8 @@ class BoxVolume : public Observer
         BoxVolume(const BoxVolume& orig);
         virtual ~BoxVolume();
 
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
         void set_params(const int, std::vector<std::string>);
+        double observe(const Box&, std::vector<Cell>&, const DomainList&);
 
     private:
         static DerivedRegister<BoxVolume> reg;

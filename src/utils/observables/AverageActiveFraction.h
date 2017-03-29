@@ -15,7 +15,6 @@ class AverageActiveFraction : public Observer
 
     private:
         static DerivedRegister<AverageActiveFraction> reg;
-
 };
 
 #endif	/* AVERAGEACTIVEFRACTION_H */

@@ -5,7 +5,6 @@
 
 class CvTurgor : public Observer
 {
-    
     public:
         CvTurgor(const char* name, const char* format);
         CvTurgor(const CvTurgor& orig);
@@ -16,7 +15,6 @@ class CvTurgor : public Observer
     
     private:
         static DerivedRegister<CvTurgor> reg;
-
 };
 
 #endif /* CVTURGOR_H */

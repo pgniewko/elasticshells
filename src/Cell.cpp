@@ -793,17 +793,6 @@ bool Cell::isInContact(const Cell& other_cell, const Box& box) const
         return false;
     }
     
-    //double r0i = params.init_r;
-    //double r0j = other_cell.params.init_r;
-    
-    //Vector3D cmi = getCm();
-    //Vector3D cmj = other_cell.getCm();
-    
-    //if ( (cmi - cmj).length() > 2.0*(r0i+r0j) )
-    //{
-    //    return false;
-    //}
-    
     Vector3D dij;
     Vector3D force_ij(0, 0, 0);
 

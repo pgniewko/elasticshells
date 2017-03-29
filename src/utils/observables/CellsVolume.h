@@ -10,15 +10,14 @@ class CellsVolume : public Observer
         CellsVolume(const CellsVolume& orig);
         virtual ~CellsVolume();
 
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
         void set_params(const int, std::vector<std::string>);
+        double observe(const Box&, std::vector<Cell>&, const DomainList&);
 
     private:
         double calcVolumeFraction(const Box&, std::vector<Cell>&);
         double calcCellsVolume(std::vector<Cell>&);
 
         static DerivedRegister<CellsVolume> reg;
-
 };
 
 #endif	/* CELLSVOLUME_H */
