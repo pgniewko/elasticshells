@@ -527,6 +527,11 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                         force = getNbForce(target, partner, cells, box);
                         verts_forces[ target->getId() ] += force;
                     }
+                    if ( target->getCellId() == cell2id && partner->getCellId() == cell1id )
+                    {
+                        force = getNbForce(target, partner, cells, box);
+                        verts_forces[ partner->getId() ] -= force;
+                    }
                 }
             }
 
@@ -543,6 +548,11 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                         {
                             force = getNbForce(target, partner, cells, box);
                             verts_forces[ target->getId() ] += force;
+                        }
+                        if ( target->getCellId() == cell2id && partner->getCellId() == cell1id )
+                        {
+                            force = getNbForce(target, partner, cells, box);
+                            verts_forces[ partner->getId() ] -= force;
                         }
                     }
                 }
@@ -581,7 +591,7 @@ double DomainList::virialPressure(const int cell1id, const int cell2id, const st
             {
                 for (partner = target->next; partner != 0; partner = partner->next)
                 {
-                    if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
+                    if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                     {
                         pressure += virial(target, partner, cells, box);
                     }
@@ -597,7 +607,7 @@ double DomainList::virialPressure(const int cell1id, const int cell2id, const st
 
                     for (partner = head[neighIndex]; partner != 0; partner = partner->next)
                     {
-                        if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
+                        if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                         {
                             pressure += virial(target, partner, cells, box);
                         }
@@ -630,7 +640,7 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
             {
                 for (partner = target->next; partner != 0; partner = partner->next)
                 {
-                    if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
+                    if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                     {
                         force = getNbForce(target, partner, cells, box);
                         if (force.length_sq() > 0 )
@@ -648,7 +658,7 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
 
                     for (partner = head[neighIndex]; partner != 0; partner = partner->next)
                     {
-                        if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
+                        if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                         {
                             force = getNbForce(target, partner, cells, box);
                             if (force.length_sq() > 0 )
