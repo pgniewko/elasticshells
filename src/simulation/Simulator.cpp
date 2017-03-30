@@ -540,8 +540,15 @@ void Simulator::update_neighbors_list()
 
 void Simulator::rebuildDomainsList()
 {
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        {
+            cells[i].vertices[j].next = 0;
+        }
+    }
+    
     domains.voidDomains();
-
     for (uint i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
