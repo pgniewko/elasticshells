@@ -568,7 +568,7 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
         {
             //fi = cells[cell1id].project_force(cells[cell2id], box, verts_forces[vix], vix);
             //contact_force += fi;
-            /contact_force += verts_forces[vix].length();
+            contact_force += verts_forces[vix].length();
         }
     }
     return contact_force;
