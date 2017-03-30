@@ -529,8 +529,8 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                     }
                     if ( target->getCellId() == cell2id && partner->getCellId() == cell1id )
                     {
-                        force = getNbForce(target, partner, cells, box);
-                        verts_forces[ partner->getId() ] -= force;
+                        force = getNbForce(partner, target, cells, box);
+                        verts_forces[ partner->getId() ] += force;
                     }
                 }
             }
@@ -551,8 +551,8 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                         }
                         if ( target->getCellId() == cell2id && partner->getCellId() == cell1id )
                         {
-                            force = getNbForce(target, partner, cells, box);
-                            verts_forces[ partner->getId() ] -= force;
+                            force = getNbForce(partner, target, cells, box);
+                            verts_forces[ partner->getId() ] += force;
                         }
                     }
                 }
