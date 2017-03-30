@@ -25,7 +25,7 @@ double AverageContactForce::observe(const Box& box, std::vector<Cell>& cells, co
         {
             if (i_param == 0)
             {
-                cf = cells[i].contactForce(cells[j], box);
+                cf = cells[i].contactForce(cells[j], box, true);
             }
             else if (i_param == 1)
             {

@@ -540,11 +540,14 @@ void Simulator::update_neighbors_list()
 
 void Simulator::rebuildDomainsList()
 {
+    // This code is redundant cause the way linked domains are constructed.
+    // I.e. all vertices's ->nexts are reassigned, and heads are set to zero, 
+    // so no dangling ends
     for (uint i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            cells[i].vertices[j].next = 0;
+            //cells[i].vertices[j].next = 0;
         }
     }
     

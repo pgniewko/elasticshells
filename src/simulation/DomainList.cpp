@@ -348,7 +348,7 @@ void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box) const
                 }
             }
 
-            // INTRA-DOMAIN CONTACTS
+            // INTER-DOMAIN CONTACTS
             for (target = head[domainIdx]; target != 0; target = target->next)
             {
                 for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
@@ -410,14 +410,10 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
 }
 
 
-
-
-
-//**********************
-//**********************
-
+// *****************************************************************************
 Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vector<Cell>& cells, const Box& box) const
 {    
+
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
 
@@ -433,7 +429,7 @@ Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vect
 
     Vector3D force(0, 0, 0);
     Vector3D dij;
-
+    
     if (cellId_target != cellId_partner)
     {
         Box::getDistance(dij, partner->r_c, target->r_c, box);
@@ -513,6 +509,8 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
     }
 
 
+    double contact_force = 0.0;
+    
     for (int domainIdx = 0; domainIdx < N; domainIdx++)
     {
         if (head[domainIdx] != 0)
@@ -535,13 +533,14 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                 }
             }
 
-            // INTRA-DOMAIN CONTACTS
+            // INTER-DOMAIN CONTACTS
             for (target = head[domainIdx]; target != 0; target = target->next)
             {
                 for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
                 {
                     neighIndex = domains[domainIdx].neighborDomainIdx[k];
-
+                    if (neighIndex > domainIdx)
+                    {
                     for (partner = head[neighIndex]; partner != 0; partner = partner->next)
                     {
                         if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
@@ -555,12 +554,13 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                             verts_forces[ partner->getId() ] += force;
                         }
                     }
+                    }
                 }
             }
         }
     }
     
-    double contact_force = 0.0;
+    
     double fi;
     for (int vix = 0; vix < cells[cell1id].getNumberVertices(); vix++)
     {
@@ -605,13 +605,15 @@ double DomainList::virialPressure(const int cell1id, const int cell2id, const st
                 for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
                 {
                     neighIndex = domains[domainIdx].neighborDomainIdx[k];
-
+                    if (neighIndex > domainIdx)
+                    {
                     for (partner = head[neighIndex]; partner != 0; partner = partner->next)
                     {
                         if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                         {
                             pressure += virial(target, partner, cells, box);
                         }
+                    }
                     }
                 }
             }

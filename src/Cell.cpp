@@ -635,7 +635,7 @@ Vector3D Cell::box_force(const Box& box, const int vix) const
     return force_collector;
 }
 
-double Cell::contactForce(const Cell& other_cell, const Box& box) const
+double Cell::contactForce(const Cell& other_cell, const Box& box, const bool flag) const
 {
     int ocellid = other_cell.cell_id;
     Vector3D dij;
@@ -661,12 +661,19 @@ double Cell::contactForce(const Cell& other_cell, const Box& box) const
             }
         }
 
-        //fi = project_force(other_cell, box, force_collector, i);
-        //contact_force += fi;
-        contact_force += force_collector.length();
+        if (flag)
+        {
+            contact_force += force_collector.length() ;
+        }
+        else
+        {
+            fi = project_force(other_cell, box, force_collector, i);
+            contact_force += fi;
+        }
+        
         force_collector = Vector3D(0, 0, 0);
     }
-
+        
     return contact_force;
 }
 
@@ -689,7 +696,7 @@ double Cell::contactForce(const Box& box) const
     return contact_force;
 }
 
-double Cell::contactForceSF(const Box& box) const
+double Cell::contactForceSF(const Box& box) const // What class does it need ?
 {
     if (box.pbc)
     {
@@ -821,7 +828,6 @@ bool Cell::isInContact(const Cell& other_cell, const Box& box) const
     }
     
     return false;
-
 }
 
 double Cell::activeArea(const Box& box, const std::vector<Cell>& cells, double d_param) const
@@ -842,20 +848,6 @@ double Cell::activeArea(const Box& box, const std::vector<Cell>& cells, double d
     
     return std::max(0.0, total_surface - total_contact_area);
 }
-
-//double Cell::activeAreaFraction(const Box& box, const std::vector<Cell>& cells, double& counter, bool flag) const
-//{
-//    double total_surface = 0.0;
-//
-//    for (int t_idx = 0; t_idx < number_t; t_idx++)
-//    {
-//        total_surface += triangles[t_idx].area(vertices, cm_m, params.vertex_r);
-//    }
-//
-//    double active_area = activeArea(box, cells, counter, flag);
-//
-//    return std::min(1.0, active_area / total_surface);
-//}
 
 double Cell::contactArea(const Cell& other_cell, const Box& box, const double d_param) const
 {
@@ -923,17 +915,6 @@ double Cell::contactArea2(const Box& box, double d_param) const
 
     return contact_area;
 }
-
-//double Cell::getStrain(int i, int j) const
-//{
-//    double r0 = vertices[i].r0[j];
-//    int neigh_idx = vertices[i].bondedVerts[j];
-//    Vector3D dR = vertices[neigh_idx].r_c - vertices[i].r_c;
-// 
-//    double r = dR.length();
-//    double eps = (r - r0) / r0;
-//    return eps;
-//}
 
 double Cell::getTurgor() const
 {

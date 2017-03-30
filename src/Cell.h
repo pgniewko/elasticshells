@@ -86,7 +86,7 @@ class Cell
         BendingHinge bhinges [2 * MAX_T];
 
         int cell_id = -1;
-        double contactForce(const Cell&, const Box&) const;
+        double contactForce(const Cell&, const Box&, const bool = false) const;
         double contactForce(const Box&) const;
         double contactForceSF(const Box&) const; // for Surface Force use
         
@@ -101,7 +101,6 @@ class Cell
         bool isInContact(const Cell&, const Box&) const;
 
         double getTurgor() const;
-        //double getStrain(int, int) const;
         void update(double = 0.0);
 
         const cell_params_t& get_params() const;
