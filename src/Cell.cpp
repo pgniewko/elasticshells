@@ -661,8 +661,9 @@ double Cell::contactForce(const Cell& other_cell, const Box& box) const
             }
         }
 
-        fi = project_force(other_cell, box, force_collector, i);
-        contact_force += fi;
+        //fi = project_force(other_cell, box, force_collector, i);
+        //contact_force += fi;
+        contact_force += force_collector.length();
         force_collector = Vector3D(0, 0, 0);
     }
 

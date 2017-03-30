@@ -439,17 +439,17 @@ Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vect
         Box::getDistance(dij, partner->r_c, target->r_c, box);
         force = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
     }
-    else
-    {
-        int i = target->getId();
-        int j = partner->getId();
-
-        if (i != j && !target->isNeighbor(j))
-        {
-            Box::getDistance(dij, partner->r_c, target->r_c, box);
-            force = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
-        }
-    }
+//    else
+//    {
+//        int i = target->getId();
+//        int j = partner->getId();
+//
+//        if (i != j && !target->isNeighbor(j))
+//        {
+//            Box::getDistance(dij, partner->r_c, target->r_c, box);
+//            force = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
+//        }
+//    }
     
     return force;
 }
@@ -527,7 +527,7 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                         force = getNbForce(target, partner, cells, box);
                         verts_forces[ target->getId() ] += force;
                     }
-                    if ( target->getCellId() == cell2id && partner->getCellId() == cell1id )
+                    else if ( target->getCellId() == cell2id && partner->getCellId() == cell1id )
                     {
                         force = getNbForce(partner, target, cells, box);
                         verts_forces[ partner->getId() ] += force;
@@ -549,7 +549,7 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                             force = getNbForce(target, partner, cells, box);
                             verts_forces[ target->getId() ] += force;
                         }
-                        if ( target->getCellId() == cell2id && partner->getCellId() == cell1id )
+                        else if ( target->getCellId() == cell2id && partner->getCellId() == cell1id )
                         {
                             force = getNbForce(partner, target, cells, box);
                             verts_forces[ partner->getId() ] += force;
@@ -566,8 +566,9 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
     {
         if (verts_forces[vix].length_sq() > 0)
         {
-            fi = cells[cell1id].project_force(cells[cell2id], box, verts_forces[vix], vix);
-            contact_force += fi;
+            //fi = cells[cell1id].project_force(cells[cell2id], box, verts_forces[vix], vix);
+            //contact_force += fi;
+            /contact_force += verts_forces[vix].length();
         }
     }
     return contact_force;
