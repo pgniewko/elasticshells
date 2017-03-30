@@ -50,6 +50,11 @@ double CvContactForce::observe(const Box& box, std::vector<Cell>& cells, const D
     average_cf2 /= counter;
     
     double stdev = sqrt( average_cf2 - average_cf * average_cf );
+    if (stdev == 0.0)
+    {
+        return 0.0;
+    }
+    
     double cv = stdev / average_cf;
     return cv;
 }
