@@ -26,7 +26,7 @@ double CvContactForce::observe(const Box& box, std::vector<Cell>& cells, const D
         {
             if (i_param == 0)
             {
-                cf = cells[i].contactForce(cells[j], box);
+                cf = cells[i].contactForce(cells[j], box, true);
             } 
             else if (i_param == 1)
             {

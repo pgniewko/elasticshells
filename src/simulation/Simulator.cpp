@@ -322,7 +322,7 @@ void Simulator::analyze()
     
     for (std::size_t i = 1; i <= frames_number; i++)
     {        
-        simulator_logs << utils::LogLevel::INFO << "[analyze] Processing frame number: " << i << "\n" ;
+        simulator_logs << utils::LogLevel::INFO << "[analyze] Processing frame number: " << i <<  "/" << frames_number<< "\n" ;
         restarter.readFrame(traj.getTrajFile(), cells, i);
         restarter.assignTurgors(turgor_list[i - 1], cells);
         restarter.assignBoxSize(boxsize_list[i - 1], box);

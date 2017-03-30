@@ -25,8 +25,7 @@ double CellCellStress::observe(const Box& box, std::vector<Cell>& cells, const D
         {
             if (i != j)
             {
-                //contact_force = cells[i].contactForceNew(cells[j], box);
-                contact_force = cells[i].contactForce(cells[j], box);
+                contact_force = cells[i].contactForce(cells[j], box, false);
                 contact_area = cells[i].contactArea(cells[j], box);
 
                 if (contact_force > 0 && contact_area > 0)
