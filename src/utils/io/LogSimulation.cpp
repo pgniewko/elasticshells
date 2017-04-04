@@ -130,6 +130,11 @@ void LogSimulation::printHeader()
 
 void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
+    for (uint i = 0; i < cells.size(); i++)
+    {
+        cells[i].update();    
+    }
+    
     for (std::vector<Observer*>::iterator it = observers.begin(); it != observers.end(); ++it)
     {
         fprintf(os, (*it)->getFormat(), (*it)->observe(box, cells, dl) );

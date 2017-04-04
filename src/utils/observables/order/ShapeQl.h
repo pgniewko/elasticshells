@@ -1,9 +1,9 @@
 #ifndef SHAPEQL_H
 #define	SHAPEQL_H
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<steinhardt.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <steinhardt.h>
 
 #include "utils/observables/Observer.h"
 

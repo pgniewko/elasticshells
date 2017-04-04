@@ -1,9 +1,9 @@
 #ifndef WL_H
 #define	WL_H
 
-#include<stdio.h>       /* printf, */
-#include<stdlib.h>      /* malloc */
-#include<steinhardt.h>  /* */
+#include <stdio.h>       /* printf, */
+#include <stdlib.h>      /* malloc */
+#include <steinhardt.h>  /* */
 
 #include "utils/observables/Observer.h"
 
