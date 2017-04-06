@@ -18,12 +18,15 @@ ifeq ($(TEST), 1)
 endif
 
 TARGET       := $(BIN)/biofilm
+MESH         := $(BIN)/mesh
 TEST_RUNNER  := $(TESTS)/testsrunner
 
 
 SOURCES	     := main.cpp \
 		$(shell find $(SRC) -type f -name "*.cpp")
 
+MESH_SOURCES := mesh.cpp \
+		$(shell find $(SRC) -type f -name "*.cpp")
 
 HEADERS	     := $(shell find $(SRC) -type f -name "*.h")
 
@@ -31,16 +34,22 @@ HEADERS	     := $(shell find $(SRC) -type f -name "*.h")
 TEST_SOURCES := $(shell find $(TESTS) -type f -name "*.cpp") \
 		$(shell find $(SRC)   -type f -name "*.cpp")
 
-
 OBJECTS      := $(SOURCES:.cpp=.o)
 
-
+MESH_OBJECTS := $(MESH_SOURCES:.cpp=.o)
+	
 TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
 DEPS         := $(OBJECTS:.o=.d)
 
 #Linking commands:
 $(TARGET): $(OBJECTS)
+	@echo LINKING ...
+	$(MKDIR) $(@D)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
+	@echo BUILDING IS DONE
+
+$(MESH): $(MESH_OBJECTS)
 	@echo LINKING ...
 	$(MKDIR) $(@D)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
@@ -73,6 +82,9 @@ clean:
 tests: $(TEST_RUNNER)
 	@$(TEST_RUNNER)
 	@echo Test done.
+
+mesh: $(MESH)
+	@echo Mesh code is built.
 
 install: $(TARGET)
 	@echo You must be root to install. Have password ready!
