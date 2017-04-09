@@ -26,16 +26,30 @@
 #include "geometry/algorithms/Triangulation.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "geometry/algorithms/PlatonicTriangulatoin.h"
+#include "geometry/algorithms/RandomTriangulation.h"
 #include "src/Cell.h"
 
 //Timer clocks;
 //double simulation_time;
 
-bool isUnique(std::list<Vector3D>& vlist, Vector3D& v)
+//bool isUnique(std::list<Vector3D>& vlist, Vector3D& v)
+//{
+//    for (std::list<Vector3D>::iterator i = vlist.begin(); i != vlist.end(); ++i)
+//    {
+//        if (i->x == v.x && i->y == v.y && i->z == v.z)
+//        {
+//            return false;
+//        }
+//    }
+//
+//    return true;
+//}
+
+bool isUnique(std::list<Vector3D>& vlist, Vector3D& v, double e)
 {
     for (std::list<Vector3D>::iterator i = vlist.begin(); i != vlist.end(); ++i)
     {
-        if (i->x == v.x && i->y == v.y && i->z == v.z)
+        if ( fabs(i->x - v.x) < e && fabs(i->y - v.y) < e && fabs(i->z - v.z) < e )
         {
             return false;
         }
@@ -53,7 +67,7 @@ int constructVertices(std::list<Triangle>& tris, Vertex* vertices)
 
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
-        if ( isUnique(vectors, i->a) )
+        if ( isUnique(vectors, i->a, 0.001) )
         {
             vectors.push_back(i->a);
             xtmp = i->a.x;
@@ -64,7 +78,7 @@ int constructVertices(std::list<Triangle>& tris, Vertex* vertices)
             number_v++;
         }
 
-        if ( isUnique(vectors, i->b) )
+        if ( isUnique(vectors, i->b, 0.001) )
         {
             vectors.push_back(i->b);
             xtmp = i->b.x;
@@ -75,7 +89,7 @@ int constructVertices(std::list<Triangle>& tris, Vertex* vertices)
             number_v++;
         }
 
-        if ( isUnique(vectors, i->c) )
+        if ( isUnique(vectors, i->c, 0.001) )
         {
             vectors.push_back(i->c);
             xtmp = i->c.x;
@@ -90,11 +104,11 @@ int constructVertices(std::list<Triangle>& tris, Vertex* vertices)
     return number_v;
 }
 
-int getVertex(Vector3D& v, Vertex* vertices, int number_v)
+int getVertex(Vector3D& v, Vertex* vertices, int number_v, double e)
 {
     for (int i = 0; i < number_v; i++)
     {
-        if (vertices[i].r_c.x == v.x && vertices[i].r_c.y == v.y && vertices[i].r_c.z == v.z)
+        if ( fabs(vertices[i].r_c.x - v.x)  < e && fabs(vertices[i].r_c.y - v.y) < e && fabs(vertices[i].r_c.z - v.z) < e)
         {
             return vertices[i].getId();
         }
@@ -110,9 +124,9 @@ int  constructVTriangles(std::list<Triangle>& tris, Vertex* vertices, VertexTria
 
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
-        int va = getVertex(i->a, vertices, number_v);
-        int vb = getVertex(i->b, vertices, number_v);
-        int vc = getVertex(i->c, vertices, number_v);
+        int va = getVertex(i->a, vertices, number_v, 0.001);
+        int vb = getVertex(i->b, vertices, number_v, 0.001);
+        int vc = getVertex(i->c, vertices, number_v, 0.001);
         VertexTriangle vrxt(va, vb, vc);
         triangles[number_t] = VertexTriangle(vrxt);
         triangles[number_t].setId(number_t);
@@ -244,23 +258,80 @@ int main(int argc, char** argv)
 
     int number_v = 0;
     int number_t = 0;
-    int depths[8] = {1, 2, 3, 4, 5, 6, 7, 8};
 
-    std::cout << "Level & Points & Triangles & $q_A$ & $q_\\theta$ & $q$ \\\\  [0.5ex]  \\hline \\hline" << std::endl;
+    //    int depths[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+//    std::cout << "Level & Points & Triangles & $q_A$ & $q_\\theta$ & $q$ \\\\  [0.5ex]  \\hline \\hline" << std::endl;
+//    for (int i = 0; i < 8; i++)
+//    {
+//        SimpleTriangulation mesh(i + 1);
+//        //PlatonicTriangulatoin mesh(i+1, 3);
+//        std::list<Triangle> tris = mesh.triangulate();
+//        number_v = constructVertices(tris, vertices);
+//        number_t = constructVTriangles(tris, vertices, triangles, number_v);
+//        constructTopology(vertices, triangles, number_v, number_t);
+//
+//        std::cout << depths[i] << " & " << number_v << " & " << tris.size() << " & " << std::setprecision(5) << q_A(vertices, triangles, number_v) << " & " << std::setprecision(5) << q_theta(tris) << " & " << std::setprecision(5) << q(tris) << " \\\\ [1ex] \\hline" << std::endl;
+//    }
+   
+    
+    double rvs[] = {0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1};
+    std::cout << "Rvs & Points & Triangles & $q_A$ & $q_\\theta$ & $q$ \\\\  [0.5ex]  \\hline \\hline" << std::endl;
+    
+    double qa, qt, qr;
 
+    for (int i = 0; i < 9; i++)
+    {
+        qa = 0.0;
+        qt = 0.0;
+        qr = 0.0;
+        for (int j=0; j<5; j++)
+        {
+            RandomTriangulation rnd(25, 100, 0.1, 1000.0, rvs[i]);
+            std::list<Triangle> tris = rnd.triangulate(2.5);
+
+            number_v = constructVertices(tris, vertices);
+            number_t = constructVTriangles(tris, vertices, triangles, number_v);
+            constructTopology(vertices, triangles, number_v, number_t);
+            qa += q_A(vertices, triangles, number_v);
+            qt += q_theta(tris);
+            qr  += q(tris);
+        
+        }
+        qa /= 5;
+        qt /= 5;
+        qr /= 5;
+        std::cout << rvs[i] << " & " << number_v << " & " << number_t << " & " << std::setprecision(5) << qa << " & " << std::setprecision(5) << qt << " & " << std::setprecision(5) << qr << " \\\\ [1ex] \\hline" << std::endl;
+    }
+    
+    double temps[] = {0.1, 1.0, 10, 50, 100, 250, 500, 750};
+    std::cout << "Temp & Points & Triangles & $q_A$ & $q_\\theta$ & $q$ \\\\  [0.5ex]  \\hline \\hline" << std::endl;
     for (int i = 0; i < 8; i++)
     {
-        SimpleTriangulation mesh(i + 1);
-        //PlatonicTriangulatoin mesh(i+1, 3);
-        std::list<Triangle> tris = mesh.triangulate();
+        qa = 0.0;
+        qt = 0.0;
+        qr = 0.0;
+       
+        for (int j=0; j<5; j++)
+        {
+            RandomTriangulation rnd(25, 100, temps[i], 1000.0, 0.1);
+            std::list<Triangle> tris = rnd.triangulate(2.5);
 
-        number_v = constructVertices(tris, vertices);
-        number_t = constructVTriangles(tris, vertices, triangles, number_v);
-        constructTopology(vertices, triangles, number_v, number_t);
-
-        std::cout << depths[i] << " & " << number_v << " & " << tris.size() << " & " << std::setprecision(5) << q_A(vertices, triangles, number_v) << " & " << std::setprecision(5) << q_theta(tris) << " & " << std::setprecision(5) << q(tris) << " \\\\ [1ex] \\hline" << std::endl;
+            number_v = constructVertices(tris, vertices);
+            number_t = constructVTriangles(tris, vertices, triangles, number_v);
+            constructTopology(vertices, triangles, number_v, number_t);
+            qa += q_A(vertices, triangles, number_v);
+            qt += q_theta(tris);
+            qr += q(tris);            
+        }
+        qa /= 5;
+        qt /= 5;
+        qr /= 5;        
+        std::cout << temps[i] << " & " << number_v << " & " << number_t << " & " << std::setprecision(5) << qa << " & " << std::setprecision(5) << qt << " & " << std::setprecision(5) << qr << " \\\\ [1ex] \\hline" << std::endl;
 
     }
+
+    
+    
 
     delete[] vertices;
     delete[] triangles;
