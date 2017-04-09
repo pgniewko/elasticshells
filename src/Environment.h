@@ -20,8 +20,8 @@
 #define MAX_CELLS 100
 #define MAX_V 2501
 #define MAX_T 5000
-#define NEIGH_MAX 10
-#define TRIAN_MAX 20
+#define NEIGH_MAX 12
+#define TRIAN_MAX 24
 #define MAX_M 50 // maximum number of linked-domains - in each direction
 #define MAX_D_NEIGH 26 // MUST BE 26 - ALWAYS !
 
