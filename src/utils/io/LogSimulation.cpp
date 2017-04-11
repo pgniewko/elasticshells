@@ -105,6 +105,11 @@ void LogSimulation::registerObservers()
         {
             Observer* obs_obj = ObserverFactory::createInstance( single_line[0], single_line[1].c_str(), single_line[2].c_str() );
 
+            if (obs_obj == 0)
+            {
+                log_logger << utils::LogLevel::WARNING << "Could not register observer: * " << single_line[0] << " *\n";
+                continue;
+            }
             if (single_line.size() > 3)
             {
                 obs_obj->set_params(3, single_line);
