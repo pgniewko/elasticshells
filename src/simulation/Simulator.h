@@ -110,7 +110,7 @@ class Simulator
         double volumeFraction();
 
         double MIN_FORCE_SQ = 0.0;
-        double FORCE_FRAC = 0.005;
+        double FORCE_FRAC = 0.0001;//5;
 
         int number_of_cells;
         std::string triangulator;

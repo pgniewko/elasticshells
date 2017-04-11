@@ -61,7 +61,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setPbc(args.pbc);
     box.setEwall(args.E_wall);
     box.setNu(args.nu);
-    box.setDefaultSchedule(params.nsteps, args.box_step, args.bsxe, args.bsye, args.bsze, 0.0, 0.0, 0.0);
+    box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configureScheduler(args.sch_config_file);
 
     domains.setupDomainsList(getLengthScale(), box);
@@ -355,7 +355,6 @@ void Simulator::simulate(int steps)
 
     // TRAJECTORY FILE OPEND FOR DUMP
     traj.open();
-    
     // IF SIMULATION RESTART - DON'T DUMP THE STAT
     if (!Simulator::RESTART_FLAG)
     {
@@ -367,7 +366,6 @@ void Simulator::simulate(int steps)
         traj.save_box(box, steps * params.dt);
         box.saveRemainingSchedule();
     }
-
     
     //================
     calcForces();
@@ -382,6 +380,7 @@ void Simulator::simulate(int steps)
     
     bool resized = false;
 
+    
     for (int i = 0; i < steps; i++)
     {
         if ( box.nthTodo() )
