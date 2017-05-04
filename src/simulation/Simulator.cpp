@@ -76,11 +76,20 @@ Simulator::~Simulator() {}
 
 void Simulator::diagnoseParams(arguments args)
 {
-    if (args.d == 0)
+    if (args.d < 0)
         throw NotImplementedException("NotImplementedException:\n"
                                       "Single point representation is not implemented yet. "
                                       "Simulator is about to terminate !");
 
+    if (args.d == 0 && STRCMP (args.tritype, "rnd") )
+    {
+        throw NotAllowedException("NotAllowedException:\n"
+                                  "Random triangulation cannot be used "
+                                  "with single point representation.\n"
+                "Simulation exits with EXIT_SUCCES status !");
+        exit(EXIT_SUCCESS);
+    }
+        
     if (args.d > 8)
         throw DataException("DataException:\n"
                             "Depth of a triangulation too large ! "
@@ -355,7 +364,7 @@ void Simulator::simulate(int steps)
 
     // TRAJECTORY FILE OPEND FOR DUMP
     traj.open();
-    // IF SIMULATION RESTART - DON'T DUMP THE STAT
+    // IF SIMULATION RESTART - DON'T DUMP THE STATS
     if (!Simulator::RESTART_FLAG)
     {
         traj.save_traj(cells, getTotalVertices());

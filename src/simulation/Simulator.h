@@ -15,6 +15,7 @@
 #include "exceptions/MaxSizeException.h"
 #include "exceptions/DataException.h"
 #include "exceptions/NotImplementedException.h"
+#include "exceptions/NotAllowedException.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "geometry/algorithms/PlatonicTriangulatoin.h"
 #include "geometry/algorithms/RandomTriangulation.h"
@@ -110,7 +111,7 @@ class Simulator
         double volumeFraction();
 
         double MIN_FORCE_SQ = 0.0;
-        double FORCE_FRAC = 0.0001;//5;
+        double FORCE_FRAC = 0.005;
 
         int number_of_cells;
         std::string triangulator;
