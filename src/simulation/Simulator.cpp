@@ -26,6 +26,11 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
         simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
         exit(EXIT_FAILURE);
     }
+    catch (NotAllowedException& e)
+    {
+        simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
+        exit(EXIT_FAILURE);
+    }
     catch (DataException& e)
     {
         simulator_logs << utils::LogLevel::CRITICAL << e.what() << "\n";
@@ -82,13 +87,15 @@ void Simulator::diagnoseParams(arguments args)
                                       "Simulator is about to terminate !");
 
     if (args.d == 0 && STRCMP (args.tritype, "rnd") )
-    {
         throw NotAllowedException("NotAllowedException:\n"
                                   "Random triangulation cannot be used "
                                   "with single point representation.\n"
-                "Simulation exits with EXIT_SUCCES status !");
-        exit(EXIT_SUCCESS);
-    }
+                "Simulation exits with EXIT_FAILURE status !");
+    
+    if ( (args.d == 0 && args.restart) || (args.d == 0 && args.analyze) )
+        throw NotAllowedException("NotAllowedException:\n"
+                                  "Simulation for a single node representation"
+                "cannot be restarted or post-analyzed!");
         
     if (args.d > 8)
         throw DataException("DataException:\n"
