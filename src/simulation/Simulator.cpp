@@ -96,7 +96,7 @@ void Simulator::diagnoseParams(arguments args)
         throw NotAllowedException("NotAllowedException:\n"
                                   "Simulation for a single node representation"
                 "cannot be restarted or post-analyzed!");
-        
+    
     if (args.d > 8)
         throw DataException("DataException:\n"
                             "Depth of a triangulation too large ! "
@@ -715,6 +715,12 @@ void Simulator::set_min_force()
 
     MIN_FORCE_SQ = FORCE_FRAC * max_turgor * average_area;
     MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
+    
+    if (cells[0].getNumberVertices() == 1)
+    {
+        FORCE_FRAC = 1e-8;
+        MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
+    } 
     
     simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
 }
