@@ -5,17 +5,15 @@ double cot(double x)
     return 1.0 / tan(x);
 }
 
-VertexTriangle::VertexTriangle() {}
-
 VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), myid(-1) 
 {
     try
     {
-    if (a < 0)
-        throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
+        if (a < 0)
+            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
                                "Runtime data is incorrect. Simulation will be terminated.\n");
-    if (b < 0)
-        throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
+        if (b < 0)
+            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
                                "Runtime data is incorrect. Simulation will be terminated.\n");
     if (c < 0)
         throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
@@ -36,6 +34,8 @@ VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), myid(
         //exit(EXIT_FAILURE);
     }
 }
+
+VertexTriangle::VertexTriangle() : VertexTriangle(0, 0, 0) {}
 
 VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(orig.ib), ic(orig.ic), myid(orig.myid)
 {
