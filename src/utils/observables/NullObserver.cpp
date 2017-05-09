@@ -11,7 +11,7 @@ void NullObserver::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double NullObserver::observe(const Box& box, std::vector<Cell>& cells, const DomainList&)
+double NullObserver::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     return 0.0;
 }
