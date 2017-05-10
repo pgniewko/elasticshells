@@ -13,7 +13,6 @@ void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
     std::list<Vector3D> vectors;
     double xtmp, ytmp, ztmp;
 
-    
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
         if ( Tinker::isUnique(vectors, i->a) )
@@ -130,6 +129,12 @@ void Tinker::constructTopology(Cell& cell)
 void Tinker::constructBSprings(Cell& cell)
 {
 
+    if (cell.getNumberVertices() == 1)
+    {
+        cell.number_s = 0;
+        return;    
+    }
+    
     for (int x3 = 0; x3 < cell.number_v; x3++)
     {
         for (int j = 0; j < cell.vertices[x3].numBonded; j++)
