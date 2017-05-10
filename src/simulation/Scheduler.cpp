@@ -134,7 +134,7 @@ void Scheduler::saveRemainingSchedule()
 
 void Scheduler::setDefault(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
 {
-    default_schedule = schedule_t(ns, in, _dx, _dy, _dz, _rx, _ry, _rz, 0.90);
+    default_schedule = schedule_t(ns, in, _dx, _dy, _dz, _rx, _ry, _rz, 0.95);
 }
 
 void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)

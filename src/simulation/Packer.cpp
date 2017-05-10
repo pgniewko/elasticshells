@@ -4,7 +4,7 @@
 utils::Logger Packer::packer_logs("packer");
 
 
-double Packer::MIN_FORCE(1.0e-16);
+double Packer::MIN_FORCE(1.0e-15);
 double Packer::r_ext(1.0e-2);
 double Packer::P_MIN(1e-9);
 double Packer::P_MAX(2e-9);
@@ -82,7 +82,7 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness, boo
 
         
         do
-        {   
+        {
             Packer::inflatePoints(points);
             Packer::recenterCells(points, sim_box);
             do
@@ -91,7 +91,7 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness, boo
             }
             while ( Packer::check_min_force(points, sim_box) );
             
-            Packer::FIRE_DT = 0.1;
+            Packer::FIRE_DT = 0.001;
             Packer::FIRE_ALPHA = 0.1;
             Packer::FIRE_N = 0;
         
@@ -130,7 +130,7 @@ void Packer::fire(std::vector<point_t>& points, box_t& box)
 {
     std::size_t n = points.size();
     double f_inc = 1.1;
-    double f_dec = 0.5;
+    double f_dec = 0.25;
     double a_start = 0.1;
     double f_a = 0.99;
     
@@ -167,7 +167,6 @@ void Packer::fire(std::vector<point_t>& points, box_t& box)
     Packer::FIRE_N++;
     if (P <= 0.0)
     {
-        
         Packer::FIRE_DT *= f_dec;
         Packer::FIRE_ALPHA = a_start;
         for (std::size_t i = 0; i < n; i++)

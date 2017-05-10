@@ -743,7 +743,7 @@ void Simulator::set_min_force()
     
     if (cells[0].getNumberVertices() == 1)
     {
-        MIN_FORCE_SQ = 1e-8;
+        MIN_FORCE_SQ = 1e-12;
         MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
     } 
     
