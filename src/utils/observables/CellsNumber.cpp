@@ -11,7 +11,7 @@ void CellsNumber::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double CellsNumber::observe(const Box& box, std::vector<Cell>& cells, const DomainList&)
+double CellsNumber::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     return (double) cells.size();
 }
