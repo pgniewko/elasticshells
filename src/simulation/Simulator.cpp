@@ -69,7 +69,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configureScheduler(args.sch_config_file);
 
-    domains.setupDomainsList(getLengthScale(), box);
+    domains.setupDomainsList(getLengthScale( std::max(0.5*args.init_radius1, args.init_radius2) ), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     Cell::no_bending = args.nobending;
@@ -86,9 +86,9 @@ void Simulator::diagnoseParams(arguments args)
                                       "Single point representation is not implemented yet. "
                                       "Simulator is about to terminate !");
 
-    if (args.d == 0 && STRCMP (args.tritype, "rnd") )
+    if (args.d == 0 && STRCMP(args.tritype, "rnd") || args.d == 0 && STRCMP(args.tritype, "plato") )
         throw NotAllowedException("NotAllowedException:\n"
-                                  "Random triangulation cannot be used "
+                                  "Random and Plato triangulation cannot be used "
                                   "with single point representation.\n"
                 "Simulation exits with EXIT_FAILURE status !");
     
@@ -96,6 +96,11 @@ void Simulator::diagnoseParams(arguments args)
         throw NotAllowedException("NotAllowedException:\n"
                                   "Simulation for a single node representation"
                 "cannot be restarted or post-analyzed!");
+    
+    if ( args.d == 0 && args.const_volume && args.nu != 0.5 )
+        throw NotAllowedException("NotAllowedException:\n"
+                                  "Single node representation:"
+                " for const-volume option nu has to be equal to 0.5!");
     
     if (args.d > 8)
         throw DataException("DataException:\n"
@@ -153,16 +158,11 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZmin() << "\n";
 }
 
-void Simulator::initCells(int N, double r0)
-{
-    initCells(N, r0, r0);
-}
-
 void Simulator::initCells(int N, double r_min, double r_max, bool jam)
 {
     if (r_min > r_max)
     {
-        simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: r_min > r_max. Simulator will set: r_min = r_max \n";
+        simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: r_min > r_max. Simulator sets: r_min = r_max \n";
         r_max = r_min;
     }
 
@@ -197,7 +197,6 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
             Vector3D tmpcm = cells[i].getCm();
             Vector3D delta = shift - tmpcm;
             rsum = cells[i].getInitR() + r0 + rc + constants::epsilon;
-
             if ( delta.length() < rsum)
             {
                 flag = false;
@@ -214,9 +213,25 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
     if(jam)
     {
         simulator_logs << utils::LogLevel::INFO  << "SIMULATION STARTS FROM THE JAMMED PACKING\n";
-        Packer::packCells(box, cells, params.th);
+        if (params.d == 0)
+        {
+            Packer::packCells(box, cells, params.th, false);
+        }
+        else
+        {
+            Packer::packCells(box, cells, params.th, true);
+        }
     }
 
+    if (params.d == 0)
+    {
+        simulator_logs << utils::LogLevel::WARNING  << "Single vertex representation\n";
+        simulator_logs << utils::LogLevel::WARNING  << "Vertex radius reassignment: cell.vertex_r = cell.init_r\n";
+        for (uint i = 0; i < number_of_cells; i++)
+        {
+            cells[i].setVertexR( cells[i].getInitR() );
+        }
+    }
     
     restarter.saveTopologyFile(cells, params.model_t);
     set_min_force();
@@ -271,6 +286,9 @@ void Simulator::addCell(double r0)
         }
 
         Cell newCell(tris);
+        newCell.setVertexR(params.r_vertex);
+        newCell.setCellId(number_of_cells);
+        newCell.setInitR(r0);
         
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
@@ -279,11 +297,12 @@ void Simulator::addCell(double r0)
         newCell.setDp(params.dp, params.ddp);
         
         double radial_eps = 1.0 + (0.5 * (1 - params.nu)  * (newCell.getTurgor() * r0) / (params.E_cell * params.th));
-        newCell.setConstantVolume( radial_eps );
+        if (newCell.getNumberVertices() == 1)
+        {
+            radial_eps = 1.0;
+        }
         
-        newCell.setVertexR(params.r_vertex);
-        newCell.setCellId(number_of_cells);
-        newCell.setInitR(r0);
+        newCell.setConstantVolume (radial_eps);
 
         pushCell(newCell);
     }
@@ -384,6 +403,7 @@ void Simulator::simulate(int steps)
     }
     
     //================
+    update_neighbors_list();
     calcForces();
     for (int i = 0; i < number_of_cells; i++)
     {
@@ -451,6 +471,7 @@ void Simulator::simulate(int steps)
 
         if ( (i + 1) % params.log_step == 0 )
         {
+            update_neighbors_list();
             log_sim.dumpState(box, cells, domains);
             saveTurgors();
             traj.save_box(box, (i + 1) * params.dt);
@@ -586,10 +607,10 @@ double Simulator::volumeFraction()
 {
     double box_vol = box.getVolume();
     double cells_vol = 0.0;
+
     for (uint i = 0; i < cells.size(); i++)
         cells_vol += cells[i].calcVolume();
-    
-    //std::cout  << "vol frac=" << (cells_vol/box_vol) << std::endl;
+
     return (cells_vol/box_vol);
         
 }
@@ -606,13 +627,17 @@ int Simulator::getTotalVertices()
     return totalnumber;
 }
 
-double Simulator::getLengthScale()
+double Simulator::getLengthScale(double r_0)
 {
     double maxscale = 0.0;
 
     if (params.nbhandler == 2)
     {
         maxscale = std::max(maxscale, params.r_vertex);
+        if (params.d == 0)
+        {
+            maxscale = std::max(maxscale, r_0) ;
+        }
     }
 
     return maxscale;
@@ -718,7 +743,7 @@ void Simulator::set_min_force()
     
     if (cells[0].getNumberVertices() == 1)
     {
-        FORCE_FRAC = 1e-8;
+        MIN_FORCE_SQ = 1e-8;
         MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
     } 
     

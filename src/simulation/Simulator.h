@@ -64,7 +64,6 @@ class Simulator
         void simulate();
         void simulate(int);
 
-        void initCells(int, double);
         void initCells(int, double, double, bool = false);
 
         void restart();
@@ -95,7 +94,7 @@ class Simulator
         void fire();
 
         int getTotalVertices();
-        double getLengthScale();
+        double getLengthScale(double=0.0);
 
         void updateCells();
         void update_neighbors_list();

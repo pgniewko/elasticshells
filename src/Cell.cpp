@@ -39,16 +39,19 @@ Cell::~Cell() {}
 
 void Cell::calcBondedForces()
 {
-    if (fem_flag)
+    if (number_v > 1 && number_t > 1)
     {
-        calcFemForces();
-    }
-    else
-    {
-        calcHarmonicForces();
-    }
+        if (fem_flag)
+        {
+            calcFemForces();
+        }
+        else
+        {
+            calcHarmonicForces();
+        }
 
-    calcOsmoticForces();
+        calcOsmoticForces();
+    }
 }
 
 void Cell::calcHarmonicForces()
@@ -210,14 +213,22 @@ double Cell::calcSurfaceArea() const
 double Cell::calcVolume(double eps) const
 {
     double volume = 0.0;
-    int va, vb, vc;
 
-    for (int i = 0; i < number_t; i++)
+    if (number_v == 1)
     {
-        va = triangles[i].ia;
-        vb = triangles[i].ib;
-        vc = triangles[i].ic;
-        volume += Tetrahedron::volume(vertices[va].r_c, vertices[vb].r_c, vertices[vc].r_c, cm_m, eps);
+        volume = 4.0 / 3.0 * constants::pi * params.init_r*params.init_r*params.init_r;
+    }
+    else
+    {
+        int va, vb, vc;
+
+        for (int i = 0; i < number_t; i++)
+        {
+            va = triangles[i].ia;
+            vb = triangles[i].ib;
+            vc = triangles[i].ic;
+            volume += Tetrahedron::volume(vertices[va].r_c, vertices[vb].r_c, vertices[vc].r_c, cm_m, eps);
+        }
     }
 
     return volume;
@@ -247,6 +258,11 @@ void Cell::calcCM()
 
 void Cell::setBSprings(double E, double t, double nu_)
 {
+    if ( number_v == 1 || number_t == 1)
+    {
+        return;
+    }
+    
     for (int i = 0; i < number_s; i++)
     {
         bhinges[i].setD(E, t, nu_);
@@ -302,6 +318,11 @@ void Cell::setDp(double dP, double ddp)
 
 void Cell::setSpringConst(double E, double t, double nu_, std::string model_t)
 {
+    if (number_v == 1)
+    {
+        return;
+    }
+    
     if ( model_t.compare("ms_kot") == 0 )
     {
         
@@ -395,7 +416,7 @@ void Cell::setSpringConst(double E, double t, double nu_, std::string model_t)
 
                             if (third == -1)
                             {
-                                cell_log <<  utils::LogLevel::SEVERE  << "PROBLEM IN setSpringConst(). \n Simulation is exiting.\n";
+                                cell_log <<  utils::LogLevel::SEVERE  << "PROBLEM IN setSpringConst(). \n Simulation terminates.\n";
                                 exit(EXIT_FAILURE);
                             }
 
