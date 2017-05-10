@@ -37,7 +37,6 @@ double PackingQl::calcQl(const Box& box, std::vector<Cell>& cells, unsigned int 
     {
         if (i != ci)
         {
-//            if ( cells[ci].isInContact(cells[i], box) )
             if ( dl.isInContact(ci, i, cells, box) )                
             {
                 Vector3D dij;
