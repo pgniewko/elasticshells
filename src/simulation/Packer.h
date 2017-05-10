@@ -34,7 +34,7 @@ public:
     Packer(const Packer& orig);
     virtual ~Packer();
     
-    static void packCells(Box&, std::vector<Cell>&, double);
+    static void packCells(Box&, std::vector<Cell>&, double,bool=true);
     
 private:
     

@@ -21,7 +21,7 @@ Packer::Packer(const Packer& orig) {}
 
 Packer::~Packer() {}
 
-void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
+void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness, bool flag)
 {
     std::size_t n = cells.size();
     std::vector<point_t> points;
@@ -47,6 +47,7 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
     do
     {
         Packer::r_ext = 1.0e-2;
+        
         for (std::size_t i = 0; i < n; i++)
         {
             points[i].r_c.x = uniform(-sim_box.x, sim_box.x);
@@ -67,32 +68,37 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness)
             r0 = cells[i].getInitR();
             rv = cells[i].getVertexR();
             nu = cells[i].getNu();
-            radius_i = r0 * ( 1 + (1-nu) * P * r0 / (2.0*E*t)) + rv;
+            if (flag)
+            {
+                radius_i = r0 * ( 1 + (1-nu) * P * r0 / (2.0*E*t)) + rv;
+            }
+            else
+            {
+                radius_i = r0;
+            }
             points[i].radius = 0.01 * radius_i;
             points[i].radius_f = radius_i;
         }
-    
+
+        
         do
-        {
+        {   
             Packer::inflatePoints(points);
             Packer::recenterCells(points, sim_box);
-        
             do
             {
                 Packer::fire(points, sim_box);
             }
             while ( Packer::check_min_force(points, sim_box) );
-       
+            
             Packer::FIRE_DT = 0.1;
             Packer::FIRE_ALPHA = 0.1;
             Packer::FIRE_N = 0;
-
         
             for (std::size_t i = 0; i < n; i++)
             {
                 points[i].v_c *= 0.0; // freeze the system
             }
-       
         }
         while( !Packer::jammed(points, sim_box, P_final) ); // jamming condition, very small, residual pressure
 
@@ -159,7 +165,6 @@ void Packer::fire(std::vector<point_t>& points, box_t& box)
     }
     
     Packer::FIRE_N++;
-    
     if (P <= 0.0)
     {
         
@@ -303,9 +308,7 @@ void Packer::velocityVerlet(std::vector<point_t>& points, box_t& box)
     // UPDATE VELOCITIES
     for (std::size_t i = 0; i < n; i++)
     {
-
         points[i].v_c += 0.5 * dt * points[i].f_c;
-
     }
     
     calcForces(points, box);
@@ -322,7 +325,6 @@ void Packer::velocityVerlet(std::vector<point_t>& points, box_t& box)
 bool Packer::check_min_force(std::vector<point_t>& points, box_t& box)
 {
     Packer::calcForces(points, box);
-    
     std::size_t n = points.size();
     for (std::size_t i = 0; i < n; i++)
     {
@@ -337,9 +339,7 @@ bool Packer::check_min_force(std::vector<point_t>& points, box_t& box)
 
 bool Packer::jammed(std::vector<point_t>& points, box_t& box, double& pf)
 {
-    
     double pressure = Packer::calcPressure(points, box);
-    
     if (pressure > Packer::P_MIN && pressure < Packer::P_MAX)
     {
         pf = pressure;
@@ -355,7 +355,7 @@ bool Packer::jammed(std::vector<point_t>& points, box_t& box, double& pf)
     {
         Packer::r_ext = -0.5 * Packer::r_ext;
     }
-    
+
     return false;
 }
 
@@ -497,7 +497,6 @@ double Packer::boxForce(point_t& point, box_t& box)
 
 bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t& box, double& Z)
 {
-
     bool thereIsRattler = false;
 
     double contacts_sum = 0;
@@ -546,6 +545,7 @@ bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t
     {
         overpacked = true;
     }
+    
     return (thereIsRattler || overpacked );
 }
 
