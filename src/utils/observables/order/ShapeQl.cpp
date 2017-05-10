@@ -27,6 +27,10 @@ double ShapeQl::observe(const Box& box, std::vector<Cell>& cells, const DomainLi
 double ShapeQl::calcQl(Cell& cell)
 {
     int nk = cell.getNumberVertices();
+    if (nk == 1)
+    {
+        return 0.0;
+    }
     
     double qss = 0.0;
     double *x, *y, *z;

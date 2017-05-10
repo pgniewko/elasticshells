@@ -27,6 +27,10 @@ double ShapeWl::observe(const Box& box, std::vector<Cell>& cells, const DomainLi
 double ShapeWl::calcWl(Cell& cell)
 {
     int nk = cell.getNumberVertices();
+    if (nk == 1)
+    {
+        return 0.0;
+    }
     
     double qss = 0.0;
     double *x, *y, *z;
