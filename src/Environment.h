@@ -43,5 +43,11 @@ namespace constants
                            };
 }
 
+namespace analyze
+{
+        double MIN_FORCE_SQ = 0.0;
+        double FORCE_FRAC = 0.0;
+}
+
 #endif	/* ENVIRONMENT_H */
 

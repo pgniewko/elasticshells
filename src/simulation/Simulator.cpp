@@ -86,7 +86,7 @@ void Simulator::diagnoseParams(arguments args)
                                       "Single point representation is not implemented yet. "
                                       "Simulator is about to terminate !");
 
-    if (args.d == 0 && STRCMP(args.tritype, "rnd") || args.d == 0 && STRCMP(args.tritype, "plato") )
+    if ( (args.d == 0 && STRCMP(args.tritype, "rnd")) || (args.d == 0 && STRCMP(args.tritype, "plato")) )
         throw NotAllowedException("NotAllowedException:\n"
                                   "Random and Plato triangulation cannot be used "
                                   "with single point representation.\n"
@@ -227,7 +227,7 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
     {
         simulator_logs << utils::LogLevel::WARNING  << "Single vertex representation\n";
         simulator_logs << utils::LogLevel::WARNING  << "Vertex radius reassignment: cell.vertex_r = cell.init_r\n";
-        for (uint i = 0; i < number_of_cells; i++)
+        for (int i = 0; i < number_of_cells; i++)
         {
             cells[i].setVertexR( cells[i].getInitR() );
         }
@@ -329,9 +329,9 @@ void Simulator::analyze()
     restarter.registerVMap();
     restarter.readTopologyFile(cells);
     number_of_cells = cells.size();
-    
-    MIN_FORCE_SQ = 1e-8;
-    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE ARBITRARILY(in <<analyze>> mode) SET= "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
+//    
+//    MIN_FORCE_SQ = 1e-8;
+//    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE ARBITRARILY(in <<analyze>> mode) SET= "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
     
     uint frames_number = traj.countFramesNumber();
     simulator_logs << utils::LogLevel::INFO << " Number of frames in a trajectory file: " << (int) frames_number << "\n" ;
@@ -362,6 +362,11 @@ void Simulator::analyze()
         restarter.assignTurgors(turgor_list[i - 1], cells);
         restarter.assignBoxSize(boxsize_list[i - 1], box);
         updateCells();
+        if ( i == 1 )
+        {
+            set_min_force();
+            simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE (in <<analyze>> mode) SET TO= "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
+        }        
         
         domains.setBoxDim(box);
         update_neighbors_list();
@@ -746,6 +751,9 @@ void Simulator::set_min_force()
         MIN_FORCE_SQ = 1e-12;
         MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
     } 
+    
+    analyze::FORCE_FRAC   = FORCE_FRAC;
+    analyze::MIN_FORCE_SQ = MIN_FORCE_SQ;
     
     simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
 }

@@ -49,7 +49,10 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainL
                     {
                          Box::getDistance(rij, cells[k].vertices[i].r_c, cells[l].vertices[j].r_c, box);
                          fij = HertzianRepulsion::calcForce(rij, r1, r2, e1, e2, nu1, nu2);
-                         pressure += dot(rij, fij);
+                         if (fij.length_sq() > analyze::MIN_FORCE_SQ)
+                         {
+                             pressure += dot(rij, fij);
+                         }
                     }
                 }
             }

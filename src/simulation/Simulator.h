@@ -68,7 +68,7 @@ class Simulator
 
         void restart();
         void analyze();
-
+       
     private:
 
         void (Simulator::*integrator)();
@@ -109,9 +109,6 @@ class Simulator
         
         double volumeFraction();
 
-        double MIN_FORCE_SQ = 0.0;
-        double FORCE_FRAC = 0.0001;
-
         int number_of_cells;
         std::string triangulator;
         params_t params;
@@ -126,6 +123,10 @@ class Simulator
 
         DomainList domains;
         Restarter restarter;
+        
+        double MIN_FORCE_SQ = 0.0;
+        double FORCE_FRAC = 0.005;
+
 
         static utils::Logger simulator_logs;
         static unsigned long FORCE_EVALUATION_COUTER;

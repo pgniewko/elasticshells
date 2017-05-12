@@ -474,7 +474,10 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cel
     {
         Box::getDistance(dij, partner->r_c, target->r_c, box);
         fij = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-        pij = dot(dij, fij);
+        if (fij.length_sq() > analyze::MIN_FORCE_SQ)
+        {
+            pij = dot(dij, fij);
+        }
     }
     else
     {
@@ -485,7 +488,10 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cel
         {
             Box::getDistance(dij, partner->r_c, target->r_c, box);
             fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
-            pij = dot(dij, fij);
+            if (fij.length_sq() > analyze::MIN_FORCE_SQ)
+            {
+                pij = dot(dij, fij);
+            }
         }
     }
     
@@ -560,14 +566,10 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
         }
     }
     
-    
-    double fi;
     for (int vix = 0; vix < cells[cell1id].getNumberVertices(); vix++)
     {
-        if (verts_forces[vix].length_sq() > 0)
+        if (verts_forces[vix].length_sq() > 0.0 )
         {
-            //fi = cells[cell1id].project_force(cells[cell2id], box, verts_forces[vix], vix);
-            //contact_force += fi;
             contact_force += verts_forces[vix].length();
         }
     }
@@ -646,7 +648,7 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
                     if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                     {
                         force = getNbForce(target, partner, cells, box);
-                        if (force.length_sq() > 0 )
+                        if (force.length_sq() > analyze::MIN_FORCE_SQ)
                             return true;
                     }
                 }
@@ -664,7 +666,7 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
                         if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                         {
                             force = getNbForce(target, partner, cells, box);
-                            if (force.length_sq() > 0 )
+                            if (force.length_sq() > analyze::MIN_FORCE_SQ)
                                 return true;
                         }
                     }
