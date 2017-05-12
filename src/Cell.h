@@ -108,6 +108,9 @@ class Cell
         static bool no_bending;
 
         friend std::ostream& operator<< (std::ostream&, const Cell&);
+        
+        static double FORCE_FRAC;
+        static double MIN_FORCE_SQ;
 
     private:
 

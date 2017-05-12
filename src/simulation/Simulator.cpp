@@ -752,8 +752,8 @@ void Simulator::set_min_force()
         MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
     } 
     
-    analyze::FORCE_FRAC   = FORCE_FRAC;
-    analyze::MIN_FORCE_SQ = MIN_FORCE_SQ;
+    Cell::FORCE_FRAC   = FORCE_FRAC;
+    Cell::MIN_FORCE_SQ = MIN_FORCE_SQ;
     
     simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
 }

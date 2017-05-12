@@ -4,6 +4,9 @@ utils::Logger Cell::cell_log("cell");
 
 bool Cell::no_bending = false;
 
+double Cell::FORCE_FRAC(0.0);
+double Cell::MIN_FORCE_SQ(0.0);
+
 Cell::Cell()
 {
 
@@ -779,7 +782,7 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box) const
     fc2 = force_collector2.length_sq();
     fc3 = force_collector3.length_sq();
 
-    if (fc1 > analyze::MIN_FORCE_SQ && fc2 > analyze::MIN_FORCE_SQ && fc3 > analyze::MIN_FORCE_SQ )
+    if (fc1 > Cell::MIN_FORCE_SQ && fc2 > Cell::MIN_FORCE_SQ && fc3 > Cell::MIN_FORCE_SQ )
     {
         return true;
     }
@@ -806,7 +809,7 @@ bool Cell::isInContact(int t_idx, const Box& box) const
     double fc2 = fc2v.length_sq();
     double fc3 = fc3v.length_sq();
     
-    if (fc1 > analyze::MIN_FORCE_SQ && fc2 > analyze::MIN_FORCE_SQ && fc3 > analyze::MIN_FORCE_SQ )
+    if (fc1 > Cell::MIN_FORCE_SQ && fc2 > Cell::MIN_FORCE_SQ && fc3 > Cell::MIN_FORCE_SQ )
     {
         return true;
     }
@@ -840,7 +843,7 @@ bool Cell::isInContact(const Cell& other_cell, const Box& box) const
         {
             Box::getDistance(dij, other_cell.vertices[j].r_c, vertices[i].r_c, box);
             force_ij = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-            if (force_ij.length_sq() > analyze::MIN_FORCE_SQ)
+            if (force_ij.length_sq() > Cell::MIN_FORCE_SQ)
             {
                 return true;
             }

@@ -474,7 +474,7 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cel
     {
         Box::getDistance(dij, partner->r_c, target->r_c, box);
         fij = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
-        if (fij.length_sq() > analyze::MIN_FORCE_SQ)
+        if (fij.length_sq() > Cell::MIN_FORCE_SQ)
         {
             pij = dot(dij, fij);
         }
@@ -488,7 +488,7 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cel
         {
             Box::getDistance(dij, partner->r_c, target->r_c, box);
             fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
-            if (fij.length_sq() > analyze::MIN_FORCE_SQ)
+            if (fij.length_sq() > Cell::MIN_FORCE_SQ)
             {
                 pij = dot(dij, fij);
             }
@@ -648,7 +648,7 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
                     if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                     {
                         force = getNbForce(target, partner, cells, box);
-                        if (force.length_sq() > analyze::MIN_FORCE_SQ)
+                        if (force.length_sq() > Cell::MIN_FORCE_SQ)
                             return true;
                     }
                 }
@@ -666,7 +666,7 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
                         if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                         {
                             force = getNbForce(target, partner, cells, box);
-                            if (force.length_sq() > analyze::MIN_FORCE_SQ)
+                            if (force.length_sq() > Cell::MIN_FORCE_SQ)
                                 return true;
                         }
                     }
