@@ -341,7 +341,7 @@ void Simulator::analyze()
 
     if (turgor_list.size() != frames_number)
     {
-        simulator_logs << utils::LogLevel::SEVERE  << "CORRUOTED DATA: Turgor data doesn't match the number of frames. Observation analysis exists!";
+        simulator_logs << utils::LogLevel::SEVERE  << "CORRUPTED DATA: Turgor data doesn't match the number of frames. Observation analysis exists!";
         exit(EXIT_FAILURE);
     }
     
