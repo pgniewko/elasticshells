@@ -125,7 +125,7 @@ class Simulator
         Restarter restarter;
         
         double MIN_FORCE_SQ = 0.0;
-        double FORCE_FRAC = 0.005;
+        double FORCE_FRAC = 0.0001;
 
 
         static utils::Logger simulator_logs;
