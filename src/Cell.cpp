@@ -982,7 +982,7 @@ void Cell::setConstantVolume(double scale)
     }
 }
 
-double Cell::checkVolumeCondition(double eps)
+double Cell::checkVolumeCondition()
 {
     double V = calcVolume();
     return (params.vol_c - V) / V;

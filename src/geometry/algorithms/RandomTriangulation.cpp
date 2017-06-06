@@ -31,12 +31,11 @@ std::list<Triangle> RandomTriangulation::triangulate(double r0)
     int v2_idx;
     int v3_idx;
     
-    int tidx;
+//    int tidx;
     
     for (int i = 0; i < 2 * (n_ - 2); i++)
     {
-
-        tidx = i;
+//        tidx = i;
         v1_idx = ltri[nrow * i + 0]-1;
         v2_idx = ltri[nrow * i + 1]-1;
         v3_idx = ltri[nrow * i + 2]-1;

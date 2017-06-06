@@ -32,7 +32,7 @@ double OsmoticForce::getEpsilon()
     return epsilon;
 }
 
-const bool OsmoticForce::getFlag()
+bool OsmoticForce::getFlag()
 {
     return volumeFlag;
 }

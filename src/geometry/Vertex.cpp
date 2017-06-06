@@ -70,9 +70,9 @@ void Vertex::addNeighbor(int idx, double r0v)
     try
     {
         if (numBonded >= NEIGH_MAX)
-            throw MaxSizeException("Maximum number of neighbors has been reached."
+            throw MaxSizeException("Maximum number of neighbors has been reached.\n"
                                    "New neighbor will not be added!\n"
-                                   "Simulation will be terminated.\n");
+                                   "Simulation will terminate.\n");
 
         if (idx < 0)
             throw RunTimeError("Trying to add a vertex with a negative index.\n"

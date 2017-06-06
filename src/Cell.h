@@ -67,7 +67,7 @@ class Cell
         void setNu(double);
         void setBSprings(double, double, double);
         void setConstantVolume(double = 1.0);
-        double checkVolumeCondition(double = 0.0);
+        double checkVolumeCondition();
         void ajustTurgor(double = 0.0);
 
         void setInitR(double);

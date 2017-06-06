@@ -422,17 +422,17 @@ void Simulator::simulate(int steps)
     bool resized = false;
 
     
-    for (int i = 0; i < steps; i++)
+    for (int step = 0; step < steps; step++)
     {
         if ( box.nthTodo() )
         {
-            simulator_logs << utils::LogLevel::INFO << "The simulation has reached the end of the schedule @ the step " << i << "/" << steps << ".\n";
+            simulator_logs << utils::LogLevel::INFO << "The simulation has reached the end of the schedule @ the step " << step << "/" << steps << ".\n";
             break;
         }
         
-        if ( i % (steps / std::min(steps, 10) ) == 0.0 )
+        if ( step % (steps / std::min(steps, 10) ) == 0.0 )
         {
-            simulator_logs << utils::LogLevel::INFO << 100.0 * i / steps << "% OF THE SIMULATION IS DONE" "\n";
+            simulator_logs << utils::LogLevel::INFO << 100.0 * step / steps << "% OF THE SIMULATION IS DONE" "\n";
         }
 
         unsigned long loop_couter = 0;
@@ -468,23 +468,23 @@ void Simulator::simulate(int steps)
         // END FIRE
         
 
-        if ( (i + 1) % params.save_step == 0)
+        if ( (step + 1) % params.save_step == 0)
         {
 
             traj.save_traj(cells, getTotalVertices());
         }
 
-        if ( (i + 1) % params.log_step == 0 )
+        if ( (step + 1) % params.log_step == 0 )
         {
             update_neighbors_list();
             log_sim.dumpState(box, cells, domains);
             saveTurgors();
-            traj.save_box(box, (i + 1) * params.dt);
+            traj.save_box(box, (step + 1) * params.dt);
             restarter.saveLastFrame(cells);
             restarter.saveTopologyFile(cells, params.model_t);
         }
 
-        if ( i < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
+        if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
             resized = box.resize( volumeFraction() );
         else
             resized = false;
@@ -794,12 +794,12 @@ bool Simulator::check_const_volume()
     if (params.const_volume)
     {
         double step;
-        double eps = 0.001;
+        double eps = 0.001; // 0.1% accuracy
         bool flag = false;
 
         for (int i = 0; i < number_of_cells; i++)
         {
-            step = cells[i].checkVolumeCondition(eps);
+            step = cells[i].checkVolumeCondition();
 
             if ( fabs(step) > eps )
             {

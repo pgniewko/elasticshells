@@ -19,7 +19,7 @@ CXX      := g++-4.9
 DBGFLAGS := -DDEBUG -g
 
 # Relative include and library paths for compilation of the examples
-INCLUDE  := -I/usr/local/include -I$(CURDIR)/src
+INCLUDE  := -I/usr/local/include -I$(CURDIR)/src -I/Users/pawel/include
 #LIB      := -L/usr/local/lib -L/usr/lib
 LIB      := -L/usr/local/lib
 DFLAGS   := -DTESTS
