@@ -35,7 +35,14 @@ double FeretRatio::observe(const Box& box, std::vector<Cell>& cells, const Domai
         V = 3.0 * V / (4.0 * constants::pi);
         D = 2.0 * std::pow( V, 1.0/3.0 ); // HEYWOOD'S DIAMETER
         
-        FR += (max_d / D) - 1.0;
+        if (D > 0)
+        {
+            FR += (max_d / D) - 1.0;
+        }
+        else
+        {
+            throw DataException("Division by zero");
+        }
     }
     
     FR /= cells.size();

@@ -34,7 +34,14 @@ double Elongation::observe(const Box& box, std::vector<Cell>& cells, const Domai
             max_r = std::max( max_r, l );
         }
 
-        el += ( (max_r - min_r)/ min_r );
+        if (min_r > 0)
+        {
+            el += ( (max_r - min_r)/ min_r );   
+        }
+        else
+        {
+            throw DataException("Division by zero");
+        }
     }
     
     el /= cells.size();

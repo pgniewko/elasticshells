@@ -140,12 +140,21 @@ void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, const DomainLi
         cells[i].update();    
     }
     
+
     for (std::vector<Observer*>::iterator it = observers.begin(); it != observers.end(); ++it)
     {
-        fprintf(os, (*it)->getFormat(), (*it)->observe(box, cells, dl) );
-        fprintf(os, "%s", " ");
+        try
+        {
+            fprintf(os, (*it)->getFormat(), (*it)->observe(box, cells, dl) );
+            fprintf(os, "%s", " ");
+        }
+        catch (DataException& e)
+        {
+            log_logger << utils::LogLevel::WARNING << e.what() << "\n";
+            //exit(EXIT_FAILURE);
+        }
+   
     }
-
     fprintf(os, "%s" , "\n");
     fflush(os);
 }

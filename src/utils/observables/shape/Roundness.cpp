@@ -22,7 +22,14 @@ double Roundness::observe(const Box& box, std::vector<Cell>& cells, const Domain
         D = 2.0 * std::pow( V, 1.0/3.0 ); // HEYWOOD'S DIAMETER
         DR = 2.0 * miniball_r(cells[i]);
         
-        roundness_ += ( DR / D );
+        if (D > 0)
+        {
+            roundness_ += ( DR / D );
+        }
+        else
+        {
+            throw DataException("Division by zero");
+        }
     }
     
     roundness_ /= cells.size();
