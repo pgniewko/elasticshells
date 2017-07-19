@@ -80,8 +80,18 @@ double Tensorial::observe(const Box& box, std::vector<Cell>& cells, const Domain
         }
         else if(i_param == 2) // ACYLIDRICITY
         {
-            
             Ob += ( ev2 - ev3 );
+        }
+        else if(i_param == 3) // ASPECT-RATIO
+        {
+            if (ev3 > 0)
+            {
+                Ob += (ev1 / ev3);
+            }
+            else
+            {
+                throw DataException("Eigenvalue < 0 (or equal to 0)");
+            }
         }
         else
         {
