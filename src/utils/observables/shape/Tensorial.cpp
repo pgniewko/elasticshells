@@ -66,7 +66,7 @@ double Tensorial::observe(const Box& box, std::vector<Cell>& cells, const Domain
         ev1 = std::max(ev1 ,d[2]);
         
         ev3 = std::min(d[0],d[1]);
-        ev3 = std::min(ev1 ,d[2]);
+        ev3 = std::min(ev3 ,d[2]);
         
         ev2 = d[0] + d[1] + d[2] - ev1 - ev3;
         
@@ -87,8 +87,6 @@ double Tensorial::observe(const Box& box, std::vector<Cell>& cells, const Domain
         {
             Ob += 0.0;
         }
-        
-        
     }
     
     Ob /= cells.size();
