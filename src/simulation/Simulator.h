@@ -140,21 +140,7 @@ class Simulator
         
         static bool RESTART_FLAG;
         
-
-        // CONJUGATE GRADIENTS CODE
-        void cg();
-        void boost_cg();
-
-        double func(double[]);
-        void dfunc(double[], double[]);
-        void frprmn(double p[], int n, double ftol, int* iter, double* fret);
-        void linmin(double p[], double xi[], int n, double* fret );
-        void dlinmin(double p[], double xi[], int n, double* fret );
-        void mnbrak(double* ax, double* bx, double* cx, double* fa, double* fb, double* fc);
-        double brent(double ax, double bx, double cx, double tol, double* xmins);
-        double dbrent(double ax, double bx, double cx, double tol, double* xmin);
-        double df1dim(double x);
-        double f1dim(double x);
+        
 };
 
 #endif	/* SIMULATOR_H */
