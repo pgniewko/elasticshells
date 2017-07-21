@@ -58,7 +58,6 @@ static struct argp_option options[] =
     },
     {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Linked-domains[2] [default: 0]"},
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
-    //{"save-step", 406,   "INT", 0, "Save step interval [default: 1]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
@@ -124,7 +123,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->d = 3;
             arguments->platotype = 0;
             arguments->log_step = 10;
-            //arguments->save_step = 1;
             arguments->box_step = 10;
             arguments->n_cells = 1;
             arguments->nsteps = 10;
@@ -224,10 +222,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 405:
             arguments->log_step = arg ? atoi (arg) : 10;
             break;
-
-//        case 406:
-//            arguments->save_step = arg ? atoi (arg) : 1;
-//            break;
 
         case 407:
             arguments->box_step = arg ? atoi (arg) : 10;

@@ -28,7 +28,6 @@ struct arguments
 
     int d;
     int log_step;
-    //int save_step;
     int box_step;
     int n_cells;
     int nsteps;
