@@ -79,7 +79,10 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
 
 }
 
-Simulator::~Simulator() {}
+Simulator::~Simulator() 
+{
+    delete integrator;
+}
 
 void Simulator::diagnoseParams(arguments args)
 {
