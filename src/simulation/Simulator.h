@@ -56,6 +56,8 @@ struct params_t
 
 class Simulator
 {
+        friend class Integrator;
+    
     public:
         Simulator(const arguments&);
         Simulator(const Simulator& orig) = delete;
