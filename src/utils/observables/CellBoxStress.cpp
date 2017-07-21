@@ -17,7 +17,7 @@ double CellBoxStress::observe(const Box& box, std::vector<Cell>& cells, const Do
     {
         return 0.0;
     }
-        
+
     uint cellsnumber = cells.size();
     double contact_force = 0.0;
     double contact_area = 0.0;

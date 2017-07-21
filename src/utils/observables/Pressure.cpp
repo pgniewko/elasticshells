@@ -17,7 +17,7 @@ void Pressure::set_params(const int num, std::vector<std::string> args_)
 double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     double pressure = 0.0;
-    
+
     if ( i_param == 0 )
     {
         double r1;
@@ -26,15 +26,16 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainL
         double e2;
         double nu1;
         double nu2;
-              
+
         double volume = box.getVolume(d_param);
         Vector3D rij;
         Vector3D fij;
-        
+
         std::size_t n = cells.size();
+
         for (std::size_t k = 0; k < n; k++)
         {
-            for (std::size_t l = k+1; l < n; l++) // that's why we don't multiply pressure by extra 0.5
+            for (std::size_t l = k + 1; l < n; l++) // that's why we don't multiply pressure by extra 0.5
             {
                 r1 = cells[k].getVertexR();
                 r2 = cells[l].getVertexR();
@@ -42,43 +43,45 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainL
                 e2 = cells[l].getE();
                 nu1 = cells[k].getNu();
                 nu2 = cells[l].getNu();
-                
+
                 for (int i = 0; i < cells[k].getNumberVertices(); i++ )
                 {
                     for (int j = 0; j < cells[l].getNumberVertices(); j++ )
                     {
-                         Box::getDistance(rij, cells[k].vertices[i].r_c, cells[l].vertices[j].r_c, box);
-                         fij = HertzianRepulsion::calcForce(rij, r1, r2, e1, e2, nu1, nu2);
-                         if (fij.length_sq() > Cell::MIN_FORCE_SQ)
-                         {
-                             pressure += dot(rij, fij);
-                         }
+                        Box::getDistance(rij, cells[k].vertices[i].r_c, cells[l].vertices[j].r_c, box);
+                        fij = HertzianRepulsion::calcForce(rij, r1, r2, e1, e2, nu1, nu2);
+
+                        if (fij.length_sq() > Cell::MIN_FORCE_SQ)
+                        {
+                            pressure += dot(rij, fij);
+                        }
                     }
                 }
             }
         }
-        
+
         // Two other terms missing:
         // i) box-vertex interaction - if (!box.pbc)
         // ii) strains in the finite-elements
-        
-        pressure /= (3.0*volume);
+
+        pressure /= (3.0 * volume);
         return pressure;
     }
     else if (i_param == 1)
     {
         double volume = box.getVolume(d_param);
-        
+
         std::size_t n = cells.size();
+
         for (std::size_t k = 0; k < n; k++)
         {
-            for (std::size_t l = k+1; l < n; l++) // that's why we don't multiply pressure by extra 0.5
+            for (std::size_t l = k + 1; l < n; l++) // that's why we don't multiply pressure by extra 0.5
             {
                 pressure += dl.virialPressure(k, l, cells, box);
             }
         }
-        
-        pressure /= (3.0*volume);
+
+        pressure /= (3.0 * volume);
         return pressure;
     }
     else if ( i_param == 2)  // SURFACE PRESSURE
@@ -88,16 +91,16 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainL
             sp_log << utils::LogLevel::INFO << "\n";
             return 0.0;
         }
-        
+
         double totalForce = SurfaceForce::calcTotalForce(box, cells);
         double area = box.getArea(d_param);
-        pressure = totalForce / area;    
+        pressure = totalForce / area;
     }
     else
     {
         return 0.0;
     }
-    
+
     return pressure;
 }
 

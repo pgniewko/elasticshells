@@ -272,11 +272,11 @@ int main(int argc, char** argv)
 //
 //        std::cout << depths[i] << " & " << number_v << " & " << tris.size() << " & " << std::setprecision(5) << q_A(vertices, triangles, number_v) << " & " << std::setprecision(5) << q_theta(tris) << " & " << std::setprecision(5) << q(tris) << " \\\\ [1ex] \\hline" << std::endl;
 //    }
-   
-    
+
+
     double rvs[] = {0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1};
     std::cout << "Rvs & Points & Triangles & $q_A$ & $q_\\theta$ & $q$ \\\\  [0.5ex]  \\hline \\hline" << std::endl;
-    
+
     double qa, qt, qr;
 
     for (int i = 0; i < 9; i++)
@@ -284,7 +284,8 @@ int main(int argc, char** argv)
         qa = 0.0;
         qt = 0.0;
         qr = 0.0;
-        for (int j=0; j<5; j++)
+
+        for (int j = 0; j < 5; j++)
         {
             RandomTriangulation rnd(25, 100, 0.1, 1000.0, rvs[i]);
             std::list<Triangle> tris = rnd.triangulate(2.5);
@@ -295,23 +296,25 @@ int main(int argc, char** argv)
             qa += q_A(vertices, triangles, number_v);
             qt += q_theta(tris);
             qr  += q(tris);
-        
+
         }
+
         qa /= 5;
         qt /= 5;
         qr /= 5;
         std::cout << rvs[i] << " & " << number_v << " & " << number_t << " & " << std::setprecision(5) << qa << " & " << std::setprecision(5) << qt << " & " << std::setprecision(5) << qr << " \\\\ [1ex] \\hline" << std::endl;
     }
-    
+
     double temps[] = {0.1, 1.0, 10, 50, 100, 250, 500, 750};
     std::cout << "Temp & Points & Triangles & $q_A$ & $q_\\theta$ & $q$ \\\\  [0.5ex]  \\hline \\hline" << std::endl;
+
     for (int i = 0; i < 8; i++)
     {
         qa = 0.0;
         qt = 0.0;
         qr = 0.0;
-       
-        for (int j=0; j<5; j++)
+
+        for (int j = 0; j < 5; j++)
         {
             RandomTriangulation rnd(25, 100, temps[i], 1000.0, 0.1);
             std::list<Triangle> tris = rnd.triangulate(2.5);
@@ -321,17 +324,18 @@ int main(int argc, char** argv)
             constructTopology(vertices, triangles, number_v, number_t);
             qa += q_A(vertices, triangles, number_v);
             qt += q_theta(tris);
-            qr += q(tris);            
+            qr += q(tris);
         }
+
         qa /= 5;
         qt /= 5;
-        qr /= 5;        
+        qr /= 5;
         std::cout << temps[i] << " & " << number_v << " & " << number_t << " & " << std::setprecision(5) << qa << " & " << std::setprecision(5) << qt << " & " << std::setprecision(5) << qr << " \\\\ [1ex] \\hline" << std::endl;
 
     }
 
-    
-    
+
+
 
     delete[] vertices;
     delete[] triangles;

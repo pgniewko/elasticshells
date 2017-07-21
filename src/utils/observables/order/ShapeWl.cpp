@@ -27,14 +27,15 @@ double ShapeWl::observe(const Box& box, std::vector<Cell>& cells, const DomainLi
 double ShapeWl::calcWl(Cell& cell)
 {
     int nk = cell.getNumberVertices();
+
     if (nk == 1)
     {
         return 0.0;
     }
-    
+
     double qss = 0.0;
-    double *x, *y, *z;
-    double *qlRe, *qlIm;
+    double* x, *y, *z;
+    double* qlRe, *qlIm;
     x = (double*) malloc (nk * sizeof (double));
     y = (double*) malloc (nk * sizeof (double));
     z = (double*) malloc (nk * sizeof (double));
@@ -45,7 +46,7 @@ double ShapeWl::calcWl(Cell& cell)
         y[i] = cell.vertices[i].r_c.y;
         z[i] = cell.vertices[i].r_c.z;
     }
-    
+
     Vector3D cm = cell.getCm();
     double xc = cm.x;
     double yc = cm.y;
@@ -53,7 +54,7 @@ double ShapeWl::calcWl(Cell& cell)
 
     qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
     qlIm = (double*) malloc ((i_param + 1) * sizeof (double));
-    
+
     qlm(i_param, nk, xc, yc, zc, x, y, z, qlRe, qlIm);
     qss = qsum(i_param, qlRe, qlIm);
 

@@ -28,51 +28,52 @@ struct box_t
     bool pbc;
 };
 
-class Packer {
-public:
-    Packer();
-    Packer(const Packer& orig);
-    virtual ~Packer();
-    
-    static void packCells(Box&, std::vector<Cell>&, double,bool=true);
-    
-private:
-    
-    static void fire(std::vector<point_t>&, box_t&);
-    static void velocityVerlet(std::vector<point_t>&, box_t&);
-    static void calcForces(std::vector<point_t>&, box_t&);
-    static bool check_min_force(std::vector<point_t>&, box_t&);
-    
-    static bool jammed(std::vector<point_t>&, box_t&, double&);
-    static void inflatePoints(std::vector<point_t>&);
-    static void recenterCells(std::vector<point_t>&, box_t&);
-    
-    static double calcPressure(std::vector<point_t>&, box_t&);
-    static double boxForce(point_t&, box_t&);
-    
-    static void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const box_t&);
-    static void calcBoxForces(std::vector<point_t>&, const box_t&);
-    
-    
-    static bool anyRattlerOrCrowder(const std::vector<point_t>&, const box_t&, double&);
-    static int boxContacts(const point_t&, const box_t&);
-    static int cellContacts(const point_t&, const point_t&, const box_t&);
-    
-    
-    static int FIRE_Nmin;
-    static int FIRE_N;
-    static double FIRE_DT;
-    static double FIRE_ALPHA;
-    static double FIRE_DTMAX;
-    
-    static double MIN_FORCE;
-    static double r_ext;
-    
-    static double P_MIN;
-    static double P_MAX;
-    
-    static utils::Logger packer_logs;
-    
+class Packer
+{
+    public:
+        Packer();
+        Packer(const Packer& orig);
+        virtual ~Packer();
+
+        static void packCells(Box&, std::vector<Cell>&, double, bool = true);
+
+    private:
+
+        static void fire(std::vector<point_t>&, box_t&);
+        static void velocityVerlet(std::vector<point_t>&, box_t&);
+        static void calcForces(std::vector<point_t>&, box_t&);
+        static bool check_min_force(std::vector<point_t>&, box_t&);
+
+        static bool jammed(std::vector<point_t>&, box_t&, double&);
+        static void inflatePoints(std::vector<point_t>&);
+        static void recenterCells(std::vector<point_t>&, box_t&);
+
+        static double calcPressure(std::vector<point_t>&, box_t&);
+        static double boxForce(point_t&, box_t&);
+
+        static void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const box_t&);
+        static void calcBoxForces(std::vector<point_t>&, const box_t&);
+
+
+        static bool anyRattlerOrCrowder(const std::vector<point_t>&, const box_t&, double&);
+        static int boxContacts(const point_t&, const box_t&);
+        static int cellContacts(const point_t&, const point_t&, const box_t&);
+
+
+        static int FIRE_Nmin;
+        static int FIRE_N;
+        static double FIRE_DT;
+        static double FIRE_ALPHA;
+        static double FIRE_DTMAX;
+
+        static double MIN_FORCE;
+        static double r_ext;
+
+        static double P_MIN;
+        static double P_MAX;
+
+        static utils::Logger packer_logs;
+
 };
 
 #endif /* PACKER_H */

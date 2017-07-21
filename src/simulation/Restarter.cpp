@@ -268,7 +268,7 @@ void Restarter::addVTriangles(std::vector<Cell>& cells, int cix) const
                     cells[cix].triangles[t_id].L2[0] = strtod(pairs[ 9 ].c_str(), NULL);
                     cells[cix].triangles[t_id].L2[1] = strtod(pairs[ 10 ].c_str(), NULL);
                     cells[cix].triangles[t_id].L2[2] = strtod(pairs[ 11 ].c_str(), NULL);
-                    
+
                     cells[cix].triangles[t_id].ki[0] = strtod(pairs[ 12 ].c_str(), NULL);
                     cells[cix].triangles[t_id].ki[1] = strtod(pairs[ 13 ].c_str(), NULL);
                     cells[cix].triangles[t_id].ki[2] = strtod(pairs[ 14 ].c_str(), NULL);
@@ -408,7 +408,7 @@ void Restarter::readFrame(std::string trajFile, std::vector<Cell>& cells, int fr
     std::string line;
 
     int frames_counter = 0;
-    
+
     if ( os.is_open() )
     {
         while ( std::getline (os, line) )
@@ -421,7 +421,7 @@ void Restarter::readFrame(std::string trajFile, std::vector<Cell>& cells, int fr
                 frames_counter++;
                 continue;
             }
-            
+
             if (pairs.size() > 1 && frameNumber == frames_counter )
             {
                 std::string vkey = pairs[ 0 ].c_str();
@@ -454,9 +454,10 @@ void Restarter::assignTurgors(std::string turgor_line, std::vector<Cell>& cells)
 {
     std::vector<std::string> pairs = split(turgor_line, ' ');
     double turgor;
+
     for (uint i = 0; i < cells.size(); i++)
     {
-        turgor = strtod(pairs[ 4 + 4*i + 1 ].c_str(), NULL);
+        turgor = strtod(pairs[ 4 + 4 * i + 1 ].c_str(), NULL);
         cells[i].pushDp(turgor);
     }
 }
@@ -468,7 +469,7 @@ void Restarter::assignBoxSize(std::string box_line, Box& box) const
     x = strtod(pairs[ 0 ].c_str(), NULL);
     y = strtod(pairs[ 1 ].c_str(), NULL);
     z = strtod(pairs[ 2 ].c_str(), NULL);
-    
+
     box.setX(x);
     box.setY(y);
     box.setZ(z);

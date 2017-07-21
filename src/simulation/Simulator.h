@@ -58,9 +58,9 @@ struct params_t
 class Integrator;
 
 class Simulator
-{   
-    friend class Integrator;
-    
+{
+        friend class Integrator;
+
     public:
         Simulator(const arguments&);
         Simulator(const Simulator& orig) = delete;
@@ -73,7 +73,7 @@ class Simulator
 
         void restart();
         void analyze();
-       
+
     private:
 
 //        void (Simulator::*integrator)();
@@ -99,7 +99,7 @@ class Simulator
 //        void fire();
 
         int getTotalVertices();
-        double getLengthScale(double=0.0);
+        double getLengthScale(double = 0.0);
 
         void updateCells();
         void update_neighbors_list();
@@ -107,15 +107,15 @@ class Simulator
         void set_min_force();
         bool check_min_force();
         bool check_const_volume();
-        
+
         void saveTurgors();
-        
+
         void recenterCells();
-        
+
         double volumeFraction();
 
         Integrator* integrator;
-        
+
         int number_of_cells;
         std::string triangulator;
         params_t params;
@@ -130,24 +130,24 @@ class Simulator
 
         DomainList domains;
         Restarter restarter;
-        
+
         double MIN_FORCE_SQ = 0.0;
         double FORCE_FRAC = 0.0001;
 
 
         static utils::Logger simulator_logs;
         static unsigned long FORCE_EVALUATION_COUTER;
-        
-        
+
+
 //        static int FIRE_Nmin;
 //        static int FIRE_N;
 //        static double FIRE_DT;
 //        static double FIRE_ALPHA;
 //        static double FIRE_DTMAX;
-//        
+//
         static bool RESTART_FLAG;
-        
-        
+
+
 };
 
 #endif	/* SIMULATOR_H */

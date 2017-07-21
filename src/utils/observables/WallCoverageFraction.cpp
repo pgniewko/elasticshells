@@ -17,7 +17,7 @@ double WallCoverageFraction::observe(const Box& box, std::vector<Cell>& cells, c
     {
         return 0.0;
     }
-    
+
     double box_area = box.getArea(d_param);
     uint cells_number = cells.size();
     double coverage = 0.0;

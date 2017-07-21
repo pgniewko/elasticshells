@@ -236,7 +236,7 @@ namespace utils
         core::index2 lineLength = paragraph_pad.length();
         size_t pos = 0;
 
-        for (std::string & w : words)
+        for (std::string& w : words)
         {
             w = utils::trim(w);
 
@@ -297,7 +297,7 @@ namespace utils
         size_t pos = 0;
         bool is_first_line = true;
 
-        for (std::string & w : words)
+        for (std::string& w : words)
         {
             w = utils::trim(w);
 

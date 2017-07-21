@@ -3,13 +3,13 @@
 utils::Logger Box::box_logger("box_logger");
 
 Box::Box(double bsx, double bsy, double bsz) : pbc(false),
-        x(bsx), y(bsy), z(bsz), x_min(bsx), y_min(bsy), z_min(bsz), 
-        E_box(0.0), nu(0.0) {}
+    x(bsx), y(bsy), z(bsz), x_min(bsx), y_min(bsy), z_min(bsz),
+    E_box(0.0), nu(0.0) {}
 
 Box::Box(const Box& orig) : pbc(orig.pbc),
-        x(orig.x), y(orig.y), z(orig.z), 
-        x_min(orig.x_min), y_min(orig.y_min), z_min(orig.z_min),
-        E_box(orig.E_box), nu(orig.nu), my_schedule(orig.my_schedule) {}
+    x(orig.x), y(orig.y), z(orig.z),
+    x_min(orig.x_min), y_min(orig.y_min), z_min(orig.z_min),
+    E_box(orig.E_box), nu(orig.nu), my_schedule(orig.my_schedule) {}
 
 Box::~Box() {}
 
@@ -35,7 +35,7 @@ bool Box::resize(double vf_)
     double dz = 0.0;
 
     my_schedule.execute(dx, dy, dz, vf_);
-    
+
     if (x + dx >= x_min)
     {
         x += dx;
@@ -49,7 +49,7 @@ bool Box::resize(double vf_)
     if (z + dz >= z_min)
     {
         z += dz;
-    }    
+    }
 
     if (dx == 0 && dy == 0 && dz == 0)
     {

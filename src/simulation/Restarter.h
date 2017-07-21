@@ -24,7 +24,7 @@ class Restarter
         void readTopologyFile(std::vector<Cell>&) const;
         void readLastFrame(std::vector<Cell>&) const;
         void registerVMap();
-        
+
         void readFrame(std::string, std::vector<Cell>&, int) const;
         void assignTurgors(std::string, std::vector<Cell>&) const;
         void assignBoxSize(std::string, Box&) const;

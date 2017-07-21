@@ -11,7 +11,7 @@ unsigned long Simulator::FORCE_EVALUATION_COUTER(0);
 //double Simulator::FIRE_DTMAX(0.0);
 
 bool Simulator::RESTART_FLAG(false);
-        
+
 Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
     traj(args.traj_file, args.box_file), log_sim(args.output_file, args.ob_config_file),
@@ -54,10 +54,10 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
     params.model_t = std::string(args.model_type);
-    
+
     integrator = new Integrator(this, args.integrator_a);
     //setIntegrator(args.integrator_a);
-    
+
     setTriangulator(args.tritype);
     box.setX(args.bsx);
     box.setY(args.bsy);
@@ -71,7 +71,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configureScheduler(args.sch_config_file);
 
-    domains.setupDomainsList(getLengthScale( std::max(0.5*args.init_radius1, args.init_radius2) ), box);
+    domains.setupDomainsList(getLengthScale( std::max(0.5 * args.init_radius1, args.init_radius2) ), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     Cell::no_bending = args.nobending;
@@ -79,7 +79,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
 
 }
 
-Simulator::~Simulator() 
+Simulator::~Simulator()
 {
     delete integrator;
 }
@@ -95,18 +95,18 @@ void Simulator::diagnoseParams(arguments args)
         throw NotAllowedException("NotAllowedException:\n"
                                   "Random and Plato triangulation cannot be used "
                                   "with single point representation.\n"
-                "Simulation exits with EXIT_FAILURE status !");
-    
+                                  "Simulation exits with EXIT_FAILURE status !");
+
     if ( (args.d == 0 && args.restart) || (args.d == 0 && args.analyze) )
         throw NotAllowedException("NotAllowedException:\n"
                                   "Simulation for a single node representation"
-                "cannot be restarted or post-analyzed!");
-    
+                                  "cannot be restarted or post-analyzed!");
+
     if ( args.d == 0 && args.const_volume && args.nu != 0.5 )
         throw NotAllowedException("NotAllowedException:\n"
                                   "Single node representation:"
-                " for const-volume option nu has to be equal to 0.5!");
-    
+                                  " for const-volume option nu has to be equal to 0.5!");
+
     if (args.d > 8)
         throw DataException("DataException:\n"
                             "Depth of a triangulation too large ! "
@@ -201,6 +201,7 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
             Vector3D tmpcm = cells[i].getCm();
             Vector3D delta = shift - tmpcm;
             rsum = cells[i].getInitR() + r0 + rc + constants::epsilon;
+
             if ( delta.length() < rsum)
             {
                 flag = false;
@@ -213,10 +214,11 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
             shiftCell(shift, number_of_cells - 1);
         }
     }
-    
-    if(jam)
+
+    if (jam)
     {
         simulator_logs << utils::LogLevel::INFO  << "SIMULATION STARTS FROM THE JAMMED PACKING\n";
+
         if (params.d == 0)
         {
             Packer::packCells(box, cells, params.th, false);
@@ -231,16 +233,17 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
     {
         simulator_logs << utils::LogLevel::WARNING  << "Single vertex representation\n";
         simulator_logs << utils::LogLevel::WARNING  << "Vertex radius reassignment: cell.vertex_r = cell.init_r\n";
+
         for (int i = 0; i < number_of_cells; i++)
         {
             cells[i].setVertexR( cells[i].getInitR() );
         }
     }
-    
+
     restarter.saveTopologyFile(cells, params.model_t);
     set_min_force();
-    
-    
+
+
 }
 
 void Simulator::pushCell(const Cell& newCell)
@@ -282,7 +285,7 @@ void Simulator::addCell(double r0)
             SimpleTriangulation sm(params.d);
             tris = sm.triangulate(r0);
         }
-        
+
         else if ( !triangulator.compare("rnd") )
         {
             RandomTriangulation rnd(10, 100, 0.1, 1000.0, params.r_vertex);
@@ -293,19 +296,20 @@ void Simulator::addCell(double r0)
         newCell.setVertexR(params.r_vertex);
         newCell.setCellId(number_of_cells);
         newCell.setInitR(r0);
-        
+
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
         newCell.setSpringConst(params.E_cell, params.th, params.nu, params.model_t);
         newCell.setBSprings(params.E_cell, params.th, params.nu);
         newCell.setDp(params.dp, params.ddp);
-        
+
         double radial_eps = 1.0 + (0.5 * (1 - params.nu)  * (newCell.getTurgor() * r0) / (params.E_cell * params.th));
+
         if (newCell.getNumberVertices() == 1)
         {
             radial_eps = 1.0;
         }
-        
+
         newCell.setConstantVolume (radial_eps);
 
         pushCell(newCell);
@@ -333,13 +337,13 @@ void Simulator::analyze()
     restarter.registerVMap();
     restarter.readTopologyFile(cells);
     number_of_cells = cells.size();
-//    
+//
 //    MIN_FORCE_SQ = 1e-8;
 //    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE ARBITRARILY(in <<analyze>> mode) SET= "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
-    
+
     uint frames_number = traj.countFramesNumber();
     simulator_logs << utils::LogLevel::INFO << " Number of frames in a trajectory file: " << (int) frames_number << "\n" ;
-    
+
     std::vector<std::string> turgor_list = log_sim.readTurgorsFile();
     std::vector<std::string> boxsize_list = traj.read_saved_box();
 
@@ -348,30 +352,31 @@ void Simulator::analyze()
         simulator_logs << utils::LogLevel::SEVERE  << "CORRUPTED DATA: Turgor data doesn't match the number of frames. Observation analysis exists!";
         exit(EXIT_FAILURE);
     }
-    
+
     if (boxsize_list.size() != frames_number)
     {
         simulator_logs << utils::LogLevel::SEVERE  << "CORRUPTED DATA: Box size data doesn't match the number of frames. Observation analysis exists!";
-         exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
-    
+
     log_sim.registerObservers();
     log_sim.open();
     log_sim.printHeader();
-    
+
     for (std::size_t i = 1; i <= frames_number; i++)
-    {        
-        simulator_logs << utils::LogLevel::INFO << "[analyze] Processing frame number: " << i <<  "/" <<  (int) frames_number<< "\n" ;
+    {
+        simulator_logs << utils::LogLevel::INFO << "[analyze] Processing frame number: " << i <<  "/" <<  (int) frames_number << "\n" ;
         restarter.readFrame(traj.getTrajFile(), cells, i);
         restarter.assignTurgors(turgor_list[i - 1], cells);
         restarter.assignBoxSize(boxsize_list[i - 1], box);
         updateCells();
+
         if ( i == 1 )
         {
             set_min_force();
             simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE (in <<analyze>> mode) SET TO= "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
-        }        
-        
+        }
+
         domains.setBoxDim(box);
         update_neighbors_list();
         log_sim.dumpState(box, cells, domains);
@@ -399,6 +404,7 @@ void Simulator::simulate(int steps)
 
     // TRAJECTORY FILE OPEND FOR DUMP
     traj.open();
+
     // IF SIMULATION RESTART - DON'T DUMP THE STATS
     if (!Simulator::RESTART_FLAG)
     {
@@ -406,14 +412,15 @@ void Simulator::simulate(int steps)
         log_sim.dumpState(box, cells, domains);
         saveTurgors();
         restarter.saveLastFrame(cells);
-        restarter.saveTopologyFile(cells, params.model_t);        
+        restarter.saveTopologyFile(cells, params.model_t);
         traj.save_box(box, steps * params.dt);
         box.saveRemainingSchedule();
     }
-    
+
     //================
     update_neighbors_list();
     calcForces();
+
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -421,11 +428,12 @@ void Simulator::simulate(int steps)
             cells[i].vertices[j].f_p = cells[i].vertices[j].f_c;
         }
     }
+
     //===============
-    
+
     bool resized = false;
 
-    
+
     for (int step = 0; step < steps; step++)
     {
         if ( box.nthTodo() )
@@ -433,20 +441,22 @@ void Simulator::simulate(int steps)
             simulator_logs << utils::LogLevel::INFO << "The simulation has reached the end of the schedule @ the step " << step << "/" << steps << ".\n";
             break;
         }
-        
+
         if ( step % (steps / std::min(steps, 10) ) == 0.0 )
         {
             simulator_logs << utils::LogLevel::INFO << 100.0 * step / steps << "% OF THE SIMULATION IS DONE" "\n";
         }
 
         unsigned long loop_couter = 0;
+
         do
         {
             do
             {
                 integrate();
                 loop_couter++;
-                if ( (loop_couter+1) % 5000 == 0)
+
+                if ( (loop_couter + 1) % 5000 == 0)
                 {
                     restarter.saveLastFrame(cells); // SO RESTARTING IS PRODUCTIVE
                 }
@@ -455,13 +465,13 @@ void Simulator::simulate(int steps)
         }
         while ( check_const_volume() );
 
-        
+
         integrator->resetParams(this);
         // TEMPORARY  FIRE CODE
 //        FIRE_DT = params.dt;
 //        FIRE_ALPHA = 0.1;
 //        FIRE_N = 0;
-        
+
         for (int i = 0; i < number_of_cells; i++)
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -470,6 +480,7 @@ void Simulator::simulate(int steps)
                 cells[i].vertices[j].a_c *= 0.0; // freeze the system
             }
         }
+
         // END FIRE
 
         if ( (step + 1) % params.log_step == 0 )
@@ -477,7 +488,7 @@ void Simulator::simulate(int steps)
             // ** SAVE COORDINATES - i.e. "logging" coordinates
             traj.save_traj(cells, getTotalVertices());
             // **
-            
+
             update_neighbors_list();
             log_sim.dumpState(box, cells, domains);
             saveTurgors();
@@ -487,18 +498,22 @@ void Simulator::simulate(int steps)
         }
 
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
+        {
             resized = box.resize( volumeFraction() );
+        }
         else
+        {
             resized = false;
-        
+        }
+
         if (resized)
         {
             domains.setBoxDim(box);
             box.saveRemainingSchedule();
         }
-        
+
         recenterCells();
-        
+
     }
 
     log_sim.dumpState(box, cells, domains);
@@ -584,7 +599,7 @@ void Simulator::update_neighbors_list()
 void Simulator::rebuildDomainsList()
 {
     // This code is redundant cause the way linked domains are constructed.
-    // I.e. all vertices's ->nexts are reassigned, and heads are set to zero, 
+    // I.e. all vertices's ->nexts are reassigned, and heads are set to zero,
     // so no dangling ends
     for (uint i = 0; i < cells.size(); i++)
     {
@@ -593,8 +608,9 @@ void Simulator::rebuildDomainsList()
             //cells[i].vertices[j].next = 0;
         }
     }
-    
+
     domains.voidDomains();
+
     for (uint i = 0; i < cells.size(); i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -616,10 +632,12 @@ double Simulator::volumeFraction()
     double cells_vol = 0.0;
 
     for (uint i = 0; i < cells.size(); i++)
+    {
         cells_vol += cells[i].calcVolume();
+    }
 
-    return (cells_vol/box_vol);
-        
+    return (cells_vol / box_vol);
+
 }
 
 int Simulator::getTotalVertices()
@@ -641,6 +659,7 @@ double Simulator::getLengthScale(double r_0)
     if (params.nbhandler == 2)
     {
         maxscale = std::max(maxscale, params.r_vertex);
+
         if (params.d == 0)
         {
             maxscale = std::max(maxscale, r_0) ;
@@ -675,13 +694,13 @@ double Simulator::getLengthScale(double r_0)
 //    else if (STRCMP (token, "fire"))
 //    {
 //        this->setIntegrator(&Simulator::fire);
-//        
+//
 //        FIRE_DT = params.dt;
 //        FIRE_DTMAX = 15.0 * params.dt;
 //        FIRE_ALPHA = 0.1;
 //        FIRE_Nmin = 5;
 //        FIRE_N = 0;
-//        
+//
 //    }
 //    else
 //    {
@@ -739,16 +758,16 @@ void Simulator::set_min_force()
 
     MIN_FORCE_SQ = FORCE_FRAC * max_turgor * average_area;
     MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
-    
+
     if (cells[0].getNumberVertices() == 1)
     {
         MIN_FORCE_SQ = 1e-12;
         MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
-    } 
-    
+    }
+
     Cell::FORCE_FRAC   = FORCE_FRAC;
     Cell::MIN_FORCE_SQ = MIN_FORCE_SQ;
-    
+
     simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
 }
 
@@ -769,7 +788,7 @@ bool Simulator::check_min_force()
             }
         }
     }
-    
+
     return false;
 }
 
@@ -920,7 +939,7 @@ void Simulator::integrate()
 //            cells[i].vertices[j].a_p = cells[i].vertices[j].a_c;
 //        }
 //    }
-//    
+//
 //
 //    calcForces();
 //
@@ -951,12 +970,12 @@ void Simulator::integrate()
 //    double f_dec = 0.5;
 //    double a_start = 0.1;
 //    double f_a = 0.99;
-//    
+//
 //    // MD step
 //    //calcForces();
-//    
-//    velocityVerlet(); 
-//   
+//
+//    velocityVerlet();
+//
 //        // CALC P PARAMETER
 //    double P = 0.0;
 //    for (int i = 0; i < number_of_cells; i++)
@@ -966,9 +985,9 @@ void Simulator::integrate()
 //            P += dot( cells[i].vertices[j].f_c, cells[i].vertices[j].v_c);
 //        }
 //    }
-//    
+//
 //    //=========================
-//    
+//
 //    for (int i = 0; i < number_of_cells; i++)
 //    {
 //        for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -976,26 +995,26 @@ void Simulator::integrate()
 //            double v_length = cells[i].vertices[j].v_c.length();
 //            Vector3D F = cells[i].vertices[j].f_c;
 //            F.normalize();
-//            
+//
 //            cells[i].vertices[j].v_c *= (1 - FIRE_ALPHA);
 //            cells[i].vertices[j].v_c += FIRE_ALPHA * F * v_length;
 //        }
 //    }
-//    
-//    
+//
+//
 //    if (P > 0 && FIRE_N > FIRE_Nmin)
 //    {
 //        FIRE_DT = std::min(FIRE_DTMAX, FIRE_DT*f_inc);
 //        FIRE_ALPHA *= f_a;
 //    }
-//    
+//
 //    FIRE_N++;
-//    
+//
 //    if (P <= 0.0)
 //    {
 //        FIRE_DT *= f_dec;
 //        FIRE_ALPHA = a_start;
-//        
+//
 //        for (int i = 0; i < number_of_cells; i++)
 //        {
 //            for (int j = 0; j < cells[i].getNumberVertices(); j++)
@@ -1020,7 +1039,7 @@ void Simulator::integrate()
 //            cells[i].vertices[j].r_c += dt * cells[i].vertices[j].v_c + 0.5 * dt * dt * cells[i].vertices[j].f_p; // use previously calculated forces
 //        }
 //    }
-//    
+//
 //    // UPDATE VELOCITIES
 //    for (int i = 0; i < number_of_cells; i++)
 //    {
@@ -1029,7 +1048,7 @@ void Simulator::integrate()
 //            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
 //        }
 //    }
-//    
+//
 //    calcForces();
 //    // UPDATE VELOCITIES
 //    for (int i = 0; i < number_of_cells; i++)
@@ -1039,19 +1058,19 @@ void Simulator::integrate()
 //            cells[i].vertices[j].v_c += 0.5 * dt * cells[i].vertices[j].f_c;
 //            cells[i].vertices[j].f_p = cells[i].vertices[j].f_c; // copy forces for the next time step integration
 //        }
-//    }  
+//    }
 //}
 
 void Simulator::saveTurgors()
 {
     std::string turgorDumpFile = log_sim.getFileName() + ".turgor.out";
-    
+
     double box_volume = box.getVolume();
-    double box_x = box.getX(); 
+    double box_x = box.getX();
     double box_y = box.getY();
     double box_z = box.getZ();
     double cells_vol = 0.0;
-    
+
     FILE* os = fopen(turgorDumpFile.c_str(), "a");
 
     if ( os == NULL )
@@ -1063,26 +1082,28 @@ void Simulator::saveTurgors()
     {
         simulator_logs << utils::LogLevel::WARNING << "Can not open file:<<" << turgorDumpFile << "for writing.\n";
     }
-    
+
     double turgor;
     Vector3D cm;
-    
+
     for (uint i = 0; i < cells.size(); i++)
     {
         cells_vol += cells[i].calcVolume();
     }
+
     fprintf(os, "%-7.4f %5.3f %5.3f %5.3f %7.4f ", box_volume, box_x, box_y, box_z, cells_vol);
-    
-    
+
+
     for (uint i = 0; i < cells.size(); i++)
     {
         turgor = cells[i].getTurgor();
         cm = cells[i].getCm();
-        
+
         fprintf(os, "%5.4f %6.4f %6.4f %6.4f ", turgor, cm.x, cm.y, cm.z);
     }
+
     fprintf(os, "%s", "\n");
-    
+
     if ( os != NULL )
     {
         fclose(os);
@@ -1093,12 +1114,12 @@ void Simulator::recenterCells()
 {
     if (box.pbc)
     {
-        for(uint i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < cells.size(); i++)
         {
             Vector3D shift = Box::recenteringVector( cells[i].getCm(), box );
             cells[i].addXYZ(shift);
         }
     }
-    
+
     return;
 }

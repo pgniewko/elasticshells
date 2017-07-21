@@ -14,75 +14,78 @@ void Tensorial::set_params(const int num, std::vector<std::string> args_)
 double Tensorial::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     double Ob = 0.0;
-    
+
     for (uint i = 0; i < cells.size(); i++)
     {
         double A[3][3];
         double V[3][3];
         double d[3];
-        
+
         for (int i_ = 0; i_ < 3; i_++)
         {
             d[i_] = 0.0;
+
             for (int j_ = 0; j_ < 3; j_++)
             {
                 A[i_][j_] = 0.0;
                 V[i_][j_] = 0.0;
             }
         }
-        
+
         cells[i].calcCM();
         Vector3D cell_cm = cells[i].cm_m;
-        
+
         Vector3D rj;
-        
+
         double ev1 = 0.0, ev2 = 0.0, ev3 = 0.0;
-        
+
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
             rj = cells[i].vertices[j].r_c - cell_cm;
-                
+
             A[0][0] += rj.x * rj.x;
             A[1][1] += rj.y * rj.y;
             A[2][2] += rj.z * rj.z;
-                
+
             A[0][1] += rj.x * rj.y;
             A[0][2] += rj.x * rj.z;
-                
+
             A[1][0] += rj.y * rj.x;
             A[1][2] += rj.y * rj.z;
-                
+
             A[2][0] += rj.z * rj.x;
             A[2][1] += rj.z * rj.y;
         }
-        
+
         for (int j = 0; j < 3; j++)
             for (int k = 0; k < 3; k++)
+            {
                 A[j][k] /= cells[i].getNumberVertices();
-        
+            }
+
         eigen_decomposition(A, V, d);
-        
-        ev1 = std::max(d[0],d[1]);
-        ev1 = std::max(ev1 ,d[2]);
-        
-        ev3 = std::min(d[0],d[1]);
-        ev3 = std::min(ev3 ,d[2]);
-        
+
+        ev1 = std::max(d[0], d[1]);
+        ev1 = std::max(ev1 , d[2]);
+
+        ev3 = std::min(d[0], d[1]);
+        ev3 = std::min(ev3 , d[2]);
+
         ev2 = d[0] + d[1] + d[2] - ev1 - ev3;
-        
+
         if (i_param == 0) // RADIUS OF GYRATION
         {
             Ob += (ev1 + ev2 + ev3);
         }
-        else if(i_param == 1) // ASPHERICITY
+        else if (i_param == 1) // ASPHERICITY
         {
             Ob += ( ev1 - 0.5 * (ev2 + ev3) );
         }
-        else if(i_param == 2) // ACYLIDRICITY
+        else if (i_param == 2) // ACYLIDRICITY
         {
             Ob += ( ev2 - ev3 );
         }
-        else if(i_param == 3) // ASPECT-RATIO
+        else if (i_param == 3) // ASPECT-RATIO
         {
             if (ev3 > 0)
             {
@@ -98,9 +101,9 @@ double Tensorial::observe(const Box& box, std::vector<Cell>& cells, const Domain
             Ob += 0.0;
         }
     }
-    
+
     Ob /= cells.size();
-    
+
     return Ob;
 }
 

@@ -17,7 +17,7 @@ class CellsVolume : public Observer
     private:
         double calcVolumeFraction(const Box&, std::vector<Cell>&);
         double calcCellsVolume(std::vector<Cell>&);
-        
+
         double sphereSphereIntersection(const Cell&, const Cell&);
 
         static DerivedRegister<CellsVolume> reg;

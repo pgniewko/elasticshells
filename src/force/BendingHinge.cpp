@@ -1,6 +1,6 @@
 #include "BendingHinge.h"
 
-BendingHinge::BendingHinge() : BendingHinge(-1,-1,-1,-1) {}
+BendingHinge::BendingHinge() : BendingHinge(-1, -1, -1, -1) {}
 
 BendingHinge::BendingHinge(int x1_, int x2_, int x3_, int x4_) : x1(x1_), x2(x2_), x3(x3_), x4(x4_), myid(-1)
 {}

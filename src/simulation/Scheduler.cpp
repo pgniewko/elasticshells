@@ -44,11 +44,12 @@ std::vector<std::string> Scheduler::readScheduleFile()
 void Scheduler::registerSchedules()
 {
     std::vector<std::string> list = readScheduleFile();
-    if( list.size() > 0)
+
+    if ( list.size() > 0)
     {
         schedule_registered = true;
     }
-    
+
     std::vector<std::string> single_line;
 
     for (std::vector<std::string>::iterator it = list.begin(); it != list.end(); ++it)
@@ -110,21 +111,22 @@ void Scheduler::saveRemainingSchedule()
         for (uint i = 0; i < schedules.size(); i++)
         {
             schedule_t s = schedules[i];
+
             if (i == 0)
             {
-                ofile << (s.n_steps - current_schedule.counter)<< " " << s.interval << " "; 
+                ofile << (s.n_steps - current_schedule.counter) << " " << s.interval << " ";
             }
             else
             {
-                ofile << s.n_steps << " " << s.interval << " "; 
+                ofile << s.n_steps << " " << s.interval << " ";
             }
-            
+
             ofile << s.dx << " " << s.dy << " " << s.dz << " ";
             ofile << s.rx << " " << s.ry << " " << s.rz << " " << s.vf << std::endl;
         }
-        
+
         ofile.close();
-        
+
     }
     else
     {
@@ -141,7 +143,7 @@ void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
 {
 //    if (schedules.size() > 0)
     if ( !schedules.empty() )
-    {   
+    {
         if (current_schedule.counter % current_schedule.interval == 0)
         {
             dx = current_schedule.dx + uniform(-current_schedule.rx, current_schedule.rx);
@@ -156,9 +158,9 @@ void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
             dy = 0.0;
             dz = 0.0;
         }
-        
+
         current_schedule.counter++;
-        
+
         if (current_schedule.counter > current_schedule.n_steps || vf_ >= current_schedule.vf)
         {
             schedules.erase(schedules.begin());
@@ -181,14 +183,14 @@ void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
         {
             schedule_logger << utils::LogLevel::INFO << "NO MORE SCHEDULES ON THE STACK. DEFAULT SCHEDULE IS EXECUTED.\n";
         }
-        
+
         if ( default_schedule.counter % default_schedule.interval == 0)
         {
             dx = default_schedule.dx + uniform(-default_schedule.rx, default_schedule.rx);
             dy = default_schedule.dy + uniform(-default_schedule.ry, default_schedule.ry);
             dz = default_schedule.dz + uniform(-default_schedule.rz, default_schedule.rz);
         }
-        
+
         if (vf_ >= default_schedule.vf)
         {
             dx = 0.0;
@@ -205,19 +207,29 @@ void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
 bool Scheduler::nthTodo()
 {
     if ( schedules.empty() && schedule_registered )
+    {
         return true;
-    
+    }
+
     if ( default_schedule.dx == 0.0 && default_schedule.dy == 0.0 && default_schedule.dz == 0.0 && schedules.empty() )
+    {
         return true;
-    
+    }
+
     if ( default_schedule.dx == 0.0 && default_schedule.dy == 0.0 && default_schedule.dz == 0.0 && !schedule_registered )
+    {
         return true;
-    
+    }
+
     if ( default_schedule.n_steps == 0 && !schedule_registered )
+    {
         return true;
-   
+    }
+
     if ( default_schedule.counter > default_schedule.n_steps )
+    {
         return true;
-    
+    }
+
     return false;
 }

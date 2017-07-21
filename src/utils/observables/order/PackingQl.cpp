@@ -15,9 +15,9 @@ double PackingQl::observe(const Box& box, std::vector<Cell>& cells, const Domain
 {
     if (box.pbc == false)
     {
-        return 0.0;    
+        return 0.0;
     }
-    
+
     double qlsum = 0.0;
 
     for (uint i = 0; i < cells.size(); i++)
@@ -33,11 +33,12 @@ double PackingQl::calcQl(const Box& box, std::vector<Cell>& cells, unsigned int 
 {
     Vector3D ci_cm = cells[ci].getCm();
     std::vector<Vector3D> neighs_cm;
+
     for (uint i = 0; i < cells.size(); i++)
     {
         if (i != ci)
         {
-            if ( dl.isInContact(ci, i, cells, box) )                
+            if ( dl.isInContact(ci, i, cells, box) )
             {
                 Vector3D dij;
                 Vector3D cm = cells[i].getCm();
@@ -47,12 +48,12 @@ double PackingQl::calcQl(const Box& box, std::vector<Cell>& cells, unsigned int 
             }
         }
     }
-    
+
     int nk = neighs_cm.size();
-    
+
     double qss = 0.0;
-    double *x, *y, *z;
-    double *qlRe, *qlIm;
+    double* x, *y, *z;
+    double* qlRe, *qlIm;
     x = (double*) malloc (nk * sizeof (double));
     y = (double*) malloc (nk * sizeof (double));
     z = (double*) malloc (nk * sizeof (double));
@@ -67,10 +68,10 @@ double PackingQl::calcQl(const Box& box, std::vector<Cell>& cells, unsigned int 
     double xc = ci_cm.x;
     double yc = ci_cm.y;
     double zc = ci_cm.z;
-    
+
     qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
     qlIm = (double*) malloc ((i_param + 1) * sizeof (double));
-    
+
     qlm(i_param, nk, xc, yc, zc, x, y, z, qlRe, qlIm);
     qss = qsum(i_param, qlRe, qlIm);
 

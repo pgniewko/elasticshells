@@ -33,7 +33,7 @@ class Cell
         friend class DomainList;
         friend class Energy;
         friend class Restarter;
-        
+
     public:
 
         Cell();
@@ -60,7 +60,10 @@ class Cell
         void setVertexR(double);
         void setEcc(double);
         void setDp(double);
-        void pushDp(double dp_) {params.dp = dp_;}
+        void pushDp(double dp_)
+        {
+            params.dp = dp_;
+        }
         void setDp(double, double);
         void setSpringConst(double, double, double, std::string);
         void setCellId(int);
@@ -89,12 +92,12 @@ class Cell
         double contactForce(const Cell&, const Box&, const bool = false) const;
         double contactForce(const Box&) const;
         double contactForceSF(const Box&) const; // for Surface Force use
-        
+
         double contactArea(const Cell&, const Box&) const;
         double contactArea(const Cell&, const Box&, const double) const;
         double contactArea(const Box&, double = 0.0) const;
-        
-        
+
+
         double activeArea(const Box&, const std::vector<Cell>&, double = 0.0) const;
         double calcSurfaceArea(double) const;
         double contactArea2(const Box&, double = 0.0) const;
@@ -108,7 +111,7 @@ class Cell
         static bool no_bending;
 
         friend std::ostream& operator<< (std::ostream&, const Cell&);
-        
+
         static double FORCE_FRAC;
         static double MIN_FORCE_SQ;
 
@@ -118,7 +121,7 @@ class Cell
 
         bool isInContact(const int, const Cell&, const Box&) const;
         bool isInContact(const int, const Box&) const;
-        
+
         double project_force(const Cell&, const Box&, const Vector3D&, const int) const;
         double project_force(const Box&, const Vector3D&, const int) const;
         Vector3D box_force(const Box&, const int) const;

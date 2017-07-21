@@ -219,7 +219,7 @@ double Cell::calcVolume(double eps) const
 
     if (number_v == 1)
     {
-        volume = 4.0 / 3.0 * constants::pi * params.init_r*params.init_r*params.init_r;
+        volume = 4.0 / 3.0 * constants::pi * params.init_r * params.init_r * params.init_r;
     }
     else
     {
@@ -265,7 +265,7 @@ void Cell::setBSprings(double E, double t, double nu_)
     {
         return;
     }
-    
+
     for (int i = 0; i < number_s; i++)
     {
         bhinges[i].setD(E, t, nu_);
@@ -325,12 +325,13 @@ void Cell::setSpringConst(double E, double t, double nu_, std::string model_t)
     {
         return;
     }
-    
+
     if ( model_t.compare("ms_kot") == 0 )
     {
-        
- 
+
+
         double sum_L2 = 0.0;
+
         for (int i = 0; i < number_v; i++)
         {
             for (int j = 0; j < vertices[i].numBonded; j++)
@@ -694,10 +695,10 @@ double Cell::contactForce(const Cell& other_cell, const Box& box, const bool fla
             fi = project_force(other_cell, box, force_collector, i);
             contact_force += fi;
         }
-        
+
         force_collector = Vector3D(0, 0, 0);
     }
-        
+
     return contact_force;
 }
 
@@ -808,7 +809,7 @@ bool Cell::isInContact(int t_idx, const Box& box) const
     double fc1 = fc1v.length_sq();
     double fc2 = fc2v.length_sq();
     double fc3 = fc3v.length_sq();
-    
+
     if (fc1 > Cell::MIN_FORCE_SQ && fc2 > Cell::MIN_FORCE_SQ && fc3 > Cell::MIN_FORCE_SQ )
     {
         return true;
@@ -824,7 +825,7 @@ bool Cell::isInContact(const Cell& other_cell, const Box& box) const
     {
         return false;
     }
-    
+
     Vector3D dij;
     Vector3D force_ij(0, 0, 0);
 
@@ -843,6 +844,7 @@ bool Cell::isInContact(const Cell& other_cell, const Box& box) const
         {
             Box::getDistance(dij, other_cell.vertices[j].r_c, vertices[i].r_c, box);
             force_ij = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+
             if (force_ij.length_sq() > Cell::MIN_FORCE_SQ)
             {
                 return true;
@@ -850,7 +852,7 @@ bool Cell::isInContact(const Cell& other_cell, const Box& box) const
 
         }
     }
-    
+
     return false;
 }
 
@@ -859,6 +861,7 @@ double Cell::activeArea(const Box& box, const std::vector<Cell>& cells, double d
     double total_surface = calcSurfaceArea(d_param);
 
     double total_cell_cell_area = 0.0;
+
     for (uint cid = 0; cid < cells.size(); cid++)
     {
         if (cell_id != cells[cid].cell_id)
@@ -869,21 +872,21 @@ double Cell::activeArea(const Box& box, const std::vector<Cell>& cells, double d
 
     double total_cell_box_area = contactArea2(box, d_param);
     double total_contact_area = total_cell_cell_area + total_cell_box_area;
-    
+
     return std::max(0.0, total_surface - total_contact_area);
 }
 
 double Cell::contactArea(const Cell& other_cell, const Box& box, const double d_param) const
 {
     double dist = ( cm_m - other_cell.getCm() ).length();
-    
+
     if (dist > 4.0 * params.init_r)
     {
         return 0.0;
     }
-    
+
     double contact_area = 0.0;
-    
+
     for (int t_idx = 0; t_idx < number_t; t_idx++)
     {
         if ( isInContact(t_idx, other_cell, box) )

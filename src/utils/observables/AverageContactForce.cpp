@@ -15,13 +15,13 @@ double AverageContactForce::observe(const Box& box, std::vector<Cell>& cells, co
 {
     double average_cf = 0.0;
     double counter = 1.0;
-    
+
     uint N = cells.size();
     double cf = 0.0;
-    
+
     for (uint i = 0; i < N; i++)
     {
-        for (uint j = i+1; j < N; j++)
+        for (uint j = i + 1; j < N; j++)
         {
             if (i_param == 0)
             {
@@ -31,6 +31,7 @@ double AverageContactForce::observe(const Box& box, std::vector<Cell>& cells, co
             {
                 cf = dl.calcContactForce(i, j, cells, box);
             }
+
             if (cf > 0.0)
             {
                 average_cf += cf;
@@ -38,12 +39,12 @@ double AverageContactForce::observe(const Box& box, std::vector<Cell>& cells, co
             }
         }
     }
-    
+
     if (counter == 0)
     {
         return 0.0;
-    } 
-    
+    }
+
     average_cf /= counter;
     return average_cf;
 }

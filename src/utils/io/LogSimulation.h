@@ -28,9 +28,9 @@ class LogSimulation
         void registerObservers();
         void printHeader();
         void dumpState(Box&, std::vector<Cell>&, const DomainList&);
-        
+
         const std::string getFileName() const;
-        
+
         const std::vector<std::string> readTurgorsFile() const;
 
     private:

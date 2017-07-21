@@ -311,7 +311,7 @@ namespace utils
     {
         std::ostringstream s;
 
-        for (const auto & i : v)
+        for (const auto& i : v)
         {
             if (&i != &v[0])
             {

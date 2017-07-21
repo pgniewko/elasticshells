@@ -7,7 +7,7 @@
 #include <string>           // std::stoi
 #include <climits>          // MAX_INT
 #include <cmath>        // std::max
-    
+
 #include "utils/Logger.h"
 #include "utils/utils.h"
 
@@ -47,7 +47,7 @@ class Scheduler
         void saveRemainingSchedule();
         void setDefault(int, int, double, double, double, double, double, double);
         void execute(double&, double&, double&, const double);
-        
+
         bool nthTodo();
 
     protected:

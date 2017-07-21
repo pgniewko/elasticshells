@@ -17,15 +17,18 @@ double BoxSizeObserver::observe(const Box& box, std::vector<Cell>& cells, const 
     {
         case 1:
             return box.getX();
-            //break;
+
+        //break;
 
         case 2:
             return box.getY();
-            //break;
+
+        //break;
 
         case 3:
             return box.getZ();
-            //break;
+
+        //break;
 
         default:
             return 0.0;

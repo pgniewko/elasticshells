@@ -412,7 +412,7 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
 
 // *****************************************************************************
 Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vector<Cell>& cells, const Box& box) const
-{    
+{
 
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
@@ -429,12 +429,13 @@ Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vect
 
     Vector3D force(0, 0, 0);
     Vector3D dij;
-    
+
     if (cellId_target != cellId_partner)
     {
         Box::getDistance(dij, partner->r_c, target->r_c, box);
         force = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
     }
+
 //    else
 //    {
 //        int i = target->getId();
@@ -446,12 +447,12 @@ Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vect
 //            force = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
 //        }
 //    }
-    
+
     return force;
 }
 
 double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cell>& cells, const Box& box) const
-{    
+{
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
 
@@ -467,13 +468,14 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cel
 
     Vector3D fij(0, 0, 0);
     Vector3D dij;
-    
+
     double pij = 0.0;
 
     if (cellId_target != cellId_partner)
     {
         Box::getDistance(dij, partner->r_c, target->r_c, box);
         fij = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
+
         if (fij.length_sq() > Cell::MIN_FORCE_SQ)
         {
             pij = dot(dij, fij);
@@ -488,13 +490,14 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cel
         {
             Box::getDistance(dij, partner->r_c, target->r_c, box);
             fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
+
             if (fij.length_sq() > Cell::MIN_FORCE_SQ)
             {
                 pij = dot(dij, fij);
             }
         }
     }
-    
+
     return pij;
 }
 
@@ -504,10 +507,11 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
     Vertex* partner;
 
     int neighIndex;
-    
+
     Vector3D force;
-    
+
     std::vector<Vector3D> verts_forces;
+
     for (int vix = 0; vix < cells[cell1id].getNumberVertices(); vix++)
     {
         Vector3D new_one(0, 0, 0);
@@ -516,7 +520,7 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
 
 
     double contact_force = 0.0;
-    
+
     for (int domainIdx = 0; domainIdx < N; domainIdx++)
     {
         if (head[domainIdx] != 0)
@@ -545,27 +549,28 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                 for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
                 {
                     neighIndex = domains[domainIdx].neighborDomainIdx[k];
+
                     if (neighIndex > domainIdx)
                     {
-                    for (partner = head[neighIndex]; partner != 0; partner = partner->next)
-                    {
-                        if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
+                        for (partner = head[neighIndex]; partner != 0; partner = partner->next)
                         {
-                            force = getNbForce(target, partner, cells, box);
-                            verts_forces[ target->getId() ] += force;
+                            if ( target->getCellId() == cell1id && partner->getCellId() == cell2id )
+                            {
+                                force = getNbForce(target, partner, cells, box);
+                                verts_forces[ target->getId() ] += force;
+                            }
+                            else if ( target->getCellId() == cell2id && partner->getCellId() == cell1id )
+                            {
+                                force = getNbForce(partner, target, cells, box);
+                                verts_forces[ partner->getId() ] += force;
+                            }
                         }
-                        else if ( target->getCellId() == cell2id && partner->getCellId() == cell1id )
-                        {
-                            force = getNbForce(partner, target, cells, box);
-                            verts_forces[ partner->getId() ] += force;
-                        }
-                    }
                     }
                 }
             }
         }
     }
-    
+
     for (int vix = 0; vix < cells[cell1id].getNumberVertices(); vix++)
     {
         if (verts_forces[vix].length_sq() > 0.0 )
@@ -573,13 +578,14 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
             contact_force += verts_forces[vix].length();
         }
     }
+
     return contact_force;
 }
 
 double DomainList::virialPressure(const int cell1id, const int cell2id, const std::vector<Cell>& cells, const Box& box) const
 {
     double pressure = 0.0;
-    
+
     Vertex* target;
     Vertex* partner;
 
@@ -607,21 +613,22 @@ double DomainList::virialPressure(const int cell1id, const int cell2id, const st
                 for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
                 {
                     neighIndex = domains[domainIdx].neighborDomainIdx[k];
+
                     if (neighIndex > domainIdx)
                     {
-                    for (partner = head[neighIndex]; partner != 0; partner = partner->next)
-                    {
-                        if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
+                        for (partner = head[neighIndex]; partner != 0; partner = partner->next)
                         {
-                            pressure += virial(target, partner, cells, box);
+                            if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
+                            {
+                                pressure += virial(target, partner, cells, box);
+                            }
                         }
-                    }
                     }
                 }
             }
         }
     }
-    
+
     return pressure;
 }
 
@@ -632,9 +639,9 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
     Vertex* partner;
 
     int neighIndex;
-   
+
     Vector3D force;
-    
+
 
     for (int domainIdx = 0; domainIdx < N; domainIdx++)
     {
@@ -648,8 +655,11 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
                     if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                     {
                         force = getNbForce(target, partner, cells, box);
+
                         if (force.length_sq() > Cell::MIN_FORCE_SQ)
+                        {
                             return true;
+                        }
                     }
                 }
             }
@@ -666,8 +676,11 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
                         if ( (target->getCellId() == cell1id && partner->getCellId() == cell2id) || (target->getCellId() == cell2id && partner->getCellId() == cell1id) )
                         {
                             force = getNbForce(target, partner, cells, box);
+
                             if (force.length_sq() > Cell::MIN_FORCE_SQ)
+                            {
                                 return true;
+                            }
                         }
                     }
                 }

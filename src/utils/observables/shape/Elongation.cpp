@@ -15,7 +15,7 @@ double Elongation::observe(const Box& box, std::vector<Cell>& cells, const Domai
 {
     double min_r = std::numeric_limits<double>::max();
     double max_r = std::numeric_limits<double>::min();
-    
+
     double el = 0.0;
     double l;
 
@@ -23,7 +23,7 @@ double Elongation::observe(const Box& box, std::vector<Cell>& cells, const Domai
     {
         min_r = std::numeric_limits<double>::max();
         max_r = std::numeric_limits<double>::min();
-        
+
         cells[i].calcCM();
         Vector3D cell_cm = cells[i].cm_m;
 
@@ -36,14 +36,14 @@ double Elongation::observe(const Box& box, std::vector<Cell>& cells, const Domai
 
         if (min_r > 0)
         {
-            el += ( (max_r - min_r)/ min_r );   
+            el += ( (max_r - min_r) / min_r );
         }
         else
         {
             throw DataException("Division by zero");
         }
     }
-    
+
     el /= cells.size();
 
 }

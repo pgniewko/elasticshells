@@ -19,7 +19,7 @@ void XyzTraj::open()
 }
 
 void XyzTraj::open_traj()
-{ 
+{
     os = fopen(trajfile.c_str(), "a");
 
     if ( os == NULL )
@@ -35,7 +35,7 @@ void XyzTraj::open_traj()
 }
 
 void XyzTraj::open_lf()
-{ 
+{
     os = fopen(trajfile.c_str(), "w");
 
     if ( os == NULL )
@@ -53,7 +53,7 @@ void XyzTraj::open_box()
     {
         osb = fopen(boxfile.c_str(), "w");
     }
-    
+
     if ( osb == NULL )
     {
         xyztraj_logs << utils::LogLevel::WARNING << "Can not open the file:" <<  boxfile << "\n";
@@ -142,6 +142,7 @@ uint XyzTraj::countFramesNumber() const
     std::string line;
 
     uint frames_counter = 0;
+
     if ( os.is_open() )
     {
         while ( std::getline (os, line) )
@@ -158,8 +159,8 @@ uint XyzTraj::countFramesNumber() const
     {
         // print error
     }
-    
+
     os.close();
-    
+
     return frames_counter;
 }

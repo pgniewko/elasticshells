@@ -18,10 +18,10 @@ class Roundness : public Observer
         double observe(const Box&, std::vector<Cell>&, const DomainList&);
 
     private:
-        
-        
+
+
         double miniball_r(Cell&);
-        
+
         static DerivedRegister<Roundness> reg;
 };
 

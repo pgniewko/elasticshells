@@ -8,7 +8,7 @@
 #include "simulation/Box.h"
 #include "Cell.h"
 
-typedef std::vector<double> row; 
+typedef std::vector<double> row;
 
 struct domain_t
 {
@@ -71,7 +71,7 @@ class DomainList
         double dx, dy, dz;
         double rc_max;
 
-        Vertex* head[MAX_M* MAX_M* MAX_M];
+        Vertex* head[MAX_M * MAX_M * MAX_M];
 
         std::vector<domain_t> domains;
 

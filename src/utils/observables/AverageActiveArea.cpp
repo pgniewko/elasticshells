@@ -15,19 +15,19 @@ void AverageActiveArea::set_params(const int num, std::vector<std::string> args_
 double AverageActiveArea::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
     double total_active_a = 0.0;
-    
+
     for (uint i = 0; i < cells.size(); i++)
     {
         cells[i].calcCM();
     }
-    
+
     for (uint i = 0; i < cells.size(); i++)
     {
         total_active_a += cells[i].activeArea(box, cells, d_param);
     }
-    
+
     total_active_a /= cells.size();
-    
+
     return total_active_a;
 }
 

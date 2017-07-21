@@ -83,7 +83,7 @@ inline double Vector3D::length_sq() const
 inline void Vector3D::set_length(double r)
 {
     double rl = r * inv_length();
-    
+
     if ( std::isfinite(rl) )
     {
         x *= rl;
@@ -102,12 +102,12 @@ inline void Vector3D::normalize()
 {
     double invlen = inv_length();
 
-    if( std::isfinite(invlen) )
+    if ( std::isfinite(invlen) )
     {
         x *= invlen;
         y *= invlen;
         z *= invlen;
-        
+
     }
     else
     {
@@ -201,7 +201,7 @@ inline double Vector3D::angle(const Vector3D& v) const
     double d = *this * v;
     double l1 = length();
     double l2 = v.length();
-    assert(l1*l2 != 0.0);
+    assert(l1 * l2 != 0.0);
     double angle = acos(d / (l1 * l2));
     return angle;
 }

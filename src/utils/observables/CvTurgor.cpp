@@ -25,8 +25,8 @@ double CvTurgor::observe(const Box& box, std::vector<Cell>& cells, const DomainL
 
     av_turgor  /= N;
     av_turgor2 /= N;
-    
-    double stdev = sqrt( av_turgor2 - av_turgor*av_turgor );
+
+    double stdev = sqrt( av_turgor2 - av_turgor * av_turgor );
     double cv = stdev / av_turgor;
     return cv;
 }

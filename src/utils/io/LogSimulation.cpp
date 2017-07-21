@@ -110,6 +110,7 @@ void LogSimulation::registerObservers()
                 log_logger << utils::LogLevel::WARNING << "Could not register observer: * " << single_line[0] << " *\n";
                 continue;
             }
+
             if (single_line.size() > 3)
             {
                 obs_obj->set_params(3, single_line);
@@ -137,9 +138,9 @@ void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, const DomainLi
 {
     for (uint i = 0; i < cells.size(); i++)
     {
-        cells[i].update();    
+        cells[i].update();
     }
-    
+
 
     for (std::vector<Observer*>::iterator it = observers.begin(); it != observers.end(); ++it)
     {
@@ -153,8 +154,9 @@ void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, const DomainLi
             log_logger << utils::LogLevel::WARNING << e.what() << "\n";
             //exit(EXIT_FAILURE);
         }
-   
+
     }
+
     fprintf(os, "%s" , "\n");
     fflush(os);
 }

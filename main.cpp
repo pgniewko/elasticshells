@@ -266,11 +266,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 420:
             arguments->analyze = true;
             break;
-        
+
         case 'j':
             arguments->jam = true;
-            break;  
-            
+            break;
+
         case 500:
             arguments->E_cell = arg ? strtod (arg, NULL) : 1500.0;
             break;
@@ -315,7 +315,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 515:
             arguments->thickness = arg ?  strtod (arg, NULL) : 0.1;
             break;
-            
+
         case 517:
             arguments->const_volume = true;
             break;
@@ -435,9 +435,9 @@ int main(int argc, char** argv)
     arguments.stress_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".stress.py");
     arguments.topology_file = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".top");
     arguments.lf_file      = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".lf.xyz");
-    
+
     arguments.ob_config_file = std::string(arguments.input_dir) + std::string("observers.config");
-    arguments.sch_config_file= std::string(arguments.input_dir) + std::string("schedule.config");
+    arguments.sch_config_file = std::string(arguments.input_dir) + std::string("schedule.config");
 
     /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {arguments.seed, 0x234, 0x345, 0x456}, length = 4;
@@ -475,13 +475,13 @@ int main(int argc, char** argv)
             {
                 simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.jam);
             }
-        
+
             simulator.simulate(arguments.nsteps);
         }
-        
+
         clocks[0].toc();
         simulation_time = read_timer( ) - simulation_time;
-        
+
     }
 
 
