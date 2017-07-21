@@ -31,6 +31,8 @@
 #include "utils/nrutil.h"
 #include "../Timer.h"
 
+#include "integrators/Integrator.h"
+
 struct params_t
 {
     int log_step;
@@ -53,9 +55,11 @@ struct params_t
     std::string model_t;
 };
 
+class Integrator;
+
 class Simulator
-{
-        friend class Integrator;
+{   
+    friend class Integrator;
     
     public:
         Simulator(const arguments&);
@@ -72,10 +76,10 @@ class Simulator
        
     private:
 
-        void (Simulator::*integrator)();
+//        void (Simulator::*integrator)();
         void shiftCell(const Vector3D&, int);
-        void setIntegrator(void (Simulator::*functoall)());
-        void setIntegrator(char*);
+//        void setIntegrator(void (Simulator::*functoall)());
+//        void setIntegrator(char*);
         void setTriangulator(char*);
         void diagnoseParams(arguments);
         void logParams();
@@ -87,12 +91,12 @@ class Simulator
         void integrate();
         void rebuildDomainsList();
 
-        void integrateEuler();
-        void heunMethod();
-        void midpointRungeKutta();
-        void gear_cp();
-        void velocityVerlet();
-        void fire();
+//        void integrateEuler();
+//        void heunMethod();
+//        void midpointRungeKutta();
+//        void gear_cp();
+//        void velocityVerlet();
+//        void fire();
 
         int getTotalVertices();
         double getLengthScale(double=0.0);
@@ -110,6 +114,8 @@ class Simulator
         
         double volumeFraction();
 
+        Integrator* integrator;
+        
         int number_of_cells;
         std::string triangulator;
         params_t params;
@@ -133,12 +139,12 @@ class Simulator
         static unsigned long FORCE_EVALUATION_COUTER;
         
         
-        static int FIRE_Nmin;
-        static int FIRE_N;
-        static double FIRE_DT;
-        static double FIRE_ALPHA;
-        static double FIRE_DTMAX;
-        
+//        static int FIRE_Nmin;
+//        static int FIRE_N;
+//        static double FIRE_DT;
+//        static double FIRE_ALPHA;
+//        static double FIRE_DTMAX;
+//        
         static bool RESTART_FLAG;
         
         
