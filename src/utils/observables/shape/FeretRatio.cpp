@@ -13,14 +13,14 @@ void FeretRatio::set_params(const int num, std::vector<std::string> args_)
 
 double FeretRatio::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
-    double max_d = std::numeric_limits<double>::min();
+    double max_d = 0.0;
     double D = 0.0, V;
     double FR = 0.0;
 
 
     for (uint i = 0; i < cells.size(); i++)
     {
-        max_d = std::numeric_limits<double>::min();
+        max_d = 0.0;
 
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {

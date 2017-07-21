@@ -13,16 +13,16 @@ void Elongation::set_params(const int num, std::vector<std::string> args_)
 
 double Elongation::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
 {
-    double min_r = std::numeric_limits<double>::max();
-    double max_r = std::numeric_limits<double>::min();
+    double min_r = 1000000.0;
+    double max_r = 0.0;
 
     double el = 0.0;
     double l;
 
     for (uint i = 0; i < cells.size(); i++)
     {
-        min_r = std::numeric_limits<double>::max();
-        max_r = std::numeric_limits<double>::min();
+        min_r = 1000000.0;
+        max_r = 0.0;
 
         cells[i].calcCM();
         Vector3D cell_cm = cells[i].cm_m;
@@ -45,6 +45,8 @@ double Elongation::observe(const Box& box, std::vector<Cell>& cells, const Domai
     }
 
     el /= cells.size();
+    
+    return el;
 
 }
 
