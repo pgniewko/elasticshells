@@ -1,19 +1,43 @@
 #ifndef INTEGRATOR_H
 #define INTEGRATOR_H
 
-#include "../Simulator.h"
+#include "Environment.h"
+#include "simulation/Simulator.h"
+
+class Simulator; 
 
 class Integrator 
 {
     public:
-        explicit Integrator();
+        Integrator();
+        explicit Integrator(Simulator*, char*);
         Integrator(const Integrator& orig);
         virtual ~Integrator();
     
-        virtual void integrate(Simulator*) = 0;
+        void integrate(Simulator* s);
+        void resetParams(Simulator* s);
+        
     private:
         
-        Simulator* my_simulator;
+        void (Integrator::*integrator)(Simulator*) = 0;
+        
+        void setIntegrator(void (Integrator::*functoall)(Simulator* s));
+        void setIntegrator(Simulator* s, char*);
+        
+        void eulerIntegrator(Simulator*);
+        void heunIntegrator(Simulator*);
+        void rungeKuttaIntegrator(Simulator*);
+        void gearCpIntegrator(Simulator*);
+        void fireIntegrator(Simulator*);
+        void _vv(Simulator*);
+        
+        static int FIRE_Nmin;
+        static int FIRE_N;
+        static double FIRE_DT;
+        static double FIRE_ALPHA;
+        static double FIRE_DTMAX;
+        
+        static utils::Logger integrator_logs;
 
 };
 
