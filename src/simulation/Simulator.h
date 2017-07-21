@@ -34,7 +34,7 @@
 struct params_t
 {
     int log_step;
-    int save_step;
+    //int save_step;
     int nsteps;
     int d;
     int nbhandler;

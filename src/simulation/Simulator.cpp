@@ -38,7 +38,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     }
 
     params.log_step = args.log_step;
-    params.save_step = args.save_step;
+    //params.save_step = args.save_step;
     params.d = args.d;
     params.nbhandler = args.nb_flag;
     params.E_cell = args.E_cell;
@@ -132,7 +132,7 @@ void Simulator::diagnoseParams(arguments args)
 void Simulator::logParams()
 {
     simulator_logs << utils::LogLevel::INFO  << "SIM_STEPS=" << params.nsteps << "\n";
-    simulator_logs << utils::LogLevel::INFO  << "SAVE_STEP=" << params.save_step << "\n";
+    //simulator_logs << utils::LogLevel::INFO  << "SAVE_STEP=" << params.save_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "TRIANGULATOR="  << triangulator << "\n";
     simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << " [s]\n";
@@ -468,14 +468,18 @@ void Simulator::simulate(int steps)
         // END FIRE
         
 
-        if ( (step + 1) % params.save_step == 0)
-        {
-
-            traj.save_traj(cells, getTotalVertices());
-        }
+//        if ( (step + 1) % params.save_step == 0)
+//        {
+//
+//            traj.save_traj(cells, getTotalVertices());
+//        }
 
         if ( (step + 1) % params.log_step == 0 )
         {
+            // SAVE COORDINATES - i.e. "logging" coordinates
+            traj.save_traj(cells, getTotalVertices());
+            //
+            
             update_neighbors_list();
             log_sim.dumpState(box, cells, domains);
             saveTurgors();
