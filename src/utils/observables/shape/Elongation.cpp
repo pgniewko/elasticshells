@@ -36,7 +36,7 @@ double Elongation::observe(const Box& box, std::vector<Cell>& cells, const Domai
 
         if (min_r > 0)
         {
-            el += ( (max_r - min_r) / min_r );
+            el += ( max_r/min_r  - 1.0 );
         }
         else
         {

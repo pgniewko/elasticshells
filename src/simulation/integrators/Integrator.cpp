@@ -38,6 +38,16 @@ void Integrator::resetParams(Simulator* s)
     FIRE_DT = s->params.dt;
     FIRE_ALPHA = 0.1;
     FIRE_N = 0;
+    
+    for (int i = 0; i < s->number_of_cells; i++)
+    {
+        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+         {
+            s->cells[i].vertices[j].v_c *= 0.0; // freeze the system
+            s->cells[i].vertices[j].a_c *= 0.0; // freeze the system
+        }
+    }
+
 }
 
 void Integrator::setIntegrator(Simulator* s, char* token)
@@ -86,6 +96,12 @@ void Integrator::setIntegrator(Simulator* s, char* token)
     }
 }
 
+/*
+ * INTEGRATORS
+ *
+ * Viscosity of each vertex is assumed to be 1.0 !
+ *
+ */
 
 void Integrator::eulerIntegrator(Simulator* s)
 {
@@ -310,4 +326,3 @@ void Integrator::_vv(Simulator* s)
         }
     }
 }
-

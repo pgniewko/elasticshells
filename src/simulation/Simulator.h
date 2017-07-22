@@ -76,10 +76,7 @@ class Simulator
 
     private:
 
-//        void (Simulator::*integrator)();
         void shiftCell(const Vector3D&, int);
-//        void setIntegrator(void (Simulator::*functoall)());
-//        void setIntegrator(char*);
         void setTriangulator(char*);
         void diagnoseParams(arguments);
         void logParams();
@@ -91,12 +88,6 @@ class Simulator
         void integrate();
         void rebuildDomainsList();
 
-//        void integrateEuler();
-//        void heunMethod();
-//        void midpointRungeKutta();
-//        void gear_cp();
-//        void velocityVerlet();
-//        void fire();
 
         int getTotalVertices();
         double getLengthScale(double = 0.0);
@@ -138,15 +129,7 @@ class Simulator
         static utils::Logger simulator_logs;
         static unsigned long FORCE_EVALUATION_COUTER;
 
-
-//        static int FIRE_Nmin;
-//        static int FIRE_N;
-//        static double FIRE_DT;
-//        static double FIRE_ALPHA;
-//        static double FIRE_DTMAX;
-//
         static bool RESTART_FLAG;
-
 
 };
 
