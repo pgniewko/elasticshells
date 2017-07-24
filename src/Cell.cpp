@@ -7,31 +7,16 @@ bool Cell::no_bending = false;
 double Cell::FORCE_FRAC(0.0);
 double Cell::MIN_FORCE_SQ(0.0);
 
-Cell::Cell()
-{
-
-}
-
-Cell::Cell(int depth)
-{
-    SimpleTriangulation sm(depth);
-    std::list<Triangle> tris = sm.triangulate();
-    Tinker::constructVertices(*this, tris);
-    Tinker::constructVTriangles(*this, tris);
-    Tinker::constructTopology(*this);
-    Tinker::constructBSprings(*this);
-
-}
+Cell::Cell() {}
 
 Cell::Cell(std::list<Triangle> tris) : cell_id(-1), number_v(0), number_t(0), number_s(0), nRT(0),
-    V0(0), fem_flag(false)//, bending_flag(true)
+    V0(0), fem_flag(false)
 {
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
     Tinker::constructTopology(*this);
     Tinker::constructBSprings(*this);
     randomRotate();
-
 }
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
