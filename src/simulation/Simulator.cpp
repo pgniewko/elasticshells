@@ -173,7 +173,6 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
 
     while (number_of_cells < N)
     {
-        std::cout << "number_of_cells="<< number_of_cells<< std::endl;
         r0 = uniform(r_min, r_max);
         flag = true;
         nx = uniform(-box.getX() + r0 + rc, box.getX() - r0 - rc);

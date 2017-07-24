@@ -18,7 +18,8 @@ Integrator::Integrator(Simulator* s, char* token_)
 
 Integrator::Integrator(const Integrator& orig)
 {
-//TODO: zaimplementuj destructor
+    //TODO: implement destructor
+    // delete a pointer
 }
 
 Integrator::~Integrator()  {}
@@ -31,23 +32,6 @@ void Integrator::integrate(Simulator* s)
 void Integrator::setIntegrator(void (Integrator::*functoall)(Simulator*))
 {
     integrator = functoall;
-}
-
-void Integrator::resetParams(Simulator* s)
-{
-    FIRE_DT = s->params.dt;
-    FIRE_ALPHA = 0.1;
-    FIRE_N = 0;
-    
-    for (int i = 0; i < s->number_of_cells; i++)
-    {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
-         {
-            s->cells[i].vertices[j].v_c *= 0.0; // freeze the system
-            s->cells[i].vertices[j].a_c *= 0.0; // freeze the system
-        }
-    }
-
 }
 
 void Integrator::setIntegrator(Simulator* s, char* token)
@@ -94,6 +78,23 @@ void Integrator::setIntegrator(Simulator* s, char* token)
         integrator_logs << utils::LogLevel::CRITICAL << "integrator == NULL";
         exit(EXIT_FAILURE);
     }
+}
+
+void Integrator::resetParams(Simulator* s)
+{
+    FIRE_DT = s->params.dt;
+    FIRE_ALPHA = 0.1;
+    FIRE_N = 0;
+    
+    for (int i = 0; i < s->number_of_cells; i++)
+    {
+        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+         {
+            s->cells[i].vertices[j].v_c *= 0.0; // freeze the system
+            s->cells[i].vertices[j].a_c *= 0.0; // freeze the system
+        }
+    }
+
 }
 
 /*
