@@ -102,7 +102,7 @@ USAGE
 
 COPYRIGHT NOTICE
 ================
-Copyright (C) 2014-2016,  Pawel Gniewek  
+Copyright (C) 2014-2017,  Pawel Gniewek  
 Email  : pawel.gniewek@berkeley.edu  
 All rights reserved.  
 License: BSD  
