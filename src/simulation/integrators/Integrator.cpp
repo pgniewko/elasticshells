@@ -61,7 +61,7 @@ void Integrator::setIntegrator(Simulator* s, char* token)
         this->setIntegrator(&Integrator::fireIntegrator);
 
         FIRE_DT = s->params.dt;
-        FIRE_DTMAX = 15.0 * s->params.dt;
+        FIRE_DTMAX = 25.0 * s->params.dt;
         FIRE_ALPHA = 0.1;
         FIRE_Nmin = 5;
         FIRE_N = 0;
