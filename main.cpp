@@ -22,7 +22,7 @@
 
 utils::Logger biofilm_logs("biofilm");
 
-const char* argp_program_version = "biofilm 0.7.1";
+const char* argp_program_version = "biofilm 0.9.0";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
 
 static char doc[] =
@@ -64,7 +64,6 @@ static struct argp_option options[] =
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato], Random[rnd] [default: simple]"},
     {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
     {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], octa[2], ico[3] [default: 0]"},
-    {"dynamics",  416,       0, 0, "[default: false]"},
     {"no-bend",   417,       0, 0, "[default: false]"},
     {"model",     418,   "STR", 0, "Available models: ms_kot, ms_avg, fem [default: ms_kot]"},
     {"restart",   419,       0, 0, "[default: false]"},
@@ -150,7 +149,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->pbc = false;
             arguments->draw_box = true;
             arguments->osmotic_flag = false;
-            arguments->dynamics = false;
             arguments->nobending = false;
             arguments->const_volume = false;
             arguments->restart = false;
@@ -246,11 +244,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 414:
             arguments->platotype = arg ? atoi (arg) : 0;
             break;
-
-        case 416:
-            arguments->dynamics = true;
-            break;
-
+            
         case 417:
             arguments->nobending = true;
             break;

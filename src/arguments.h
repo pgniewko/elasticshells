@@ -58,7 +58,6 @@ struct arguments
     bool pbc;
     bool draw_box;
     bool osmotic_flag;
-    bool dynamics;
     bool nobending;
     bool const_volume;
     bool restart;

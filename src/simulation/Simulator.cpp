@@ -42,7 +42,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     params.draw_box = args.draw_box;
-    params.dynamics = args.dynamics;
     params.const_volume = args.const_volume;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
@@ -707,11 +706,6 @@ void Simulator::set_min_force()
 
 bool Simulator::check_min_force()
 {
-    if (params.dynamics)
-    {
-        return false;
-    }
-
     for (int i = 0; i < number_of_cells; i++)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)

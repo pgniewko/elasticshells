@@ -287,7 +287,7 @@ int main(int argc, char** argv)
 
         for (int j = 0; j < 5; j++)
         {
-            RandomTriangulation rnd(25, 100, 0.1, 1000.0, rvs[i]);
+            RandomTriangulation rnd(100, 200, 0.1, 1000.0, rvs[i]);
             std::list<Triangle> tris = rnd.triangulate(2.5);
 
             number_v = constructVertices(tris, vertices);
@@ -316,7 +316,7 @@ int main(int argc, char** argv)
 
         for (int j = 0; j < 5; j++)
         {
-            RandomTriangulation rnd(25, 100, temps[i], 1000.0, 0.1);
+            RandomTriangulation rnd(100, 200, temps[i], 1000.0, 0.1);
             std::list<Triangle> tris = rnd.triangulate(2.5);
 
             number_v = constructVertices(tris, vertices);
