@@ -5,7 +5,7 @@ utils::Logger DomainList::domainlist_logs("domainlist");
 DomainList::DomainList() : m(1), N(1), pbc(false), m_assigned(false), init_domains(false),
     x_min(0), y_min(0), z_min(0),
     x_max(0), y_max(0), z_max(0),
-    dx(0), dy(0), dz(0), rc_max(0)
+    dx(0), dy(0), dz(0), minL(0)
 {
 }
 
@@ -13,7 +13,7 @@ DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.
     m_assigned(orig.m_assigned), init_domains(orig.init_domains),
     x_min(0), y_min(0), z_min(0),
     x_max(0), y_max(0), z_max(0),
-    dx(0), dy(0), dz(0), rc_max(0)
+    dx(0), dy(0), dz(0), minL(0)
 {
     for (int i = 0; i < N; i++)
     {
@@ -28,9 +28,9 @@ DomainList::DomainList(const DomainList& orig) : m(orig.m), N(orig.N), pbc(orig.
 
 DomainList::~DomainList() {}
 
-void DomainList::setupDomainsList(double rcMax, Box& box)
+void DomainList::setupDomainsList(double lengthScale, Box& box)
 {
-    rc_max = rcMax;
+    minL = lengthScale + constants::delta7;
     pbc = box.pbc;
 
     if (!m_assigned)
@@ -38,8 +38,8 @@ void DomainList::setupDomainsList(double rcMax, Box& box)
         setM(box);
     }
 
-    setBoxDim(box);
     initDomains();
+    setBoxDim(box);
 }
 
 bool DomainList::validateLinkedDomains()
@@ -219,30 +219,28 @@ void DomainList::setM(Box& box)
     if (pbc)
     {
         // MAKE SURE THAT AT THE END of SIM. DOMAINS ARE NOT TOO SMALL !!!
-        xmin = -box.getXmin();
-        ymin = -box.getYmin();
-        zmin = -box.getZmin();
-        xmax =  box.getXmin();
-        ymax =  box.getYmin();
-        zmax =  box.getZmin();
+        xmin = -box.getX();
+        ymin = -box.getY();
+        zmin = -box.getZ();
+        xmax =  box.getX();
+        ymax =  box.getY();
+        zmax =  box.getZ();
     }
     else
     {
-        xmin = -(box.getXmin() + rc_max);
-        ymin = -(box.getYmin() + rc_max);
-        zmin = -(box.getZmin() + rc_max);
-        xmax =   box.getXmin() + rc_max;
-        ymax =   box.getYmin() + rc_max;
-        zmax =   box.getZmin() + rc_max;
+        xmin = -(box.getX() + 0.5*minL);
+        ymin = -(box.getY() + 0.5*minL);
+        zmin = -(box.getZ() + 0.5*minL);
+        xmax =   box.getX() + 0.5*minL;
+        ymax =   box.getY() + 0.5*minL;
+        zmax =   box.getZ() + 0.5*minL;
     }
 
     lx = xmax - xmin;
     ly = ymax - ymin;
     lz = zmax - zmin;
-    double Lmax;
-    Lmax = std::max(lx, ly);
-    Lmax = std::max(lz, Lmax);
-    m = ceil( Lmax / (2 * rc_max + constants::epsilon) );
+    double Lmax = std::max( std::max(lx, ly), lz );
+    m = ceil( Lmax / minL );
     m = std::min(m, MAX_M);
     N = m * m * m;
     m_assigned = true;
@@ -271,12 +269,12 @@ void DomainList::setBoxDim(Box& box)
     }
     else
     {
-        x_min = -(box.getX() + rc_max);
-        y_min = -(box.getY() + rc_max);
-        z_min = -(box.getZ() + rc_max);
-        x_max =   box.getX() + rc_max;
-        y_max =   box.getY() + rc_max;
-        z_max =   box.getZ() + rc_max;
+        x_min = -(box.getX() + 0.5*minL);
+        y_min = -(box.getY() + 0.5*minL);
+        z_min = -(box.getZ() + 0.5*minL);
+        x_max =   box.getX() + 0.5*minL;
+        y_max =   box.getY() + 0.5*minL;
+        z_max =   box.getZ() + 0.5*minL;
     }
 
     lx = x_max - x_min;
@@ -285,6 +283,10 @@ void DomainList::setBoxDim(Box& box)
     dx = lx / m;
     dy = ly / m;
     dz = lz / m;
+    
+    dx = std::min(dx, minL);
+    dy = std::min(dy, minL);
+    dz = std::min(dz, minL);    
 }
 
 void DomainList::voidDomains()
@@ -323,9 +325,9 @@ int DomainList::numberofAssignedParticles()
     return sum;
 }
 
-double DomainList::getMaxScale()
+double DomainList::getMinLength()
 {
-    return rc_max;
+    return minL;
 }
 
 void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box) const

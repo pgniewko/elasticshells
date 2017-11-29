@@ -53,16 +53,13 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     box.setX(args.bsx);
     box.setY(args.bsy);
     box.setZ(args.bsz);
-    box.setXmin(args.bsxe);
-    box.setYmin(args.bsye);
-    box.setZmin(args.bsze);
     box.setPbc(args.pbc);
     box.setEwall(args.E_wall);
     box.setNu(args.nu);
     box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configureScheduler(args.sch_config_file);
 
-    domains.setupDomainsList(getLengthScale( std::max(0.5 * args.init_radius1, args.init_radius2) ), box);
+    domains.setupDomainsList(getLengthScale( std::max(args.init_radius1, args.init_radius2) ), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     Cell::no_bending = args.nobending;
@@ -144,13 +141,10 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_EPS=" << OsmoticForce::getEpsilon() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "MAX_SCALE=" << domains.getMaxScale() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "MAX_SCALE=" << domains.getMinLength() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Y="  << box.getY() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.XE=" << box.getXmin() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.YE=" << box.getYmin() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZmin() << "\n";
 }
 
 void Simulator::initCells(int N, double r_min, double r_max, bool jam)
@@ -383,7 +377,7 @@ void Simulator::simulate(int steps)
 {
     updateCells();
 
-    if (params.nbhandler == 2)
+    if (params.nbhandler == 1)
     {
         rebuildDomainsList();
     }
@@ -547,7 +541,7 @@ void Simulator::calcForces()
                 }
             }
         }
-        else if (params.nbhandler == 2)
+        else if (params.nbhandler == 1)
         {
             domains.calcNbForces(cells, box);
         }
@@ -566,7 +560,7 @@ void Simulator::calcForces()
 }
 void Simulator::update_neighbors_list()
 {
-    if (params.nbhandler == 2)
+    if (params.nbhandler == 1)
     {
         rebuildDomainsList();
     }
@@ -574,17 +568,6 @@ void Simulator::update_neighbors_list()
 
 void Simulator::rebuildDomainsList()
 {
-    // This code is redundant cause the way linked domains are constructed.
-    // I.e. all vertices's ->nexts are reassigned, and heads are set to zero,
-    // so no dangling ends
-    for (uint i = 0; i < cells.size(); i++)
-    {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
-        {
-            //cells[i].vertices[j].next = 0;
-        }
-    }
-
     domains.voidDomains();
 
     for (uint i = 0; i < cells.size(); i++)
@@ -630,16 +613,11 @@ int Simulator::getTotalVertices()
 
 double Simulator::getLengthScale(double r_0)
 {
-    double maxscale = 0.0;
+    double maxscale = 2.0 * params.r_vertex;
 
-    if (params.nbhandler == 2)
+    if (params.d == 0) // Vertex is a whole particle
     {
-        maxscale = std::max(maxscale, params.r_vertex);
-
-        if (params.d == 0)
-        {
-            maxscale = std::max(maxscale, r_0) ;
-        }
+        maxscale = std::max(maxscale, 2.0 * r_0) ;
     }
 
     return maxscale;

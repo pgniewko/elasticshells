@@ -33,9 +33,9 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness, boo
     }
 
     box_t sim_box;
-    sim_box.x = box.getXmin();
-    sim_box.y = box.getYmin();
-    sim_box.z = box.getZmin();
+    sim_box.x = box.getX();
+    sim_box.y = box.getY();
+    sim_box.z = box.getZ();
     sim_box.pbc = box.pbc;
 
     double radius_i;

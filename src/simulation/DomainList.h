@@ -49,7 +49,7 @@ class DomainList
         int getNumberOfNeigh(int);
         int getDomainNeighbor(int, int);
 
-        double getMaxScale();
+        double getMinLength();
         int getVertexIdx(int, int);
         int getCellIdx(int, int);
         int getNumOfParticles(int);
@@ -69,7 +69,7 @@ class DomainList
         double x_min, y_min, z_min;
         double x_max, y_max, z_max;
         double dx, dy, dz;
-        double rc_max;
+        double minL;
 
         Vertex* head[MAX_M * MAX_M * MAX_M];
 

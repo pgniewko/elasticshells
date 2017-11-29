@@ -22,14 +22,6 @@ class Box
         void setZ(const double);
         double getZ() const;
 
-        void setXmin(const double);
-        void setYmin(const double);
-        void setZmin(const double);
-
-        double getXmin() const;
-        double getYmin() const;
-        double getZmin() const;
-
         bool resize(double = 1.0);
 
         double getVolume(const double = 0.0) const;
@@ -38,7 +30,6 @@ class Box
         void setPbc(bool);
         void setEwall(double);
         void setNu(double);
-        bool pbc;
         double getXEdge(const double = 0.0) const;
         double getYEdge(const double = 0.0) const;
         double getZEdge(const double = 0.0) const;
@@ -55,13 +46,12 @@ class Box
 
         bool nthTodo();
 
+        bool pbc; // make it private
+        
     private:
         double x;
         double y;
         double z;
-        double x_min;
-        double y_min;
-        double z_min;
         double E_box;
         double nu;
 

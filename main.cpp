@@ -56,7 +56,7 @@ static struct argp_option options[] =
         "int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], "
         "Gear corrector-predictor[cp], Conjugate Gradients [cg], Boost-CG [bcg], FIRE [fire] [default: fe]"
     },
-    {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Linked-domains[2] [default: 0]"},
+    {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Linked-domains[1] [default: 0]"},
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
@@ -91,9 +91,6 @@ static struct argp_option options[] =
     {"bsdx",      604, "FLOAT", 0, "dx of Box size [default: 0.0]"},
     {"bsdy",      605, "FLOAT", 0, "dy of Box size [default: 0.0]"},
     {"bsdz",      606, "FLOAT", 0, "dz of Box size [default: 0.0]"},
-    {"bsxe",      607, "FLOAT", 0, "X end of Box size [default: 10.0]"},
-    {"bsye",      608, "FLOAT", 0, "Y end of Box size [default: 10.0]"},
-    {"bsze",      609, "FLOAT", 0, "Z end of Box size [default: 10.0]"},
     {0}
 };
 
@@ -143,9 +140,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->bsdx = 0.0;
             arguments->bsdy = 0.0;
             arguments->bsdz = 0.0;
-            arguments->bsxe = 10.0;
-            arguments->bsye = 10.0;
-            arguments->bsze = 10.0;
             arguments->pbc = false;
             arguments->draw_box = true;
             arguments->osmotic_flag = false;
@@ -336,18 +330,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 606:
             arguments->bsdz = arg ?  strtod (arg, NULL) : 0.0;
-            break;
-
-        case 607:
-            arguments->bsxe = arg ?  strtod (arg, NULL) : 10.0;
-            break;
-
-        case 608:
-            arguments->bsye = arg ?  strtod (arg, NULL) : 10.0;
-            break;
-
-        case 609:
-            arguments->bsze = arg ?  strtod (arg, NULL) : 10.0;
             break;
 
         case OPT_ABORT:

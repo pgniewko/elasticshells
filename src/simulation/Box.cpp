@@ -3,12 +3,11 @@
 utils::Logger Box::box_logger("box_logger");
 
 Box::Box(double bsx, double bsy, double bsz) : pbc(false),
-    x(bsx), y(bsy), z(bsz), x_min(bsx), y_min(bsy), z_min(bsz),
+    x(bsx), y(bsy), z(bsz),
     E_box(0.0), nu(0.0) {}
 
 Box::Box(const Box& orig) : pbc(orig.pbc),
     x(orig.x), y(orig.y), z(orig.z),
-    x_min(orig.x_min), y_min(orig.y_min), z_min(orig.z_min),
     E_box(orig.E_box), nu(orig.nu), my_schedule(orig.my_schedule) {}
 
 Box::~Box() {}
@@ -36,20 +35,9 @@ bool Box::resize(double vf_)
 
     my_schedule.execute(dx, dy, dz, vf_);
 
-    if (x + dx >= x_min)
-    {
-        x += dx;
-    }
-
-    if (y + dy >= y_min)
-    {
-        y += dy;
-    }
-
-    if (z + dz >= z_min)
-    {
-        z += dz;
-    }
+    x += dx;
+    y += dy;
+    z += dz;
 
     if (dx == 0 && dy == 0 && dz == 0)
     {
@@ -102,35 +90,6 @@ void Box::setZ(const double newz)
 double Box::getZ() const
 {
     return z;
-}
-
-void Box::setXmin(const double xend)
-{
-    x_min = xend;
-}
-
-void Box::setYmin(const double yend)
-{
-    y_min = yend;
-}
-
-void Box::setZmin(const double zend)
-{
-    z_min = zend;
-}
-
-double Box::getXmin() const
-{
-    return x_min;
-}
-double Box::getYmin() const
-{
-    return y_min;
-}
-
-double Box::getZmin() const
-{
-    return z_min;
 }
 
 double Box::getXEdge(const double rv) const
