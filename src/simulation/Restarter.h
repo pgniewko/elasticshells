@@ -19,7 +19,7 @@ class Restarter
         Restarter(const Restarter& orig);
         virtual ~Restarter();
 
-        void saveTopologyFile(const std::vector<Cell>&, std::string) const;
+        void saveTopologyFile(const std::vector<Cell>&) const;
         void saveLastFrame(const std::vector<Cell>&) const;
         void readTopologyFile(std::vector<Cell>&) const;
         void readLastFrame(std::vector<Cell>&) const;

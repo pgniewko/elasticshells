@@ -10,7 +10,7 @@ double Cell::MIN_FORCE_SQ(0.0);
 Cell::Cell() {}
 
 Cell::Cell(std::list<Triangle> tris) : cell_id(-1), number_v(0), number_t(0), number_s(0), nRT(0),
-    V0(0), fem_flag(false)
+    V0(0)
 {
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
@@ -21,7 +21,7 @@ Cell::Cell(std::list<Triangle> tris) : cell_id(-1), number_v(0), number_t(0), nu
 
 Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
     cell_id(orig.cell_id), params(orig.params), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
-    nRT(orig.nRT), V0(orig.V0),  fem_flag(orig.fem_flag) {} //, bending_flag(orig.bending_flag) {}
+    nRT(orig.nRT), V0(orig.V0){} //, bending_flag(orig.bending_flag) {}
 
 Cell::~Cell() {}
 
@@ -29,15 +29,7 @@ void Cell::calcBondedForces()
 {
     if (number_v > 1 && number_t > 1)
     {
-        if (fem_flag)
-        {
-            calcFemForces();
-        }
-        else
-        {
-            calcHarmonicForces();
-        }
-
+        calcFemForces();
         calcOsmoticForces();
     }
 }
@@ -304,141 +296,17 @@ void Cell::setDp(double dP, double ddp)
     nRT = params.dp * V0 * ( 1.0 - OsmoticForce::getEpsilon() );
 }
 
-void Cell::setSpringConst(double E, double t, double nu_, std::string model_t)
+void Cell::setSpringConst(double E, double t, double nu_)
 {
     if (number_v == 1)
     {
         return;
     }
-
-    if ( model_t.compare("ms_kot") == 0 )
+    
+    for (int i = 0; i < number_t; i++)
     {
-
-
-        double sum_L2 = 0.0;
-
-        for (int i = 0; i < number_v; i++)
-        {
-            for (int j = 0; j < vertices[i].numBonded; j++)
-            {
-                sum_L2 += vertices[i].r0[j] * vertices[i].r0[j];
-            }
-        }
-
-        sum_L2 /= 2.0;
-
-        double g = E * t * ( 2.0 / (1.0 - nu_) ) * calcSurfaceArea() / sum_L2;
-
-        for (int i = 0; i < number_v; i++ )
-        {
-            for (int j = 0; j < vertices[i].numBonded; j++)
-            {
-                vertices[i].k0[j] = g;
-            }
-        }
+        triangles[i].setParams(vertices, E, nu_, t);
     }
-    else if ( model_t.compare("ms_avg") == 0 )
-    {
-        int me, him, third;
-        double area;
-
-        int t_me;
-        int t_him;
-
-        double g_me_him;
-
-        double a, b, c;
-
-        for (int i = 0; i < number_v; i++)
-        {
-            me = i;
-
-            for (int j = 0; j < vertices[me].numBonded; j++)
-            {
-                g_me_him = 0.0;
-                him = vertices[me].bondedVerts[j];
-
-                c = (vertices[me].r_c - vertices[him].r_c).length();
-
-                for (int k = 0; k < vertices[me].numTris; k++)
-                {
-                    t_me = vertices[me].bondedTris[k];
-
-                    for (int l = 0; l < vertices[him].numTris; l++)
-                    {
-                        t_him = vertices[him].bondedTris[l];
-
-                        if (t_me == t_him)
-                        {
-                            third = -1;
-                            area = triangles[t_me].area(vertices);
-
-                            if (triangles[t_me].ia == me && triangles[t_me].ib == him)
-                            {
-                                third = triangles[t_me].ic;
-                            }
-
-                            if (triangles[t_me].ib == me && triangles[t_me].ia == him)
-                            {
-                                third = triangles[t_me].ic;
-                            }
-
-                            if (triangles[t_me].ia == me && triangles[t_me].ic == him)
-                            {
-                                third = triangles[t_me].ib;
-                            }
-
-                            if (triangles[t_me].ic == me && triangles[t_me].ia == him)
-                            {
-                                third = triangles[t_me].ib;
-                            }
-
-                            if (triangles[t_me].ib == me && triangles[t_me].ic == him)
-                            {
-                                third = triangles[t_me].ia;
-                            }
-
-                            if (triangles[t_me].ic == me && triangles[t_me].ib == him)
-                            {
-                                third = triangles[t_me].ia;
-                            }
-
-                            if (third == -1)
-                            {
-                                cell_log <<  utils::LogLevel::SEVERE  << "PROBLEM IN setSpringConst(). \n Simulation terminates.\n";
-                                exit(EXIT_FAILURE);
-                            }
-
-
-                            a = (vertices[me].r_c - vertices[third].r_c).length();
-                            b = (vertices[third].r_c - vertices[him].r_c).length();
-
-                            g_me_him += E * t * area / (c * c * (1 + nu_));
-                            g_me_him += E * t * nu_ * (a * a + b * b - c * c) / ((1 - nu_ * nu_) * 8.0 * area);
-
-                        }
-
-                    }
-                }
-
-                vertices[me].k0[j] = g_me_him;
-            }
-        }
-    }
-    else if ( model_t.compare("fem") == 0 )
-    {
-        fem_flag = true;
-
-        for (int i = 0; i < number_t; i++)
-        {
-            triangles[i].setParams(vertices, E, nu_, t);
-        }
-    }
-    else
-    {
-        // print error and terminate
-    }
-
 }
 
 void Cell::setCellId(int ix)

@@ -64,7 +64,7 @@ class Cell
             params.dp = dp_;
         }
         void setDp(double, double);
-        void setSpringConst(double, double, double, std::string);
+        void setSpringConst(double, double, double);
         void setCellId(int);
         void setNu(double);
         void setBSprings(double, double, double);
@@ -131,9 +131,7 @@ class Cell
         int number_s = 0;
         double nRT = 0.0;
         double V0 = 0.0;
-
-        bool fem_flag = false;
-
+        
         static utils::Logger cell_log;
 };
 

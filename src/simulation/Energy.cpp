@@ -1,6 +1,5 @@
 #include "Energy.h"
 
-char* Energy::model_t = "fem";
 utils::Logger Energy::energy_logs("energy");
 ulong Energy::ENERGY_EVALUATION_COUNTER(0);
 
@@ -36,21 +35,15 @@ double Energy::calcStretchEnergy(const std::vector<Cell>& cells)
 {
     double stretchEnergy = 0.0;
 
-    if (STRCMP (Energy::model_t, "fem"))
+
+    for (uint i = 0; i < cells.size(); i++)
     {
-        for (uint i = 0; i < cells.size(); i++)
+        for (int j = 0; j < cells[i].number_t; j++)
         {
-            for (int j = 0; j < cells[i].number_t; j++)
-            {
-                stretchEnergy += cells[i].triangles[j].calcFemEnergy(cells[i].vertices);
-            }
+            stretchEnergy += cells[i].triangles[j].calcFemEnergy(cells[i].vertices);
         }
     }
-    else
-    {
-        // NOT IMPLEMENTED YET
-    }
-
+    
     return stretchEnergy;
 }
 

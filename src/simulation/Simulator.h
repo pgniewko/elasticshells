@@ -51,7 +51,6 @@ struct params_t
     double r_vertex;
     bool draw_box;
     bool const_volume;
-    std::string model_t;
 };
 
 class Integrator;

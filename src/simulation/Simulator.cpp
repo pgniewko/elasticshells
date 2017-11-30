@@ -45,7 +45,6 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     params.const_volume = args.const_volume;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
-    params.model_t = std::string(args.model_type);
 
     integrator = new Integrator(this, args.integrator_a);
     
@@ -154,8 +153,7 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
         simulator_logs << utils::LogLevel::WARNING  << "Illegal arguments: r_min > r_max. Simulator sets: r_min = r_max \n";
         r_max = r_min;
     }
-
-    simulator_logs << utils::LogLevel::INFO  << "CELL MODEL: " << params.model_t << "\n";
+    
     simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (!Cell::no_bending ? "true" : "false") << "\n";
 
     double nx, ny, nz;
@@ -225,7 +223,7 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
         }
     }
 
-    restarter.saveTopologyFile(cells, params.model_t);
+    restarter.saveTopologyFile(cells);
     set_min_force();
 
 
@@ -284,7 +282,7 @@ void Simulator::addCell(double r0)
 
         newCell.setEcc(params.E_cell);
         newCell.setNu(params.nu);
-        newCell.setSpringConst(params.E_cell, params.th, params.nu, params.model_t);
+        newCell.setSpringConst(params.E_cell, params.th, params.nu);
         newCell.setBSprings(params.E_cell, params.th, params.nu);
         newCell.setDp(params.dp, params.ddp);
 
@@ -397,7 +395,7 @@ void Simulator::simulate(int steps)
         log_sim.dumpState(box, cells, domains);
         saveTurgors();
         restarter.saveLastFrame(cells);
-        restarter.saveTopologyFile(cells, params.model_t);
+        restarter.saveTopologyFile(cells);
         traj.save_box(box, steps * params.dt);
         box.saveRemainingSchedule();
     }
@@ -464,7 +462,7 @@ void Simulator::simulate(int steps)
             saveTurgors();
             traj.save_box(box, (step + 1) * params.dt);
             restarter.saveLastFrame(cells);
-            restarter.saveTopologyFile(cells, params.model_t);
+            restarter.saveTopologyFile(cells);
         }
 
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP

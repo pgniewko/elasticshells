@@ -115,7 +115,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->input_dir  = (char*)&"./input/";
             arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
-            arguments->model_type = (char*)&"ms_kot";
             arguments->d = 3;
             arguments->platotype = 0;
             arguments->log_step = 10;
@@ -241,10 +240,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             
         case 417:
             arguments->nobending = true;
-            break;
-
-        case 418:
-            arguments->model_type = arg;
             break;
 
         case 419:
@@ -433,7 +428,6 @@ int main(int argc, char** argv)
     else
     {
         clocks[0].tic();
-        Energy::setModelType(arguments.model_type);
         simulation_time = read_timer();
         Simulator simulator(arguments);
 

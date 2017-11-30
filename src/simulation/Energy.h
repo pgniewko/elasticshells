@@ -23,17 +23,10 @@ class Energy
         static double calcCellCellEnergy(const std::vector<Cell>&, const Box&, const DomainList&);
         static double calcCellBoxEnergy(const std::vector<Cell>&, const Box&);
 
-        static void setModelType(char* _model_t)
-        {
-            model_t = _model_t;
-            energy_logs << utils::LogLevel::INFO << "ENERGY MODEL HAS BEEN SET TO: " << model_t << "\n";
-        }
-
         static ulong ENERGY_EVALUATION_COUNTER;
 
     private:
 
-        static char* model_t;
         static utils::Logger energy_logs;
 };
 
