@@ -17,7 +17,7 @@ ifeq ($(TEST), 1)
     CXXFLAGS := $(CXXFLAGS) $(DFLAGS)
 endif
 
-TARGET       := $(BIN)/biofilm
+TARGET       := $(BIN)/elasticshells
 MESH         := $(BIN)/mesh
 TEST_RUNNER  := $(TESTS)/testsrunner
 
@@ -89,16 +89,16 @@ mesh: $(MESH)
 install: $(TARGET)
 	@echo You must be root to install. Have password ready!
 	sudo install -m 755 $(TARGET) $(PREFIX)/bin
-	@echo 'biofilm has been installet at $(PREFIX)/bin'
+	@echo 'elasticshells has been installed at $(PREFIX)/bin'
 	@echo "INSTALLATION COMPLETE !"
 
 uninstall:
 	@echo You must be root to uninstall. Have password ready!
-	@if [ -f $(PREFIX)/bin/biofilm ]; \
+	@if [ -f $(PREFIX)/bin/elasticshells ]; \
 	then \
-	    sudo rm $(PREFIX)/bin/biofilm; \
+	    sudo rm $(PREFIX)/bin/elasticshells; \
 	fi
-	@echo '$(PREFIX)/bin/biofilm' uninstalled!
+	@echo '$(PREFIX)/bin/elasticshells' uninstalled!
 	
 astyle:
 	@astyle --options=astyle.conf --recursive "*.h" "*.cpp"
