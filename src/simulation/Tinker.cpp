@@ -8,7 +8,7 @@ Tinker::Tinker(const Tinker& orig) {}
 
 Tinker::~Tinker() {}
 
-void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
+void Tinker::constructVertices(Shell& cell, std::list<Triangle>& tris)
 {
     std::list<Vector3D> vectors;
     double xtmp, ytmp, ztmp;
@@ -65,7 +65,7 @@ void Tinker::constructVertices(Cell& cell, std::list<Triangle>& tris)
     //}
 }
 
-void Tinker::constructVTriangles(Cell& cell, std::list<Triangle>& tris)
+void Tinker::constructVTriangles(Shell& cell, std::list<Triangle>& tris)
 {
 
     if (tris.size() > MAX_T)
@@ -87,7 +87,7 @@ void Tinker::constructVTriangles(Cell& cell, std::list<Triangle>& tris)
     }
 }
 
-int Tinker::getVertex(Cell& cell, const Vector3D& v, double e)
+int Tinker::getVertex(Shell& cell, const Vector3D& v, double e)
 {
     for (int i = 0; i < cell.number_v; i++)
     {
@@ -101,7 +101,7 @@ int Tinker::getVertex(Cell& cell, const Vector3D& v, double e)
     return -1;
 }
 
-void Tinker::constructTopology(Cell& cell)
+void Tinker::constructTopology(Shell& cell)
 {
     for (int i = 0; i < cell.number_t; i++)
     {
@@ -127,7 +127,7 @@ void Tinker::constructTopology(Cell& cell)
     }
 }
 
-void Tinker::constructBSprings(Cell& cell)
+void Tinker::constructBSprings(Shell& cell)
 {
 
     if (cell.getNumberVertices() == 1)
@@ -192,7 +192,7 @@ bool Tinker::isUnique(std::list<Vector3D>& vlist, Vector3D& v, double e)
     return true;
 }
 
-bool Tinker::isBSpringUnique(int x1, int x2, int x3, int x4, Cell& cell)
+bool Tinker::isBSpringUnique(int x1, int x2, int x3, int x4, Shell& cell)
 {
     BendingHinge bs_tmp(x1, x2, x3, x4);
 

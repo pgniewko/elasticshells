@@ -15,10 +15,10 @@ class ShapeWl : public Observer
         virtual ~ShapeWl();
 
         void set_params(const int, std::vector<std::string>);
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
+        double observe(const Box&, std::vector<Shell>&, const DomainList&);
 
     private:
-        double calcWl(Cell&);
+        double calcWl(Shell&);
         static DerivedRegister<ShapeWl> reg;
 };
 

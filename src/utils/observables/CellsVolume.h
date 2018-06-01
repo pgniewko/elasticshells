@@ -12,13 +12,13 @@ class CellsVolume : public Observer
         virtual ~CellsVolume();
 
         void set_params(const int, std::vector<std::string>);
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
+        double observe(const Box&, std::vector<Shell>&, const DomainList&);
 
     private:
-        double calcVolumeFraction(const Box&, std::vector<Cell>&);
-        double calcCellsVolume(std::vector<Cell>&);
+        double calcVolumeFraction(const Box&, std::vector<Shell>&);
+        double calcCellsVolume(std::vector<Shell>&);
 
-        double sphereSphereIntersection(const Cell&, const Cell&);
+        double sphereSphereIntersection(const Shell&, const Shell&);
 
         static DerivedRegister<CellsVolume> reg;
 };

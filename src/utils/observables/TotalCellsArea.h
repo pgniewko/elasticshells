@@ -10,7 +10,7 @@ class TotalCellsArea : public Observer
         TotalCellsArea(const TotalCellsArea& orig);
         virtual ~TotalCellsArea();
 
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
+        double observe(const Box&, std::vector<Shell>&, const DomainList&);
         void set_params(const int, std::vector<std::string>);
 
     private:

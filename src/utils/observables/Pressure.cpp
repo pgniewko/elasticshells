@@ -14,7 +14,7 @@ void Pressure::set_params(const int num, std::vector<std::string> args_)
     d_param = strtod(args_[ num + 1 ].c_str(), NULL);
 }
 
-double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double Pressure::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     double pressure = 0.0;
 
@@ -51,7 +51,7 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainL
                         Box::getDistance(rij, cells[k].vertices[i].r_c, cells[l].vertices[j].r_c, box);
                         fij = HertzianRepulsion::calcForce(rij, r1, r2, e1, e2, nu1, nu2);
 
-                        if (fij.length_sq() > Cell::MIN_FORCE_SQ)
+                        if (fij.length_sq() > Shell::MIN_FORCE_SQ)
                         {
                             pressure += dot(rij, fij);
                         }

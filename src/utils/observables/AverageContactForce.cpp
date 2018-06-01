@@ -11,7 +11,7 @@ void AverageContactForce::set_params(const int num, std::vector<std::string> arg
     i_param = atoi(args_[ num + 0 ].c_str());
 };
 
-double AverageContactForce::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double AverageContactForce::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     double average_cf = 0.0;
     double counter = 1.0;

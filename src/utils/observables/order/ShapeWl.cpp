@@ -11,7 +11,7 @@ void ShapeWl::set_params(const int num, std::vector<std::string> args_)
     i_param = atoi(args_[ num + 0 ].c_str());
 }
 
-double ShapeWl::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double ShapeWl::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     double wlsum = 0.0;
 
@@ -24,7 +24,7 @@ double ShapeWl::observe(const Box& box, std::vector<Cell>& cells, const DomainLi
     return wlsum;
 }
 
-double ShapeWl::calcWl(Cell& cell)
+double ShapeWl::calcWl(Shell& cell)
 {
     int nk = cell.getNumberVertices();
 

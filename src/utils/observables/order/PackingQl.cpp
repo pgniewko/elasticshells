@@ -11,7 +11,7 @@ void PackingQl::set_params(const int num, std::vector<std::string> args_)
     i_param = atoi(args_[ num + 0 ].c_str());
 }
 
-double PackingQl::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double PackingQl::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     if (box.pbc == false)
     {
@@ -29,7 +29,7 @@ double PackingQl::observe(const Box& box, std::vector<Cell>& cells, const Domain
     return qlsum;
 }
 
-double PackingQl::calcQl(const Box& box, std::vector<Cell>& cells, unsigned int ci, const DomainList& dl)
+double PackingQl::calcQl(const Box& box, std::vector<Shell>& cells, unsigned int ci, const DomainList& dl)
 {
     Vector3D ci_cm = cells[ci].getCm();
     std::vector<Vector3D> neighs_cm;

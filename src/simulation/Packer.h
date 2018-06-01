@@ -5,7 +5,7 @@
 
 #include "Environment.h"
 #include "geometry/Vector3D.h"
-#include "Cell.h"
+#include "Shell.h"
 #include "simulation/Box.h"
 #include "force/HertzianRepulsion.h"
 #include "utils/io/LogSimulation.h"
@@ -35,7 +35,7 @@ class Packer
         Packer(const Packer& orig);
         virtual ~Packer();
 
-        static void packCells(Box&, std::vector<Cell>&, double, bool = true);
+        static void packCells(Box&, std::vector<Shell>&, double, bool = true);
 
     private:
 

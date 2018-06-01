@@ -10,7 +10,7 @@
 
 #include "Box.h"
 #include "Environment.h"
-#include "Cell.h"
+#include "Shell.h"
 #include "arguments.h"
 #include "exceptions/MaxSizeException.h"
 #include "exceptions/DataException.h"
@@ -79,7 +79,7 @@ class Simulator
         void diagnoseParams(arguments);
         void logParams();
 
-        void pushCell(const Cell&);
+        void pushCell(const Shell&);
         void addCell(double);
 
         void calcForces();
@@ -109,7 +109,7 @@ class Simulator
         std::string triangulator;
         params_t params;
 
-        std::vector<Cell> cells;
+        std::vector<Shell> shells;
 
         Box box;
 

@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "Cell.h"
+#include "Shell.h"
 #include "Environment.h"
 #include "simulation/Box.h"
 #include "utils/utils.h"
@@ -24,7 +24,7 @@ class XyzTraj
         void close_traj();
         void close_box();
 
-        void save_traj(const std::vector<Cell>&, int);
+        void save_traj(const std::vector<Shell>&, int);
         void save_box(const Box&, double);
 
         const std::vector<std::string> read_saved_box() const;

@@ -11,7 +11,7 @@ void AverageContactArea::set_params(const int num, std::vector<std::string> args
     return;
 };
 
-double AverageContactArea::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double AverageContactArea::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     uint cellsnumber = cells.size();
     double total_contact_a = 0.0;

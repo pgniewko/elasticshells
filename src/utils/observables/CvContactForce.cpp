@@ -11,7 +11,7 @@ void CvContactForce::set_params(const int num, std::vector<std::string> args_)
     i_param = atoi(args_[ num + 0 ].c_str());
 };
 
-double CvContactForce::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double CvContactForce::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     double average_cf  = 0.0;
     double average_cf2 = 0.0;

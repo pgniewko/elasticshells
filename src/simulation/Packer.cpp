@@ -21,7 +21,7 @@ Packer::Packer(const Packer& orig) {}
 
 Packer::~Packer() {}
 
-void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness, bool flag)
+void Packer::packCells(Box& box, std::vector<Shell>& cells, double thickness, bool flag)
 {
     std::size_t n = cells.size();
     std::vector<point_t> points;

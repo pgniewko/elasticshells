@@ -61,7 +61,7 @@ Simulator::Simulator(const arguments& args) : number_of_cells(0), box(0, 0, 0),
     domains.setupDomainsList(getLengthScale( std::max(args.init_radius1, args.init_radius2) ), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
-    Cell::no_bending = args.nobending;
+    Shell::no_bending = args.nobending;
     logParams();
 
 }
@@ -154,7 +154,7 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
         r_max = r_min;
     }
     
-    simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (!Cell::no_bending ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (!Shell::no_bending ? "true" : "false") << "\n";
 
     double nx, ny, nz;
     bool flag = true;
@@ -181,9 +181,9 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
 
         for (int i = 0; i < number_of_cells; i++)
         {
-            Vector3D tmpcm = cells[i].getCm();
+            Vector3D tmpcm = shells[i].getCm();
             Vector3D delta = shift - tmpcm;
-            rsum = cells[i].getInitR() + r0 + rc + constants::epsilon;
+            rsum = shells[i].getInitR() + r0 + rc + constants::epsilon;
 
             if ( delta.length() < rsum)
             {
@@ -204,11 +204,11 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
 
         if (params.d == 0)
         {
-            Packer::packCells(box, cells, params.th, false);
+            Packer::packCells(box, shells, params.th, false);
         }
         else
         {
-            Packer::packCells(box, cells, params.th, true);
+            Packer::packCells(box, shells, params.th, true);
         }
     }
 
@@ -219,26 +219,26 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
 
         for (int i = 0; i < number_of_cells; i++)
         {
-            cells[i].setVertexR( cells[i].getInitR() );
+            shells[i].setVertexR( shells[i].getInitR() );
         }
     }
 
-    restarter.saveTopologyFile(cells);
+    restarter.saveTopologyFile(shells);
     set_min_force();
 
 
 }
 
-void Simulator::pushCell(const Cell& newCell)
+void Simulator::pushCell(const Shell& newCell)
 {
     try
     {
-        if (cells.size() == MAX_CELLS)
+        if (shells.size() == MAX_CELLS)
             throw MaxSizeException("Maximum number of cells reached."
                                    "New cell will not be added !");
 
-        cells.push_back(newCell);
-        number_of_cells = cells.size();
+        shells.push_back(newCell);
+        number_of_cells = shells.size();
     }
     catch (MaxSizeException& e)
     {
@@ -251,7 +251,7 @@ void Simulator::addCell(double r0)
 {
     try
     {
-        if (cells.size() >= MAX_CELLS)
+        if (shells.size() >= MAX_CELLS)
             throw MaxSizeException("Maximum number of cells reached.\n"
                                    "New cell will not be added !\n"
                                    "Program is going to TERMINANTE!");
@@ -275,7 +275,7 @@ void Simulator::addCell(double r0)
             tris = rnd.triangulate(r0);
         }
 
-        Cell newCell(tris);
+        Shell newCell(tris);
         newCell.setVertexR(params.r_vertex);
         newCell.setCellId(number_of_cells);
         newCell.setInitR(r0);
@@ -308,9 +308,9 @@ void Simulator::restart()
 {
     simulator_logs << utils::LogLevel::INFO << "Simulation runs in [restart] mode. \n" ;
     restarter.registerVMap();
-    restarter.readTopologyFile(cells);
-    restarter.readLastFrame(cells);
-    number_of_cells = cells.size();
+    restarter.readTopologyFile(shells);
+    restarter.readLastFrame(shells);
+    number_of_cells = shells.size();
     set_min_force();
     Simulator::RESTART_FLAG = true;
 }
@@ -318,8 +318,8 @@ void Simulator::restart()
 void Simulator::analyze()
 {
     restarter.registerVMap();
-    restarter.readTopologyFile(cells);
-    number_of_cells = cells.size();
+    restarter.readTopologyFile(shells);
+    number_of_cells = shells.size();
 //
 //    MIN_FORCE_SQ = 1e-8;
 //    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE ARBITRARILY(in <<analyze>> mode) SET= "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
@@ -349,8 +349,8 @@ void Simulator::analyze()
     for (std::size_t i = 1; i <= frames_number; i++)
     {
         simulator_logs << utils::LogLevel::INFO << "[analyze] Processing frame number: " << i <<  "/" <<  (int) frames_number << "\n" ;
-        restarter.readFrame(traj.getTrajFile(), cells, i);
-        restarter.assignTurgors(turgor_list[i - 1], cells);
+        restarter.readFrame(traj.getTrajFile(), shells, i);
+        restarter.assignTurgors(turgor_list[i - 1], shells);
         restarter.assignBoxSize(boxsize_list[i - 1], box);
         updateCells();
 
@@ -362,7 +362,7 @@ void Simulator::analyze()
 
         domains.setBoxDim(box);
         update_neighbors_list();
-        log_sim.dumpState(box, cells, domains);
+        log_sim.dumpState(box, shells, domains);
     }
 }
 
@@ -391,11 +391,11 @@ void Simulator::simulate(int steps)
     // IF SIMULATION RESTART - DON'T DUMP THE STATS
     if (!Simulator::RESTART_FLAG)
     {
-        traj.save_traj(cells, getTotalVertices());
-        log_sim.dumpState(box, cells, domains);
+        traj.save_traj(shells, getTotalVertices());
+        log_sim.dumpState(box, shells, domains);
         saveTurgors();
-        restarter.saveLastFrame(cells);
-        restarter.saveTopologyFile(cells);
+        restarter.saveLastFrame(shells);
+        restarter.saveTopologyFile(shells);
         traj.save_box(box, steps * params.dt);
         box.saveRemainingSchedule();
     }
@@ -406,9 +406,9 @@ void Simulator::simulate(int steps)
 
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].getNumberVertices(); j++)
         {
-            cells[i].vertices[j].f_p = cells[i].vertices[j].f_c;
+            shells[i].vertices[j].f_p = shells[i].vertices[j].f_c;
         }
     }
 
@@ -441,7 +441,7 @@ void Simulator::simulate(int steps)
 
                 if ( (loop_couter + 1) % 5000 == 0)
                 {
-                    restarter.saveLastFrame(cells); // SO RESTARTING IS PRODUCTIVE
+                    restarter.saveLastFrame(shells); // SO RESTARTING IS PRODUCTIVE
                 }
             }
             while ( check_min_force() );
@@ -454,15 +454,15 @@ void Simulator::simulate(int steps)
         if ( (step + 1) % params.log_step == 0 )
         {
             // ** SAVE COORDINATES - i.e. "logging" coordinates
-            traj.save_traj(cells, getTotalVertices());
+            traj.save_traj(shells, getTotalVertices());
             // **
 
             update_neighbors_list();
-            log_sim.dumpState(box, cells, domains);
+            log_sim.dumpState(box, shells, domains);
             saveTurgors();
             traj.save_box(box, (step + 1) * params.dt);
-            restarter.saveLastFrame(cells);
-            restarter.saveTopologyFile(cells);
+            restarter.saveLastFrame(shells);
+            restarter.saveTopologyFile(shells);
         }
 
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
@@ -484,11 +484,11 @@ void Simulator::simulate(int steps)
 
     }
 
-    log_sim.dumpState(box, cells, domains);
+    log_sim.dumpState(box, shells, domains);
     saveTurgors();
     traj.save_box(box, steps * params.dt);
-    restarter.saveLastFrame(cells);
-    traj.save_traj(cells, getTotalVertices());
+    restarter.saveLastFrame(shells);
+    traj.save_traj(shells, getTotalVertices());
     box.saveRemainingSchedule();
 
     traj.close();
@@ -505,9 +505,9 @@ void Simulator::calcForces()
     {
         // CALC CENTER OF MASS
         #pragma omp for
-        for (uint i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < shells.size(); i++)
         {
-            cells[i].update();
+            shells[i].update();
         }
 
         // RESET FORCES
@@ -515,7 +515,7 @@ void Simulator::calcForces()
 
         for (int i = 0 ; i < number_of_cells; i++)
         {
-            cells[i].voidForces();
+            shells[i].voidForces();
         }
 
         // CALCULATE INTRA-CELLULAR FORCES
@@ -523,7 +523,7 @@ void Simulator::calcForces()
 
         for (int i = 0 ; i < number_of_cells; i++)
         {
-            cells[i].calcBondedForces();
+            shells[i].calcBondedForces();
         }
 
         // CALCULATE INTER-CELLULAR FORCES
@@ -535,13 +535,13 @@ void Simulator::calcForces()
             {
                 for (int j = 0; j < number_of_cells; j++)
                 {
-                    cells[i].calcNbForcesON2(cells[j], box);
+                    shells[i].calcNbForcesON2(shells[j], box);
                 }
             }
         }
         else if (params.nbhandler == 1)
         {
-            domains.calcNbForces(cells, box);
+            domains.calcNbForces(shells, box);
         }
 
         // CALCULATE FORCES BETWEEN CELLS AND BOX
@@ -551,7 +551,7 @@ void Simulator::calcForces()
 
             for (int i = 0 ; i < number_of_cells; i++)
             {
-                cells[i].calcBoxForces(box);
+                shells[i].calcBoxForces(box);
             }
         }
     }
@@ -568,19 +568,19 @@ void Simulator::rebuildDomainsList()
 {
     domains.voidDomains();
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].getNumberVertices(); j++)
         {
-            domains.assignVertex(&cells[i].vertices[j]);
+            domains.assignVertex(&shells[i].vertices[j]);
         }
     }
 }
 
 void Simulator::shiftCell(const Vector3D& v3d, int cellid)
 {
-    cells[cellid].addXYZ(v3d);
-    cells[cellid].update();
+    shells[cellid].addXYZ(v3d);
+    shells[cellid].update();
 }
 
 double Simulator::volumeFraction()
@@ -588,9 +588,9 @@ double Simulator::volumeFraction()
     double box_vol = box.getVolume();
     double cells_vol = 0.0;
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        cells_vol += cells[i].calcVolume();
+        cells_vol += shells[i].calcVolume();
     }
 
     return (cells_vol / box_vol);
@@ -603,7 +603,7 @@ int Simulator::getTotalVertices()
 
     for (int i = 0; i < number_of_cells; i++)
     {
-        totalnumber += cells[i].getNumberVertices();
+        totalnumber += shells[i].getNumberVertices();
     }
 
     return totalnumber;
@@ -647,35 +647,35 @@ void Simulator::setTriangulator(char* token)
 
 void Simulator::updateCells()
 {
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        cells[i].update();
+        shells[i].update();
     }
 }
 
 void Simulator::set_min_force()
 {
-    double average_area = cells[0].calcSurfaceArea();
-    average_area /= cells[0].getNumberTriangles();
+    double average_area = shells[0].calcSurfaceArea();
+    average_area /= shells[0].getNumberTriangles();
 
     double max_turgor = 0.0;
 
     for (int i = 0; i < number_of_cells; i++)
     {
-        max_turgor = std::max(max_turgor, cells[i].getTurgor());
+        max_turgor = std::max(max_turgor, shells[i].getTurgor());
     }
 
     MIN_FORCE_SQ = FORCE_FRAC * max_turgor * average_area;
     MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
 
-    if (cells[0].getNumberVertices() == 1)
+    if (shells[0].getNumberVertices() == 1)
     {
         MIN_FORCE_SQ = 1e-12;
         MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
     }
 
-    Cell::FORCE_FRAC   = FORCE_FRAC;
-    Cell::MIN_FORCE_SQ = MIN_FORCE_SQ;
+    Shell::FORCE_FRAC   = FORCE_FRAC;
+    Shell::MIN_FORCE_SQ = MIN_FORCE_SQ;
 
     simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
 }
@@ -684,9 +684,9 @@ bool Simulator::check_min_force()
 {
     for (int i = 0; i < number_of_cells; i++)
     {
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].getNumberVertices(); j++)
         {
-            if (cells[i].vertices[j].f_c.length_sq() > MIN_FORCE_SQ)
+            if (shells[i].vertices[j].f_c.length_sq() > MIN_FORCE_SQ)
             {
                 return true;
             }
@@ -706,12 +706,12 @@ bool Simulator::check_const_volume()
 
         for (int i = 0; i < number_of_cells; i++)
         {
-            step = cells[i].checkVolumeCondition();
+            step = shells[i].checkVolumeCondition();
 
             if ( fabs(step) > eps )
             {
                 flag = true;
-                cells[i].ajustTurgor(step);
+                shells[i].ajustTurgor(step);
             }
         }
 
@@ -755,18 +755,18 @@ void Simulator::saveTurgors()
     double turgor;
     Vector3D cm;
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        cells_vol += cells[i].calcVolume();
+        cells_vol += shells[i].calcVolume();
     }
 
     fprintf(os, "%-7.4f %5.3f %5.3f %5.3f %7.4f ", box_volume, box_x, box_y, box_z, cells_vol);
 
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        turgor = cells[i].getTurgor();
-        cm = cells[i].getCm();
+        turgor = shells[i].getTurgor();
+        cm = shells[i].getCm();
 
         fprintf(os, "%5.4f %6.4f %6.4f %6.4f ", turgor, cm.x, cm.y, cm.z);
     }
@@ -783,10 +783,10 @@ void Simulator::recenterCells()
 {
     if (box.pbc)
     {
-        for (uint i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < shells.size(); i++)
         {
-            Vector3D shift = Box::recenteringVector( cells[i].getCm(), box );
-            cells[i].addXYZ(shift);
+            Vector3D shift = Box::recenteringVector( shells[i].getCm(), box );
+            shells[i].addXYZ(shift);
         }
     }
 

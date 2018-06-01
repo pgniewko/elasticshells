@@ -134,7 +134,7 @@ void LogSimulation::printHeader()
     fflush(os);
 }
 
-void LogSimulation::dumpState(Box& box, std::vector<Cell>& cells, const DomainList& dl)
+void LogSimulation::dumpState(Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     for (uint i = 0; i < cells.size(); i++)
     {

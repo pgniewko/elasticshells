@@ -5,13 +5,13 @@
 #include <vector>
 
 #include "Environment.h"
-#include "Cell.h"
+#include "Shell.h"
 #include "geometry/Triangle.h"
 #include "geometry/Vertex.h"
 #include "geometry/VertexTriangle.h"
 #include "force/BendingHinge.h"
 
-class Cell;
+class Shell;
 
 class Tinker
 {
@@ -19,16 +19,16 @@ class Tinker
         Tinker();
         Tinker(const Tinker& orig);
         virtual ~Tinker();
-        static void constructVertices(Cell&, std::list<Triangle>&);
-        static void constructVTriangles(Cell&, std::list<Triangle>&);
-        static void constructTopology(Cell&);
-        static void constructBSprings(Cell&);
+        static void constructVertices(Shell&, std::list<Triangle>&);
+        static void constructVTriangles(Shell&, std::list<Triangle>&);
+        static void constructTopology(Shell&);
+        static void constructBSprings(Shell&);
 
     private:
         static bool isUnique(std::list<Vector3D>&, Vector3D&, double = constants::epsilon);
-        static bool isBSpringUnique(int, int, int, int, Cell&);
+        static bool isBSpringUnique(int, int, int, int, Shell&);
 
-        static int getVertex(Cell&, const Vector3D&, double = constants::epsilon);
+        static int getVertex(Shell&, const Vector3D&, double = constants::epsilon);
 
         static utils::Logger tinker_log;
 };

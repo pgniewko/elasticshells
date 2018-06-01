@@ -13,7 +13,7 @@ class Elongation : public Observer
         virtual ~Elongation();
 
         void set_params(const int, std::vector<std::string>);
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
+        double observe(const Box&, std::vector<Shell>&, const DomainList&);
 
     private:
         static DerivedRegister<Elongation> reg;

@@ -11,12 +11,12 @@ void CellsVolume::set_params(const int num, std::vector<std::string> args_)
     d_param = strtod(args_[ num + 0 ].c_str(), NULL);
 }
 
-double CellsVolume::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double CellsVolume::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     return calcCellsVolume(cells);
 }
 
-double CellsVolume::calcCellsVolume(std::vector<Cell>& cells)
+double CellsVolume::calcCellsVolume(std::vector<Shell>& cells)
 {
     double cellsVolume = 0.0;
 
@@ -43,7 +43,7 @@ double CellsVolume::calcCellsVolume(std::vector<Cell>& cells)
     return cellsVolume;
 }
 
-double CellsVolume::sphereSphereIntersection(const Cell& c1, const Cell& c2)
+double CellsVolume::sphereSphereIntersection(const Shell& c1, const Shell& c2)
 {
 
     double r1 = c1.getInitR();

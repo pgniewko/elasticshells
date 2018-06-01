@@ -11,7 +11,7 @@ void TotalCellsArea::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double TotalCellsArea::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double TotalCellsArea::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     uint cellsnumber = cells.size();
     double total_area = 0.0;

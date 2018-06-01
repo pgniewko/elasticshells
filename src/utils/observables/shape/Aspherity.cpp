@@ -11,7 +11,7 @@ void Aspherity::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double Aspherity::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double Aspherity::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     double av_radius = 0.0;
     double sq_av_radius = 0.0;

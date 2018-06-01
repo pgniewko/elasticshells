@@ -11,7 +11,7 @@ void FeretRatio::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double FeretRatio::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double FeretRatio::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     double max_d = 0.0;
     double D = 0.0, V;

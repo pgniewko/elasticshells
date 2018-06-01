@@ -11,7 +11,7 @@ void Roundness::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double Roundness::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double Roundness::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     double V, D, DR, roundness_ = 0.0;
 
@@ -37,7 +37,7 @@ double Roundness::observe(const Box& box, std::vector<Cell>& cells, const Domain
     return roundness_;
 }
 
-double Roundness::miniball_r(Cell& cell)
+double Roundness::miniball_r(Shell& cell)
 {
     typedef double mytype;            // coordinate type
 

@@ -11,7 +11,7 @@ Restarter::~Restarter()
 {
 }
 
-int Restarter::getTotalVertices(const std::vector<Cell>& cells) const
+int Restarter::getTotalVertices(const std::vector<Shell>& cells) const
 {
     int totalnumber = 0;
 
@@ -23,14 +23,14 @@ int Restarter::getTotalVertices(const std::vector<Cell>& cells) const
     return totalnumber;
 }
 
-void Restarter::saveTopologyFile(const std::vector<Cell>& cells) const
+void Restarter::saveTopologyFile(const std::vector<Shell>& cells) const
 {
     std::ofstream os;
     os.open(topologyFile);
 
     if ( os.is_open() )
     {
-        os << "NUMCELLS " << cells.size() << " fem " << (Cell::no_bending ? "true" : "false") << "\n";
+        os << "NUMCELLS " << cells.size() << " fem " << (Shell::no_bending ? "true" : "false") << "\n";
 
         for (uint i = 0; i < cells.size(); i++)
         {
@@ -58,7 +58,7 @@ void Restarter::saveTopologyFile(const std::vector<Cell>& cells) const
     }
 }
 
-void Restarter::saveLastFrame(const std::vector<Cell>& cells) const
+void Restarter::saveLastFrame(const std::vector<Shell>& cells) const
 {
     XyzTraj lf_xyz(lastFrameFile, "NULL");
     lf_xyz.open_lf();
@@ -66,13 +66,13 @@ void Restarter::saveLastFrame(const std::vector<Cell>& cells) const
     lf_xyz.close_traj();
 }
 
-void Restarter::readTopologyFile(std::vector<Cell>& cells) const
+void Restarter::readTopologyFile(std::vector<Shell>& cells) const
 {
     std::pair<int, std::string>  nc_mtype = getNumberOfCells();
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
-        Cell newCell;
+        Shell newCell;
         cells.push_back(newCell);
     }
 
@@ -131,7 +131,7 @@ std::pair<int, std::string> Restarter::getNumberOfCells() const
     return line_pair;
 }
 
-void Restarter::initCell(std::vector<Cell>& cells, int cix) const
+void Restarter::initCell(std::vector<Shell>& cells, int cix) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
@@ -176,7 +176,7 @@ void Restarter::initCell(std::vector<Cell>& cells, int cix) const
 }
 
 
-void Restarter::addVertices(std::vector<Cell>& cells, int cix) const
+void Restarter::addVertices(std::vector<Shell>& cells, int cix) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
@@ -229,7 +229,7 @@ void Restarter::addVertices(std::vector<Cell>& cells, int cix) const
     os.close();
 }
 
-void Restarter::addVTriangles(std::vector<Cell>& cells, int cix) const
+void Restarter::addVTriangles(std::vector<Shell>& cells, int cix) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
@@ -281,7 +281,7 @@ void Restarter::addVTriangles(std::vector<Cell>& cells, int cix) const
 }
 
 
-void Restarter::addBHinges(std::vector<Cell>& cells, int cix) const
+void Restarter::addBHinges(std::vector<Shell>& cells, int cix) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
@@ -352,7 +352,7 @@ void Restarter::registerVMap()
 
 }
 
-void Restarter::readLastFrame(std::vector<Cell>& cells) const
+void Restarter::readLastFrame(std::vector<Shell>& cells) const
 {
     std::ifstream os;
     os.open(lastFrameFile, std::ifstream::in);
@@ -393,7 +393,7 @@ void Restarter::readLastFrame(std::vector<Cell>& cells) const
     os.close();
 }
 
-void Restarter::readFrame(std::string trajFile, std::vector<Cell>& cells, int frameNumber) const
+void Restarter::readFrame(std::string trajFile, std::vector<Shell>& cells, int frameNumber) const
 {
     std::ifstream os;
     os.open(trajFile, std::ifstream::in);
@@ -442,7 +442,7 @@ void Restarter::readFrame(std::string trajFile, std::vector<Cell>& cells, int fr
 }
 
 
-void Restarter::assignTurgors(std::string turgor_line, std::vector<Cell>& cells) const
+void Restarter::assignTurgors(std::string turgor_line, std::vector<Shell>& cells) const
 {
     std::vector<std::string> pairs = split(turgor_line, ' ');
     double turgor;

@@ -11,7 +11,7 @@ void Elongation::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double Elongation::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double Elongation::observe(const Box& box, std::vector<Shell>& cells, const DomainList& dl)
 {
     double min_r = 1000000.0;
     double max_r = 0.0;
