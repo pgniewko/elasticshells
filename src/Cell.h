@@ -17,7 +17,7 @@
 #include "simulation/Box.h"
 #include "simulation/Tinker.h"
 
-struct cell_params_t
+struct shell_params_t
 {
     double vertex_r;
     double ecc;
@@ -105,7 +105,7 @@ class Cell
         double getTurgor() const;
         void update(double = 0.0);
 
-        const cell_params_t& get_params() const;
+        const shell_params_t& get_params() const;
 
         static bool no_bending;
 
@@ -125,7 +125,7 @@ class Cell
         double project_force(const Box&, const Vector3D&, const int) const;
         Vector3D box_force(const Box&, const int) const;
 
-        cell_params_t params;
+        shell_params_t params;
         int number_v = 0;
         int number_t = 0;
         int number_s = 0;

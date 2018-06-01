@@ -376,8 +376,8 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
 
-    const struct cell_params_t params1 = cells[cellId_target].get_params();
-    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+    const struct shell_params_t params1 = cells[cellId_target].get_params();
+    const struct shell_params_t params2 = cells[cellId_partner].get_params();
 
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;
@@ -419,8 +419,8 @@ Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vect
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
 
-    const struct cell_params_t params1 = cells[cellId_target].get_params();
-    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+    const struct shell_params_t params1 = cells[cellId_target].get_params();
+    const struct shell_params_t params2 = cells[cellId_partner].get_params();
 
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;
@@ -458,8 +458,8 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cel
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
 
-    const struct cell_params_t params1 = cells[cellId_target].get_params();
-    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+    const struct shell_params_t params1 = cells[cellId_target].get_params();
+    const struct shell_params_t params2 = cells[cellId_partner].get_params();
 
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;
@@ -742,8 +742,8 @@ double DomainList::nbEnergy(const Vertex* target, const Vertex* partner, const s
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
 
-    const struct cell_params_t params1 = cells[cellId_target].get_params();
-    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+    const struct shell_params_t params1 = cells[cellId_target].get_params();
+    const struct shell_params_t params2 = cells[cellId_partner].get_params();
 
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;
