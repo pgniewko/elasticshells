@@ -9,7 +9,7 @@ GETTING THE CODE
 ==================================================
 * To get the code:
 ```
-git clone git@bitbucket.org:pawelgniewek/biofilm.git
+git clone git@github.com:pgniewko/elasticshells.git
 ```
 
 * To obtain the most recent version of the code:
@@ -85,6 +85,10 @@ apt-get install libgsl0-dev
 The original code can be downloaded from [github](https://github.com/nquesada/steinhardt),
 or from the local [copy](https://bitbucket.org/pawelgniewek/steinhardt). 
 
+* Linked-lists: [nblists](https://github.com/pgniewko/nblists)
+* Mesh generator: [rndmesh](git@github.com:pgniewko/rndmesh.git)
+* Order metrics: [steinhardt](git@github.com:pgniewko/steinhardt.git)
+* Fast-math library: [fastmah](git@github.com:pgniewko/fastmath.git)
 
 CONTENTS
 ========
@@ -100,10 +104,15 @@ USAGE
 =====
 
 
+LICENSE
+=======
+The library is open-source. If you want to cite the library in any published work please contact me at gniewko.pablo@gmail.com 
+for an information about credits or check my [website](http://meetpg.pl/notes.html). Physics background and models benchmarking can be fount in the [notes](http://meetpg.pl/notes.html).
+
 COPYRIGHT NOTICE
 ================
-Copyright (C) 2014-2017,  Pawel Gniewek  
-Email  : pawel.gniewek@berkeley.edu  
+Copyright (C) 2014-2018,  Pawel Gniewek  
+Email  : gniewko.pablo@gmail.com  
 All rights reserved.  
 License: BSD  
 
