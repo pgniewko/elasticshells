@@ -86,9 +86,9 @@ The original code can be downloaded from [github](https://github.com/nquesada/st
 or from the local [copy](https://bitbucket.org/pawelgniewek/steinhardt). 
 
 * Linked-lists: [nblists](https://github.com/pgniewko/nblists)
-* Mesh generator: [rndmesh](git@github.com:pgniewko/rndmesh.git)
-* Order metrics: [steinhardt](git@github.com:pgniewko/steinhardt.git)
-* Fast-math library: [fastmah](git@github.com:pgniewko/fastmath.git)
+* Mesh generator: [rndmesh](https://github.com/pgniewko/rndmesh)
+* Order metrics: [steinhardt](https://github.com/pgniewko/steinhardt)
+* Fast-math library: [fastmah](https://github.com/pgniewko/fastmath)
 
 CONTENTS
 ========
