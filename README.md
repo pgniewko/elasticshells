@@ -107,7 +107,7 @@ USAGE
 LICENSE
 =======
 The library is open-source. If you want to cite the library in any published work please contact me at gniewko.pablo@gmail.com 
-for an information about credits or check my [website](http://meetpg.pl/notes.html). Physics background and models benchmarking can be fount in the [notes](http://meetpg.pl/notes.html).
+for an information about credits or check my [website](http://meetpg.pl). Physics background and models benchmarking can be fount in the [notes](http://meetpg.pl/notes.html).
 
 COPYRIGHT NOTICE
 ================
