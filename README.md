@@ -1,7 +1,6 @@
 DESCRIPTION
 ==================================================
-
-Biofilm simulator is written in C/C++ and uses modern computer
+```elasticshells``` simulator is written in C/C++ and uses modern computer
 architectures and technologies: OpenMP for shared-memory systems, 
 SSE vectorization for x86_64 CPU.
 
@@ -65,25 +64,27 @@ Please note that you must be root in order to install at `/usr/local`.
 EXTERNAL LIBRARIES
 ================
 * For compiling and running tests [CppUnit](sourceforge.net/projects/cppunit) is needed.
-* ```argp.h``` library is needed for command line parsing. On Mac OS X it can be easily installed with:
-```
-brew install argp-standalone
-```
 
-On linux argp.h is a part of ```libc6-dev``` library. It can be installed with a command (on Ubuntu):
-```
-sudo apt-get install libc6-dev
-```
+* ```argp.h``` library is needed for command line parsing. 
+  * On Mac OS X it can be easily installed with:
+  ```
+  brew install argp-standalone
+  ```
+
+  * On linux argp.h is a part of ```libc6-dev``` library. It can be installed with a command (on Ubuntu):
+  ```
+  sudo apt-get install libc6-dev
+  ```
 
 * GNU Scientific Library ([GSL](http://www.gnu.org/software/gsl/)).
-On Ubuntu you can install it by running:
-```
-apt-get install libgsl0-dev
-```
-
-* Steinhardt library for order parameters parameters calculations.
-The original code can be downloaded from [github](https://github.com/nquesada/steinhardt),
-or from the local [copy](https://bitbucket.org/pawelgniewek/steinhardt). 
+  * On Ubuntu you can install it by running:
+  ```
+  apt-get install libgsl0-dev
+  ```
+  * On Mac OS you can install it by runnig:
+  ```
+  brew install gsl
+  ```
 
 * Linked-lists: [nblists](https://github.com/pgniewko/nblists)
 * Mesh generator: [rndmesh](https://github.com/pgniewko/rndmesh)
