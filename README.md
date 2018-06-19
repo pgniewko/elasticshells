@@ -88,6 +88,12 @@ Make sure that the dependencies are compiled with the same compiled (GNU compile
   brew install gsl
   ```
 
+* [CppUnit](http://cppunit.sourceforge.net/doc/cvs/index.html):
+  * On Mac OS you can install it with brew:
+  ```
+  brew install cppunit
+  ```
+
 * Linked-lists: [nblists](https://github.com/pgniewko/nblists)
 * Mesh generator: [rndmesh](https://github.com/pgniewko/rndmesh)
 * Order metrics: [steinhardt](https://github.com/pgniewko/steinhardt)
