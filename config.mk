@@ -7,7 +7,6 @@ CC	     := gcc
 
 # C++ compiler
 CXX      := g++-4.9
-
 # Flags for the C++ compiler
 # -g --Enable debugging
 # -Wall --Turn on all warnings
@@ -19,14 +18,14 @@ CXX      := g++-4.9
 DBGFLAGS := -DDEBUG -g
 
 # Relative include and library paths for compilation of the examples
-INCLUDE  := -I/usr/local/include -I$(CURDIR)/src -I/Users/pawel/include
+INCLUDE  := -I/usr/local/include -I$(CURDIR)/src #-I/Users/pawel/include
 #LIB      := -L/usr/local/lib -L/usr/lib
 LIB      := -L/usr/local/lib
 DFLAGS   := -DTESTS
 
-CXXFLAGS := -lm -Wall -O3 -Dulong="unsigned long" -Duint="unsigned int" -std=gnu++11 -fopenmp -fpermissive $(INCLUDE)
+CXXFLAGS := -lm -Wall -O3 -std=gnu++11 -DFAST -Dulong="unsigned long" -Duint="unsigned int" -fopenmp -fpermissive $(INCLUDE)
 LDFLAGS  := $(LIB)
-LDLIBS   := -lcppunit -ldl -largp -lsteinhardt -lrndmesh -lgfortran -lgsl -lgslcblas
+LDLIBS   := -lcppunit -ldl -largp -lsteinhardt -lrndmesh -lnblists -lgfortran -lgsl -lgslcblas
 
 
 # Local dirs 

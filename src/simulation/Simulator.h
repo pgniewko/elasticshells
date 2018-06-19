@@ -67,7 +67,7 @@ class Simulator
         void simulate();
         void simulate(int);
 
-        void initCells(int, double, double, bool = false);
+        void initCells(int, double, double, bool = false, bool = true);
 
         void restart();
         void analyze();

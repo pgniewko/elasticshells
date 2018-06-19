@@ -21,7 +21,8 @@ Shell::Shell(std::list<Triangle> tris) : cell_id(-1), number_v(0), number_t(0), 
 
 Shell::Shell(const Shell& orig) : cm_m(orig.cm_m), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
     cell_id(orig.cell_id), params(orig.params), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
-    nRT(orig.nRT), V0(orig.V0){} //, bending_flag(orig.bending_flag) {}
+    nRT(orig.nRT), V0(orig.V0)
+{}
 
 Shell::~Shell() {}
 

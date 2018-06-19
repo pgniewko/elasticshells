@@ -59,6 +59,7 @@ struct arguments
     bool restart;
     bool analyze;
     bool jam;
+    bool floaters_free;
     int nb_flag;
 
     unsigned long seed;

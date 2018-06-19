@@ -146,7 +146,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
 }
 
-void Simulator::initCells(int N, double r_min, double r_max, bool jam)
+void Simulator::initCells(int N, double r_min, double r_max, bool jam, bool floaters_free)
 {
     if (r_min > r_max)
     {
@@ -204,11 +204,11 @@ void Simulator::initCells(int N, double r_min, double r_max, bool jam)
 
         if (params.d == 0)
         {
-            Packer::packCells(box, shells, params.th, false);
+            Packer::packCells(box, shells, params.th, false, floaters_free);
         }
         else
         {
-            Packer::packCells(box, shells, params.th, true);
+            Packer::packCells(box, shells, params.th, true, floaters_free);
         }
     }
 

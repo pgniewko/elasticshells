@@ -35,7 +35,7 @@ class Packer
         Packer(const Packer& orig);
         virtual ~Packer();
 
-        static void packCells(Box&, std::vector<Shell>&, double, bool = true);
+        static void packCells(Box&, std::vector<Shell>&, double, bool = true, bool=true);
 
     private:
 
@@ -55,10 +55,9 @@ class Packer
         static void calcBoxForces(std::vector<point_t>&, const box_t&);
 
 
-        static bool anyRattlerOrCrowder(const std::vector<point_t>&, const box_t&, double&);
+        static bool anyFloaterOrCrowder(const std::vector<point_t>&, const box_t&, double&, bool);
         static int boxContacts(const point_t&, const box_t&);
-        static int cellContacts(const point_t&, const point_t&, const box_t&);
-
+        static int shell_contacts(const point_t&, const point_t&, const box_t&);
 
         static int FIRE_Nmin;
         static int FIRE_N;

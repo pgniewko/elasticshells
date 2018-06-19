@@ -1,7 +1,7 @@
 /*
  * Author : Pawel Gniewek (UC Berkeley)
- * Email  : pawel.gniewek@berkeley.edu
- * License: BSD
+ * Email  : gniewko.pablo@gmail.com
+ * License: BSD 3
  */
 
 #include <iostream>    /* cout, cin */
@@ -20,14 +20,14 @@
 #include "utils/Logger.h"
 #include "utils/LogManager.h"
 
-utils::Logger biofilm_logs("biofilm");
+utils::Logger elasticshells_logs("elasticshells");
 
-const char* argp_program_version = "biofilm 0.9.0";
-const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
+const char* argp_program_version = "elasticshells 0.2.1";
+const char* argp_program_bug_address = "<gniewko.pablo@gmail.com>";
 
 static char doc[] =
     "General information about the software goes *here*\
-    \vCopyright (C) 2014-2017, Pawel Gniewek. \nAll rights reserved.";
+    \vCopyright (C) 2014-2018, Pawel Gniewek. \nAll rights reserved.";
 
 static char args_doc[] = "";
 
@@ -43,7 +43,7 @@ static struct argp_option options[] =
     {"input",       'i', "FILE",  0, "Input from FILE [default: ...]" },
     {"out-dir",     301, "FILE",  0, "... [default: ./output]" },
     {"in-dir",      302,  "STR",  0, "... [default: ./input]" },
-    {"prefix",      303,  "STR",  0, "... [default: biofilm]" },
+    {"prefix",      303,  "STR",  0, "... [default: elshells]" },
     {"seed",        304, "LONG",  0, "Random generator seed [default: 0x123] " },
     {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
@@ -69,6 +69,7 @@ static struct argp_option options[] =
     {"restart",   419,       0, 0, "[default: false]"},
     {"analyze",   420,       0, 0, "[default: false]"},
     {"jam",       'j',       0, 0, "[default: false]"},
+    {"no-floats", 421,       0, 0, "[default: false]"},
 
     {0,             0,       0, 0, "Cell Options:", 5},
     {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
@@ -110,7 +111,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->verbose = 1;
             arguments->debug = 0;
             arguments->abort = 0;
-            arguments->files_prefix = (char*)&"biofilm";
+            arguments->files_prefix = (char*)&"elshells";
             arguments->output_dir = (char*)&"./output/";
             arguments->input_dir  = (char*)&"./input/";
             arguments->integrator_a = (char*)&"fe";
@@ -147,6 +148,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->restart = false;
             arguments->analyze = false;
             arguments->jam = false;
+            arguments->floaters_free = false;
             arguments->nb_flag = 0;
             arguments->seed = 0x123;
             break;
@@ -253,7 +255,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 'j':
             arguments->jam = true;
             break;
-
+            
+        case 421:
+            arguments->floaters_free = true;
+            break;
+            
         case 500:
             arguments->E_cell = arg ? strtod (arg, NULL) : 1500.0;
             break;
@@ -394,7 +400,7 @@ int main(int argc, char** argv)
 
     if (arguments.abort)
     {
-        biofilm_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT*\n";
+        elasticshells_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT*\n";
         exit(EXIT_FAILURE);
     }
 
@@ -413,17 +419,17 @@ int main(int argc, char** argv)
     /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {arguments.seed, 0x234, 0x345, 0x456}, length = 4;
     init_by_array(init, length);
-    biofilm_logs << utils::LogLevel::FILE << "RENDER_FILE = "      << arguments.render_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = "        << arguments.traj_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "BOX_FILE = "         << arguments.box_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = "      << arguments.output_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = "     << arguments.surface_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
+    elasticshells_logs << utils::LogLevel::FILE << "RENDER_FILE = "      << arguments.render_file << "\n";
+    elasticshells_logs << utils::LogLevel::FILE << "TRAJ_FILE = "        << arguments.traj_file << "\n";
+    elasticshells_logs << utils::LogLevel::FILE << "BOX_FILE = "         << arguments.box_file << "\n";
+    elasticshells_logs << utils::LogLevel::FILE << "OUTPUT_FILE = "      << arguments.output_file << "\n";
+    elasticshells_logs << utils::LogLevel::FILE << "SURFACE_FILE = "     << arguments.surface_file << "\n";
+    elasticshells_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
+    elasticshells_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
 
     if (arguments.n_cells == 0)
     {
-        biofilm_logs << utils::LogLevel::INFO << "NUMBER OF CELLS IS ZERO (0). NOTHING TO DO !" << "\n";
+        elasticshells_logs << utils::LogLevel::INFO << "NUMBER OF CELLS IS ZERO (0). NOTHING TO DO !" << "\n";
     }
     else
     {
@@ -443,7 +449,7 @@ int main(int argc, char** argv)
             }
             else
             {
-                simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.jam);
+                simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.jam, arguments.floaters_free);
             }
 
             simulator.simulate(arguments.nsteps);
@@ -458,10 +464,10 @@ int main(int argc, char** argv)
 #ifdef _OPENMP
     int gt = omp_get_max_threads();
     int ncpu = omp_get_num_procs();
-    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << simulation_time << " [s] \n";
-    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION CPU-TIME[" << gt << "(n_th)/" << ncpu << "(n_pcu)] = " << clocks[0].time() << " [s] \n";
+    elasticshells_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << simulation_time << " [s] \n";
+    elasticshells_logs << utils::LogLevel::INFO << "TOTAL EXECUTION CPU-TIME[" << gt << "(n_th)/" << ncpu << "(n_pcu)] = " << clocks[0].time() << " [s] \n";
 #else
-    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << clocks[0].time() << " [s] \n";
+    elasticshells_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << clocks[0].time() << " [s] \n";
 #endif
 
 

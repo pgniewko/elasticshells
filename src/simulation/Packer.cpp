@@ -21,7 +21,7 @@ Packer::Packer(const Packer& orig) {}
 
 Packer::~Packer() {}
 
-void Packer::packCells(Box& box, std::vector<Shell>& cells, double thickness, bool flag)
+void Packer::packCells(Box& box, std::vector<Shell>& cells, double thickness, bool flag, bool floaters_free)
 {
     std::size_t n = cells.size();
     std::vector<point_t> points;
@@ -107,7 +107,7 @@ void Packer::packCells(Box& box, std::vector<Shell>& cells, double thickness, bo
         while ( !Packer::jammed(points, sim_box, P_final) ); // jamming condition, very small, residual pressure
 
     }
-    while ( anyRattlerOrCrowder(points, sim_box, Z) );
+    while ( anyFloaterOrCrowder(points, sim_box, Z, floaters_free) );
 
 
     packer_logs << utils::LogLevel::INFO << "Jammed packing generated @:";
@@ -508,9 +508,10 @@ double Packer::boxForce(point_t& point, box_t& box)
     return force_collector;
 }
 
-bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t& box, double& Z)
+
+bool Packer::anyFloaterOrCrowder(const std::vector<point_t>& points, const box_t& box, double& Z, bool floaters_free)
 {
-    bool thereIsRattler = false;
+    bool there_is_floater = false;
 
     double contacts_sum = 0;
 
@@ -529,7 +530,7 @@ bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t
         {
             if (i != j)
             {
-                num_contacts[i] += cellContacts(points[i], points[j], box);
+                num_contacts[i] += shell_contacts(points[i], points[j], box);
             }
         }
 
@@ -541,9 +542,9 @@ bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t
 
     for (std::size_t i = 0; i < n ; i++)
     {
-        if (num_contacts[i] <= 3)  // simple criteria for rattlers
+        if (num_contacts[i] <= 3)  // simple criteria for floaters
         {
-            thereIsRattler = true;
+            there_is_floater = true;
         }
 
         contacts_sum += (double) num_contacts[i];
@@ -560,8 +561,16 @@ bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t
         overpacked = true;
     }
 
-    return (thereIsRattler || overpacked );
+    if (floaters_free)
+    {    
+        return (there_is_floater || overpacked );
+    }
+    else
+    {
+        return overpacked;
+    }
 }
+
 
 int Packer::boxContacts(const point_t& point, const box_t& box)
 {
@@ -658,7 +667,8 @@ int Packer::boxContacts(const point_t& point, const box_t& box)
     return number_of_contacs;
 }
 
-int Packer::cellContacts(const point_t& point_1, const point_t& point_2, const box_t& box)
+
+int Packer::shell_contacts(const point_t& point_1, const point_t& point_2, const box_t& box)
 {
     Vector3D force_ij;
     Vector3D dij;
