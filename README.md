@@ -26,7 +26,7 @@ make
 ```
 To change compilation settings edit `config.mk` file.  
 Executables will be located in `./bin` directory.  
-For a correct compilation g++ >= 4.9 is necessary.  
+The software has been tested with GNU compilers >= 4.8.5.    
 To built on OS X systems `arpg.h` library must be installed and linked (`LDLIBS   := ... largp ...`) in `config.mk` file.
 
 * Installation
@@ -63,6 +63,8 @@ Please note that you must be root in order to install at `/usr/local`.
 
 EXTERNAL LIBRARIES
 ================
+Make sure that the dependencies are compiled with the same compiled (GNU compiler (>=4.8.5) recommended) as `elasticshells` 
+
 * For compiling and running tests [CppUnit](sourceforge.net/projects/cppunit) is needed.
 
 * ```argp.h``` library is needed for command line parsing. 
