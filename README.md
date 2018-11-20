@@ -1,7 +1,10 @@
+>Notice: This is research code that will not necessarily be maintained in the future.
+>The code is under development so make sure you are using the most recent version.
+>We welcome bug reports and PRs but make no guarantee about fixes or responses.
+
 DESCRIPTION
 ==================================================
-
-Biofilm simulator is written in C/C++ and uses modern computer
+```elasticshells``` simulator is written in C/C++ and uses modern computer
 architectures and technologies: OpenMP for shared-memory systems, 
 SSE vectorization for x86_64 CPU.
 
@@ -9,7 +12,7 @@ GETTING THE CODE
 ==================================================
 * To get the code:
 ```
-git clone git@bitbucket.org:pawelgniewek/biofilm.git
+git clone git@github.com:pgniewko/elasticshells.git
 ```
 
 * To obtain the most recent version of the code:
@@ -27,7 +30,7 @@ make
 ```
 To change compilation settings edit `config.mk` file.  
 Executables will be located in `./bin` directory.  
-For a correct compilation g++ >= 4.9 is necessary.  
+The software has been tested with GNU compilers >= 4.8.5.    
 To built on OS X systems `arpg.h` library must be installed and linked (`LDLIBS   := ... largp ...`) in `config.mk` file.
 
 * Installation
@@ -64,27 +67,41 @@ Please note that you must be root in order to install at `/usr/local`.
 
 EXTERNAL LIBRARIES
 ================
-* For compiling and running tests [CppUnit](sourceforge.net/projects/cppunit) is needed.
-* ```argp.h``` library is needed for command line parsing. On Mac OS X it can be easily installed with:
-```
-brew install argp-standalone
-```
+Make sure that the dependencies are compiled with the same compiled (GNU compiler (>=4.8.5) recommended) as `elasticshells` 
 
-On linux argp.h is a part of ```libc6-dev``` library. It can be installed with a command (on Ubuntu):
-```
-sudo apt-get install libc6-dev
-```
+* For compiling and running tests [CppUnit](sourceforge.net/projects/cppunit) is needed.
+
+* ```argp.h``` library is needed for command line parsing. 
+  * On Mac OS X it can be easily installed with:
+  ```
+  brew install argp-standalone
+  ```
+
+  * On linux argp.h is a part of ```libc6-dev``` library. It can be installed with a command (on Ubuntu):
+  ```
+  sudo apt-get install libc6-dev
+  ```
 
 * GNU Scientific Library ([GSL](http://www.gnu.org/software/gsl/)).
-On Ubuntu you can install it by running:
-```
-apt-get install libgsl0-dev
-```
+  * On Ubuntu you can install it by running:
+  ```
+  apt-get install libgsl0-dev
+  ```
+  * On Mac OS you can install it by runnig:
+  ```
+  brew install gsl
+  ```
 
-* Steinhardt library for order parameters parameters calculations.
-The original code can be downloaded from [github](https://github.com/nquesada/steinhardt),
-or from the local [copy](https://bitbucket.org/pawelgniewek/steinhardt). 
+* [CppUnit](http://cppunit.sourceforge.net/doc/cvs/index.html):
+  * On Mac OS you can install it with brew:
+  ```
+  brew install cppunit
+  ```
 
+* Linked-lists: [nblists](https://github.com/pgniewko/nblists)
+* Mesh generator: [rndmesh](https://github.com/pgniewko/rndmesh)
+* Order metrics: [steinhardt](https://github.com/pgniewko/steinhardt)
+* Fast-math library: [fastmah](https://github.com/pgniewko/fastmath)
 
 CONTENTS
 ========
@@ -100,12 +117,17 @@ USAGE
 =====
 
 
+LICENSE
+=======
+The library is open-source. If you want to cite the library in any published work please contact me at gniewko.pablo@gmail.com 
+for an information about credits or check my [website](http://meetpg.pl). Physics background and models benchmarking can be fount in the [notes](http://meetpg.pl/notes.html).
+
 COPYRIGHT NOTICE
 ================
-Copyright (C) 2014-2017,  Pawel Gniewek  
-Email  : pawel.gniewek@berkeley.edu  
+Copyright (C) 2014-2018,  Pawel Gniewek  
+Email  : gniewko.pablo@gmail.com  
 All rights reserved.  
-License: BSD  
+License: BSD 3  
 
 ACKNOWLEDGMENTS
 ===============
