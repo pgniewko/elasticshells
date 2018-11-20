@@ -509,26 +509,21 @@ void Simulator::simulate(int steps)
 void Simulator::calcForces()
 {
     FORCE_EVALUATION_COUTER++;
-    #pragma omp parallel
-    {
+
         // CALC CENTER OF MASS
-        #pragma omp for
+
         for (uint i = 0; i < cells.size(); i++)
         {
             cells[i].update();
         }
 
         // RESET FORCES
-        #pragma omp for
-
         for (int i = 0 ; i < number_of_cells; i++)
         {
             cells[i].voidForces();
         }
 
         // CALCULATE INTRA-CELLULAR FORCES
-        #pragma omp for schedule(guided)
-
         for (int i = 0 ; i < number_of_cells; i++)
         {
             cells[i].calcBondedForces();
@@ -537,8 +532,6 @@ void Simulator::calcForces()
         // CALCULATE INTER-CELLULAR FORCES
         if (params.nbhandler == 0)
         {
-            #pragma omp for schedule(guided)
-
             for (int i = 0; i < number_of_cells; i++)
             {
                 for (int j = 0; j < number_of_cells; j++)
@@ -555,14 +548,11 @@ void Simulator::calcForces()
         // CALCULATE FORCES BETWEEN CELLS AND BOX
         if (!box.pbc)
         {
-            #pragma omp for schedule(guided)
-
             for (int i = 0 ; i < number_of_cells; i++)
             {
                 cells[i].calcBoxForces(box);
             }
         }
-    }
 }
 void Simulator::update_neighbors_list()
 {
