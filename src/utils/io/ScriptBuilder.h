@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "Cell.h"
+#include "Shell.h"
 #include "utils/utils.h"
 #include "simulation/Box.h"
 
@@ -16,7 +16,7 @@ class ScriptBuilder
         ScriptBuilder(const ScriptBuilder& orig);
         virtual ~ScriptBuilder();
 
-        void saveRenderScript(const std::vector<Cell>&, const Box&, bool = false, double = 0.1) const;
+        void saveRenderScript(const std::vector<Shell>&, const Box&, bool = false, double = 0.1) const;
 
     private:
         void printBox(const Box&, std::ofstream&) const;

@@ -21,7 +21,7 @@ Packer::Packer(const Packer& orig) {}
 
 Packer::~Packer() {}
 
-void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness, bool flag)
+void Packer::packShells(Box& box, std::vector<Shell>& cells, double thickness, bool flag)
 {
     std::size_t n = cells.size();
     std::vector<point_t> points;
@@ -87,7 +87,7 @@ void Packer::packCells(Box& box, std::vector<Cell>& cells, double thickness, boo
         do
         {
             Packer::inflatePoints(points);
-            Packer::recenterCells(points, sim_box);
+            Packer::recenterShells(points, sim_box);
 
             do
             {
@@ -380,7 +380,7 @@ void Packer::inflatePoints(std::vector<point_t>& points)
     }
 }
 
-void Packer::recenterCells(std::vector<point_t>& points, box_t& box)
+void Packer::recenterShells(std::vector<point_t>& points, box_t& box)
 {
     if (box.pbc)
     {
@@ -529,7 +529,7 @@ bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t
         {
             if (i != j)
             {
-                num_contacts[i] += cellContacts(points[i], points[j], box);
+                num_contacts[i] += shellContacts(points[i], points[j], box);
             }
         }
 
@@ -658,7 +658,7 @@ int Packer::boxContacts(const point_t& point, const box_t& box)
     return number_of_contacs;
 }
 
-int Packer::cellContacts(const point_t& point_1, const point_t& point_2, const box_t& box)
+int Packer::shellContacts(const point_t& point_1, const point_t& point_2, const box_t& box)
 {
     Vector3D force_ij;
     Vector3D dij;

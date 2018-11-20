@@ -1,15 +1,15 @@
-#include "Cell.h"
+#include "Shell.h"
 
-utils::Logger Cell::cell_log("cell");
+utils::Logger Shell::cell_log("shell");
 
-bool Cell::no_bending = false;
+bool Shell::no_bending = false;
 
-double Cell::FORCE_FRAC(0.0);
-double Cell::MIN_FORCE_SQ(0.0);
+double Shell::FORCE_FRAC(0.0);
+double Shell::MIN_FORCE_SQ(0.0);
 
-Cell::Cell() {}
+Shell::Shell() {}
 
-Cell::Cell(std::list<Triangle> tris) : cell_id(-1), number_v(0), number_t(0), number_s(0), nRT(0),
+Shell::Shell(std::list<Triangle> tris) : shell_id(-1), number_v(0), number_t(0), number_s(0), nRT(0),
     V0(0), fem_flag(false)
 {
     Tinker::constructVertices(*this, tris);
@@ -19,13 +19,13 @@ Cell::Cell(std::list<Triangle> tris) : cell_id(-1), number_v(0), number_t(0), nu
     randomRotate();
 }
 
-Cell::Cell(const Cell& orig) : cm_m(orig.cm_m), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
-    cell_id(orig.cell_id), params(orig.params), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
+Shell::Shell(const Shell& orig) : center_of_mass(orig.center_of_mass), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
+    shell_id(orig.shell_id), params(orig.params), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
     nRT(orig.nRT), V0(orig.V0),  fem_flag(orig.fem_flag) {} //, bending_flag(orig.bending_flag) {}
 
-Cell::~Cell() {}
+Shell::~Shell() {}
 
-void Cell::calcBondedForces()
+void Shell::calcBondedForces()
 {
     if (number_v > 1 && number_t > 1)
     {
@@ -42,7 +42,7 @@ void Cell::calcBondedForces()
     }
 }
 
-void Cell::calcHarmonicForces()
+void Shell::calcHarmonicForces()
 {
     double R0ij;
     double k0ij;
@@ -60,7 +60,7 @@ void Cell::calcHarmonicForces()
     }
 }
 
-void Cell::calcFemForces()
+void Shell::calcFemForces()
 {
 
     for (int i = 0; i < number_t; i++)
@@ -77,7 +77,7 @@ void Cell::calcFemForces()
     }
 }
 
-void Cell::calcOsmoticForces()
+void Shell::calcOsmoticForces()
 {
     int iva, ivb, ivc;
     double turgor = getTurgor();
@@ -87,40 +87,40 @@ void Cell::calcOsmoticForces()
         iva = triangles[i].ia;
         ivb = triangles[i].ib;
         ivc = triangles[i].ic;
-        Vector3D fa = OsmoticForce::calcForce(vertices[iva].r_c, vertices[ivb].r_c, vertices[ivc].r_c, cm_m, turgor);
-        Vector3D fb = OsmoticForce::calcForce(vertices[ivb].r_c, vertices[ivc].r_c, vertices[iva].r_c, cm_m, turgor);
-        Vector3D fc = OsmoticForce::calcForce(vertices[ivc].r_c, vertices[iva].r_c, vertices[ivb].r_c, cm_m, turgor);
+        Vector3D fa = OsmoticForce::calcForce(vertices[iva].r_c, vertices[ivb].r_c, vertices[ivc].r_c, center_of_mass, turgor);
+        Vector3D fb = OsmoticForce::calcForce(vertices[ivb].r_c, vertices[ivc].r_c, vertices[iva].r_c, center_of_mass, turgor);
+        Vector3D fc = OsmoticForce::calcForce(vertices[ivc].r_c, vertices[iva].r_c, vertices[ivb].r_c, center_of_mass, turgor);
         vertices[iva].f_c += fa;
         vertices[ivb].f_c += fb;
         vertices[ivc].f_c += fc;
     }
 }
 
-void Cell::calcNbForcesON2(const Cell& other_cell, const Box& box)
+void Shell::calcNbForcesON2(const Shell& other_shell, const Box& box)
 {
-    int ocellid = other_cell.cell_id;
+    int other_shell_id = other_shell.shell_id;
     Vector3D dij;
     double r1 = params.vertex_r;
-    double r2 = other_cell.params.vertex_r;
+    double r2 = other_shell.params.vertex_r;
     double e1 = params.ecc;
-    double e2 = other_cell.params.ecc;
+    double e2 = other_shell.params.ecc;
     double nu1 = params.nu;
-    double nu2 = other_cell.params.nu;
+    double nu2 = other_shell.params.nu;
 
     for (int i = 0; i < number_v; i++)
     {
-        for (int j = 0; j < other_cell.number_v; j++)
+        for (int j = 0; j < other_shell.number_v; j++)
         {
-            if (cell_id != ocellid)
+            if (shell_id != other_shell_id)
             {
-                Box::getDistance(dij, other_cell.vertices[j].r_c, vertices[i].r_c, box);
+                Box::getDistance(dij, other_shell.vertices[j].r_c, vertices[i].r_c, box);
                 vertices[i].f_c += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
             }
             else
             {
                 if (i != j && !vertices[i].isNeighbor(j))
                 {
-                    Box::getDistance(dij, other_cell.vertices[j].r_c, vertices[i].r_c, box);
+                    Box::getDistance(dij, other_shell.vertices[j].r_c, vertices[i].r_c, box);
                     vertices[i].f_c += HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
                 }
             }
@@ -128,7 +128,7 @@ void Cell::calcNbForcesON2(const Cell& other_cell, const Box& box)
     }
 }
 
-void Cell::calcBoxForces(const Box& box)
+void Shell::calcBoxForces(const Box& box)
 {
     Vector3D wallYZ, wallXZ, wallXY;
     Vector3D dij;
@@ -166,7 +166,7 @@ void Cell::calcBoxForces(const Box& box)
     }
 }
 
-void Cell::voidForces()
+void Shell::voidForces()
 {
     for (int i = 0; i < number_v; i++)
     {
@@ -174,19 +174,19 @@ void Cell::voidForces()
     }
 }
 
-double Cell::calcSurfaceArea(double d_param) const
+double Shell::calcSurfaceArea(double d_param) const
 {
     double totalSurface = 0.0;
 
     for (int i = 0; i < number_t; i++)
     {
-        totalSurface += triangles[i].area(vertices, cm_m, d_param);
+        totalSurface += triangles[i].area(vertices, center_of_mass, d_param);
     }
 
     return totalSurface;
 }
 
-double Cell::calcSurfaceArea() const
+double Shell::calcSurfaceArea() const
 {
     double surface = 0.0;
 
@@ -198,7 +198,7 @@ double Cell::calcSurfaceArea() const
     return surface;
 }
 
-double Cell::calcVolume(double eps) const
+double Shell::calcVolume(double eps) const
 {
     double volume = 0.0;
 
@@ -215,14 +215,14 @@ double Cell::calcVolume(double eps) const
             va = triangles[i].ia;
             vb = triangles[i].ib;
             vc = triangles[i].ic;
-            volume += Tetrahedron::volume(vertices[va].r_c, vertices[vb].r_c, vertices[vc].r_c, cm_m, eps);
+            volume += Tetrahedron::volume(vertices[va].r_c, vertices[vb].r_c, vertices[vc].r_c, center_of_mass, eps);
         }
     }
 
     return volume;
 }
 
-void Cell::calcCM()
+void Shell::calcCM()
 {
     Vector3D tmp_m(0.0, 0.0, 0.0);
     double Mm = 0.0;
@@ -236,7 +236,7 @@ void Cell::calcCM()
     if (Mm > 0.0)
     {
         tmp_m /= Mm;
-        cm_m = tmp_m;
+        center_of_mass = tmp_m;
     }
     else
     {
@@ -244,7 +244,7 @@ void Cell::calcCM()
     }
 }
 
-void Cell::setBSprings(double E, double t, double nu_)
+void Shell::setBSprings(double E, double t, double nu_)
 {
     if ( number_v == 1 || number_t == 1)
     {
@@ -258,7 +258,7 @@ void Cell::setBSprings(double E, double t, double nu_)
     }
 }
 
-void Cell::addXYZ(const Vector3D& nxyz)
+void Shell::addXYZ(const Vector3D& nxyz)
 {
     for (int i = 0; i < number_v; i++)
     {
@@ -266,37 +266,37 @@ void Cell::addXYZ(const Vector3D& nxyz)
     }
 }
 
-int Cell::getNumberTriangles() const
+int Shell::getNumberTriangles() const
 {
     return number_t;
 }
 
-int Cell::getNumberVertices() const
+int Shell::getNumberVertices() const
 {
     return number_v;
 }
 
-void Cell::setVertexR(double rv)
+void Shell::setVertexR(double rv)
 {
     params.vertex_r = rv;
 }
 
-void Cell::setEcc(double a)
+void Shell::setEcc(double a)
 {
     params.ecc = a;
 }
 
-void Cell::setNu(double nu)
+void Shell::setNu(double nu)
 {
     params.nu = nu;
 }
 
-void Cell::setDp(double dP)
+void Shell::setDp(double dP)
 {
     setDp(dP, 0.0);
 }
 
-void Cell::setDp(double dP, double ddp)
+void Shell::setDp(double dP, double ddp)
 {
     double randu = uniform(-ddp, ddp);
     params.dp = dP + randu;
@@ -304,7 +304,7 @@ void Cell::setDp(double dP, double ddp)
     nRT = params.dp * V0 * ( 1.0 - OsmoticForce::getEpsilon() );
 }
 
-void Cell::setSpringConst(double E, double t, double nu_, std::string model_t)
+void Shell::setSpringConst(double E, double t, double nu_, std::string model_t)
 {
     if (number_v == 1)
     {
@@ -441,47 +441,47 @@ void Cell::setSpringConst(double E, double t, double nu_, std::string model_t)
 
 }
 
-void Cell::setCellId(int ix)
+void Shell::setShellId(int ix)
 {
-    cell_id = ix;
+    shell_id = ix;
 
     for (int i = 0; i < number_v; i++)
     {
-        vertices[i].setCellId(cell_id);
+        vertices[i].setCellId(shell_id);
     }
 }
 
-void Cell::setInitR(double rinit)
+void Shell::setInitR(double rinit)
 {
     params.init_r = rinit;
 }
 
-double Cell::getInitR() const
+double Shell::getInitR() const
 {
     return params.init_r;
 }
 
-Vector3D Cell::getCm() const
+Vector3D Shell::getCm() const
 {
-    return cm_m;
+    return center_of_mass;
 }
 
-double Cell::getVertexR() const
+double Shell::getVertexR() const
 {
     return params.vertex_r;
 }
 
-double Cell::getE() const
+double Shell::getE() const
 {
     return params.ecc;
 }
 
-double Cell::getNu() const
+double Shell::getNu() const
 {
     return params.nu;
 }
 
-void Cell::randomRotate()
+void Shell::randomRotate()
 {
     calcCM();
 
@@ -508,9 +508,9 @@ void Cell::randomRotate()
 
     for (int i = 0; i  < number_v; i++)
     {
-        double xi = vertices[i].r_c.x - cm_m.x;
-        double yi = vertices[i].r_c.y - cm_m.y;
-        double zi = vertices[i].r_c.z - cm_m.z;
+        double xi = vertices[i].r_c.x - center_of_mass.x;
+        double yi = vertices[i].r_c.y - center_of_mass.y;
+        double zi = vertices[i].r_c.z - center_of_mass.z;
         xnew  = A[0][0] * xi;
         xnew += A[0][1] * yi;
         xnew += A[0][2] * zi;
@@ -520,13 +520,13 @@ void Cell::randomRotate()
         znew  = A[2][0] * xi;
         znew += A[2][1] * yi;
         znew += A[2][2] * zi;
-        vertices[i].r_c.x = xnew + cm_m.x;
-        vertices[i].r_c.y = ynew + cm_m.y;
-        vertices[i].r_c.z = znew + cm_m.z;
+        vertices[i].r_c.x = xnew + center_of_mass.x;
+        vertices[i].r_c.y = ynew + center_of_mass.y;
+        vertices[i].r_c.z = znew + center_of_mass.z;
     }
 }
 
-double Cell::project_force(const Cell& other_cell, const Box& box, const Vector3D& force_collector, const int vidx) const
+double Shell::project_force(const Shell& other_cell, const Box& box, const Vector3D& force_collector, const int vidx) const
 {
     double fi = 0.0;
     double totAi = 0.0;
@@ -543,7 +543,7 @@ double Cell::project_force(const Cell& other_cell, const Box& box, const Vector3
         {
             nj = triangles[tj].normal(vertices);
             nj_fi = nj.x * force_collector.x + nj.y * force_collector.y + nj.z * force_collector.z;
-            Aj = triangles[tj].area(vertices, cm_m, params.vertex_r);
+            Aj = triangles[tj].area(vertices, center_of_mass, params.vertex_r);
 
             totAi += Aj;
 
@@ -563,7 +563,7 @@ double Cell::project_force(const Cell& other_cell, const Box& box, const Vector3
     return fi;
 }
 
-double Cell::project_force(const Box& box, const Vector3D& force_collector, const int vidx) const
+double Shell::project_force(const Box& box, const Vector3D& force_collector, const int vidx) const
 {
     double fi = 0.0;
     double totAi = 0.0;
@@ -580,7 +580,7 @@ double Cell::project_force(const Box& box, const Vector3D& force_collector, cons
         {
             nj = triangles[tj].normal(vertices);
             nj_fi = nj.x * force_collector.x + nj.y * force_collector.y + nj.z * force_collector.z;
-            Aj = triangles[tj].area(vertices, cm_m, params.vertex_r);
+            Aj = triangles[tj].area(vertices, center_of_mass, params.vertex_r);
 
             totAi += Aj;
 
@@ -600,7 +600,7 @@ double Cell::project_force(const Box& box, const Vector3D& force_collector, cons
     return fi;
 }
 
-Vector3D Cell::box_force(const Box& box, const int vix) const
+Vector3D Shell::box_force(const Box& box, const int vix) const
 {
     Vector3D wallYZ(0, 0, 0);
     Vector3D wallXZ(0, 0, 0);
@@ -645,9 +645,9 @@ Vector3D Cell::box_force(const Box& box, const int vix) const
     return force_collector;
 }
 
-double Cell::contactForce(const Cell& other_cell, const Box& box, const bool flag) const
+double Shell::contactForce(const Shell& other_cell, const Box& box, const bool flag) const
 {
-    int ocellid = other_cell.cell_id;
+    int ocellid = other_cell.shell_id;
     Vector3D dij;
     Vector3D force_collector(0, 0, 0);
     double contact_force = 0.0;
@@ -664,7 +664,7 @@ double Cell::contactForce(const Cell& other_cell, const Box& box, const bool fla
     {
         for (int j = 0; j < other_cell.number_v; j++)
         {
-            if (cell_id != ocellid)
+            if (shell_id != ocellid)
             {
                 Box::getDistance(dij, other_cell.vertices[j].r_c, vertices[i].r_c, box);
                 force_collector += HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
@@ -687,7 +687,7 @@ double Cell::contactForce(const Cell& other_cell, const Box& box, const bool fla
     return contact_force;
 }
 
-double Cell::contactForce(const Box& box) const
+double Shell::contactForce(const Box& box) const
 {
     if (box.pbc)
     {
@@ -706,7 +706,7 @@ double Cell::contactForce(const Box& box) const
     return contact_force;
 }
 
-double Cell::contactForceSF(const Box& box) const // What class does it need ?
+double Shell::contactForceSF(const Box& box) const // What class does it need ?
 {
     if (box.pbc)
     {
@@ -726,12 +726,12 @@ double Cell::contactForceSF(const Box& box) const // What class does it need ?
     return contact_force;
 }
 
-bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box) const
+bool Shell::isInContact(int t_idx, const Shell& other_cell, const Box& box) const
 {
     int idx1, idx2, idx3;
     double fc1, fc2, fc3;
 
-    int ocellid = other_cell.cell_id;
+    int ocellid = other_cell.shell_id;
 
     Vector3D dij;
     Vector3D force_collector1(0, 0, 0);
@@ -749,7 +749,7 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box) const
     double nu1 = params.nu;
     double nu2 = other_cell.params.nu;
 
-    if (cell_id != ocellid)
+    if (shell_id != ocellid)
     {
         for (int j = 0; j < other_cell.number_v; j++)
         {
@@ -768,7 +768,7 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box) const
     fc2 = force_collector2.length_sq();
     fc3 = force_collector3.length_sq();
 
-    if (fc1 > Cell::MIN_FORCE_SQ && fc2 > Cell::MIN_FORCE_SQ && fc3 > Cell::MIN_FORCE_SQ )
+    if (fc1 > Shell::MIN_FORCE_SQ && fc2 > Shell::MIN_FORCE_SQ && fc3 > Shell::MIN_FORCE_SQ )
     {
         return true;
     }
@@ -776,7 +776,7 @@ bool Cell::isInContact(int t_idx, const Cell& other_cell, const Box& box) const
     return false;
 }
 
-bool Cell::isInContact(int t_idx, const Box& box) const
+bool Shell::isInContact(int t_idx, const Box& box) const
 {
     if (box.pbc)
     {
@@ -795,7 +795,7 @@ bool Cell::isInContact(int t_idx, const Box& box) const
     double fc2 = fc2v.length_sq();
     double fc3 = fc3v.length_sq();
 
-    if (fc1 > Cell::MIN_FORCE_SQ && fc2 > Cell::MIN_FORCE_SQ && fc3 > Cell::MIN_FORCE_SQ )
+    if (fc1 > Shell::MIN_FORCE_SQ && fc2 > Shell::MIN_FORCE_SQ && fc3 > Shell::MIN_FORCE_SQ )
     {
         return true;
     }
@@ -803,10 +803,10 @@ bool Cell::isInContact(int t_idx, const Box& box) const
     return false;
 }
 
-bool Cell::isInContact(const Cell& other_cell, const Box& box) const
+bool Shell::isInContact(const Shell& other_cell, const Box& box) const
 {
 
-    if (cell_id == other_cell.cell_id)
+    if (shell_id == other_cell.shell_id)
     {
         return false;
     }
@@ -830,7 +830,7 @@ bool Cell::isInContact(const Cell& other_cell, const Box& box) const
             Box::getDistance(dij, other_cell.vertices[j].r_c, vertices[i].r_c, box);
             force_ij = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
 
-            if (force_ij.length_sq() > Cell::MIN_FORCE_SQ)
+            if (force_ij.length_sq() > Shell::MIN_FORCE_SQ)
             {
                 return true;
             }
@@ -841,17 +841,17 @@ bool Cell::isInContact(const Cell& other_cell, const Box& box) const
     return false;
 }
 
-double Cell::activeArea(const Box& box, const std::vector<Cell>& cells, double d_param) const
+double Shell::activeArea(const Box& box, const std::vector<Shell>& shells, double d_param) const
 {
     double total_surface = calcSurfaceArea(d_param);
 
     double total_cell_cell_area = 0.0;
 
-    for (uint cid = 0; cid < cells.size(); cid++)
+    for (uint cid = 0; cid < shells.size(); cid++)
     {
-        if (cell_id != cells[cid].cell_id)
+        if (shell_id != shells[cid].shell_id)
         {
-            total_cell_cell_area += contactArea(cells[cid], box, d_param);
+            total_cell_cell_area += contactArea(shells[cid], box, d_param);
         }
     }
 
@@ -861,9 +861,9 @@ double Cell::activeArea(const Box& box, const std::vector<Cell>& cells, double d
     return std::max(0.0, total_surface - total_contact_area);
 }
 
-double Cell::contactArea(const Cell& other_cell, const Box& box, const double d_param) const
+double Shell::contactArea(const Shell& other_cell, const Box& box, const double d_param) const
 {
-    double dist = ( cm_m - other_cell.getCm() ).length();
+    double dist = ( center_of_mass - other_cell.getCm() ).length();
 
     if (dist > 4.0 * params.init_r)
     {
@@ -876,19 +876,19 @@ double Cell::contactArea(const Cell& other_cell, const Box& box, const double d_
     {
         if ( isInContact(t_idx, other_cell, box) )
         {
-            contact_area += triangles[t_idx].area(vertices, cm_m, d_param);
+            contact_area += triangles[t_idx].area(vertices, center_of_mass, d_param);
         }
     }
 
     return contact_area;
 }
 
-double Cell::contactArea(const Cell& other_cell, const Box& box) const
+double Shell::contactArea(const Shell& other_cell, const Box& box) const
 {
     return contactArea(other_cell, box, params.vertex_r);
 }
 
-double Cell::contactArea(const Box& box, double d_param) const
+double Shell::contactArea(const Box& box, double d_param) const
 {
     double contact_area = 0.0;
 
@@ -905,14 +905,14 @@ double Cell::contactArea(const Box& box, double d_param) const
                 cell_log << utils::LogLevel::WARNING << "d_param(=" << d_param << ") larger than params.vertex_r" << "\n";
             }
 
-            contact_area += triangles[t_id].area(vertices, cm_m, eps);
+            contact_area += triangles[t_id].area(vertices, center_of_mass, eps);
         }
     }
 
     return contact_area;
 }
 
-double Cell::contactArea2(const Box& box, double d_param) const
+double Shell::contactArea2(const Box& box, double d_param) const
 {
     double contact_area = 0.0;
 
@@ -921,14 +921,14 @@ double Cell::contactArea2(const Box& box, double d_param) const
         if ( isInContact(t_id, box) )
         {
             // Two classes are affected by this code: ActiveActiveArea and ActiveActiveFraction.
-            contact_area += triangles[t_id].area(vertices, cm_m, d_param);
+            contact_area += triangles[t_id].area(vertices, center_of_mass, d_param);
         }
     }
 
     return contact_area;
 }
 
-double Cell::getTurgor() const
+double Shell::getTurgor() const
 {
     double turgor;
 
@@ -955,12 +955,12 @@ double Cell::getTurgor() const
     return turgor;
 }
 
-void Cell::update(double d)
+void Shell::update(double d)
 {
     calcCM();
 }
 
-void Cell::setConstantVolume(double scale)
+void Shell::setConstantVolume(double scale)
 {
     params.vol_c = V0 * (scale * scale * scale);
 
@@ -970,25 +970,25 @@ void Cell::setConstantVolume(double scale)
     }
 }
 
-double Cell::checkVolumeCondition()
+double Shell::checkVolumeCondition()
 {
     double V = calcVolume();
     return (params.vol_c - V) / V;
 }
 
-void Cell::ajustTurgor(double step)
+void Shell::ajustTurgor(double step)
 {
     params.dp = (1.0 + step) * params.dp;
 }
 
-const cell_params_t& Cell::get_params() const
+const shell_params_t& Shell::get_params() const
 {
     return params;
 }
 
-std::ostream& operator<< (std::ostream& out, const Cell& c)
+std::ostream& operator<< (std::ostream& out, const Shell& c)
 {
-    out << "CELL " << c.cell_id << ' ';
+    out << "CELL " << c.shell_id << ' ';
     out << c.number_v << ' ' << c.number_t << ' ' << c.number_s << ' ';
     out << c.params.vertex_r << ' ' << c.params.ecc << ' ' << c.params.nu << ' ';
     out << c.params.dp << ' ' << c.params.init_r << ' ' << c.params.vol_c << ' ';
@@ -996,17 +996,17 @@ std::ostream& operator<< (std::ostream& out, const Cell& c)
 
     for (int i = 0; i < c.number_v; i++)
     {
-        out << "CELLVERTEX " <<  c.cell_id << ' ' << c.vertices[i] << '\n';
+        out << "CELLVERTEX " <<  c.shell_id << ' ' << c.vertices[i] << '\n';
     }
 
     for (int i = 0; i < c.number_t; i++)
     {
-        out << "CELLTRIANG " <<  c.cell_id << ' ' << c.triangles[i] << '\n';
+        out << "CELLTRIANG " <<  c.shell_id << ' ' << c.triangles[i] << '\n';
     }
 
     for (int i = 0; i < c.number_s; i++)
     {
-        out << "CELLHINGE " <<  c.cell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
+        out << "CELLHINGE " <<  c.shell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
     }
 
 

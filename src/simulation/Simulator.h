@@ -10,7 +10,7 @@
 
 #include "Box.h"
 #include "Environment.h"
-#include "Cell.h"
+#include "Shell.h"
 #include "arguments.h"
 #include "exceptions/MaxSizeException.h"
 #include "exceptions/DataException.h"
@@ -41,7 +41,7 @@ struct params_t
     int nbhandler;
     int platotype;
 
-    double E_cell;
+    double E_shell;
     double nu;
     double th;
     double dt;
@@ -68,20 +68,20 @@ class Simulator
         void simulate();
         void simulate(int);
 
-        void initCells(int, double, double, bool = false);
+        void initShells(int, double, double, bool = false);
 
         void restart();
         void analyze();
 
     private:
 
-        void shiftCell(const Vector3D&, int);
+        void shiftShell(const Vector3D&, int);
         void setTriangulator(char*);
         void diagnoseParams(arguments);
         void logParams();
 
-        void pushCell(const Cell&);
-        void addCell(double);
+        void pushShell(const Shell&);
+        void addShell(double);
 
         void calcForces();
         void integrate();
@@ -91,7 +91,7 @@ class Simulator
         int getTotalVertices();
         double getLengthScale(double = 0.0);
 
-        void updateCells();
+        void updateShells();
         void update_neighbors_list();
 
         void set_min_force();
@@ -100,17 +100,17 @@ class Simulator
 
         void saveTurgors();
 
-        void recenterCells();
+        void recenterShells();
 
         double volumeFraction();
 
         Integrator* integrator;
 
-        int number_of_cells;
+        int number_of_shells;
         std::string triangulator;
         params_t params;
 
-        std::vector<Cell> cells;
+        std::vector<Shell> shells;
 
         Box box;
 

@@ -85,13 +85,13 @@ void Integrator::resetParams(Simulator* s)
     FIRE_DT = s->params.dt;
     FIRE_ALPHA = 0.1;
     FIRE_N = 0;
-    
-    for (int i = 0; i < s->number_of_cells; i++)
+
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
-         {
-            s->cells[i].vertices[j].v_c *= 0.0; // freeze the system
-            s->cells[i].vertices[j].a_c *= 0.0; // freeze the system
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
+        {
+            s->shells[i].vertices[j].v_c *= 0.0; // freeze the system
+            s->shells[i].vertices[j].a_c *= 0.0; // freeze the system
         }
     }
 
@@ -109,11 +109,11 @@ void Integrator::eulerIntegrator(Simulator* s)
     s->calcForces();
     double dt = s->params.dt;
 
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].r_c += dt * s->cells[i].vertices[j].f_c;
+            s->shells[i].vertices[j].r_c += dt * s->shells[i].vertices[j].f_c;
         }
     }
 }
@@ -123,32 +123,32 @@ void Integrator::heunIntegrator(Simulator* s)
     s->calcForces();
     double dt = s->params.dt;
 
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].r_p = s->cells[i].vertices[j].r_c;
-            s->cells[i].vertices[j].f_p = s->cells[i].vertices[j].f_c;
+            s->shells[i].vertices[j].r_p = s->shells[i].vertices[j].r_c;
+            s->shells[i].vertices[j].f_p = s->shells[i].vertices[j].f_c;
         }
     }
 
     //move the whole time-step and calculate  forces
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].r_c += dt * s->cells[i].vertices[j].f_c;
+            s->shells[i].vertices[j].r_c += dt * s->shells[i].vertices[j].f_c;
         }
     }
 
     s->calcForces();
 
     // Move the whole time-step upon the forces acting in the half-time-step
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].r_c = s->cells[i].vertices[j].r_p + 0.5 * dt * ( s->cells[i].vertices[j].f_p + s->cells[i].vertices[j].f_c);
+            s->shells[i].vertices[j].r_c = s->shells[i].vertices[j].r_p + 0.5 * dt * ( s->shells[i].vertices[j].f_p + s->shells[i].vertices[j].f_c);
         }
     }
 }
@@ -157,33 +157,33 @@ void Integrator::rungeKuttaIntegrator(Simulator* s)
 {
     double dt = s->params.dt;
 
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].r_p = s->cells[i].vertices[j].r_c;
+            s->shells[i].vertices[j].r_p = s->shells[i].vertices[j].r_c;
         }
     }
 
     s->calcForces();
 
     //move half time-step and calculate  forces
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].r_c += 0.5 * dt * s->cells[i].vertices[j].f_c;
+            s->shells[i].vertices[j].r_c += 0.5 * dt * s->shells[i].vertices[j].f_c;
         }
     }
 
     s->calcForces();
 
     // Move the whole time-step upon the forces acting in the half-time-step
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].r_c = s->cells[i].vertices[j].r_p + dt * s->cells[i].vertices[j].f_c;
+            s->shells[i].vertices[j].r_c = s->shells[i].vertices[j].r_p + dt * s->shells[i].vertices[j].f_c;
         }
     }
 }
@@ -196,13 +196,13 @@ void Integrator::gearCpIntegrator(Simulator* s)
     C1 = dt;
     C2 = dt * dt / 2.0;
 
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].r_p = s->cells[i].vertices[j].r_c + C1 * s->cells[i].vertices[j].v_c + C2 * s->cells[i].vertices[j].a_c;
-            s->cells[i].vertices[j].v_p = s->cells[i].vertices[j].v_c + C1 * s->cells[i].vertices[j].a_c;
-            s->cells[i].vertices[j].a_p = s->cells[i].vertices[j].a_c;
+            s->shells[i].vertices[j].r_p = s->shells[i].vertices[j].r_c + C1 * s->shells[i].vertices[j].v_c + C2 * s->shells[i].vertices[j].a_c;
+            s->shells[i].vertices[j].v_p = s->shells[i].vertices[j].v_c + C1 * s->shells[i].vertices[j].a_c;
+            s->shells[i].vertices[j].a_p = s->shells[i].vertices[j].a_c;
         }
     }
 
@@ -217,15 +217,15 @@ void Integrator::gearCpIntegrator(Simulator* s)
 
     Vector3D corr_v;
 
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            corr_v = s->cells[i].vertices[j].f_c - s->cells[i].vertices[j].v_p; // viscosity = 1.0
+            corr_v = s->shells[i].vertices[j].f_c - s->shells[i].vertices[j].v_p; // viscosity = 1.0
 
-            s->cells[i].vertices[j].r_c = s->cells[i].vertices[j].r_p + CR * corr_v;
-            s->cells[i].vertices[j].v_c = s->cells[i].vertices[j].f_c;
-            s->cells[i].vertices[j].a_c = s->cells[i].vertices[j].a_p + CA * corr_v;
+            s->shells[i].vertices[j].r_c = s->shells[i].vertices[j].r_p + CR * corr_v;
+            s->shells[i].vertices[j].v_c = s->shells[i].vertices[j].f_c;
+            s->shells[i].vertices[j].a_c = s->shells[i].vertices[j].a_p + CA * corr_v;
         }
     }
 }
@@ -243,26 +243,26 @@ void Integrator::fireIntegrator(Simulator* s)
     // CALC P PARAMETER
     double P = 0.0;
 
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            P += dot( s->cells[i].vertices[j].f_c, s->cells[i].vertices[j].v_c);
+            P += dot( s->shells[i].vertices[j].f_c, s->shells[i].vertices[j].v_c);
         }
     }
 
     //=========================
 
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            double v_length = s->cells[i].vertices[j].v_c.length();
-            Vector3D F = s->cells[i].vertices[j].f_c;
+            double v_length = s->shells[i].vertices[j].v_c.length();
+            Vector3D F = s->shells[i].vertices[j].f_c;
             F.normalize();
 
-            s->cells[i].vertices[j].v_c *= (1 - FIRE_ALPHA);
-            s->cells[i].vertices[j].v_c += FIRE_ALPHA * F * v_length;
+            s->shells[i].vertices[j].v_c *= (1 - FIRE_ALPHA);
+            s->shells[i].vertices[j].v_c += FIRE_ALPHA * F * v_length;
         }
     }
 
@@ -280,12 +280,12 @@ void Integrator::fireIntegrator(Simulator* s)
         FIRE_DT *= f_dec;
         FIRE_ALPHA = a_start;
 
-        for (int i = 0; i < s->number_of_cells; i++)
+        for (int i = 0; i < s->number_of_shells; i++)
         {
-            for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+            for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
             {
-                s->cells[i].vertices[j].v_c *= 0.0; // freeze the system
-                s->cells[i].vertices[j].a_c *= 0.0; // freeze the system
+                s->shells[i].vertices[j].v_c *= 0.0; // freeze the system
+                s->shells[i].vertices[j].a_c *= 0.0; // freeze the system
             }
         }
 
@@ -298,32 +298,32 @@ void Integrator::_vv(Simulator* s)
     double dt = FIRE_DT;
 
     // UPDATE POSITIONS
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].r_c += dt * s->cells[i].vertices[j].v_c + 0.5 * dt * dt * s->cells[i].vertices[j].f_p; // use previously calculated forces
+            s->shells[i].vertices[j].r_c += dt * s->shells[i].vertices[j].v_c + 0.5 * dt * dt * s->shells[i].vertices[j].f_p; // use previously calculated forces
         }
     }
 
     // UPDATE VELOCITIES
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].v_c += 0.5 * dt * s->cells[i].vertices[j].f_c;
+            s->shells[i].vertices[j].v_c += 0.5 * dt * s->shells[i].vertices[j].f_c;
         }
     }
 
     s->calcForces();
 
     // UPDATE VELOCITIES
-    for (int i = 0; i < s->number_of_cells; i++)
+    for (int i = 0; i < s->number_of_shells; i++)
     {
-        for (int j = 0; j < s->cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
-            s->cells[i].vertices[j].v_c += 0.5 * dt * s->cells[i].vertices[j].f_c;
-            s->cells[i].vertices[j].f_p = s->cells[i].vertices[j].f_c; // copy forces for the next time step integration
+            s->shells[i].vertices[j].v_c += 0.5 * dt * s->shells[i].vertices[j].f_c;
+            s->shells[i].vertices[j].f_p = s->shells[i].vertices[j].f_c; // copy forces for the next time step integration
         }
     }
 }

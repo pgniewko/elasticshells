@@ -70,18 +70,18 @@ static struct argp_option options[] =
     {"analyze",   420,       0, 0, "[default: false]"},
     {"jam",       'j',       0, 0, "[default: false]"},
 
-    {0,             0,       0, 0, "Cell Options:", 5},
-    {"ecc",       500, "FLOAT", 0, "Cell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
+    {0,             0,       0, 0, "Shell Options:", 5},
+    {"ecc",       500, "FLOAT", 0, "Shell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
     {"ecw",       501, "FLOAT", 0, "Box Young's modulus [UNIT=0.1 MPa] [default: 2000.0]"},
-    {"ir",        502, "FLOAT", 0, "Cells size at the initialization - lower limit [default:2.5"},
-    {"ir2",       503, "FLOAT", 0, "Cells size at the initialization - upper limit [default:2.5]"},
+    {"ir",        502, "FLOAT", 0, "Shells size at the initialization - lower limit [default:2.5"},
+    {"ir2",       503, "FLOAT", 0, "Shells size at the initialization - upper limit [default:2.5]"},
     {"dp",        504, "FLOAT", 0, "Osmotic pressure [default: 0.0]"},
     {"osm",       505,       0, 0, "Volume dependent osmotic pressure [default:  false]"},
     {"rv",        506, "FLOAT", 0, "Radius of a single vertex [default: 0.25]"},
     {"ddp",       512, "FLOAT", 0, "Variation in osmotic pressure [UNIT=0.1 MPa] [default: 0.0]"},
     {"eps",       513, "FLOAT", 0, "Non osmotic volume fraction [default: 0.0]"},
-    {"nu",        514, "FLOAT", 0, "Cell and box Poisson's ratio (the same for box and cell) [default: 0.5]"},
-    {"th",        515, "FLOAT", 0, "Cell-wall thickness [UNIT=1 micron]  [default: 0.1]"},
+    {"nu",        514, "FLOAT", 0, "Shell and box Poisson's ratio (the same for box and shell) [default: 0.5]"},
+    {"th",        515, "FLOAT", 0, "Shell-wall thickness [UNIT=1 micron]  [default: 0.1]"},
     {"vol-f",     517,       0, 0, "Constant volume flag [default: false]"},
 
     {0,             0,       0, 0, "Box options:", 6},
@@ -123,9 +123,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->platotype = 0;
             arguments->log_step = 10;
             arguments->box_step = 10;
-            arguments->n_cells = 1;
+            arguments->n_shells = 1;
             arguments->nsteps = 10;
-            arguments->E_cell = 1500.0;
+            arguments->E_shell = 1500.0;
             arguments->E_wall = 2000.0;
             arguments->nu = 0.5;
             arguments->thickness = 0.1;
@@ -194,7 +194,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
 
         case 'n':
-            arguments->n_cells = arg ? atoi (arg) : 1;
+            arguments->n_shells = arg ? atoi (arg) : 1;
             break;
 
         case 't':
@@ -244,7 +244,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 414:
             arguments->platotype = arg ? atoi (arg) : 0;
             break;
-            
+
         case 417:
             arguments->nobending = true;
             break;
@@ -266,7 +266,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
 
         case 500:
-            arguments->E_cell = arg ? strtod (arg, NULL) : 1500.0;
+            arguments->E_shell = arg ? strtod (arg, NULL) : 1500.0;
             break;
 
         case 501:
@@ -444,9 +444,9 @@ int main(int argc, char** argv)
     biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
     biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
 
-    if (arguments.n_cells == 0)
+    if (arguments.n_shells == 0)
     {
-        biofilm_logs << utils::LogLevel::INFO << "NUMBER OF CELLS IS ZERO (0). NOTHING TO DO !" << "\n";
+        biofilm_logs << utils::LogLevel::INFO << "NUMBER OF SHELS IS ZERO (0). NOTHING TO DO !" << "\n";
     }
     else
     {
@@ -467,7 +467,7 @@ int main(int argc, char** argv)
             }
             else
             {
-                simulator.initCells(arguments.n_cells, arguments.init_radius1, arguments.init_radius2, arguments.jam);
+                simulator.initShells(arguments.n_shells, arguments.init_radius1, arguments.init_radius2, arguments.jam);
             }
 
             simulator.simulate(arguments.nsteps);

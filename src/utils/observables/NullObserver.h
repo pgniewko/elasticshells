@@ -10,7 +10,7 @@ class NullObserver : public Observer
         NullObserver(const NullObserver& orig);
         virtual ~NullObserver();
         void set_params(const int, std::vector<std::string>);
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
+        double observe(const Box&, std::vector<Shell>&, const DomainList&);
 
     private:
         static DerivedRegister<NullObserver> reg;

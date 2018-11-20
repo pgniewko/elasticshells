@@ -11,22 +11,22 @@ void ShapeWl::set_params(const int num, std::vector<std::string> args_)
     i_param = atoi(args_[ num + 0 ].c_str());
 }
 
-double ShapeWl::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double ShapeWl::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
     double wlsum = 0.0;
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        wlsum += ShapeWl::calcWl(cells[i]);
+        wlsum += ShapeWl::calcWl(shells[i]);
     }
 
-    wlsum /= (double) cells.size();
+    wlsum /= (double) shells.size();
     return wlsum;
 }
 
-double ShapeWl::calcWl(Cell& cell)
+double ShapeWl::calcWl(Shell& shell)
 {
-    int nk = cell.getNumberVertices();
+    int nk = shell.getNumberVertices();
 
     if (nk == 1)
     {
@@ -42,12 +42,12 @@ double ShapeWl::calcWl(Cell& cell)
 
     for (int i = 0; i < nk ; i++)
     {
-        x[i] = cell.vertices[i].r_c.x;
-        y[i] = cell.vertices[i].r_c.y;
-        z[i] = cell.vertices[i].r_c.z;
+        x[i] = shell.vertices[i].r_c.x;
+        y[i] = shell.vertices[i].r_c.y;
+        z[i] = shell.vertices[i].r_c.z;
     }
 
-    Vector3D cm = cell.getCm();
+    Vector3D cm = shell.getCm();
     double xc = cm.x;
     double yc = cm.y;
     double zc = cm.z;

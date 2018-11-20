@@ -17,7 +17,7 @@
 #include "simulation/Box.h"
 #include "simulation/Tinker.h"
 
-struct cell_params_t
+struct shell_params_t
 {
     double vertex_r;
     double ecc;
@@ -27,7 +27,7 @@ struct cell_params_t
     double vol_c;
 };
 
-class Cell
+class Shell
 {
         friend class Tinker;
         friend class DomainList;
@@ -36,10 +36,10 @@ class Cell
 
     public:
 
-        Cell();
-        Cell(std::list<Triangle>);
-        Cell(const Cell& orig);
-        virtual ~Cell();
+        Shell();
+        Shell(std::list<Triangle>);
+        Shell(const Shell& orig);
+        virtual ~Shell();
         double calcSurfaceArea() const;
         double calcVolume(double = 0.0) const;
         void calcCM();
@@ -51,7 +51,7 @@ class Cell
         void calcFemForces();
         void calcOsmoticForces();
 
-        void calcNbForcesON2(const Cell&, const Box&);
+        void calcNbForcesON2(const Shell&, const Box&);
         void calcBoxForces(const Box&);
 
         void addXYZ(const Vector3D&);
@@ -65,7 +65,7 @@ class Cell
         }
         void setDp(double, double);
         void setSpringConst(double, double, double, std::string);
-        void setCellId(int);
+        void setShellId(int);
         void setNu(double);
         void setBSprings(double, double, double);
         void setConstantVolume(double = 1.0);
@@ -82,34 +82,34 @@ class Cell
 
         void voidForces();
 
-        Vector3D cm_m;
+        Vector3D center_of_mass;
         Vertex vertices[MAX_V];
         VertexTriangle triangles[MAX_T];
         BendingHinge bhinges [2 * MAX_T];
 
-        int cell_id = -1;
-        double contactForce(const Cell&, const Box&, const bool = false) const;
+        int shell_id = -1;
+        double contactForce(const Shell&, const Box&, const bool = false) const;
         double contactForce(const Box&) const;
         double contactForceSF(const Box&) const; // for Surface Force use
 
-        double contactArea(const Cell&, const Box&) const;
-        double contactArea(const Cell&, const Box&, const double) const;
+        double contactArea(const Shell&, const Box&) const;
+        double contactArea(const Shell&, const Box&, const double) const;
         double contactArea(const Box&, double = 0.0) const;
 
 
-        double activeArea(const Box&, const std::vector<Cell>&, double = 0.0) const;
+        double activeArea(const Box&, const std::vector<Shell>&, double = 0.0) const;
         double calcSurfaceArea(double) const;
         double contactArea2(const Box&, double = 0.0) const;
-        bool isInContact(const Cell&, const Box&) const;
+        bool isInContact(const Shell&, const Box&) const;
 
         double getTurgor() const;
         void update(double = 0.0);
 
-        const cell_params_t& get_params() const;
+        const shell_params_t& get_params() const;
 
         static bool no_bending;
 
-        friend std::ostream& operator<< (std::ostream&, const Cell&);
+        friend std::ostream& operator<< (std::ostream&, const Shell&);
 
         static double FORCE_FRAC;
         static double MIN_FORCE_SQ;
@@ -118,14 +118,14 @@ class Cell
 
         void randomRotate();
 
-        bool isInContact(const int, const Cell&, const Box&) const;
+        bool isInContact(const int, const Shell&, const Box&) const;
         bool isInContact(const int, const Box&) const;
 
-        double project_force(const Cell&, const Box&, const Vector3D&, const int) const;
+        double project_force(const Shell&, const Box&, const Vector3D&, const int) const;
         double project_force(const Box&, const Vector3D&, const int) const;
         Vector3D box_force(const Box&, const int) const;
 
-        cell_params_t params;
+        shell_params_t params;
         int number_v = 0;
         int number_t = 0;
         int number_s = 0;

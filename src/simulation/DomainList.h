@@ -6,7 +6,7 @@
 #include "Environment.h"
 #include "geometry/Vertex.h"
 #include "simulation/Box.h"
-#include "Cell.h"
+#include "Shell.h"
 
 typedef std::vector<double> row;
 
@@ -54,11 +54,11 @@ class DomainList
         int getCellIdx(int, int);
         int getNumOfParticles(int);
 
-        void calcNbForces(std::vector<Cell>&, const Box&) const;
-        double calcContactForce(const int, const int, const std::vector<Cell>&, const Box&) const;
-        double virialPressure(const int, const int, const std::vector<Cell>&, const Box&) const;
-        bool isInContact(const int, const int, const std::vector<Cell>&, const Box&) const;
-        double calcNbEnergy(const std::vector<Cell>&, const Box&) const;
+        void calcNbForces(std::vector<Shell>&, const Box&) const;
+        double calcContactForce(const int, const int, const std::vector<Shell>&, const Box&) const;
+        double virialPressure(const int, const int, const std::vector<Shell>&, const Box&) const;
+        bool isInContact(const int, const int, const std::vector<Shell>&, const Box&) const;
+        double calcNbEnergy(const std::vector<Shell>&, const Box&) const;
 
         //private:
         int m;
@@ -81,10 +81,10 @@ class DomainList
         void addVertex(int, int);
 
     private:
-        void nbForce(Vertex*, Vertex*, std::vector<Cell>&, const Box&) const;
-        Vector3D getNbForce(Vertex*, Vertex*, const std::vector<Cell>&, const Box&) const;
-        double virial(Vertex*, Vertex*, const std::vector<Cell>&, const Box&) const;
-        double nbEnergy(const Vertex*, const Vertex*, const std::vector<Cell>&, const Box&) const;
+        void nbForce(Vertex*, Vertex*, std::vector<Shell>&, const Box&) const;
+        Vector3D getNbForce(Vertex*, Vertex*, const std::vector<Shell>&, const Box&) const;
+        double virial(Vertex*, Vertex*, const std::vector<Shell>&, const Box&) const;
+        double nbEnergy(const Vertex*, const Vertex*, const std::vector<Shell>&, const Box&) const;
         bool validateLinkedDomains();
 
 };

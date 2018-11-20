@@ -5,7 +5,7 @@
 
 #include "Environment.h"
 #include "geometry/Vector3D.h"
-#include "Cell.h"
+#include "Shell.h"
 #include "simulation/Box.h"
 #include "force/HertzianRepulsion.h"
 #include "utils/io/LogSimulation.h"
@@ -35,7 +35,7 @@ class Packer
         Packer(const Packer& orig);
         virtual ~Packer();
 
-        static void packCells(Box&, std::vector<Cell>&, double, bool = true);
+        static void packShells(Box&, std::vector<Shell>&, double, bool = true);
 
     private:
 
@@ -46,7 +46,7 @@ class Packer
 
         static bool jammed(std::vector<point_t>&, box_t&, double&);
         static void inflatePoints(std::vector<point_t>&);
-        static void recenterCells(std::vector<point_t>&, box_t&);
+        static void recenterShells(std::vector<point_t>&, box_t&);
 
         static double calcPressure(std::vector<point_t>&, box_t&);
         static double boxForce(point_t&, box_t&);
@@ -57,7 +57,7 @@ class Packer
 
         static bool anyRattlerOrCrowder(const std::vector<point_t>&, const box_t&, double&);
         static int boxContacts(const point_t&, const box_t&);
-        static int cellContacts(const point_t&, const point_t&, const box_t&);
+        static int shellContacts(const point_t&, const point_t&, const box_t&);
 
 
         static int FIRE_Nmin;

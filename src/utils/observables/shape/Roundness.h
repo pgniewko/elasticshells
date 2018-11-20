@@ -15,12 +15,12 @@ class Roundness : public Observer
         virtual ~Roundness();
 
         void set_params(const int, std::vector<std::string>);
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
+        double observe(const Box&, std::vector<Shell>&, const DomainList&);
 
     private:
 
 
-        double miniball_r(Cell&);
+        double miniball_r(Shell&);
 
         static DerivedRegister<Roundness> reg;
 };

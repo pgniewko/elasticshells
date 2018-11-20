@@ -11,20 +11,20 @@ void ShapeIndex::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double ShapeIndex::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double ShapeIndex::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
     double q = 0.0;
-    
+
     double a, v;
-    
-    for (uint i = 0; i < cells.size(); i++)
+
+    for (uint i = 0; i < shells.size(); i++)
     {
-        a = cells[i].calcSurfaceArea(0.0);
-        v = cells[i].calcVolume(0.0);;
-        q += ( a / pow(v, 2.0/3.0) ) ; 
+        a = shells[i].calcSurfaceArea(0.0);
+        v = shells[i].calcVolume(0.0);;
+        q += ( a / pow(v, 2.0 / 3.0) ) ;
     }
-    
-    q /= cells.size();
+
+    q /= shells.size();
     return q;
 }
 

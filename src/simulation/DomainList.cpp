@@ -328,7 +328,7 @@ double DomainList::getMaxScale()
     return rc_max;
 }
 
-void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box) const
+void DomainList::calcNbForces(std::vector<Shell>& cells, const Box& box) const
 {
     Vertex* target;
     Vertex* partner;
@@ -369,13 +369,13 @@ void DomainList::calcNbForces(std::vector<Cell>& cells, const Box& box) const
 }
 
 
-void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cells, const Box& box) const
+void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Shell>& cells, const Box& box) const
 {
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
 
-    const struct cell_params_t params1 = cells[cellId_target].get_params();
-    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+    const struct shell_params_t params1 = cells[cellId_target].get_params();
+    const struct shell_params_t params2 = cells[cellId_partner].get_params();
 
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;
@@ -411,14 +411,14 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Cell>& cel
 
 
 // *****************************************************************************
-Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vector<Cell>& cells, const Box& box) const
+Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vector<Shell>& cells, const Box& box) const
 {
 
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
 
-    const struct cell_params_t params1 = cells[cellId_target].get_params();
-    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+    const struct shell_params_t params1 = cells[cellId_target].get_params();
+    const struct shell_params_t params2 = cells[cellId_partner].get_params();
 
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;
@@ -451,13 +451,13 @@ Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vect
     return force;
 }
 
-double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cell>& cells, const Box& box) const
+double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Shell>& cells, const Box& box) const
 {
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
 
-    const struct cell_params_t params1 = cells[cellId_target].get_params();
-    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+    const struct shell_params_t params1 = cells[cellId_target].get_params();
+    const struct shell_params_t params2 = cells[cellId_partner].get_params();
 
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;
@@ -476,7 +476,7 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cel
         Box::getDistance(dij, partner->r_c, target->r_c, box);
         fij = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
 
-        if (fij.length_sq() > Cell::MIN_FORCE_SQ)
+        if (fij.length_sq() > Shell::MIN_FORCE_SQ)
         {
             pij = dot(dij, fij);
         }
@@ -491,7 +491,7 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cel
             Box::getDistance(dij, partner->r_c, target->r_c, box);
             fij = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
 
-            if (fij.length_sq() > Cell::MIN_FORCE_SQ)
+            if (fij.length_sq() > Shell::MIN_FORCE_SQ)
             {
                 pij = dot(dij, fij);
             }
@@ -501,7 +501,7 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<Cel
     return pij;
 }
 
-double DomainList::calcContactForce(const int cell1id, const int cell2id, const std::vector<Cell>& cells, const Box& box) const
+double DomainList::calcContactForce(const int cell1id, const int cell2id, const std::vector<Shell>& cells, const Box& box) const
 {
     Vertex* target;
     Vertex* partner;
@@ -582,7 +582,7 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
     return contact_force;
 }
 
-double DomainList::virialPressure(const int cell1id, const int cell2id, const std::vector<Cell>& cells, const Box& box) const
+double DomainList::virialPressure(const int cell1id, const int cell2id, const std::vector<Shell>& cells, const Box& box) const
 {
     double pressure = 0.0;
 
@@ -633,7 +633,7 @@ double DomainList::virialPressure(const int cell1id, const int cell2id, const st
 }
 
 
-bool DomainList::isInContact(const int cell1id, const int cell2id, const std::vector<Cell>& cells, const Box& box) const
+bool DomainList::isInContact(const int cell1id, const int cell2id, const std::vector<Shell>& cells, const Box& box) const
 {
     Vertex* target;
     Vertex* partner;
@@ -656,7 +656,7 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
                     {
                         force = getNbForce(target, partner, cells, box);
 
-                        if (force.length_sq() > Cell::MIN_FORCE_SQ)
+                        if (force.length_sq() > Shell::MIN_FORCE_SQ)
                         {
                             return true;
                         }
@@ -677,7 +677,7 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
                         {
                             force = getNbForce(target, partner, cells, box);
 
-                            if (force.length_sq() > Cell::MIN_FORCE_SQ)
+                            if (force.length_sq() > Shell::MIN_FORCE_SQ)
                             {
                                 return true;
                             }
@@ -691,7 +691,7 @@ bool DomainList::isInContact(const int cell1id, const int cell2id, const std::ve
     return false;
 }
 
-double DomainList::calcNbEnergy(const std::vector<Cell>& cells, const Box& box) const
+double DomainList::calcNbEnergy(const std::vector<Shell>& cells, const Box& box) const
 {
     double totalNbEnergy = 0.0;
     Vertex* target;
@@ -734,14 +734,14 @@ double DomainList::calcNbEnergy(const std::vector<Cell>& cells, const Box& box) 
     return totalNbEnergy;
 }
 
-double DomainList::nbEnergy(const Vertex* target, const Vertex* partner, const std::vector<Cell>& cells, const Box& box) const
+double DomainList::nbEnergy(const Vertex* target, const Vertex* partner, const std::vector<Shell>& cells, const Box& box) const
 {
     double nb_energy = 0.0;
     int cellId_target = target->getCellId();
     int cellId_partner = partner->getCellId();
 
-    const struct cell_params_t params1 = cells[cellId_target].get_params();
-    const struct cell_params_t params2 = cells[cellId_partner].get_params();
+    const struct shell_params_t params1 = cells[cellId_target].get_params();
+    const struct shell_params_t params2 = cells[cellId_partner].get_params();
 
     double r1 = params1.vertex_r;
     double r2 = params2.vertex_r;

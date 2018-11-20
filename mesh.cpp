@@ -27,7 +27,7 @@
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "geometry/algorithms/PlatonicTriangulatoin.h"
 #include "geometry/algorithms/RandomTriangulation.h"
-#include "src/Cell.h"
+#include "src/Shell.h"
 
 //Timer clocks;
 //double simulation_time;

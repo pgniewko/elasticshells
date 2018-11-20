@@ -82,7 +82,7 @@ void XyzTraj::close_box()
     }
 }
 
-void XyzTraj::save_traj(const std::vector<Cell>& cells, int totV)
+void XyzTraj::save_traj(const std::vector<Shell>& cells, int totV)
 {
     int lastCellIndex = 0;
     fprintf(os, "%i\n", totV);

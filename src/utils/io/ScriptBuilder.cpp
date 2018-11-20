@@ -10,7 +10,7 @@ ScriptBuilder::ScriptBuilder(const ScriptBuilder& orig) :
 
 ScriptBuilder::~ScriptBuilder() {}
 
-void ScriptBuilder::saveRenderScript(const std::vector<Cell>& cells, const Box& box, bool boxFlag, double rv) const
+void ScriptBuilder::saveRenderScript(const std::vector<Shell>& cells, const Box& box, bool boxFlag, double rv) const
 {
     std::ofstream os;
     os.open(script);

@@ -29,11 +29,11 @@ struct arguments
     int d;
     int log_step;
     int box_step;
-    int n_cells;
+    int n_shells;
     int nsteps;
     int platotype;
 
-    double E_cell;                         /* E cell-cell */
+    double E_shell;                         /* E cell-cell */
     double E_wall;                         /* E cell-wall */
     double nu;
     double thickness;

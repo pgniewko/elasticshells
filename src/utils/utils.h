@@ -11,7 +11,7 @@
 
 extern std::string new_base_index(int, int = 26);
 
-extern std::vector<std::string>& split(const std::string&, char , std::vector<std::string>&);
+extern std::vector<std::string>& split(const std::string&, char, std::vector<std::string>&);
 extern std::vector<std::string> split(const std::string&, char);
 extern std::string trim( const std::string&);
 

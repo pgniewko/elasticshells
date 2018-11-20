@@ -11,7 +11,7 @@ void WallCoverageFraction::set_params(const int num, std::vector<std::string> ar
     d_param = strtod(args_[ num + 0 ].c_str(), NULL);
 }
 
-double WallCoverageFraction::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double WallCoverageFraction::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
     if (box.pbc)
     {
@@ -19,12 +19,12 @@ double WallCoverageFraction::observe(const Box& box, std::vector<Cell>& cells, c
     }
 
     double box_area = box.getArea(d_param);
-    uint cells_number = cells.size();
+    uint shellsnumber = shells.size();
     double coverage = 0.0;
 
-    for (uint i = 0; i < cells_number; i++)
+    for (uint i = 0; i < shellsnumber; i++)
     {
-        coverage += cells[i].contactArea(box, d_param);
+        coverage += shells[i].contactArea(box, d_param);
     }
 
     coverage /= box_area;

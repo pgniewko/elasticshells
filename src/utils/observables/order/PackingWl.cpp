@@ -11,7 +11,7 @@ void PackingWl::set_params(const int num, std::vector<std::string> args_)
     i_param = atoi(args_[ num + 0 ].c_str());
 }
 
-double PackingWl::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double PackingWl::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
     if (box.pbc == false)
     {
@@ -20,28 +20,28 @@ double PackingWl::observe(const Box& box, std::vector<Cell>& cells, const Domain
 
     double qlsum = 0.0;
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        qlsum += PackingWl::calcWl(box, cells, i, dl);
+        qlsum += PackingWl::calcWl(box, shells, i, dl);
     }
 
-    qlsum /= (double) cells.size();
+    qlsum /= (double) shells.size();
     return qlsum;
 }
 
-double PackingWl::calcWl(const Box& box, std::vector<Cell>& cells, unsigned int ci, const DomainList& dl)
+double PackingWl::calcWl(const Box& box, std::vector<Shell>& shells, unsigned int ci, const DomainList& dl)
 {
-    Vector3D ci_cm = cells[ci].getCm();
+    Vector3D ci_cm = shells[ci].getCm();
     std::vector<Vector3D> neighs_cm;
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
         if (i != ci)
         {
-            if ( dl.isInContact(ci, i, cells, box) )
+            if ( dl.isInContact(ci, i, shells, box) )
             {
                 Vector3D dij;
-                Vector3D cm = cells[i].getCm();
+                Vector3D cm = shells[i].getCm();
                 Box::getDistance(dij, ci_cm, cm, box);
                 cm = ci_cm + dij;
                 neighs_cm.push_back(cm);

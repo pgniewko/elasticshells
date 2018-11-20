@@ -8,7 +8,7 @@
 #include <memory>
 #include <cstring>
 
-#include "Cell.h"
+#include "Shell.h"
 #include "utils/Logger.h"
 #include "utils/utils.h"
 #include "simulation/Box.h"
@@ -27,7 +27,7 @@ class LogSimulation
 
         void registerObservers();
         void printHeader();
-        void dumpState(Box&, std::vector<Cell>&, const DomainList&);
+        void dumpState(Box&, std::vector<Shell>&, const DomainList&);
 
         const std::string getFileName() const;
 

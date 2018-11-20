@@ -11,13 +11,13 @@ void CvContactForce::set_params(const int num, std::vector<std::string> args_)
     i_param = atoi(args_[ num + 0 ].c_str());
 };
 
-double CvContactForce::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double CvContactForce::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
     double average_cf  = 0.0;
     double average_cf2 = 0.0;
     double counter = 1.0;
 
-    uint N = cells.size();
+    uint N = shells.size();
     double cf = 0.0;
 
     for (uint i = 0; i < N; i++)
@@ -26,11 +26,11 @@ double CvContactForce::observe(const Box& box, std::vector<Cell>& cells, const D
         {
             if (i_param == 0)
             {
-                cf = cells[i].contactForce(cells[j], box, true);
+                cf = shells[i].contactForce(shells[j], box, true);
             }
             else if (i_param == 1)
             {
-                cf = dl.calcContactForce(i, j, cells, box);
+                cf = dl.calcContactForce(i, j, shells, box);
             }
 
             if (cf > 0.0)

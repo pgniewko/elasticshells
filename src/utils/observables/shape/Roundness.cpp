@@ -11,16 +11,16 @@ void Roundness::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double Roundness::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double Roundness::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
     double V, D, DR, roundness_ = 0.0;
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        V = cells[i].calcVolume();
+        V = shells[i].calcVolume();
         V = 3.0 * V / (4.0 * constants::pi);
         D = 2.0 * std::pow( V, 1.0 / 3.0 ); // HEYWOOD'S DIAMETER
-        DR = 2.0 * miniball_r(cells[i]);
+        DR = 2.0 * miniball_r(shells[i]);
 
         if (D > 0)
         {
@@ -32,12 +32,12 @@ double Roundness::observe(const Box& box, std::vector<Cell>& cells, const Domain
         }
     }
 
-    roundness_ /= cells.size();
+    roundness_ /= shells.size();
 
     return roundness_;
 }
 
-double Roundness::miniball_r(Cell& cell)
+double Roundness::miniball_r(Shell& cell)
 {
     typedef double mytype;            // coordinate type
 

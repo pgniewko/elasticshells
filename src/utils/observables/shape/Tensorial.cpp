@@ -11,11 +11,11 @@ void Tensorial::set_params(const int num, std::vector<std::string> args_)
     i_param = atoi(args_[ num + 0 ].c_str());
 };
 
-double Tensorial::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double Tensorial::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
     double Ob = 0.0;
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
         double A[3][3];
         double V[3][3];
@@ -32,16 +32,16 @@ double Tensorial::observe(const Box& box, std::vector<Cell>& cells, const Domain
             }
         }
 
-        cells[i].calcCM();
-        Vector3D cell_cm = cells[i].cm_m;
+        shells[i].calcCM();
+        Vector3D cell_cm = shells[i].center_of_mass;
 
         Vector3D rj;
 
         double ev1 = 0.0, ev2 = 0.0, ev3 = 0.0;
 
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].getNumberVertices(); j++)
         {
-            rj = cells[i].vertices[j].r_c - cell_cm;
+            rj = shells[i].vertices[j].r_c - cell_cm;
 
             A[0][0] += rj.x * rj.x;
             A[1][1] += rj.y * rj.y;
@@ -60,16 +60,16 @@ double Tensorial::observe(const Box& box, std::vector<Cell>& cells, const Domain
         for (int j = 0; j < 3; j++)
             for (int k = 0; k < 3; k++)
             {
-                A[j][k] /= cells[i].getNumberVertices();
+                A[j][k] /= shells[i].getNumberVertices();
             }
 
         eigen_decomposition(A, V, d);
 
         ev1 = std::max(d[0], d[1]);
-        ev1 = std::max(ev1 , d[2]);
+        ev1 = std::max(ev1, d[2]);
 
         ev3 = std::min(d[0], d[1]);
-        ev3 = std::min(ev3 , d[2]);
+        ev3 = std::min(ev3, d[2]);
 
         ev2 = d[0] + d[1] + d[2] - ev1 - ev3;
 
@@ -102,7 +102,7 @@ double Tensorial::observe(const Box& box, std::vector<Cell>& cells, const Domain
         }
     }
 
-    Ob /= cells.size();
+    Ob /= shells.size();
 
     return Ob;
 }

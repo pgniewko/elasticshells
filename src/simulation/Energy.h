@@ -3,7 +3,7 @@
 
 #include "Environment.h"
 #include "simulation/Box.h"
-#include "Cell.h"
+#include "Shell.h"
 #include "simulation/DomainList.h"
 
 class Energy
@@ -13,15 +13,15 @@ class Energy
         Energy(const Energy& orig);
         virtual ~Energy();
 
-        static double calcTotalEnergy(const std::vector<Cell>&, const Box&, const DomainList&);
-        static double calcMembraneEnergy(const std::vector<Cell>&);
-        static double calcOsmoticEnergy(const std::vector<Cell>&);
-        static double calcContactEnergy(const std::vector<Cell>&, const Box&, const DomainList&);
+        static double calcTotalEnergy(const std::vector<Shell>&, const Box&, const DomainList&);
+        static double calcMembraneEnergy(const std::vector<Shell>&);
+        static double calcOsmoticEnergy(const std::vector<Shell>&);
+        static double calcContactEnergy(const std::vector<Shell>&, const Box&, const DomainList&);
 
-        static double calcBendingEnergy(const std::vector<Cell>&);
-        static double calcStretchEnergy(const std::vector<Cell>&);
-        static double calcCellCellEnergy(const std::vector<Cell>&, const Box&, const DomainList&);
-        static double calcCellBoxEnergy(const std::vector<Cell>&, const Box&);
+        static double calcBendingEnergy(const std::vector<Shell>&);
+        static double calcStretchEnergy(const std::vector<Shell>&);
+        static double calcShellShellEnergy(const std::vector<Shell>&, const Box&, const DomainList&);
+        static double calcShellBoxEnergy(const std::vector<Shell>&, const Box&);
 
         static void setModelType(char* _model_t)
         {

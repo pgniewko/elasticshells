@@ -14,7 +14,7 @@ void Pressure::set_params(const int num, std::vector<std::string> args_)
     d_param = strtod(args_[ num + 1 ].c_str(), NULL);
 }
 
-double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double Pressure::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
     double pressure = 0.0;
 
@@ -31,27 +31,27 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainL
         Vector3D rij;
         Vector3D fij;
 
-        std::size_t n = cells.size();
+        std::size_t n = shells.size();
 
         for (std::size_t k = 0; k < n; k++)
         {
             for (std::size_t l = k + 1; l < n; l++) // that's why we don't multiply pressure by extra 0.5
             {
-                r1 = cells[k].getVertexR();
-                r2 = cells[l].getVertexR();
-                e1 = cells[k].getE();
-                e2 = cells[l].getE();
-                nu1 = cells[k].getNu();
-                nu2 = cells[l].getNu();
+                r1 = shells[k].getVertexR();
+                r2 = shells[l].getVertexR();
+                e1 = shells[k].getE();
+                e2 = shells[l].getE();
+                nu1 = shells[k].getNu();
+                nu2 = shells[l].getNu();
 
-                for (int i = 0; i < cells[k].getNumberVertices(); i++ )
+                for (int i = 0; i < shells[k].getNumberVertices(); i++ )
                 {
-                    for (int j = 0; j < cells[l].getNumberVertices(); j++ )
+                    for (int j = 0; j < shells[l].getNumberVertices(); j++ )
                     {
-                        Box::getDistance(rij, cells[k].vertices[i].r_c, cells[l].vertices[j].r_c, box);
+                        Box::getDistance(rij, shells[k].vertices[i].r_c, shells[l].vertices[j].r_c, box);
                         fij = HertzianRepulsion::calcForce(rij, r1, r2, e1, e2, nu1, nu2);
 
-                        if (fij.length_sq() > Cell::MIN_FORCE_SQ)
+                        if (fij.length_sq() > Shell::MIN_FORCE_SQ)
                         {
                             pressure += dot(rij, fij);
                         }
@@ -71,13 +71,13 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainL
     {
         double volume = box.getVolume(d_param);
 
-        std::size_t n = cells.size();
+        std::size_t n = shells.size();
 
         for (std::size_t k = 0; k < n; k++)
         {
             for (std::size_t l = k + 1; l < n; l++) // that's why we don't multiply pressure by extra 0.5
             {
-                pressure += dl.virialPressure(k, l, cells, box);
+                pressure += dl.virialPressure(k, l, shells, box);
             }
         }
 
@@ -92,7 +92,7 @@ double Pressure::observe(const Box& box, std::vector<Cell>& cells, const DomainL
             return 0.0;
         }
 
-        double totalForce = SurfaceForce::calcTotalForce(box, cells);
+        double totalForce = SurfaceForce::calcTotalForce(box, shells);
         double area = box.getArea(d_param);
         pressure = totalForce / area;
     }

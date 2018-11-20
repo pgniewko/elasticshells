@@ -11,16 +11,16 @@ void CvTurgor::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double CvTurgor::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double CvTurgor::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
-    uint N = cells.size();
+    uint N = shells.size();
     double av_turgor = 0.0;
     double av_turgor2 = 0.0;
 
     for (uint i = 0; i < N; i++)
     {
-        av_turgor  += cells[i].getTurgor();
-        av_turgor2 += cells[i].getTurgor() * cells[i].getTurgor();
+        av_turgor  += shells[i].getTurgor();
+        av_turgor2 += shells[i].getTurgor() * shells[i].getTurgor();
     }
 
     av_turgor  /= N;

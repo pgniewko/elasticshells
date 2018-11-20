@@ -15,10 +15,10 @@ class SurfaceForce : public Observer
         virtual ~SurfaceForce();
 
         void set_params(const int, std::vector<std::string>);
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
+        double observe(const Box&, std::vector<Shell>&, const DomainList&);
 
     private:
-        static double calcTotalForce(const Box&, std::vector<Cell>&);
+        static double calcTotalForce(const Box&, std::vector<Shell>&);
         static DerivedRegister<SurfaceForce> reg;
 
 };

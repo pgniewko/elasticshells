@@ -12,21 +12,21 @@ void AverageActiveArea::set_params(const int num, std::vector<std::string> args_
     return;
 };
 
-double AverageActiveArea::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double AverageActiveArea::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
     double total_active_a = 0.0;
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        cells[i].calcCM();
+        shells[i].calcCM();
     }
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        total_active_a += cells[i].activeArea(box, cells, d_param);
+        total_active_a += shells[i].activeArea(box, shells, d_param);
     }
 
-    total_active_a /= cells.size();
+    total_active_a /= shells.size();
 
     return total_active_a;
 }

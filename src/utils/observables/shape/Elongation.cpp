@@ -11,7 +11,7 @@ void Elongation::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double Elongation::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double Elongation::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
     double min_r = 1000000.0;
     double max_r = 0.0;
@@ -19,24 +19,24 @@ double Elongation::observe(const Box& box, std::vector<Cell>& cells, const Domai
     double el = 0.0;
     double l;
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
         min_r = 1000000.0;
         max_r = 0.0;
 
-        cells[i].calcCM();
-        Vector3D cell_cm = cells[i].cm_m;
+        shells[i].calcCM();
+        Vector3D cell_cm = shells[i].center_of_mass;
 
-        for (int j = 0; j < cells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].getNumberVertices(); j++)
         {
-            l = (cells[i].vertices[j].r_c - cell_cm).length();
+            l = (shells[i].vertices[j].r_c - cell_cm).length();
             min_r = std::min( min_r, l );
             max_r = std::max( max_r, l );
         }
 
         if (min_r > 0)
         {
-            el += ( max_r/min_r  - 1.0 );
+            el += ( max_r / min_r  - 1.0 );
         }
         else
         {
@@ -44,8 +44,8 @@ double Elongation::observe(const Box& box, std::vector<Cell>& cells, const Domai
         }
     }
 
-    el /= cells.size();
-    
+    el /= shells.size();
+
     return el;
 
 }

@@ -11,24 +11,24 @@ void SurfaceForce::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double SurfaceForce::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double SurfaceForce::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
-    return SurfaceForce::calcTotalForce(box, cells);
+    return SurfaceForce::calcTotalForce(box, shells);
 }
 
-double SurfaceForce::calcTotalForce(const Box& box, std::vector<Cell>& cells)
+double SurfaceForce::calcTotalForce(const Box& box, std::vector<Shell>& shells)
 {
     if (box.pbc)
     {
         return 0.0;
     }
 
-    uint numOfCells = cells.size();
+    uint shellsnumber = shells.size();
     double totalForce = 0.0;
 
-    for (uint i = 0; i < numOfCells; i++)
+    for (uint i = 0; i < shellsnumber; i++)
     {
-        totalForce += cells[i].contactForceSF(box);
+        totalForce += shells[i].contactForceSF(box);
     }
 
     return totalForce;

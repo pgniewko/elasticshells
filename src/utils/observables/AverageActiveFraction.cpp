@@ -12,7 +12,7 @@ void AverageActiveFraction::set_params(const int num, std::vector<std::string> a
     return;
 };
 
-double AverageActiveFraction::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double AverageActiveFraction::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
 
     double total_active_f = 0.0;
@@ -20,20 +20,20 @@ double AverageActiveFraction::observe(const Box& box, std::vector<Cell>& cells, 
     double cell_a = 0.0;
     double cell_f = 0.0;
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        cells[i].calcCM();
+        shells[i].calcCM();
     }
 
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        active_a = cells[i].activeArea(box, cells, d_param);
-        cell_a = cells[i].calcSurfaceArea(d_param);
+        active_a = shells[i].activeArea(box, shells, d_param);
+        cell_a = shells[i].calcSurfaceArea(d_param);
         cell_f = active_a / cell_a;
         total_active_f += cell_f;
     }
 
-    total_active_f /= cells.size();
+    total_active_f /= shells.size();
 
 
     return total_active_f;

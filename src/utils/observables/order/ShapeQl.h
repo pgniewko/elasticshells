@@ -15,10 +15,10 @@ class ShapeQl : public Observer
         virtual ~ShapeQl();
 
         void set_params(const int, std::vector<std::string>);
-        double observe(const Box&, std::vector<Cell>&, const DomainList&);
+        double observe(const Box&, std::vector<Shell>&, const DomainList&);
 
     private:
-        double calcQl(Cell&);
+        double calcQl(Shell&);
         static DerivedRegister<ShapeQl> reg;
 };
 

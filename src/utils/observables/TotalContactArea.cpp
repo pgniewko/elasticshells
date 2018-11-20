@@ -11,16 +11,16 @@ void TotalContactArea::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double TotalContactArea::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double TotalContactArea::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
-    uint cellsnumber = cells.size();
+    uint shellsnumber = shells.size();
     double total_contact_a = 0.0;
 
-    for (uint i = 0; i < cellsnumber - 1; i++)
+    for (uint i = 0; i < shellsnumber - 1; i++)
     {
-        for (uint j = i + 1; j < cellsnumber; j++)
+        for (uint j = i + 1; j < shellsnumber; j++)
         {
-            total_contact_a += cells[i].contactArea(cells[j], box);
+            total_contact_a += shells[i].contactArea(shells[j], box);
         }
     }
 

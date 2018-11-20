@@ -11,20 +11,20 @@ void AverageContactArea::set_params(const int num, std::vector<std::string> args
     return;
 };
 
-double AverageContactArea::observe(const Box& box, std::vector<Cell>& cells, const DomainList& dl)
+double AverageContactArea::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
 {
-    uint cellsnumber = cells.size();
+    uint shellsnumber = shells.size();
     double total_contact_a = 0.0;
     double partial_conact_a = 0.0;
     double counter = 0.0;
 
-    for (uint i = 0; i < cellsnumber; i++)
+    for (uint i = 0; i < shellsnumber; i++)
     {
-        for (uint j = 0; j < cellsnumber; j++)
+        for (uint j = 0; j < shellsnumber; j++)
         {
             if (i != j)
             {
-                partial_conact_a = cells[i].contactArea(cells[j], box);
+                partial_conact_a = shells[i].contactArea(shells[j], box);
                 total_contact_a += partial_conact_a;
 
                 if (partial_conact_a > 0.0)

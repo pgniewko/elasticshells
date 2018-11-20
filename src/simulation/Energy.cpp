@@ -10,7 +10,7 @@ Energy::Energy(const Energy& orig) {}
 
 Energy::~Energy() {}
 
-double Energy::calcTotalEnergy(const std::vector<Cell>& cells, const Box& box, const DomainList& domains)
+double Energy::calcTotalEnergy(const std::vector<Shell>& cells, const Box& box, const DomainList& domains)
 {
     double totalEnergy  = 0.0;
 
@@ -23,7 +23,7 @@ double Energy::calcTotalEnergy(const std::vector<Cell>& cells, const Box& box, c
     return totalEnergy;
 }
 
-double Energy::calcMembraneEnergy(const std::vector<Cell>& cells)
+double Energy::calcMembraneEnergy(const std::vector<Shell>& cells)
 {
     double membraneEnergy = 0.0;
     membraneEnergy += calcStretchEnergy(cells);
@@ -32,7 +32,7 @@ double Energy::calcMembraneEnergy(const std::vector<Cell>& cells)
     return membraneEnergy;
 }
 
-double Energy::calcStretchEnergy(const std::vector<Cell>& cells)
+double Energy::calcStretchEnergy(const std::vector<Shell>& cells)
 {
     double stretchEnergy = 0.0;
 
@@ -54,7 +54,7 @@ double Energy::calcStretchEnergy(const std::vector<Cell>& cells)
     return stretchEnergy;
 }
 
-double Energy::calcBendingEnergy(const std::vector<Cell>& cells)
+double Energy::calcBendingEnergy(const std::vector<Shell>& cells)
 {
     double bendingEnergy = 0.0;
 
@@ -72,7 +72,7 @@ double Energy::calcBendingEnergy(const std::vector<Cell>& cells)
     return bendingEnergy;
 }
 
-double Energy::calcOsmoticEnergy(const std::vector<Cell>& cells)
+double Energy::calcOsmoticEnergy(const std::vector<Shell>& cells)
 {
     double osmoticEnergy = 0.0;
 
@@ -98,16 +98,16 @@ double Energy::calcOsmoticEnergy(const std::vector<Cell>& cells)
     return osmoticEnergy;
 }
 
-double Energy::calcContactEnergy(const std::vector<Cell>& cells, const Box& box, const DomainList& domains)
+double Energy::calcContactEnergy(const std::vector<Shell>& cells, const Box& box, const DomainList& domains)
 {
     double totalContactEnergy = 0.0;
-    totalContactEnergy += calcCellBoxEnergy(cells, box);
-    totalContactEnergy += calcCellCellEnergy(cells, box, domains);
+    totalContactEnergy += calcShellBoxEnergy(cells, box);
+    totalContactEnergy += calcShellShellEnergy(cells, box, domains);
 
     return totalContactEnergy;
 }
 
-double Energy::calcCellBoxEnergy(const std::vector<Cell>& cells, const Box& box)
+double Energy::calcShellBoxEnergy(const std::vector<Shell>& cells, const Box& box)
 {
     double cell_box_energy = 0.0;
 
@@ -159,7 +159,7 @@ double Energy::calcCellBoxEnergy(const std::vector<Cell>& cells, const Box& box)
     return cell_box_energy;
 }
 
-double Energy::calcCellCellEnergy(const std::vector<Cell>& cells, const Box& box, const DomainList& domains)
+double Energy::calcShellShellEnergy(const std::vector<Shell>& cells, const Box& box, const DomainList& domains)
 {
     double cell_cell_energy = domains.calcNbEnergy(cells, box);
     return cell_cell_energy;
