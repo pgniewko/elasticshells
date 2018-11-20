@@ -6,7 +6,7 @@
 CC	     := gcc
 
 # C++ compiler
-CXX      := g++-4.9
+CXX      := g++-7
 
 # Flags for the C++ compiler
 # -g --Enable debugging
@@ -26,7 +26,7 @@ DFLAGS   := -DTESTS
 
 CXXFLAGS := -lm -Wall -O3 -Dulong="unsigned long" -Duint="unsigned int" -std=gnu++11 -fopenmp -fpermissive $(INCLUDE)
 LDFLAGS  := $(LIB)
-LDLIBS   := -lcppunit -ldl -largp -lsteinhardt -lrndmesh -lgfortran -lgsl -lgslcblas
+LDLIBS   := -lcppunit -ldl -largp -lsteinhardt -lrndmesh -lnblists -lgfortran -lgsl -lgslcblas
 
 
 # Local dirs 
