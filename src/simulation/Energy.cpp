@@ -1,6 +1,6 @@
 #include "Energy.h"
 
-char* Energy::model_t = "fem";
+char* Energy::model_t = 'fem';
 utils::Logger Energy::energy_logs("energy");
 ulong Energy::ENERGY_EVALUATION_COUNTER(0);
 

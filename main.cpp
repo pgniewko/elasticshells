@@ -65,7 +65,6 @@ static struct argp_option options[] =
     {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
     {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], octa[2], ico[3] [default: 0]"},
     {"no-bend",   417,       0, 0, "[default: false]"},
-    {"model",     418,   "STR", 0, "Available models: ms_kot, ms_avg, fem [default: ms_kot]"},
     {"restart",   419,       0, 0, "[default: false]"},
     {"analyze",   420,       0, 0, "[default: false]"},
     {"jam",       'j',       0, 0, "[default: false]"},
@@ -118,7 +117,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->input_dir  = (char*)&"./input/";
             arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
-            arguments->model_type = (char*)&"ms_kot";
             arguments->d = 3;
             arguments->platotype = 0;
             arguments->log_step = 10;
@@ -247,10 +245,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 417:
             arguments->nobending = true;
-            break;
-
-        case 418:
-            arguments->model_type = arg;
             break;
 
         case 419:
@@ -451,7 +445,6 @@ int main(int argc, char** argv)
     else
     {
         clocks[0].tic();
-        Energy::setModelType(arguments.model_type);
         simulation_time = read_timer();
         Simulator simulator(arguments);
 

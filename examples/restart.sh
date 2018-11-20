@@ -25,7 +25,6 @@ dP=0.25
 ddP=0
 DEPTH=6
 DT=0.001
-model=fem
 
 cd $IDIR
  38 if [ ! -s schedule.config ]; then
@@ -55,7 +54,7 @@ time $bf_software -n $N --int=fire --depth $DEPTH --ns $NS --dt $DT --dp $dP --d
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
         --nb 2 --log-step $LOGS --box-step $BOXS \
         --rv $RCUT --prefix $PREFIX --out-dir $ODIR --in-dir $IDIR  \
-        $PBC --model $model --tt rnd \
+        $PBC --tt rnd \
         -d --ir 2.5 --ir2 2.5 --seed $SEED \
         --vol-f --no-bend --jam --restart
 

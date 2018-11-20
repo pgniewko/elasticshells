@@ -23,31 +23,31 @@ int Restarter::getTotalVertices(const std::vector<Shell>& cells) const
     return totalnumber;
 }
 
-void Restarter::saveTopologyFile(const std::vector<Shell>& cells, std::string model_t) const
+void Restarter::saveTopologyFile(const std::vector<Shell>& shells) const
 {
     std::ofstream os;
     os.open(topologyFile);
 
     if ( os.is_open() )
     {
-        os << "NUMCELLS " << cells.size() << ' ' << model_t << ' ' << (Shell::no_bending ? "true" : "false") << "\n";
+        os << "NUMCELLS " << shells.size() << ' ' << "fem" << ' ' << (Shell::no_bending ? "true" : "false") << "\n";
 
-        for (uint i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < shells.size(); i++)
         {
-            os << cells[i];
+            os << shells[i];
 
         }
 
         int lastCellIndex = 0;
 
-        for (uint i = 0; i < cells.size(); i++)
+        for (uint i = 0; i < shells.size(); i++)
         {
-            for (int j = 0; j < cells[i].getNumberVertices(); j++)
+            for (int j = 0; j < shells[i].getNumberVertices(); j++)
             {
-                os << "VMAP " <<  new_base_index( lastCellIndex +  cells[i].vertices[j].getId() ) << ' ' << i << ' ' << j << "\n";
+                os << "VMAP " <<  new_base_index( lastCellIndex +  shells[i].vertices[j].getId() ) << ' ' << i << ' ' << j << "\n";
             }
 
-            lastCellIndex += cells[i].getNumberVertices();
+            lastCellIndex += shells[i].getNumberVertices();
         }
 
         os.close();
@@ -66,42 +66,34 @@ void Restarter::saveLastFrame(const std::vector<Shell>& cells) const
     lf_xyz.close_traj();
 }
 
-void Restarter::readTopologyFile(std::vector<Shell>& cells) const
+void Restarter::readTopologyFile(std::vector<Shell>& shells) const
 {
     std::pair<int, std::string>  nc_mtype = getNumberOfCells();
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
-        Shell newCell;
-        cells.push_back(newCell);
+        Shell new_shell;
+        shells.push_back(new_shell);
     }
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
-        if ( nc_mtype.second.compare("fem") == 0 )
-        {
-            cells[i].fem_flag = true;
-        }
+        initShell(shells, i);
     }
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
-        initCell(cells, i);
+        addVertices(shells, i);
     }
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
-        addVertices(cells, i);
+        addVTriangles(shells, i);
     }
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
-        addVTriangles(cells, i);
-    }
-
-    for (int i = 0; i < nc_mtype.first; i++)
-    {
-        addBHinges(cells, i);
+        addBHinges(shells, i);
     }
 }
 
@@ -139,7 +131,7 @@ std::pair<int, std::string> Restarter::getNumberOfCells() const
     return line_pair;
 }
 
-void Restarter::initCell(std::vector<Shell>& cells, int cix) const
+void Restarter::initShell(std::vector<Shell>& cells, int cix) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);

@@ -23,12 +23,6 @@ class Energy
         static double calcShellShellEnergy(const std::vector<Shell>&, const Box&, const DomainList&);
         static double calcShellBoxEnergy(const std::vector<Shell>&, const Box&);
 
-        static void setModelType(char* _model_t)
-        {
-            model_t = _model_t;
-            energy_logs << utils::LogLevel::INFO << "ENERGY MODEL HAS BEEN SET TO: " << model_t << "\n";
-        }
-
         static ulong ENERGY_EVALUATION_COUNTER;
 
     private:

@@ -45,7 +45,6 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     params.const_volume = args.const_volume;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
-    params.model_t = std::string(args.model_type);
 
     integrator = new Integrator(this, args.integrator_a);
 
@@ -230,7 +229,7 @@ void Simulator::initShells(int N, double r_min, double r_max, bool jam)
         }
     }
 
-    restarter.saveTopologyFile(shells, params.model_t);
+    restarter.saveTopologyFile(shells);
     set_min_force();
 
 
@@ -289,7 +288,7 @@ void Simulator::addShell(double r0)
 
         new_shell.setEcc(params.E_shell);
         new_shell.setNu(params.nu);
-        new_shell.setSpringConst(params.E_shell, params.th, params.nu, params.model_t);
+        new_shell.setSpringConst(params.E_shell, params.th, params.nu, std::string("fem"));
         new_shell.setBSprings(params.E_shell, params.th, params.nu);
         new_shell.setDp(params.dp, params.ddp);
 
@@ -402,7 +401,7 @@ void Simulator::simulate(int steps)
         log_sim.dumpState(box, shells, domains);
         saveTurgors();
         restarter.saveLastFrame(shells);
-        restarter.saveTopologyFile(shells, params.model_t);
+        restarter.saveTopologyFile(shells);
         traj.save_box(box, steps * params.dt);
         box.saveRemainingSchedule();
     }
@@ -469,7 +468,7 @@ void Simulator::simulate(int steps)
             saveTurgors();
             traj.save_box(box, (step + 1) * params.dt);
             restarter.saveLastFrame(shells);
-            restarter.saveTopologyFile(shells, params.model_t);
+            restarter.saveTopologyFile(shells);
         }
 
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP

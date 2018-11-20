@@ -19,7 +19,7 @@ class Restarter
         Restarter(const Restarter& orig);
         virtual ~Restarter();
 
-        void saveTopologyFile(const std::vector<Shell>&, std::string) const;
+        void saveTopologyFile(const std::vector<Shell>&) const;
         void saveLastFrame(const std::vector<Shell>&) const;
         void readTopologyFile(std::vector<Shell>&) const;
         void readLastFrame(std::vector<Shell>&) const;
@@ -33,7 +33,7 @@ class Restarter
         int getTotalVertices(const std::vector<Shell>&) const;
 
         std::pair<int, std::string> getNumberOfCells() const;
-        void initCell(std::vector<Shell>&, int) const;
+        void initShell(std::vector<Shell>&, int) const;
         void addVertices(std::vector<Shell>&, int) const;
         void addVTriangles(std::vector<Shell>&, int) const;
         void addBHinges(std::vector<Shell>&, int) const;

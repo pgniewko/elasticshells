@@ -47,7 +47,6 @@ class Shell
         int getNumberVertices() const;
 
         void calcBondedForces();
-        void calcHarmonicForces();
         void calcFemForces();
         void calcOsmoticForces();
 
@@ -131,8 +130,6 @@ class Shell
         int number_s = 0;
         double nRT = 0.0;
         double V0 = 0.0;
-
-        bool fem_flag = false;
 
         static utils::Logger cell_log;
 };
