@@ -58,11 +58,11 @@ void Restarter::saveTopologyFile(const std::vector<Shell>& shells) const
     }
 }
 
-void Restarter::saveLastFrame(const std::vector<Shell>& cells) const
+void Restarter::saveLastFrame(const std::vector<Shell>& cells, const Box& box) const
 {
     XyzTraj lf_xyz(lastFrameFile, "NULL");
     lf_xyz.open_lf();
-    lf_xyz.save_traj(cells, getTotalVertices(cells));
+    lf_xyz.save_traj(cells, getTotalVertices(cells), box);
     lf_xyz.close_traj();
 }
 

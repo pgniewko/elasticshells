@@ -400,7 +400,7 @@ void Simulator::simulate(int steps)
         traj.save_traj(shells, getTotalVertices());
         log_sim.dumpState(box, shells, domains);
         saveTurgors();
-        restarter.saveLastFrame(shells);
+        restarter.saveLastFrame(shells, box);
         restarter.saveTopologyFile(shells);
         traj.save_box(box, steps * params.dt);
         box.saveRemainingSchedule();
@@ -447,7 +447,7 @@ void Simulator::simulate(int steps)
 
                 if ( (loop_couter + 1) % 5000 == 0)
                 {
-                    restarter.saveLastFrame(shells); // SO RESTARTING IS PRODUCTIVE
+                    restarter.saveLastFrame(shells, box); // SO RESTARTING IS PRODUCTIVE
                 }
             }
             while ( check_min_force() );
@@ -467,7 +467,7 @@ void Simulator::simulate(int steps)
             log_sim.dumpState(box, shells, domains);
             saveTurgors();
             traj.save_box(box, (step + 1) * params.dt);
-            restarter.saveLastFrame(shells);
+            restarter.saveLastFrame(shells, box);
             restarter.saveTopologyFile(shells);
         }
 
@@ -493,7 +493,7 @@ void Simulator::simulate(int steps)
     log_sim.dumpState(box, shells, domains);
     saveTurgors();
     traj.save_box(box, steps * params.dt);
-    restarter.saveLastFrame(shells);
+    restarter.saveLastFrame(shells, box);
     traj.save_traj(shells, getTotalVertices());
     box.saveRemainingSchedule();
 

@@ -20,7 +20,7 @@ class Restarter
         virtual ~Restarter();
 
         void saveTopologyFile(const std::vector<Shell>&) const;
-        void saveLastFrame(const std::vector<Shell>&) const;
+        void saveLastFrame(const std::vector<Shell>&, const Box&) const;
         void readTopologyFile(std::vector<Shell>&) const;
         void readLastFrame(std::vector<Shell>&) const;
         void registerVMap();

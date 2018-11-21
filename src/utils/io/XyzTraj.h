@@ -25,6 +25,7 @@ class XyzTraj
         void close_box();
 
         void save_traj(const std::vector<Shell>&, int);
+        void save_traj(const std::vector<Shell>&, int, const Box&);
         void save_box(const Box&, double);
 
         const std::vector<std::string> read_saved_box() const;
