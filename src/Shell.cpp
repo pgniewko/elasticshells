@@ -292,7 +292,7 @@ void Shell::setShellId(int ix)
 
     for (int i = 0; i < number_v; i++)
     {
-        vertices[i].setCellId(shell_id);
+        vertices[i].set_shell_id(shell_id);
     }
 }
 
@@ -833,7 +833,7 @@ const shell_params_t& Shell::get_params() const
 
 std::ostream& operator<< (std::ostream& out, const Shell& c)
 {
-    out << "CELL " << c.shell_id << ' ';
+    out << "SHELL " << c.shell_id << ' ';
     out << c.number_v << ' ' << c.number_t << ' ' << c.number_s << ' ';
     out << c.params.vertex_r << ' ' << c.params.ecc << ' ' << c.params.nu << ' ';
     out << c.params.dp << ' ' << c.params.init_r << ' ' << c.params.vol_c << ' ';
@@ -841,17 +841,17 @@ std::ostream& operator<< (std::ostream& out, const Shell& c)
 
     for (int i = 0; i < c.number_v; i++)
     {
-        out << "CELLVERTEX " <<  c.shell_id << ' ' << c.vertices[i] << '\n';
+        out << "SHELLVERTEX " <<  c.shell_id << ' ' << c.vertices[i] << '\n';
     }
 
     for (int i = 0; i < c.number_t; i++)
     {
-        out << "CELLTRIANG " <<  c.shell_id << ' ' << c.triangles[i] << '\n';
+        out << "SHELLTRIANG " <<  c.shell_id << ' ' << c.triangles[i] << '\n';
     }
 
     for (int i = 0; i < c.number_s; i++)
     {
-        out << "CELLHINGE " <<  c.shell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
+        out << "SHELLHINGE " <<  c.shell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
     }
 
 

@@ -21,8 +21,8 @@ class Vertex
         virtual ~Vertex();
         int setId(int);
         int getId() const;
-        int setCellId(int);
-        int getCellId() const;
+        int set_shell_id(int);
+        int get_shell_id() const;
 
         void printVertex() const;
 

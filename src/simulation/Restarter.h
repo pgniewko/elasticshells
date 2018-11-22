@@ -32,7 +32,7 @@ class Restarter
     private:
         int getTotalVertices(const std::vector<Shell>&) const;
 
-        std::pair<int, std::string> getNumberOfCells() const;
+        std::pair<int, std::string> get_number_of_shells() const;
         void initShell(std::vector<Shell>&, int) const;
         void addVertices(std::vector<Shell>&, int) const;
         void addVTriangles(std::vector<Shell>&, int) const;

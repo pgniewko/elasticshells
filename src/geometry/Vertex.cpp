@@ -222,13 +222,13 @@ int Vertex::getId() const
     return myid;
 }
 
-int Vertex::setCellId(int cellId)
+int Vertex::set_shell_id(int cellId)
 {
     myCellId = cellId;
     return myCellId;
 }
 
-int Vertex::getCellId() const
+int Vertex::get_shell_id() const
 {
     return myCellId;
 }

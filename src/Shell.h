@@ -27,6 +27,7 @@ struct shell_params_t
     double vol_c;
 };
 
+
 class Shell
 {
         friend class Tinker;

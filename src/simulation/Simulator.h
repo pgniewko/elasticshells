@@ -53,6 +53,23 @@ struct params_t
     bool const_volume;
 };
 
+struct element
+{
+    int ia, ib, ic;
+    double an[3];
+    double L2[3];
+    double ki[3];
+    double ci[3];
+};
+
+struct hinge
+{
+    int x1, x2, x3, x4;
+    double D;
+    double sinTheta0;
+    double theta0;
+};
+
 class Integrator;
 
 class Simulator
@@ -110,8 +127,19 @@ class Simulator
         params_t params;
 
         std::vector<Shell> shells;
+        
+        // ****
         std::vector<double> xyz;
         std::vector<double> forces;
+        
+        int vertex_number = 0;
+        int hinge_number = 0 ;
+        int element_number = 0;
+        
+        std::vector<element> elements;
+        std::vector<hinge> hinges;
+        /// ************
+        
 
         Box box;
 
