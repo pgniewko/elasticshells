@@ -27,20 +27,9 @@ DEPTH=6
 DT=0.001
 
 PREFIX=$N"_shells"
-
-SEED=$RANDOM
-
-cd $ODIR
-if [ -f $PREFIX."box.xyz" ] && [ -s $PREFIX."box.xyz" ] ; then
-    BSX=`tail -n 1 $PREFIX."box.xyz" | awk '{X=$1; Y=$2; Z=$3} END{print X}'`
-    BSY=`tail -n 1 $PREFIX."box.xyz" | awk '{X=$1; Y=$2; Z=$3} END{print Y}'`
-    BSZ=`tail -n 1 $PREFIX."box.xyz" | awk '{X=$1; Y=$2; Z=$3} END{print Z}'`
-fi
-cd -
-
+SEED=1001
 
 bf_software=$MY_PATH/../bin/elasticshells
-
 
 time $bf_software -n $N --int=fire --depth $DEPTH --ns $NS --dt $DT --dp $dP --ddp=$ddP  --th 0.1 --nu 0.5 --ecc 100 --ecw 200 \
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsdx $DX --bsdy $DY --bsdz $DZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
