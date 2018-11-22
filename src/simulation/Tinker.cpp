@@ -54,15 +54,7 @@ void Tinker::constructVertices(Shell& cell, std::list<Triangle>& tris)
             tinker_log << utils::LogLevel::CRITICAL  << "The simulation will be terminated ! \n";
             exit(EXIT_SUCCESS);
         }
-
-        //std::cout << "cell.number_v=" << cell.number_v<< std::endl;
     }
-
-    //std::cout << " Number of vertices= " << cell.number_v << std::endl;
-    //for (int i = 0; i < cell.number_v; i++)
-    //{
-    //    std::cout << " i=" << i << " " << cell.vertices[i].getId() << std::endl;
-    //}
 }
 
 void Tinker::constructVTriangles(Shell& cell, std::list<Triangle>& tris)

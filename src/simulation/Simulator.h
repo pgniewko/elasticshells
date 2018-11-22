@@ -110,6 +110,8 @@ class Simulator
         params_t params;
 
         std::vector<Shell> shells;
+        std::vector<double> xyz;
+        std::vector<double> forces;
 
         Box box;
 

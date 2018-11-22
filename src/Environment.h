@@ -17,7 +17,6 @@
 #define STRCMP(a,b) (!strcmp(a,b))
 #define SIGN(a) (a >= 0 ? 1 : -1)
 
-#define MAX_SHELLS 100
 #define MAX_V 2501
 #define MAX_T 5000
 #define NEIGH_MAX 12

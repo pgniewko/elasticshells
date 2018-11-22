@@ -239,10 +239,6 @@ void Simulator::pushShell(const Shell& newShell)
 {
     try
     {
-        if (shells.size() == MAX_SHELLS)
-            throw MaxSizeException("Maximum number of shells reached."
-                                   "New shell will not be added !");
-
         shells.push_back(newShell);
         number_of_shells = shells.size();
     }
@@ -257,11 +253,6 @@ void Simulator::addShell(double r0)
 {
     try
     {
-        if (shells.size() >= MAX_SHELLS)
-            throw MaxSizeException("Maximum number of shells reached.\n"
-                                   "New shell will not be added !\n"
-                                   "Program is going to TERMINANTE!");
-
         std::list<Triangle> tris;
 
         if ( !triangulator.compare("plato") )
