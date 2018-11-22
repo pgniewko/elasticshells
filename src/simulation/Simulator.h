@@ -70,6 +70,19 @@ struct hinge
     double theta0;
 };
 
+struct object_map
+{
+    int cell_id;
+    int vert_id;
+    object_map(int ci, int vi) : cell_id(ci), vert_id(vi) {}
+    bool operator==(const object_map &o) const {
+        return cell_id == o.cell_id && vert_id == o.vert_id;
+    }
+    bool operator<(const object_map &o)  const {
+        return cell_id < o.cell_id || (cell_id == o.cell_id && vert_id < o.vert_id);
+    }
+};
+
 class Integrator;
 
 class Simulator
@@ -119,6 +132,8 @@ class Simulator
         void recenterShells();
 
         double volumeFraction();
+        
+        void creat_shells_image();
 
         Integrator* integrator;
 
@@ -138,6 +153,14 @@ class Simulator
         
         std::vector<element> elements;
         std::vector<hinge> hinges;
+        std::vector<object_map> vs_map;
+        std::map<object_map, int> inv_vs_map;
+        
+        std::vector<object_map> ts_map;
+        std::map<object_map, int> inv_ts_map;
+        
+        std::vector<object_map> hs_map;
+        std::map<object_map, int> inv_hs_map;
         /// ************
         
 

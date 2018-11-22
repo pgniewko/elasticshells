@@ -12,6 +12,7 @@
 class BendingHinge
 {
         friend class Restarter;
+        friend class Simulator;
     public:
         BendingHinge();
         explicit BendingHinge(int, int, int, int);

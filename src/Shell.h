@@ -46,6 +46,7 @@ class Shell
         void calcCM();
         int getNumberTriangles() const;
         int getNumberVertices() const;
+        int getNumberHinges() const;
 
         void calcBondedForces();
         void calcFemForces();

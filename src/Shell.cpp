@@ -250,6 +250,11 @@ int Shell::getNumberVertices() const
     return number_v;
 }
 
+int Shell::getNumberHinges() const
+{
+    return number_s;
+}
+
 void Shell::setVertexR(double rv)
 {
     params.vertex_r = rv;

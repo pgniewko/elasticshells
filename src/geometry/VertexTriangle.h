@@ -11,6 +11,7 @@ class Vertex;
 class VertexTriangle
 {
         friend class Restarter;
+        friend class Simulator;
     public:
         VertexTriangle();
         explicit VertexTriangle(int, int, int);
