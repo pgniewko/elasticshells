@@ -64,11 +64,13 @@ Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p)
 }
 
 Vertex::~Vertex() 
-{
-//    if (next != NULL)
-//    {
-//        delete next;
-//    }
+{   
+    // THIS GIVES SEG FAULTS - CONSIDER HOW TO HANDLE IT PROPERLY
+    if (next != NULL)
+    {
+        std::cout << myCellId << " " << myid << std::endl;
+        delete next;
+    }
 }
 
 void Vertex::addNeighbor(int idx, double r0v)

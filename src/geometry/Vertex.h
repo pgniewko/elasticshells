@@ -59,7 +59,7 @@ class Vertex
         int numBonded;              // make it private
         int numTris;                // make it private
 
-        Vertex* next;
+        Vertex* next = NULL;
 
 
         friend std::ostream& operator<< (std::ostream&, const Vertex&);
