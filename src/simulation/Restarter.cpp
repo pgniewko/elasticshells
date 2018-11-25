@@ -205,9 +205,10 @@ void Restarter::addVertices(std::vector<Shell>& shells, int cix) const
                     for (int i = 0; i < shells[cix].vertices[v_id].numBonded; i++)
                     {
                         shells[cix].vertices[v_id].bondedVerts[i] = std::stoi(pairs[ start_ix + 1 ].c_str(), NULL);
-                        shells[cix].vertices[v_id].r0[i]          = strtod(pairs[ start_ix + 2 ].c_str(), NULL);
-                        shells[cix].vertices[v_id].k0[i]          = strtod(pairs[ start_ix + 3 ].c_str(), NULL);
-                        start_ix += 3;
+//                        shells[cix].vertices[v_id].r0[i]          = strtod(pairs[ start_ix + 2 ].c_str(), NULL);
+//                        shells[cix].vertices[v_id].k0[i]          = strtod(pairs[ start_ix + 3 ].c_str(), NULL);
+//                        start_ix += 3;
+                        start_ix++;
                     }
 
                     start_ix++;

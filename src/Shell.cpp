@@ -13,9 +13,13 @@ Shell::Shell(std::list<Triangle> tris) : shell_id(-1), number_v(0), number_t(0),
     V0(0)
 {
     Tinker::constructVertices(*this, tris);
+    std::cout << "constructVertices" << std::endl;
     Tinker::constructVTriangles(*this, tris);
+    std::cout << "constructVTriangles" << std::endl;
     Tinker::constructTopology(*this);
+    std::cout << "constructTopology" << std::endl;
     Tinker::constructBSprings(*this);
+    std::cout << "constructBSprings" << std::endl;
     randomRotate();
 }
 

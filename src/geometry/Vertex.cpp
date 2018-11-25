@@ -2,12 +2,12 @@
 
 Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), numBonded(0), numTris(0), myid(-1), myCellId(-1)
 {
-    for (int i = 0; i < NEIGH_MAX; i++)
-    {
-        bondedVerts[i] = -1;
-        r0[i] = 0.0;
-        k0[i] = 0.0;
-    }
+//    for (int i = 0; i < NEIGH_MAX; i++)
+//    {
+//        bondedVerts[i] = -1;
+//        r0[i] = 0.0;
+//        k0[i] = 0.0;
+//    }
 
     for (int i = 0; i < TRIAN_MAX; i++)
     {
@@ -18,12 +18,12 @@ Vertex::Vertex() : r_c(0, 0, 0), r_p(0, 0, 0), numBonded(0), numTris(0), myid(-1
 Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), r_p(x, y, z), numBonded(0), numTris(0),
     myid(-1), myCellId(-1)
 {
-    for (int i = 0; i < NEIGH_MAX; i++)
-    {
-        bondedVerts[i] = -1;
-        r0[i] = 0.0;
-        k0[i] = 0.0;
-    }
+//    for (int i = 0; i < NEIGH_MAX; i++)
+//    {
+//        bondedVerts[i] = -1;
+//        r0[i] = 0.0;
+//        k0[i] = 0.0;
+//    }
 
     for (int i = 0; i < TRIAN_MAX; i++)
     {
@@ -33,12 +33,12 @@ Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), r_p(x, y, z), numBo
 
 Vertex::Vertex(Vector3D v) : r_c(v), r_p(v), numBonded(0), numTris(0), myid(-1), myCellId(-1)
 {
-    for (int i = 0; i < NEIGH_MAX; i++)
-    {
-        bondedVerts[i] = -1;
-        r0[i] = 0.0;
-        k0[i] = 0.0;
-    }
+//    for (int i = 0; i < NEIGH_MAX; i++)
+//    {
+//        bondedVerts[i] = -1;
+//        r0[i] = 0.0;
+//        k0[i] = 0.0;
+//    }
 
     for (int i = 0; i < TRIAN_MAX; i++)
     {
@@ -52,9 +52,9 @@ Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p)
 {
     for (int i = 0; i < numBonded; i++)
     {
-        bondedVerts[i] = orig.bondedVerts[i];
-        r0[i] = orig.r0[i];
-        k0[i] = orig.k0[i];
+        bondedVerts.push_back( orig.bondedVerts[i] );
+//        r0[i] = orig.r0[i];
+//        k0[i] = orig.k0[i];
     }
 
     for (int i = 0; i < numTris; i++)
@@ -73,14 +73,14 @@ Vertex::~Vertex()
     }
 }
 
-void Vertex::addNeighbor(int idx, double r0v)
+void Vertex::addNeighbor(int idx) //, double r0v)
 {
     try
     {
-        if (numBonded >= NEIGH_MAX)
-            throw MaxSizeException("Maximum number of neighbors has been reached.\n"
-                                   "New neighbor will not be added!\n"
-                                   "Simulation will terminate.\n");
+//        if (numBonded >= NEIGH_MAX)
+//            throw MaxSizeException("Maximum number of neighbors has been reached.\n"
+//                                   "New neighbor will not be added!\n"
+//                                   "Simulation will terminate.\n");
 
         if (idx < 0)
             throw RunTimeError("Trying to add a vertex with a negative index.\n"
@@ -95,15 +95,16 @@ void Vertex::addNeighbor(int idx, double r0v)
             }
         }
 
-        bondedVerts[numBonded] = idx;
-        r0[numBonded] = r0v;
+        bondedVerts.push_back( idx );
+//        bondedVerts[numBonded] = idx;
+//        r0[numBonded] = r0v;
         numBonded++;
     }
-    catch (MaxSizeException& e)
-    {
-        std::cerr << e.what() << std::endl;
-        exit(EXIT_FAILURE);
-    }
+//    catch (MaxSizeException& e)
+//    {
+//        std::cerr << e.what() << std::endl;
+//        exit(EXIT_FAILURE);
+//    }
     catch (RunTimeError& e)
     {
         std::cerr << e.what() << std::endl;
@@ -111,31 +112,31 @@ void Vertex::addNeighbor(int idx, double r0v)
     }
 }
 
-void Vertex::removeNeighbor(int vidx)
-{
-    int pos = -1;
-
-    if ( isNeighbor(vidx) )
-    {
-        for (int i = 0; i < numBonded; i++)
-        {
-            if (bondedVerts[i] == vidx)
-            {
-                pos = i;
-            }
-        }
-
-        for (int i = pos; i < numBonded - 1; i++)
-        {
-            bondedVerts[i] = bondedVerts[i + 1];
-            r0[i] = r0[i + 1];
-        }
-
-        numBonded--;
-    }
-
-    return;
-}
+//void Vertex::removeNeighbor(int vidx)
+//{
+//    int pos = -1;
+//
+//    if ( isNeighbor(vidx) )
+//    {
+//        for (int i = 0; i < numBonded; i++)
+//        {
+//            if (bondedVerts[i] == vidx)
+//            {
+//                pos = i;
+//            }
+//        }
+//
+//        for (int i = pos; i < numBonded - 1; i++)
+//        {
+//            bondedVerts[i] = bondedVerts[i + 1];
+//            r0[i] = r0[i + 1];
+//        }
+//
+//        numBonded--;
+//    }
+//
+//    return;
+//}
 
 void Vertex::addTriangle(int idx)
 {
@@ -173,31 +174,31 @@ void Vertex::addTriangle(int idx)
     }
 }
 
-void Vertex::removeTriangle(int tidx)
-{
-    int pos = -1;
-
-    for (int i = 0; i < numTris; i++)
-    {
-        if (bondedTris[i] == tidx)
-        {
-            pos = i;
-        }
-    }
-
-    if (pos == -1)
-    {
-        return;
-    }
-
-    for (int i = pos; i < numTris - 1; i++)
-    {
-        bondedTris[i] = bondedTris[i + 1];
-    }
-
-    numTris--;
-    return;
-}
+//void Vertex::removeTriangle(int tidx)
+//{
+//    int pos = -1;
+//
+//    for (int i = 0; i < numTris; i++)
+//    {
+//        if (bondedTris[i] == tidx)
+//        {
+//            pos = i;
+//        }
+//    }
+//
+//    if (pos == -1)
+//    {
+//        return;
+//    }
+//
+//    for (int i = pos; i < numTris - 1; i++)
+//    {
+//        bondedTris[i] = bondedTris[i + 1];
+//    }
+//
+//    numTris--;
+//    return;
+//}
 
 bool Vertex::isNeighbor(int vidx) const
 {
@@ -261,10 +262,10 @@ int Vertex::getTriangleId(int idx) const
     return bondedTris[idx];
 }
 
-double Vertex::getNeighborR0(int idx) const
-{
-    return r0[idx];
-}
+//double Vertex::getNeighborR0(int idx) const
+//{
+//    return r0[idx];
+//}
 
 // TODO:
 // zamien te funkcje na przeciazony >> operator
@@ -299,7 +300,7 @@ std::ostream& operator<< (std::ostream& out, const Vertex& v)
 
     for (int i = 0; i < v.numBonded; i++)
     {
-        out << v.bondedVerts[i] << ' ' << v.r0[i] << ' ' << v.k0[i] << ' ';
+        out << v.bondedVerts[i] << ' ';// << v.r0[i] << ' ' << v.k0[i] << ' ';
     }
 
     for (int i = 0; i < v.numTris; i++)

@@ -105,20 +105,22 @@ void Tinker::constructTopology(Shell& cell)
         Vector3D ab = cell.vertices[aid].r_c - cell.vertices[bid].r_c;
         Vector3D ac = cell.vertices[aid].r_c - cell.vertices[cid].r_c;
         Vector3D bc = cell.vertices[bid].r_c - cell.vertices[cid].r_c;
-        double abl = ab.length();
-        double acl = ac.length();
-        double bcl = bc.length();
+//        double abl = ab.length();
+//        double acl = ac.length();
+//        double bcl = bc.length();
         int tid = cell.triangles[i].myid;
-        cell.vertices[aid].addNeighbor(bid, abl);
-        cell.vertices[aid].addNeighbor(cid, acl);
-        cell.vertices[bid].addNeighbor(aid, abl);
-        cell.vertices[bid].addNeighbor(cid, bcl);
-        cell.vertices[cid].addNeighbor(aid, acl);
-        cell.vertices[cid].addNeighbor(bid, bcl);
+        std::cout << "i=" << i << std::endl;
+        cell.vertices[aid].addNeighbor(bid);//, abl);
+        cell.vertices[aid].addNeighbor(cid);//, acl);
+        cell.vertices[bid].addNeighbor(aid);//, abl);
+        cell.vertices[bid].addNeighbor(cid);//, bcl);
+        cell.vertices[cid].addNeighbor(aid);//, acl);
+        cell.vertices[cid].addNeighbor(bid);//, bcl);
         cell.vertices[aid].addTriangle(tid);
         cell.vertices[bid].addTriangle(tid);
         cell.vertices[cid].addTriangle(tid);
     }
+    std::cout << "constructTopology DONE" << std::endl;
 }
 
 void Tinker::constructBSprings(Shell& cell)

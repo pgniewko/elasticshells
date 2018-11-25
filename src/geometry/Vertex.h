@@ -26,18 +26,18 @@ class Vertex
 
         void printVertex() const;
 
-        void addNeighbor(int, double);
-        void removeNeighbor(int);
+        void addNeighbor(int);//, double);
+//        void removeNeighbor(int);
         bool isNeighbor(int) const;
         void addTriangle(int);
-        void removeTriangle(int);
+//        void removeTriangle(int);
 
         void voidForce();
         int getNumNeighs() const;
         int getNumTris() const;
         int getNeighborId(int) const;
         int getTriangleId(int) const;
-        double getNeighborR0(int) const;
+//        double getNeighborR0(int) const;
 
         Vector3D r_c;
         Vector3D f_c;
@@ -50,11 +50,13 @@ class Vertex
         Vector3D a_p;
         Vector3D a_c;
 
-        int bondedVerts[NEIGH_MAX];
-        double r0[NEIGH_MAX];
-        double k0[NEIGH_MAX];
+        //int bondedVerts[NEIGH_MAX];
+        std::vector<int> bondedVerts;
+//        double r0[NEIGH_MAX];
+//        double k0[NEIGH_MAX];
 
         int bondedTris[TRIAN_MAX];
+        
 
         int numBonded;              // make it private
         int numTris;                // make it private
