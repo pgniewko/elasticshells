@@ -232,6 +232,7 @@ void Simulator::initShells(int N, double r_min, double r_max, bool jam)
     restarter.saveTopologyFile(shells);
     set_min_force();
 
+    creat_shells_image();
 
 }
 
@@ -801,6 +802,7 @@ void Simulator::recenterShells()
 
 void Simulator::creat_shells_image()
 {
+    simulator_logs << utils::LogLevel::INFO  << "Creating local image of the shells\n";
     int vertex_counter = 0;
     for (uint i = 0; i < shells.size(); i++)
     {
@@ -819,7 +821,7 @@ void Simulator::creat_shells_image()
             forces.push_back(0.0);
             forces.push_back(0.0);
             
-            object_map vm(i,j);
+            object_map vm(i, j);
             vs_map.push_back(vm);
             inv_vs_map[vm] = vertex_counter;
             
@@ -902,10 +904,10 @@ void Simulator::creat_shells_image()
             x3_mapped = inv_vs_map[vm_c];
             x4_mapped = inv_vs_map[vm_d];
             
-            h_.x1 = x1_mapped;
-            h_.x2 = x2_mapped;
-            h_.x3 = x3_mapped;
-            h_.x4 = x4_mapped;
+            h_.v1 = x1_mapped;
+            h_.v2 = x2_mapped;
+            h_.v3 = x3_mapped;
+            h_.v4 = x4_mapped;
             
             h_.D = shells[i].bhinges[j].D;
             h_.theta0 = shells[i].bhinges[j].theta0;

@@ -20,9 +20,9 @@
 #include "utils/Logger.h"
 #include "utils/LogManager.h"
 
-utils::Logger biofilm_logs("biofilm");
+utils::Logger shells_logs("elasticshells");
 
-const char* argp_program_version = "biofilm 0.9.0";
+const char* argp_program_version = "elasticshells 0.9.5";
 const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
 
 static char doc[] =
@@ -411,7 +411,7 @@ int main(int argc, char** argv)
 
     if (arguments.abort)
     {
-        biofilm_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT*\n";
+        shells_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT*\n";
         exit(EXIT_FAILURE);
     }
 
@@ -430,17 +430,17 @@ int main(int argc, char** argv)
     /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {arguments.seed, 0x234, 0x345, 0x456}, length = 4;
     init_by_array(init, length);
-    biofilm_logs << utils::LogLevel::FILE << "RENDER_FILE = "      << arguments.render_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "TRAJ_FILE = "        << arguments.traj_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "BOX_FILE = "         << arguments.box_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "OUTPUT_FILE = "      << arguments.output_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "SURFACE_FILE = "     << arguments.surface_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
-    biofilm_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
+    shells_logs << utils::LogLevel::FILE << "RENDER_FILE = "      << arguments.render_file << "\n";
+    shells_logs << utils::LogLevel::FILE << "TRAJ_FILE = "        << arguments.traj_file << "\n";
+    shells_logs << utils::LogLevel::FILE << "BOX_FILE = "         << arguments.box_file << "\n";
+    shells_logs << utils::LogLevel::FILE << "OUTPUT_FILE = "      << arguments.output_file << "\n";
+    shells_logs << utils::LogLevel::FILE << "SURFACE_FILE = "     << arguments.surface_file << "\n";
+    shells_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
+    shells_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
 
     if (arguments.n_shells == 0)
     {
-        biofilm_logs << utils::LogLevel::INFO << "NUMBER OF SHELS IS ZERO (0). NOTHING TO DO !" << "\n";
+        shells_logs << utils::LogLevel::INFO << "NUMBER OF SHELS IS ZERO (0). NOTHING TO DO !" << "\n";
     }
     else
     {
@@ -472,14 +472,14 @@ int main(int argc, char** argv)
     }
 
 
-#ifdef _OPENMP
-    int gt = omp_get_max_threads();
-    int ncpu = omp_get_num_procs();
-    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << simulation_time << " [s] \n";
-    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION CPU-TIME[" << gt << "(n_th)/" << ncpu << "(n_pcu)] = " << clocks[0].time() << " [s] \n";
-#else
-    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << clocks[0].time() << " [s] \n";
-#endif
+//#ifdef _OPENMP
+//    int gt = omp_get_max_threads();
+//    int ncpu = omp_get_num_procs();
+//    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << simulation_time << " [s] \n";
+//    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION CPU-TIME[" << gt << "(n_th)/" << ncpu << "(n_pcu)] = " << clocks[0].time() << " [s] \n";
+//#else
+    shells_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << clocks[0].time() << " [s] \n";
+//#endif
 
 
     return (EXIT_SUCCESS);

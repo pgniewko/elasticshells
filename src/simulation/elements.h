@@ -12,7 +12,7 @@ struct element
 
 struct hinge
 {
-    int x1, x2, x3, x4;
+    int v1, v2, v3, v4;
     double D;
     double sinTheta0;
     double theta0;

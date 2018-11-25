@@ -1,9 +1,9 @@
 #ifndef ENVIRONMENT_H
 #define	ENVIRONMENT_H
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
+//#ifdef _OPENMP
+//#include <omp.h>
+//#endif
 
 #include <string.h>
 #include <limits>
