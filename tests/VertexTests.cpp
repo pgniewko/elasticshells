@@ -14,7 +14,7 @@ void VertexTests::setUp()
     //v2->setMass(1.23);
     v3 = new Vertex(-1.0, 1.0, 2.0);
     v4 = new Vertex(11.0, 12.3, -9.99);
-    v4->setId(18);
+    v4->set_id(18);
     //v4->setMass(0.87);
     v4->addNeighbor(0, 0.76);
     v4->addNeighbor(0, 0.44);
@@ -22,7 +22,7 @@ void VertexTests::setUp()
     v4->addNeighbor(2, 0.44);
     v4->addNeighbor(5, 0.33);
     v5 = new Vertex(-11.0, 345.0, 666.0);
-    v5->setId(0);
+    v5->set_id(0);
     //v5->setMass(0.99);
     v5->addTriangle(1);
     v5->addTriangle(0);
@@ -63,7 +63,7 @@ void VertexTests::testConstructor()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, v1->f_c.x, constants::delta14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, v1->f_c.y, constants::delta14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, v1->f_c.z, constants::delta14);
-    CPPUNIT_ASSERT_EQUAL(-1, v1->getId());
+    CPPUNIT_ASSERT_EQUAL(-1, v1->get_id());
     //CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, v1->getMass(), DELTA14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, v2->r_c.x, constants::delta14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, v2->r_c.y, constants::delta14);
@@ -72,18 +72,18 @@ void VertexTests::testConstructor()
     //CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, v2->v_c.y, constants::delta14);
     //CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, v2->v_c.z, constants::delta14);
     //CPPUNIT_ASSERT_DOUBLES_EQUAL(1.23, v2->getMass(), DELTA14);
-    CPPUNIT_ASSERT_EQUAL(-1, v2->getId());
-    CPPUNIT_ASSERT_EQUAL(0, v2->numTris);
-    CPPUNIT_ASSERT_EQUAL(0, v2->numBonded);
+    CPPUNIT_ASSERT_EQUAL(-1, v2->get_id());
+    CPPUNIT_ASSERT_EQUAL(0, v2->facets_number);
+    CPPUNIT_ASSERT_EQUAL(0, v2->vertex_degree);
     Vertex tmpv1(*vec1);
-    CPPUNIT_ASSERT_EQUAL(-1, tmpv1.getId());
-    tmpv1.setId(1);
+    CPPUNIT_ASSERT_EQUAL(-1, tmpv1.get_id());
+    tmpv1.set_id(1);
     //tmpv1.setMass(12.0);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpv1.r_c.x, constants::delta14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, tmpv1.r_c.y, constants::delta14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(3.0, tmpv1.r_c.z, constants::delta14);
     //CPPUNIT_ASSERT_DOUBLES_EQUAL(12.0, tmpv1.getMass(), DELTA14);
-    CPPUNIT_ASSERT_EQUAL(1, tmpv1.getId());
+    CPPUNIT_ASSERT_EQUAL(1, tmpv1.get_id());
 }
 
 void VertexTests::testCopyConstructor()
@@ -92,12 +92,12 @@ void VertexTests::testCopyConstructor()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-1.0, tmpv1.r_c.x, constants::delta14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, tmpv1.r_c.y, constants::delta14);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, tmpv1.r_c.z, constants::delta14);
-    CPPUNIT_ASSERT_EQUAL(-1, tmpv1.getId());
-    CPPUNIT_ASSERT_EQUAL(0, tmpv1.numTris);
-    CPPUNIT_ASSERT_EQUAL(0, tmpv1.numBonded);
+    CPPUNIT_ASSERT_EQUAL(-1, tmpv1.get_id());
+    CPPUNIT_ASSERT_EQUAL(0, tmpv1.facets_number);
+    CPPUNIT_ASSERT_EQUAL(0, tmpv1.vertex_degree);
     Vertex tmpv2(*v4);
-    CPPUNIT_ASSERT_EQUAL(18, tmpv2.getId());
-    CPPUNIT_ASSERT_EQUAL(4, tmpv2.getNumNeighs());
+    CPPUNIT_ASSERT_EQUAL(18, tmpv2.get_id());
+    CPPUNIT_ASSERT_EQUAL(4, tmpv2.get_vertex_degree());
     CPPUNIT_ASSERT_EQUAL(0, tmpv2.getNumTris());
     CPPUNIT_ASSERT_EQUAL(0, tmpv2.getNeighborId(0));
     CPPUNIT_ASSERT_EQUAL(1, tmpv2.getNeighborId(1));
@@ -118,8 +118,8 @@ void VertexTests::testCopyConstructor()
 
 void VertexTests::testAddNeighbor()
 {
-    CPPUNIT_ASSERT_EQUAL(18, v4->getId());
-    CPPUNIT_ASSERT_EQUAL(4, v4->getNumNeighs());
+    CPPUNIT_ASSERT_EQUAL(18, v4->get_id());
+    CPPUNIT_ASSERT_EQUAL(4, v4->get_vertex_degree());
     CPPUNIT_ASSERT_EQUAL(0, v4->getNumTris());
     CPPUNIT_ASSERT_EQUAL(0, v4->getNeighborId(0));
     CPPUNIT_ASSERT_EQUAL(1, v4->getNeighborId(1));

@@ -16,11 +16,11 @@ class Vertex
     public:
         Vertex();
         Vertex(double, double, double);
-        Vertex(Vector3D);
+//        Vertex(Vector3D);
         Vertex(const Vertex& orig);
         virtual ~Vertex();
-        int setId(int);
-        int getId() const;
+        int set_id(int);
+        int get_id() const;
         int set_shell_id(int);
         int get_shell_id() const;
 
@@ -33,7 +33,7 @@ class Vertex
 //        void removeTriangle(int);
 
         void voidForce();
-        int getNumNeighs() const;
+        int get_vertex_degree() const;
         int getNumTris() const;
         int getNeighborId(int) const;
         int getTriangleId(int) const;
@@ -55,11 +55,12 @@ class Vertex
 //        double r0[NEIGH_MAX];
 //        double k0[NEIGH_MAX];
 
-        int bondedTris[TRIAN_MAX];
+        //int bondedTris[TRIAN_MAX];
+        std::vector<int> bondedTris;
         
 
-        int numBonded;              // make it private
-        int numTris;                // make it private
+        int vertex_degree;              // make it private
+        int facets_number;                // make it private
 
         Vertex* next = NULL;
 

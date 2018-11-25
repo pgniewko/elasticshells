@@ -13,13 +13,9 @@ Shell::Shell(std::list<Triangle> tris) : shell_id(-1), number_v(0), number_t(0),
     V0(0)
 {
     Tinker::constructVertices(*this, tris);
-    std::cout << "constructVertices" << std::endl;
     Tinker::constructVTriangles(*this, tris);
-    std::cout << "constructVTriangles" << std::endl;
     Tinker::constructTopology(*this);
-    std::cout << "constructTopology" << std::endl;
     Tinker::constructBSprings(*this);
-    std::cout << "constructBSprings" << std::endl;
     randomRotate();
 }
 
@@ -389,7 +385,7 @@ double Shell::project_force(const Shell& other_cell, const Box& box, const Vecto
     Vector3D nj(0, 0, 0);
     int tj;
 
-    for (int j = 0; j < vertices[vidx].numTris; j++)
+    for (int j = 0; j < vertices[vidx].facets_number; j++)
     {
         tj = vertices[vidx].getTriangleId(j);
 
@@ -426,7 +422,7 @@ double Shell::project_force(const Box& box, const Vector3D& force_collector, con
     Vector3D nj;
     int tj;
 
-    for (int j = 0; j < vertices[vidx].numTris; j++)
+    for (int j = 0; j < vertices[vidx].facets_number; j++)
     {
         tj = vertices[vidx].getTriangleId(j);
 

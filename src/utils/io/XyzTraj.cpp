@@ -91,7 +91,7 @@ void XyzTraj::save_traj(const std::vector<Shell>& cells, int totV, const Box& bo
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            std::string strindex = new_base_index ( lastCellIndex +  cells[i].vertices[j].getId() );
+            std::string strindex = new_base_index ( lastCellIndex +  cells[i].vertices[j].get_id() );
             fprintf(os, "%s %10.12f %10.12f %10.12f \n", strindex.c_str(), cells[i].vertices[j].r_c.x, cells[i].vertices[j].r_c.y, cells[i].vertices[j].r_c.z);
 
         }
@@ -111,7 +111,7 @@ void XyzTraj::save_traj(const std::vector<Shell>& cells, int totV)
     {
         for (int j = 0; j < cells[i].getNumberVertices(); j++)
         {
-            std::string strindex = new_base_index ( lastCellIndex +  cells[i].vertices[j].getId() );
+            std::string strindex = new_base_index ( lastCellIndex +  cells[i].vertices[j].get_id() );
             fprintf(os, "%s %10.12f %10.12f %10.12f \n", strindex.c_str(), cells[i].vertices[j].r_c.x, cells[i].vertices[j].r_c.y, cells[i].vertices[j].r_c.z);
 
         }

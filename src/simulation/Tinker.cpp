@@ -23,7 +23,7 @@ void Tinker::constructVertices(Shell& cell, std::list<Triangle>& tris)
             ztmp = i->a.z;
             //cell.vertices[cell.number_v] = Vertex(xtmp, ytmp, ztmp);
             cell.vertices.push_back(Vertex(xtmp, ytmp, ztmp));
-            cell.vertices[cell.number_v].setId(cell.number_v);
+            cell.vertices[cell.number_v].set_id(cell.number_v);
             cell.number_v++;
         }
 
@@ -35,7 +35,7 @@ void Tinker::constructVertices(Shell& cell, std::list<Triangle>& tris)
             ztmp = i->b.z;
             //cell.vertices[cell.number_v] = Vertex(xtmp, ytmp, ztmp);
             cell.vertices.push_back(Vertex(xtmp, ytmp, ztmp));
-            cell.vertices[cell.number_v].setId(cell.number_v);
+            cell.vertices[cell.number_v].set_id(cell.number_v);
             cell.number_v++;
         }
 
@@ -47,7 +47,7 @@ void Tinker::constructVertices(Shell& cell, std::list<Triangle>& tris)
             ztmp = i->c.z;
             //cell.vertices[cell.number_v] = Vertex(xtmp, ytmp, ztmp);
             cell.vertices.push_back(Vertex(xtmp, ytmp, ztmp));
-            cell.vertices[cell.number_v].setId(cell.number_v);
+            cell.vertices[cell.number_v].set_id(cell.number_v);
             cell.number_v++;
         }
 
@@ -89,7 +89,7 @@ int Tinker::getVertex(Shell& cell, const Vector3D& v, double e)
     {
         if ( fabs(cell.vertices[i].r_c.x - v.x) < e && fabs(cell.vertices[i].r_c.y - v.y) < e && fabs(cell.vertices[i].r_c.z - v.z) < e )
         {
-            return cell.vertices[i].getId();
+            return cell.vertices[i].get_id();
         }
     }
     return -1;
@@ -102,14 +102,14 @@ void Tinker::constructTopology(Shell& cell)
         int aid = cell.triangles[i].ia;
         int bid = cell.triangles[i].ib;
         int cid = cell.triangles[i].ic;
-        Vector3D ab = cell.vertices[aid].r_c - cell.vertices[bid].r_c;
-        Vector3D ac = cell.vertices[aid].r_c - cell.vertices[cid].r_c;
-        Vector3D bc = cell.vertices[bid].r_c - cell.vertices[cid].r_c;
+//        Vector3D ab = cell.vertices[aid].r_c - cell.vertices[bid].r_c;
+//        Vector3D ac = cell.vertices[aid].r_c - cell.vertices[cid].r_c;
+//        Vector3D bc = cell.vertices[bid].r_c - cell.vertices[cid].r_c;
 //        double abl = ab.length();
 //        double acl = ac.length();
 //        double bcl = bc.length();
         int tid = cell.triangles[i].myid;
-        std::cout << "i=" << i << std::endl;
+//        std::cout << "i=" << i << std::endl;
         cell.vertices[aid].addNeighbor(bid);//, abl);
         cell.vertices[aid].addNeighbor(cid);//, acl);
         cell.vertices[bid].addNeighbor(aid);//, abl);
@@ -120,7 +120,7 @@ void Tinker::constructTopology(Shell& cell)
         cell.vertices[bid].addTriangle(tid);
         cell.vertices[cid].addTriangle(tid);
     }
-    std::cout << "constructTopology DONE" << std::endl;
+//    std::cout << "constructTopology DONE" << std::endl;
 }
 
 void Tinker::constructBSprings(Shell& cell)
@@ -134,14 +134,14 @@ void Tinker::constructBSprings(Shell& cell)
 
     for (int x3 = 0; x3 < cell.number_v; x3++)
     {
-        for (int j = 0; j < cell.vertices[x3].numBonded; j++)
+        for (int j = 0; j < cell.vertices[x3].vertex_degree; j++)
         {
             std::vector<int> common_verts;
             int x4 = cell.vertices[x3].bondedVerts[j];
 
-            for (int k = 0; k < cell.vertices[x3].numBonded; k++)
+            for (int k = 0; k < cell.vertices[x3].vertex_degree; k++)
             {
-                for (int l = 0; l < cell.vertices[x4].numBonded; l++)
+                for (int l = 0; l < cell.vertices[x4].vertex_degree; l++)
                 {
                     if (x4 != cell.vertices[x3].bondedVerts[k] && x3 != cell.vertices[x4].bondedVerts[l])
                     {

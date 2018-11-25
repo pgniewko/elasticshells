@@ -396,8 +396,8 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Shell>& ce
     }
     else
     {
-        int i = target->getId();
-        int j = partner->getId();
+        int i = target->get_id();
+        int j = partner->get_id();
 
         if (i != j && !target->isNeighbor(j))
         {
@@ -483,8 +483,8 @@ double DomainList::virial(Vertex* target, Vertex* partner, const std::vector<She
     }
     else
     {
-        int i = target->getId();
-        int j = partner->getId();
+        int i = target->get_id();
+        int j = partner->get_id();
 
         if (i != j && !target->isNeighbor(j))
         {
@@ -533,12 +533,12 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                     if ( target->get_shell_id() == cell1id && partner->get_shell_id() == cell2id )
                     {
                         force = getNbForce(target, partner, cells, box);
-                        verts_forces[ target->getId() ] += force;
+                        verts_forces[ target->get_id() ] += force;
                     }
                     else if ( target->get_shell_id() == cell2id && partner->get_shell_id() == cell1id )
                     {
                         force = getNbForce(partner, target, cells, box);
-                        verts_forces[ partner->getId() ] += force;
+                        verts_forces[ partner->get_id() ] += force;
                     }
                 }
             }
@@ -557,12 +557,12 @@ double DomainList::calcContactForce(const int cell1id, const int cell2id, const 
                             if ( target->get_shell_id() == cell1id && partner->get_shell_id() == cell2id )
                             {
                                 force = getNbForce(target, partner, cells, box);
-                                verts_forces[ target->getId() ] += force;
+                                verts_forces[ target->get_id() ] += force;
                             }
                             else if ( target->get_shell_id() == cell2id && partner->get_shell_id() == cell1id )
                             {
                                 force = getNbForce(partner, target, cells, box);
-                                verts_forces[ partner->getId() ] += force;
+                                verts_forces[ partner->get_id() ] += force;
                             }
                         }
                     }
@@ -759,8 +759,8 @@ double DomainList::nbEnergy(const Vertex* target, const Vertex* partner, const s
     }
     else
     {
-        int i = target->getId();
-        int j = partner->getId();
+        int i = target->get_id();
+        int j = partner->get_id();
 
         if (i != j && !target->isNeighbor(j))
         {

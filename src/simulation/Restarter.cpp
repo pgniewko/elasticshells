@@ -44,7 +44,7 @@ void Restarter::saveTopologyFile(const std::vector<Shell>& shells) const
         {
             for (int j = 0; j < shells[i].getNumberVertices(); j++)
             {
-                os << "VMAP " <<  new_base_index( last_shell_index +  shells[i].vertices[j].getId() ) << ' ' << i << ' ' << j << "\n";
+                os << "VMAP " <<  new_base_index( last_shell_index +  shells[i].vertices[j].get_id() ) << ' ' << i << ' ' << j << "\n";
             }
 
             last_shell_index += shells[i].getNumberVertices();
@@ -195,14 +195,14 @@ void Restarter::addVertices(std::vector<Shell>& shells, int cix) const
                 if (shell_id == cix)
                 {
                     int v_id = std::stoi(pairs[ 2 ].c_str(), NULL);
-                    shells[cix].vertices[v_id].setId(v_id);
+                    shells[cix].vertices[v_id].set_id(v_id);
                     shells[cix].vertices[v_id].set_shell_id(cix);
-                    shells[cix].vertices[v_id].numBonded = strtod(pairs[ 3 ].c_str(), NULL);
-                    shells[cix].vertices[v_id].numTris = strtod(pairs[ 4 ].c_str(), NULL);
+                    shells[cix].vertices[v_id].vertex_degree = strtod(pairs[ 3 ].c_str(), NULL);
+                    shells[cix].vertices[v_id].facets_number = strtod(pairs[ 4 ].c_str(), NULL);
 
                     int start_ix = 4;
 
-                    for (int i = 0; i < shells[cix].vertices[v_id].numBonded; i++)
+                    for (int i = 0; i < shells[cix].vertices[v_id].vertex_degree; i++)
                     {
                         shells[cix].vertices[v_id].bondedVerts[i] = std::stoi(pairs[ start_ix + 1 ].c_str(), NULL);
 //                        shells[cix].vertices[v_id].r0[i]          = strtod(pairs[ start_ix + 2 ].c_str(), NULL);
@@ -213,7 +213,7 @@ void Restarter::addVertices(std::vector<Shell>& shells, int cix) const
 
                     start_ix++;
 
-                    for (int i = 0; i < shells[cix].vertices[v_id].numTris; i++)
+                    for (int i = 0; i < shells[cix].vertices[v_id].facets_number; i++)
                     {
                         shells[cix].vertices[v_id].bondedTris[i] = std::stoi(pairs[ start_ix ].c_str(), NULL);
                         start_ix++;

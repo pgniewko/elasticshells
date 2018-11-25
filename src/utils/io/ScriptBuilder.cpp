@@ -40,7 +40,7 @@ void ScriptBuilder::saveRenderScript(const std::vector<Shell>& cells, const Box&
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
             {
-                std::string strindex = new_base_index( lastCellIndex +  cells[i].vertices[j].getId());
+                std::string strindex = new_base_index( lastCellIndex +  cells[i].vertices[j].get_id());
                 os << "cmd.do(\"select " << strindex << ", name " << strindex << "\")\n";
             }
 
@@ -53,9 +53,9 @@ void ScriptBuilder::saveRenderScript(const std::vector<Shell>& cells, const Box&
         {
             for (int j = 0; j < cells[i].getNumberVertices(); j++)
             {
-                for (int k = 0; k < cells[i].vertices[j].numBonded; k++)
+                for (int k = 0; k < cells[i].vertices[j].vertex_degree; k++)
                 {
-                    std::string strindex1 = new_base_index( lastCellIndex +  cells[i].vertices[j].getId());
+                    std::string strindex1 = new_base_index( lastCellIndex +  cells[i].vertices[j].get_id());
                     std::string strindex2 = new_base_index( lastCellIndex +  cells[i].vertices[j].bondedVerts[k]);
                     os << "cmd.do(\"bond " << strindex1 << ", " << strindex2 << "\")\n";
                 }

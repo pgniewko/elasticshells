@@ -74,7 +74,7 @@ int constructVertices(std::list<Triangle>& tris, Vertex* vertices)
             ytmp = i->a.y;
             ztmp = i->a.z;
             vertices[number_v] = Vertex(xtmp, ytmp, ztmp);
-            vertices[number_v].setId(number_v);
+            vertices[number_v].set_id(number_v);
             number_v++;
         }
 
@@ -85,7 +85,7 @@ int constructVertices(std::list<Triangle>& tris, Vertex* vertices)
             ytmp = i->b.y;
             ztmp = i->b.z;
             vertices[number_v] = Vertex(xtmp, ytmp, ztmp);
-            vertices[number_v].setId(number_v);
+            vertices[number_v].set_id(number_v);
             number_v++;
         }
 
@@ -96,7 +96,7 @@ int constructVertices(std::list<Triangle>& tris, Vertex* vertices)
             ytmp = i->c.y;
             ztmp = i->c.z;
             vertices[number_v] = Vertex(xtmp, ytmp, ztmp);
-            vertices[number_v].setId(number_v);
+            vertices[number_v].set_id(number_v);
             number_v++;
         }
     }
@@ -110,7 +110,7 @@ int getVertex(Vector3D& v, Vertex* vertices, int number_v, double e)
     {
         if ( fabs(vertices[i].r_c.x - v.x)  < e && fabs(vertices[i].r_c.y - v.y) < e && fabs(vertices[i].r_c.z - v.z) < e)
         {
-            return vertices[i].getId();
+            return vertices[i].get_id();
         }
     }
 
@@ -196,7 +196,7 @@ double q_A(Vertex* vertices, VertexTriangle* triangles, int number_v)
     {
         tmp = 0.0;
 
-        for (int j = 0; j < vertices[i].numTris; j++)
+        for (int j = 0; j < vertices[i].facets_number; j++)
         {
             idx = vertices[i].bondedTris[j];
             tmp += triangles[idx].area(vertices) / 3.0;
