@@ -497,15 +497,18 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
+    //std::cout << "CALCULATING FORCES" << std::endl;
     FORCE_EVALUATION_COUTER++;
 
     // CALC CENTER OF MASS
 
+    //std::cout << "CALC CENTER OF MASS" << std::endl;
     for (uint i = 0; i < shells.size(); i++)
     {
         shells[i].update();
     }
 
+    //std::cout << "VOID FORCES" << std::endl;
     // RESET FORCES
     for (int i = 0 ; i < number_of_shells; i++)
     {

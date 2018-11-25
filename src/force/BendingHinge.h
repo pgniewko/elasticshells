@@ -20,10 +20,10 @@ class BendingHinge
         virtual ~BendingHinge();
 
         void setD(const double&, const double&, const double&);
-        void calcBendingForces(std::vector<Vertex>) const;
-        double calcRadiusOfCurvature(std::vector<Vertex>) const;
-        void setThetaZero(const std::vector<Vertex>);
-        double calcBendingEnergy(const std::vector<Vertex>) const;
+        void calcBendingForces(std::vector<Vertex>&) const;
+        double calcRadiusOfCurvature(std::vector<Vertex>&) const;
+        void setThetaZero(const std::vector<Vertex>&);
+        double calcBendingEnergy(const std::vector<Vertex>&) const;
 
         void setId(int);
         int getId() const;
@@ -40,8 +40,8 @@ class BendingHinge
         int x3 = -1;
         int x4 = -1;
         int myid = 1;
-        double calcTheta(const std::vector<Vertex>) const;
-        double calcSinTheta(const std::vector<Vertex>) const;
+        double calcTheta(const std::vector<Vertex>&) const;
+        double calcSinTheta(const std::vector<Vertex>&) const;
 };
 
 inline bool operator== (BendingHinge& bs1, BendingHinge& bs2)

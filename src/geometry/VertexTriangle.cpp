@@ -89,7 +89,7 @@ void VertexTriangle::subsVertex(int ix_old, int ix_new)
     return;
 }
 
-double VertexTriangle::area(const std::vector<Vertex> vs) const
+double VertexTriangle::area(const std::vector<Vertex>& vs) const
 {
     if (ia != -1 && ib != -1 && ic != -1)
     {
@@ -102,7 +102,7 @@ double VertexTriangle::area(const std::vector<Vertex> vs) const
     }
 }
 
-double VertexTriangle::area(const std::vector<Vertex> vs, const Vector3D cm, double eps) const
+double VertexTriangle::area(const std::vector<Vertex>& vs, const Vector3D cm, double eps) const
 {
     if (ia != -1 && ib != -1 && ic != -1)
     {
@@ -124,7 +124,7 @@ double VertexTriangle::area(const std::vector<Vertex> vs, const Vector3D cm, dou
     }
 }
 
-Vector3D VertexTriangle::normal(const std::vector<Vertex> vs) const
+Vector3D VertexTriangle::normal(const std::vector<Vertex>& vs) const
 {
     Vector3D ta = vs[ia].r_c;
     Vector3D tb = vs[ib].r_c;
@@ -134,14 +134,14 @@ Vector3D VertexTriangle::normal(const std::vector<Vertex> vs) const
     return normal;
 }
 
-void VertexTriangle::setL2(const std::vector<Vertex> vs)
+void VertexTriangle::setL2(const std::vector<Vertex>& vs)
 {
     L2[0] = (vs[ib].r_c - vs[ic].r_c).length_sq();
     L2[1] = (vs[ia].r_c - vs[ic].r_c).length_sq();
     L2[2] = (vs[ia].r_c - vs[ib].r_c).length_sq();
 }
 
-void VertexTriangle::setAn(const std::vector<Vertex> vs)
+void VertexTriangle::setAn(const std::vector<Vertex>& vs)
 {
     // MAKE SURE THAT the angle is between 0-180
     Vector3D ca = vs[ic].r_c - vs[ia].r_c;
@@ -157,7 +157,7 @@ void VertexTriangle::setAn(const std::vector<Vertex> vs)
     an[2] = ac.angle(bc);
 }
 
-void VertexTriangle::setKi(const std::vector<Vertex> vs, const double& E, const double& nu, const double& t)
+void VertexTriangle::setKi(const std::vector<Vertex>& vs, const double& E, const double& nu, const double& t)
 {
     double Ap = area(vs);
     ki[0] = E * t * (2.0 * cot(an[0]) * cot(an[0]) + 1.0 - nu) / (16.0 * Ap * (1.0 - nu * nu));
@@ -166,7 +166,7 @@ void VertexTriangle::setKi(const std::vector<Vertex> vs, const double& E, const 
 
 }
 
-void VertexTriangle::setCi(const std::vector<Vertex> vs, const double& E, const double& nu, const double& t)
+void VertexTriangle::setCi(const std::vector<Vertex>& vs, const double& E, const double& nu, const double& t)
 {
     double Ap = area(vs);
     ci[0] = E * t * (2.0 * cot(an[1]) * cot(an[2]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu * nu));
@@ -174,7 +174,7 @@ void VertexTriangle::setCi(const std::vector<Vertex> vs, const double& E, const 
     ci[2] = E * t * (2.0 * cot(an[0]) * cot(an[1]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu * nu));
 }
 
-void VertexTriangle::setParams(const std::vector<Vertex> vs, const double E, const double nu, const double t)
+void VertexTriangle::setParams(const std::vector<Vertex>& vs, const double E, const double nu, const double t)
 {
     setL2(vs);
     setAn(vs);
@@ -182,7 +182,7 @@ void VertexTriangle::setParams(const std::vector<Vertex> vs, const double E, con
     setCi(vs, E, nu, t);
 }
 
-void VertexTriangle::calcFemForces(std::vector<Vertex> vs) const
+void VertexTriangle::calcFemForces(std::vector<Vertex>& vs) const
 {
     // 1 - a; 2 - b; 3 - c;
     double l0_sq = (vs[ib].r_c - vs[ic].r_c).length_sq() - L2[0];
@@ -225,7 +225,7 @@ std::ostream& operator<< (std::ostream& out, const VertexTriangle& vt)
     return out;
 }
 
-double VertexTriangle::calcFemEnergy(const std::vector<Vertex> vs) const
+double VertexTriangle::calcFemEnergy(const std::vector<Vertex>& vs) const
 {
     double energy = 0.0;
     double l0_sq = (vs[ib].r_c - vs[ic].r_c).length_sq() - L2[0];

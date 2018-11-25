@@ -63,7 +63,13 @@ Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p)
     }
 }
 
-Vertex::~Vertex() {}
+Vertex::~Vertex() 
+{
+//    if (next != NULL)
+//    {
+//        delete next;
+//    }
+}
 
 void Vertex::addNeighbor(int idx, double r0v)
 {

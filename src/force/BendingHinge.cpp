@@ -17,7 +17,7 @@ void BendingHinge::setD(const double& E, const double& t, const double& nu)
     D = E * t * t * t / (12.0 * (1.0 - nu * nu));
 }
 
-double BendingHinge::calcRadiusOfCurvature(std::vector<Vertex> vs) const
+double BendingHinge::calcRadiusOfCurvature(std::vector<Vertex>& vs) const
 {
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
     double E_norm = E.length();
@@ -38,7 +38,7 @@ double BendingHinge::calcRadiusOfCurvature(std::vector<Vertex> vs) const
     return R1;
 }
 
-void BendingHinge::calcBendingForces(std::vector<Vertex> vs) const
+void BendingHinge::calcBendingForces(std::vector<Vertex>& vs) const
 {
 
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
@@ -71,7 +71,7 @@ void BendingHinge::calcBendingForces(std::vector<Vertex> vs) const
     vs[x4].f_c += (C * u4);
 }
 
-void BendingHinge::setThetaZero(const std::vector<Vertex> vs)
+void BendingHinge::setThetaZero(const std::vector<Vertex>& vs)
 {
     sinTheta0 = calcSinTheta(vs);
 
@@ -87,13 +87,13 @@ void BendingHinge::setThetaZero(const std::vector<Vertex> vs)
 
 }
 
-double BendingHinge::calcTheta(const std::vector<Vertex> vs) const
+double BendingHinge::calcTheta(const std::vector<Vertex>& vs) const
 {
     double sin_theta = calcSinTheta(vs);
     return asin(sin_theta);
 }
 
-double BendingHinge::calcSinTheta(const std::vector<Vertex> vs) const
+double BendingHinge::calcSinTheta(const std::vector<Vertex>& vs) const
 {
 
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
@@ -129,7 +129,7 @@ std::ostream& operator<< (std::ostream& out, const BendingHinge& bs)
 }
 
 
-double BendingHinge::calcBendingEnergy(const std::vector<Vertex> vs) const
+double BendingHinge::calcBendingEnergy(const std::vector<Vertex>& vs) const
 {
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
     double E_norm = E.length();

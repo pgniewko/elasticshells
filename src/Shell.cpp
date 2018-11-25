@@ -808,6 +808,7 @@ double Shell::getTurgor() const
 void Shell::update(double d)
 {
     calcCM();
+    //std::cout << center_of_mass << std::endl;
 }
 
 void Shell::setConstantVolume(double scale)

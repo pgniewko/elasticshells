@@ -19,17 +19,17 @@ class VertexTriangle
         virtual ~VertexTriangle();
         void setId(int);
         int getId() const;
-        double area(const std::vector<Vertex>) const;
-        double area(const std::vector<Vertex>, const Vector3D, double) const;
+        double area(const std::vector<Vertex>&) const;
+        double area(const std::vector<Vertex>&, const Vector3D, double) const;
 
-        Vector3D normal(const std::vector<Vertex>) const;
-        void calcFemForces(std::vector<Vertex>) const;
-        double calcFemEnergy(const std::vector<Vertex>) const;
+        Vector3D normal(const std::vector<Vertex>&) const;
+        void calcFemForces(std::vector<Vertex>&) const;
+        double calcFemEnergy(const std::vector<Vertex>&) const;
 
         void printVertexTriangle() const;
         void subsVertex(int, int);
 
-        void setParams(const std::vector<Vertex>, const double, const double, const double);
+        void setParams(const std::vector<Vertex>&, const double, const double, const double);
 
         int ia = -1;
         int ib = -1;
@@ -39,10 +39,10 @@ class VertexTriangle
         friend std::ostream& operator<< (std::ostream&, const VertexTriangle&);
 
     private:
-        void setL2(const std::vector<Vertex>);
-        void setAn(const std::vector<Vertex>);
-        void setKi(const std::vector<Vertex>, const double&, const double&, const double&);
-        void setCi(const std::vector<Vertex>, const double&, const double&, const double&);
+        void setL2(const std::vector<Vertex>&);
+        void setAn(const std::vector<Vertex>&);
+        void setKi(const std::vector<Vertex>&, const double&, const double&, const double&);
+        void setCi(const std::vector<Vertex>&, const double&, const double&, const double&);
 
         double an[3];
         double L2[3];

@@ -21,6 +21,7 @@ void Tinker::constructVertices(Shell& cell, std::list<Triangle>& tris)
             xtmp = i->a.x;
             ytmp = i->a.y;
             ztmp = i->a.z;
+            //cell.vertices[cell.number_v] = Vertex(xtmp, ytmp, ztmp);
             cell.vertices.push_back(Vertex(xtmp, ytmp, ztmp));
             cell.vertices[cell.number_v].setId(cell.number_v);
             cell.number_v++;
@@ -32,6 +33,7 @@ void Tinker::constructVertices(Shell& cell, std::list<Triangle>& tris)
             xtmp = i->b.x;
             ytmp = i->b.y;
             ztmp = i->b.z;
+            //cell.vertices[cell.number_v] = Vertex(xtmp, ytmp, ztmp);
             cell.vertices.push_back(Vertex(xtmp, ytmp, ztmp));
             cell.vertices[cell.number_v].setId(cell.number_v);
             cell.number_v++;
@@ -43,6 +45,7 @@ void Tinker::constructVertices(Shell& cell, std::list<Triangle>& tris)
             xtmp = i->c.x;
             ytmp = i->c.y;
             ztmp = i->c.z;
+            //cell.vertices[cell.number_v] = Vertex(xtmp, ytmp, ztmp);
             cell.vertices.push_back(Vertex(xtmp, ytmp, ztmp));
             cell.vertices[cell.number_v].setId(cell.number_v);
             cell.number_v++;
@@ -73,6 +76,7 @@ void Tinker::constructVTriangles(Shell& cell, std::list<Triangle>& tris)
         int vb = getVertex(cell, i->b);
         int vc = getVertex(cell, i->c);
         VertexTriangle vrxt(va, vb, vc);
+        //cell.triangles[cell.number_t] = VertexTriangle(vrxt);
         cell.triangles.push_back(VertexTriangle(vrxt));
         cell.triangles[cell.number_t].setId(cell.number_t);
         cell.number_t++;
@@ -159,6 +163,7 @@ void Tinker::constructBSprings(Shell& cell)
 
                     if ( isBSpringUnique(x1_, x2_, x3_, x4_, cell) )
                     {
+                        //cell.bhinges[cell.number_s] = BendingHinge(x1_, x2_, x3_, x4_);
                         cell.bhinges.push_back(BendingHinge(x1_, x2_, x3_, x4_));
                         cell.bhinges[cell.number_s].setId(cell.number_s);
                         cell.number_s++;

@@ -86,9 +86,11 @@ class Shell
         Vector3D center_of_mass;
         
         std::vector<Vertex> vertices;
+        //Vertex vertices[MAX_V];
+        
         std::vector<VertexTriangle> triangles;
         std::vector<BendingHinge> bhinges;
-        //Vertex vertices[MAX_V];
+        
         //VertexTriangle triangles[MAX_T];
         //BendingHinge bhinges [2 * MAX_T];
 
