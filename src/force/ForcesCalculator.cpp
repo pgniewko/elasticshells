@@ -18,19 +18,26 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
                                         const std::vector<hinge>& hinges, 
                                         const std::vector<object_map> vs_map,
                                         const std::vector<double> turgors,
-                                        const int num_shells) const
+                                        const int num_shells,
+                                        const double rv, const double E, const double nu,
+                                        const double Eb, const double nub)
 {
     
     
     // ITERATE OVER ELEMENTS
+    evaluate_elements(xyz, forces, elements);
     
     // ITERATE OVER HINGES
+    evaluate_hinges(xyz, forces, hinges);
     
     // CALCULATE MASS CENTERS
     // PRESSURE FORCES
+    evaluate_pressure(xyz, forces, elements, vs_map, turgors, num_shells);
     
     // END WITH NON-BONDED
+    evaluate_nonbonded(xyz, forces, elements, rv, E, nu);
     
+    evaluate_box(xyz, forces, rv, E, nu,  Eb, nub);
     
 }
 
@@ -100,7 +107,7 @@ void ForcesCalculator::evaluate_elements(const std::vector<double>& xyz,
         T32 += (el.ci[1] * l2_sq + el.ci[2] * l1_sq) * (vb - vc);        
         forces[3 * vert_c + 0] += (T31.x + T32.x);
         forces[3 * vert_c + 1] += (T31.y + T32.y);
-        forces[3 * vert_c + 2] += (T31.z + T32.z);
+        forces[3 * vert_c + 2] += (T31.z + T32.z);        
     }
 }
 
@@ -327,4 +334,283 @@ Vector3D ForcesCalculator::calculate_dV(const Vector3D& va,
     Vector3D f = cross(BD, CD) / 6;
 
     return f * Tetrahedron::volumeSgn(va, vb, vc, vd);
+}
+
+void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz, 
+                                          std::vector<double>& forces,
+                                          const std::vector<element>& elements,
+                                          const double rv, const double E, const double nu)
+{
+    
+    uint n = xyz.size() / 3;
+    
+    pairs_t contacts = dl.get_nb_lists(xyz, n, rv);
+    
+    double xi,yi,zi;
+    double xj,yj,zj;
+
+    uint j;
+    Vector3D ri, rj, dij, fij;
+    
+    double h;
+    double r_eff;
+    double e_eff;
+    double fmagn;
+    
+    for (uint i = 0; i < n; i++)
+    {
+        xi = xyz[3 * i + 0];
+        yi = xyz[3 * i + 1];
+        zi = xyz[3 * i + 2];
+        ri = Vector3D(xi, yi, zi);
+        for (uint k = 0; k < contacts[i].size(); k++)
+        {
+            j = contacts[i][k];
+            if (j > i)
+            {
+                xj = xyz[3 * j + 0];
+                yj = xyz[3 * j + 1];
+                zj = xyz[3 * j + 2];
+                rj = Vector3D(xj, yj, zj);
+            
+                distance(dij, rj, ri);
+            
+                r_eff = 0.5 * rv; //rv * rv / (rv + rv);
+                h = 2 * rv - dij.length(); // rv + rv - dij.length();
+            
+                e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
+                e_eff = 1.0 / e_eff;
+
+                if (h > 0)
+                {
+                    fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
+                    fij = fmagn * (dij / dij.length());
+            
+                    forces[3 * i + 0] += fij.x;
+                    forces[3 * i + 1] += fij.y;
+                    forces[3 * i + 2] += fij.z;
+            
+                    forces[3 * j + 0] -= fij.x;
+                    forces[3 * j + 1] -= fij.y;
+                    forces[3 * j + 2] -= fij.z;
+                }
+            }
+            
+        }
+    }
+
+    // ACCOUNT FOR POSSIBLE OVERLAPS BETWEEN BOUNDED 
+    // VERTICES
+    double x1, y1, z1;
+    double x2, y2, z2;
+    double x3, y3, z3;
+    
+    int vert_a, vert_b, vert_c;
+    Vector3D va, vb, vc;
+    
+    element el;
+    for (uint i = 0; i < elements.size(); i++)
+    {
+        el = elements[i];
+        vert_a = el.ia;
+        vert_b = el.ib;
+        vert_c = el.ic;
+        
+        x1 = xyz[3 * vert_a + 0];
+        y1 = xyz[3 * vert_a + 1];
+        z1 = xyz[3 * vert_a + 2];
+        
+        x2 = xyz[3 * vert_b + 0];
+        y2 = xyz[3 * vert_b + 1];
+        z2 = xyz[3 * vert_b + 2];
+        
+        x3 = xyz[3 * vert_c + 0];
+        y3 = xyz[3 * vert_c + 1];
+        z3 = xyz[3 * vert_c + 2];
+        
+        va = Vector3D(x1, y1, z1);
+        vb = Vector3D(x2, y2, z2);
+        vc = Vector3D(x3, y3, z3);
+        
+        // HERTZ TO BALANCE ...
+        // va-vb
+        distance(dij, vb, va);    
+        r_eff = 0.5 * rv;
+        h = 2 * rv - dij.length();
+        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
+        e_eff = 1.0 / e_eff;
+
+        if (h > 0)
+        {
+            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
+            fij = 0.5* fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
+            
+            forces[3 * vert_a + 0] -= fij.x; // OPPOSITE SIGN !!
+            forces[3 * vert_a + 1] -= fij.y; // OPPOSITE SIGN !!
+            forces[3 * vert_a + 2] -= fij.z; // OPPOSITE SIGN !!
+            
+            forces[3 * vert_b + 0] += fij.x; // OPPOSITE SIGN !!
+            forces[3 * vert_b + 1] += fij.y; // OPPOSITE SIGN !!
+            forces[3 * vert_b + 2] += fij.z; // OPPOSITE SIGN !!
+        }
+        
+        // va-vc
+        distance(dij, vc, va);    
+        r_eff = 0.5 * rv;
+        h = 2 * rv - dij.length();
+        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
+        e_eff = 1.0 / e_eff;
+
+        if (h > 0)
+        {
+            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
+            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
+            
+            forces[3 * vert_a + 0] -= fij.x; // OPPOSITE SIGN !!
+            forces[3 * vert_a + 1] -= fij.y; // OPPOSITE SIGN !!
+            forces[3 * vert_a + 2] -= fij.z; // OPPOSITE SIGN !!
+            
+            forces[3 * vert_c + 0] += fij.x; // OPPOSITE SIGN !!
+            forces[3 * vert_c + 1] += fij.y; // OPPOSITE SIGN !!
+            forces[3 * vert_c + 2] += fij.z; // OPPOSITE SIGN !!
+        }
+        
+        // vb-vc
+        distance(dij, vc, vb);    
+        r_eff = 0.5 * rv;
+        h = 2 * rv - dij.length();
+        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
+        e_eff = 1.0 / e_eff;
+
+        if (h > 0)
+        {
+            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
+            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
+            
+            forces[3 * vert_b + 0] -= fij.x; // OPPOSITE SIGN !!
+            forces[3 * vert_b + 1] -= fij.y; // OPPOSITE SIGN !!
+            forces[3 * vert_b + 2] -= fij.z; // OPPOSITE SIGN !!
+            
+            forces[3 * vert_c + 0] += fij.x; // OPPOSITE SIGN !!
+            forces[3 * vert_c + 1] += fij.y; // OPPOSITE SIGN !!
+            forces[3 * vert_c + 2] += fij.z; // OPPOSITE SIGN !!
+        }
+    }
+}
+
+
+void ForcesCalculator::evaluate_box(const std::vector<double>& xyz, 
+                            std::vector<double>& forces,
+                            const double rv, const double E, const double nu, 
+                            const double Eb, const double nub)
+{
+    if (pbc)
+    {
+        return;
+    }
+    
+    Vector3D wall_yz(0, 0, 0);
+    Vector3D wall_xz(0, 0, 0);
+    Vector3D wall_xy(0, 0, 0);
+    Vector3D force_collector(0, 0, 0);
+    Vector3D djk(0, 0, 0);
+
+    double sgnx, sgny, sgnz;
+    double bsx = dl.cfg.xmax;
+    double bsy = dl.cfg.ymax;
+    double bsz = dl.cfg.zmax;
+    
+    double h;
+    double e_eff;
+    
+    double x, y, z;
+    double fmagn;
+    
+    uint n = xyz.size() / 3;
+    Vector3D vertex;
+    for (uint i = 0; i < n; i++)
+    {
+        x = xyz[3 * i + 0];
+        y = xyz[3 * i + 1];
+        z = xyz[3 * i + 2];
+        vertex = Vector3D(x,y,z);
+        
+        //////////////
+        // WALL XY  //
+        //////////////
+        sgnx = SIGN(vertex.x);
+        wall_yz.x = sgnx * bsx;
+        wall_yz.y = vertex.y;
+        wall_yz.z = vertex.z;
+        djk = vertex - wall_yz;
+        
+
+        h = rv - djk.length();
+        e_eff = (1 - nu * nu) / E + (1 - nub * nub) / Eb;
+        e_eff = 1.0 / e_eff;
+        if (h > 0)
+        {
+            fmagn = constants::d4_3 * e_eff * pow(rv, 0.5) * pow(h, 1.5);
+            force_collector += fmagn * (djk / djk.length());
+        }
+
+        //////////////
+        // WALL XZ  //
+        //////////////
+        sgny = SIGN(vertex.y);
+        wall_xz.x = vertex.x;
+        wall_xz.y = sgny * bsy;
+        wall_xz.z = vertex.z;
+        djk = vertex - wall_xz;
+        
+        h = rv - djk.length();
+        e_eff = (1 - nu * nu) / E + (1 - nub * nub) / Eb;
+        e_eff = 1.0 / e_eff;
+        if (h > 0)
+        {
+            fmagn = constants::d4_3 * e_eff * pow(rv, 0.5) * pow(h, 1.5);
+            force_collector += fmagn * (djk / djk.length());
+        }
+        
+        //////////////
+        // WALL XY  //
+        //////////////
+        sgnz = SIGN(vertex.z);
+        wall_xy.x = vertex.x;
+        wall_xy.y = vertex.y;
+        wall_xy.z = sgnz * bsz;
+        djk = vertex - wall_xy;
+        
+        h = rv - djk.length();
+        e_eff = (1 - nu * nu) / E + (1 - nub * nub) / Eb;
+        e_eff = 1.0 / e_eff;
+        if (h > 0)
+        {
+            fmagn = constants::d4_3 * e_eff * pow(rv, 0.5) * pow(h, 1.5);
+            force_collector += fmagn * (djk / djk.length());
+        }
+        
+        forces[3 * i + 0] += force_collector.x;
+        forces[3 * i + 1] += force_collector.y;
+        forces[3 * i + 2] += force_collector.z;
+    }
+}
+
+void ForcesCalculator::distance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk) const
+{
+    dkj = vk - vj;
+
+    if (pbc)
+    {
+        double x, y, z;
+        double bsx = 2 * dl.cfg.xmax;
+        double bsy = 2 * dl.cfg.ymax;
+        double bsz = 2 * dl.cfg.zmax;
+        x = round(dkj.x / bsx) *  bsx;
+        y = round(dkj.y / bsy) *  bsy;
+        z = round(dkj.z / bsz) *  bsz;
+        dkj.x -= x;
+        dkj.y -= y;
+        dkj.z -= z;
+    }
 }
