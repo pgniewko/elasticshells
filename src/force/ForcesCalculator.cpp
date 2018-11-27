@@ -1,8 +1,9 @@
 #include "ForcesCalculator.h"
 
+ForcesCalculator::ForcesCalculator() : m(0), pbc(false), bending(false), dl(1, false) {}
+
 ForcesCalculator::ForcesCalculator(int m_, bool pbc_, bool bend) : m(m_), pbc(pbc_), bending(bend), dl(m_, pbc_) 
 {
-    
 }
 
 ForcesCalculator::ForcesCalculator(const ForcesCalculator& orig) : m(orig.m), pbc(orig.pbc), bending(orig.bending), dl(orig.m, orig.pbc)
@@ -23,20 +24,27 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
                                         const double Eb, const double nub)
 {
     
-    
+    std::cout << "ZERO FORCES" << std::endl;
+    zero_forces(forces);
+            
+    std::cout << "ELEMENTS" << std::endl;
     // ITERATE OVER ELEMENTS
     evaluate_elements(xyz, forces, elements);
     
+    std::cout << "HINGES" << std::endl;
     // ITERATE OVER HINGES
     evaluate_hinges(xyz, forces, hinges);
     
+    std::cout << "PRESSURE" << std::endl;
     // CALCULATE MASS CENTERS
     // PRESSURE FORCES
     evaluate_pressure(xyz, forces, elements, vs_map, turgors, num_shells);
     
+    std::cout << "NONBONDED" << std::endl;
     // END WITH NON-BONDED
     evaluate_nonbonded(xyz, forces, elements, rv, E, nu);
     
+    std::cout << "BOX" << std::endl;
     evaluate_box(xyz, forces, rv, E, nu,  Eb, nub);
     
 }
@@ -268,7 +276,7 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
     Vector3D va, vb, vc;
     Vector3D cm;
     element el;
-    
+
     for (uint i = 0; i < elements.size(); i++)
     {
         el = elements[i];
@@ -278,12 +286,13 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         
         if (vs_map[vert_a].cell_id == vs_map[vert_b].cell_id && vs_map[vert_a].cell_id == vs_map[vert_c].cell_id)
         {
-            cell_id = vs_map[i].cell_id;
+            cell_id = vs_map[vert_a].cell_id;
             cm = cms[cell_id];
         }
         else
         {
-            //PRINT ERROR AND ABORT
+            std::cout << "ERROR" << std::endl;
+            exit(0);
         }
         
         x1 = xyz[3 * vert_a + 0];
@@ -308,7 +317,6 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         Vector3D fb = turgor * calculate_dV(vb, vc, va, cm);
         Vector3D fc = turgor * calculate_dV(vc, va, vb, cm);
         
-        
         forces[3 * vert_a + 0] += fa.x;
         forces[3 * vert_a + 1] += fa.y;
         forces[3 * vert_a + 2] += fa.z;
@@ -321,7 +329,6 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         forces[3 * vert_c + 1] += fc.y;
         forces[3 * vert_c + 2] += fc.z;  
     }
-    
 }
 
 Vector3D ForcesCalculator::calculate_dV(const Vector3D& va,
@@ -612,5 +619,13 @@ void ForcesCalculator::distance(Vector3D& dkj, const Vector3D& vj, const Vector3
         dkj.x -= x;
         dkj.y -= y;
         dkj.z -= z;
+    }
+}
+
+void ForcesCalculator::zero_forces(std::vector<double>& forces) const
+{
+    for (uint i = 0; i < forces.size(); i++)
+    {
+        forces[i] = 0.0;
     }
 }

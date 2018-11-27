@@ -10,6 +10,7 @@
 
 class ForcesCalculator {
 public:
+    ForcesCalculator();
     ForcesCalculator(int, bool, bool);
     ForcesCalculator(const ForcesCalculator& orig);
     virtual ~ForcesCalculator();
@@ -54,6 +55,8 @@ private:
                             std::vector<double>& forces,
                             const double rv, const double E, const double nu, 
                             const double Eb, const double nub);
+    
+    void zero_forces(std::vector<double>& forces) const;
     
     double calculate_theta(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&) const;
     Vector3D calculate_dV(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&) const;
