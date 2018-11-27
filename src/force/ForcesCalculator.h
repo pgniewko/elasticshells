@@ -24,6 +24,7 @@ public:
                           const int num_shells, 
                           const double rv, const double E, const double nu,
                           const double Eb, const double nub);
+    void set_dl_dims(const double, const double, const int);
     
 private:
     int m;

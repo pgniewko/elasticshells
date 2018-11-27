@@ -33,6 +33,7 @@
 #include "elements.h"
 
 #include "integrators/Integrator.h"
+#include "../force/ForcesCalculator.h"
 
 struct params_t
 {
@@ -105,6 +106,8 @@ class Simulator
         double volumeFraction();
         
         void creat_shells_image();
+        
+        void copy_shells_data();
 
         Integrator* integrator;
 
@@ -132,6 +135,8 @@ class Simulator
         
         std::vector<object_map> hs_map;
         std::map<object_map, int> inv_hs_map;
+        
+        std::vector<double> turgors;
         /// ************
         
 
@@ -143,6 +148,8 @@ class Simulator
 
         DomainList domains;
         Restarter restarter;
+        
+        ForcesCalculator fc;
 
         double MIN_FORCE_SQ = 0.0;
         double FORCE_FRAC = 0.0001;

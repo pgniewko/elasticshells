@@ -66,6 +66,8 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     OsmoticForce::setEpsilon(args.eps);
     Shell::no_bending = args.nobending;
     logParams();
+    
+    fc = ForcesCalculator(domains.m, args.pbc, args.nobending);
 
 }
 
@@ -401,6 +403,14 @@ void Simulator::simulate(int steps)
     //================
     update_neighbors_list();
     calcForces();
+    
+    // NEW PART
+    copy_shells_data();
+    
+    fc.calculate_forces(xyz, forces, elements, hinges, vs_map, turgors, shells.size(), 
+            params.r_vertex, params.E_shell, params.nu,
+            box.getE(), box.getNu());
+    //
 
     for (int i = 0; i < number_of_shells; i++)
     {
@@ -806,6 +816,7 @@ void Simulator::creat_shells_image()
     int vertex_counter = 0;
     for (uint i = 0; i < shells.size(); i++)
     {
+        turgors.push_back( 0.0 );
         double x_, y_, z_;
         for (int j = 0; j < shells[i].getNumberVertices(); j++)
         {
@@ -923,4 +934,40 @@ void Simulator::creat_shells_image()
         }
     }
     
+}
+
+void Simulator::copy_shells_data()
+{
+    int vertex_no = 0;
+    for (uint i = 0; i < shells.size(); i++)
+    {
+        double x_, y_, z_;
+        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        {
+            x_ = shells[i].vertices[j].r_c.x;
+            y_ = shells[i].vertices[j].r_c.y;
+            z_ = shells[i].vertices[j].r_c.z;
+            
+
+            
+            object_map vm(i, j);
+            
+            inv_vs_map[ vm ] = vertex_no;
+            
+            xyz[3 * vertex_no + 0] = x_;
+            xyz[3 * vertex_no + 0] = y_;
+            xyz[3 * vertex_no + 0] = z_;
+        }
+    }
+    
+    for (uint i = 0; i < shells.size(); i++)
+    {
+        turgors[i] = shells[i].getTurgor();
+    }
+    
+    std::cout << "box.getX(), box.getY(), box.getZ() = " << box.getX() << " " << box.getY() << " " << box.getZ() <<std::endl;
+    
+    fc.set_dl_dims(-box.getX(), box.getX(), 0);
+    fc.set_dl_dims(-box.getY(), box.getY(), 1);
+    fc.set_dl_dims(-box.getZ(), box.getZ(), 2);
 }
