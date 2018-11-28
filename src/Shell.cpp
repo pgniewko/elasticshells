@@ -808,7 +808,6 @@ double Shell::getTurgor() const
 void Shell::update(double d)
 {
     calcCM();
-    //std::cout << center_of_mass << std::endl;
 }
 
 void Shell::setConstantVolume(double scale)
@@ -859,8 +858,6 @@ std::ostream& operator<< (std::ostream& out, const Shell& c)
     {
         out << "SHELLHINGE " <<  c.shell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
     }
-
-
 
     return out;
 }

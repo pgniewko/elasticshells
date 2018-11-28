@@ -403,8 +403,6 @@ void Simulator::simulate(int steps)
     update_neighbors_list();
     calcForces();
     
-    //exit(1);
-
     for (int i = 0; i < number_of_shells; i++)
     {
         for (int j = 0; j < shells[i].getNumberVertices(); j++)
@@ -412,7 +410,6 @@ void Simulator::simulate(int steps)
             shells[i].vertices[j].f_p = shells[i].vertices[j].f_c;
         }
     }
-    
 
 
     bool resized = false;
@@ -439,7 +436,6 @@ void Simulator::simulate(int steps)
             {
                 integrate();
                 loop_couter++;
-                //std::cout << "loop_couter="<< loop_couter << std::endl;
 
                 if ( (loop_couter + 1) % 5000 == 0)
                 {
@@ -502,7 +498,6 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
-    //std::cout << "FORCE_EVALUATION_COUTER="<< FORCE_EVALUATION_COUTER << std::endl;
     FORCE_EVALUATION_COUTER++;
 
     // CALC CENTER OF MASS
@@ -531,7 +526,7 @@ void Simulator::calcForces()
         {
             for (int j = 0; j < number_of_shells; j++)
             {
-                //shells[i].calcNbForcesON2(shells[j], box);
+                shells[i].calcNbForcesON2(shells[j], box);
             }
         }
     }
@@ -976,7 +971,6 @@ void Simulator::copy_shells_data()
 void Simulator::assertEqualForces()
 {
     const double delta15 = 0.000000000000001;
-    //const double delta8 = 0.00000001;
     for (int i = 0; i < number_of_shells; i++)
     {
         for (int j = 0; j < shells[i].getNumberVertices(); j++)
