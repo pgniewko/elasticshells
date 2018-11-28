@@ -410,7 +410,7 @@ void Simulator::simulate(int steps)
     fc.calculate_forces(xyz, forces, elements, hinges, vs_map, turgors, shells.size(), 
             params.r_vertex, params.E_shell, params.nu,
             box.getE(), box.getNu());
-    //
+    
 
     for (int i = 0; i < number_of_shells; i++)
     {
@@ -419,6 +419,25 @@ void Simulator::simulate(int steps)
             shells[i].vertices[j].f_p = shells[i].vertices[j].f_c;
         }
     }
+    
+    for (int i = 0; i < number_of_shells; i++)
+    {
+        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        {
+            object_map vm(i, j);
+            
+            int vn = inv_vs_map[vm];
+            
+            std::cout << i << " " << j << " " << vn <<std::endl;
+            std::cout << "Original forces" <<std::endl;
+            std::cout << shells[i].vertices[j].f_c <<std::endl;
+            std::cout << "Recalculated forces" <<std::endl;
+            std::cout << forces[3*vn+0] << " " << forces[3*vn+1] << " " << forces[3*vn+2] << std::endl;
+            std::cout << "=============================" <<std::endl;
+        }
+    }
+    
+    exit(1);
 
     //===============
 
@@ -516,7 +535,10 @@ void Simulator::calcForces()
     //std::cout << "CALC CENTER OF MASS" << std::endl;
     for (uint i = 0; i < shells.size(); i++)
     {
+        std::cout << "center of mass (b. shells in calc forces): "<< shells[i].getCm() << std::endl;
         shells[i].update();
+        std::cout << "center of mass (a. shells in calc forces): "<< shells[i].getCm() << std::endl;
+        
     }
 
     //std::cout << "VOID FORCES" << std::endl;
@@ -834,11 +856,13 @@ void Simulator::creat_shells_image()
             
             object_map vm(i, j);
             vs_map.push_back(vm);
+            
             inv_vs_map[vm] = vertex_counter;
             
             vertex_counter++;
         }
     }
+
     
     int element_counter = 0;
     for (uint i = 0; i < shells.size(); i++)
@@ -948,15 +972,13 @@ void Simulator::copy_shells_data()
             y_ = shells[i].vertices[j].r_c.y;
             z_ = shells[i].vertices[j].r_c.z;
             
-
-            
             object_map vm(i, j);
             
-            inv_vs_map[ vm ] = vertex_no;
+            vertex_no =  inv_vs_map[ vm ];
             
             xyz[3 * vertex_no + 0] = x_;
-            xyz[3 * vertex_no + 0] = y_;
-            xyz[3 * vertex_no + 0] = z_;
+            xyz[3 * vertex_no + 1] = y_;
+            xyz[3 * vertex_no + 2] = z_;
         }
     }
     

@@ -29,7 +29,7 @@ void Shell::calcBondedForces()
 {
     if (number_v > 1 && number_t > 1)
     {
-        calcFemForces();
+        //calcFemForces();
         calcOsmoticForces();
     }
 }
@@ -56,6 +56,8 @@ void Shell::calcOsmoticForces()
     int iva, ivb, ivc;
     double turgor = getTurgor();
 
+    std::cout << "center of mass (shell): "<< center_of_mass << std::endl;
+    
     for (int i = 0; i < number_t; i++)
     {
         iva = triangles[i].ia;

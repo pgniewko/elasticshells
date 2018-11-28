@@ -267,6 +267,8 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
     }
     
     
+    std::cout << "center of mass (fc): "<< cms[0] << std::endl;
+    
     double x1, y1, z1;
     double x2, y2, z2;
     double x3, y3, z3;
