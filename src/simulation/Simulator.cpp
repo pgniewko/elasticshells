@@ -439,7 +439,7 @@ void Simulator::simulate(int steps)
             {
                 integrate();
                 loop_couter++;
-                std::cout << "loop_couter="<< loop_couter << std::endl;
+                //std::cout << "loop_couter="<< loop_couter << std::endl;
 
                 if ( (loop_couter + 1) % 5000 == 0)
                 {
@@ -502,7 +502,7 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
-    std::cout << "FORCE_EVALUATION_COUTER="<< FORCE_EVALUATION_COUTER << std::endl;
+    //std::cout << "FORCE_EVALUATION_COUTER="<< FORCE_EVALUATION_COUTER << std::endl;
     FORCE_EVALUATION_COUTER++;
 
     // CALC CENTER OF MASS
@@ -537,7 +537,7 @@ void Simulator::calcForces()
     }
     else if (params.nbhandler == 2)
     {
-        //domains.calcNbForces(shells, box);
+        domains.calcNbForces(shells, box);
     }
 
     // CALCULATE FORCES BETWEEN CELLS AND BOX
@@ -976,7 +976,7 @@ void Simulator::copy_shells_data()
 void Simulator::assertEqualForces()
 {
     const double delta15 = 0.000000000000001;
-    const double delta8 = 0.00000001;
+    //const double delta8 = 0.00000001;
     for (int i = 0; i < number_of_shells; i++)
     {
         for (int j = 0; j < shells[i].getNumberVertices(); j++)

@@ -24,30 +24,30 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
                                         const double Eb, const double nub)
 {
     
-    std::cout << "ZERO FORCES" << std::endl;
+    //std::cout << "ZERO FORCES" << std::endl;
     zero_forces(forces);
             
-    std::cout << "ELEMENTS" << std::endl;
+    //std::cout << "ELEMENTS" << std::endl;
     // ITERATE OVER ELEMENTS
     evaluate_elements(xyz, forces, elements);
     
-    std::cout << "HINGES" << std::endl;
+    //std::cout << "HINGES" << std::endl;
     // ITERATE OVER HINGES
     if (bending)
     {
         evaluate_hinges(xyz, forces, hinges);
     }
     
-    std::cout << "PRESSURE" << std::endl;
+    //std::cout << "PRESSURE" << std::endl;
     // CALCULATE MASS CENTERS
     // PRESSURE FORCES
     evaluate_pressure(xyz, forces, elements, vs_map, turgors, num_shells);
     
-    std::cout << "NONBONDED" << std::endl;
+    //std::cout << "NONBONDED" << std::endl;
     // END WITH NON-BONDED
-    //evaluate_nonbonded(xyz, forces, elements, rv, E, nu);
+    evaluate_nonbonded(xyz, forces, elements, rv, E, nu);
     
-    std::cout << "BOX" << std::endl;
+    //std::cout << "BOX" << std::endl;
     evaluate_box(xyz, forces, rv, E, nu,  Eb, nub);
     
 }
@@ -293,7 +293,7 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         }
         else
         {
-            std::cout << "ERROR" << std::endl;
+            std::cout << "ERROR in evaluate_pressure()" << std::endl;
             exit(0);
         }
         
@@ -539,6 +539,7 @@ void ForcesCalculator::evaluate_box(const std::vector<double>& xyz,
     Vector3D vertex;
     for (uint i = 0; i < n; i++)
     {
+        force_collector *= 0;
         x = xyz[3 * i + 0];
         y = xyz[3 * i + 1];
         z = xyz[3 * i + 2];
@@ -559,6 +560,7 @@ void ForcesCalculator::evaluate_box(const std::vector<double>& xyz,
         e_eff = 1.0 / e_eff;
         if (h > 0)
         {
+            //std::cout << "(fc:x) i=" << i << " rv = "<< rv << " h =" << h << " e_eff=" << e_eff << " djk=" << djk << std::endl;
             fmagn = constants::d4_3 * e_eff * pow(rv, 0.5) * pow(h, 1.5);
             force_collector += fmagn * (djk / djk.length());
         }
@@ -577,6 +579,7 @@ void ForcesCalculator::evaluate_box(const std::vector<double>& xyz,
         e_eff = 1.0 / e_eff;
         if (h > 0)
         {
+            //std::cout << "(fc:y) i=" << i << " rv = "<< rv << " h =" << h << " e_eff=" << e_eff << " djk=" << djk << std::endl;
             fmagn = constants::d4_3 * e_eff * pow(rv, 0.5) * pow(h, 1.5);
             force_collector += fmagn * (djk / djk.length());
         }
@@ -595,8 +598,11 @@ void ForcesCalculator::evaluate_box(const std::vector<double>& xyz,
         e_eff = 1.0 / e_eff;
         if (h > 0)
         {
+            //std::cout << "(b):" << force_collector << std::endl;
+            //std::cout << "(fc:z) i=" << i << " rv = "<< rv << " h =" << h << " e_eff=" << e_eff << " djk=" << djk << std::endl;
             fmagn = constants::d4_3 * e_eff * pow(rv, 0.5) * pow(h, 1.5);
             force_collector += fmagn * (djk / djk.length());
+            //std::cout << "(a):"<< force_collector << " fmagn=" << fmagn << std::endl;
         }
         
         forces[3 * i + 0] += force_collector.x;
