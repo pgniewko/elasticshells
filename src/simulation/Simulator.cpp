@@ -67,7 +67,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     Shell::no_bending = args.nobending;
     logParams();
     
-    fc = ForcesCalculator(domains.m, args.pbc, args.nobending);
+    fc = ForcesCalculator(domains.m, args.pbc, !args.nobending);
 
 }
 
@@ -403,13 +403,7 @@ void Simulator::simulate(int steps)
     update_neighbors_list();
     calcForces();
     
-    // NEW PART
-    copy_shells_data();
-    
-    fc.calculate_forces(xyz, forces, elements, hinges, vs_map, turgors, shells.size(), 
-            params.r_vertex, params.E_shell, params.nu,
-            box.getE(), box.getNu());
-    
+    //exit(1);
 
     for (int i = 0; i < number_of_shells; i++)
     {
@@ -419,18 +413,7 @@ void Simulator::simulate(int steps)
         }
     }
     
-//    for (int i = 0; i < number_of_shells; i++)
-//    {
-//        for (int j = 0; j < shells[i].getNumberVertices(); j++)
-//        {
-//            object_map vm(i, j);
-//            int vn = inv_vs_map[vm];
-//            std::cout << shells[i].vertices[j].f_c <<std::endl;
-//            std::cout << forces[3*vn+0] << " " << forces[3*vn+1] << " " << forces[3*vn+2] << std::endl;
-//        }
-//    }
 
-    //===============
 
     bool resized = false;
 
@@ -456,6 +439,7 @@ void Simulator::simulate(int steps)
             {
                 integrate();
                 loop_couter++;
+                std::cout << "loop_couter="<< loop_couter << std::endl;
 
                 if ( (loop_couter + 1) % 5000 == 0)
                 {
@@ -518,6 +502,7 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
+    std::cout << "FORCE_EVALUATION_COUTER="<< FORCE_EVALUATION_COUTER << std::endl;
     FORCE_EVALUATION_COUTER++;
 
     // CALC CENTER OF MASS
@@ -546,13 +531,13 @@ void Simulator::calcForces()
         {
             for (int j = 0; j < number_of_shells; j++)
             {
-                shells[i].calcNbForcesON2(shells[j], box);
+                //shells[i].calcNbForcesON2(shells[j], box);
             }
         }
     }
     else if (params.nbhandler == 2)
     {
-        domains.calcNbForces(shells, box);
+        //domains.calcNbForces(shells, box);
     }
 
     // CALCULATE FORCES BETWEEN CELLS AND BOX
@@ -563,6 +548,14 @@ void Simulator::calcForces()
             shells[i].calcBoxForces(box);
         }
     }
+    
+    copy_shells_data();
+    fc.calculate_forces(xyz, forces, elements, hinges, vs_map, turgors, shells.size(), 
+            params.r_vertex, params.E_shell, params.nu,
+            box.getE(), box.getNu());
+    
+    assertEqualForces();
+    
 }
 void Simulator::update_neighbors_list()
 {
@@ -976,4 +969,38 @@ void Simulator::copy_shells_data()
     fc.set_dl_dims(-box.getX(), box.getX(), 0);
     fc.set_dl_dims(-box.getY(), box.getY(), 1);
     fc.set_dl_dims(-box.getZ(), box.getZ(), 2);
+}
+
+
+
+void Simulator::assertEqualForces()
+{
+    const double delta15 = 0.000000000000001;
+    const double delta8 = 0.00000001;
+    for (int i = 0; i < number_of_shells; i++)
+    {
+        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        {
+            object_map vm(i, j);
+            int vn = inv_vs_map[vm];
+            
+            if ( fabs(shells[i].vertices[j].f_c.x - forces[3*vn+0]) > delta15 )
+            {
+                std::cout << "(X) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.x << " "<< forces[3*vn+0] << " diff="<< fabs(shells[i].vertices[j].f_c.x - forces[3*vn+0]) << std::endl;
+                exit(1);
+            }
+            
+            if ( fabs(shells[i].vertices[j].f_c.y - forces[3*vn+1]) > delta15 )
+            {
+                std::cout << "(Y) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.y << " "<< forces[3*vn+1]<< std::endl;
+                exit(1);
+            }
+            
+            if ( fabs(shells[i].vertices[j].f_c.z - forces[3*vn+2]) > delta15 )
+            {
+                std::cout << "(Z) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.z << " "<< forces[3*vn+2]<< std::endl;
+                exit(1);
+            }
+        }
+    }
 }

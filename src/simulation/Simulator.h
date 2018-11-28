@@ -108,6 +108,8 @@ class Simulator
         void creat_shells_image();
         
         void copy_shells_data();
+        
+        void assertEqualForces(); // a temporary function
 
         Integrator* integrator;
 

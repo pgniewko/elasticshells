@@ -33,7 +33,10 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
     
     std::cout << "HINGES" << std::endl;
     // ITERATE OVER HINGES
-    evaluate_hinges(xyz, forces, hinges);
+    if (bending)
+    {
+        evaluate_hinges(xyz, forces, hinges);
+    }
     
     std::cout << "PRESSURE" << std::endl;
     // CALCULATE MASS CENTERS
@@ -42,7 +45,7 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
     
     std::cout << "NONBONDED" << std::endl;
     // END WITH NON-BONDED
-    evaluate_nonbonded(xyz, forces, elements, rv, E, nu);
+    //evaluate_nonbonded(xyz, forces, elements, rv, E, nu);
     
     std::cout << "BOX" << std::endl;
     evaluate_box(xyz, forces, rv, E, nu,  Eb, nub);
