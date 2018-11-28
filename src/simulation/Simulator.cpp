@@ -322,8 +322,7 @@ void Simulator::analyze()
     number_of_shells = shells.size();
 //
 //    MIN_FORCE_SQ = 1e-8;
-//    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE ARBITRARILY(in <<analyze>> mode) SET= "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
-
+    
     uint frames_number = traj.countFramesNumber();
     simulator_logs << utils::LogLevel::INFO << " Number of frames in a trajectory file: " << (int) frames_number << "\n" ;
 
@@ -420,24 +419,16 @@ void Simulator::simulate(int steps)
         }
     }
     
-    for (int i = 0; i < number_of_shells; i++)
-    {
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
-        {
-            object_map vm(i, j);
-            
-            int vn = inv_vs_map[vm];
-            
-            std::cout << i << " " << j << " " << vn <<std::endl;
-            std::cout << "Original forces" <<std::endl;
-            std::cout << shells[i].vertices[j].f_c <<std::endl;
-            std::cout << "Recalculated forces" <<std::endl;
-            std::cout << forces[3*vn+0] << " " << forces[3*vn+1] << " " << forces[3*vn+2] << std::endl;
-            std::cout << "=============================" <<std::endl;
-        }
-    }
-    
-    exit(1);
+//    for (int i = 0; i < number_of_shells; i++)
+//    {
+//        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+//        {
+//            object_map vm(i, j);
+//            int vn = inv_vs_map[vm];
+//            std::cout << shells[i].vertices[j].f_c <<std::endl;
+//            std::cout << forces[3*vn+0] << " " << forces[3*vn+1] << " " << forces[3*vn+2] << std::endl;
+//        }
+//    }
 
     //===============
 
@@ -527,21 +518,15 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
-    //std::cout << "CALCULATING FORCES" << std::endl;
     FORCE_EVALUATION_COUTER++;
 
     // CALC CENTER OF MASS
 
-    //std::cout << "CALC CENTER OF MASS" << std::endl;
     for (uint i = 0; i < shells.size(); i++)
     {
-        std::cout << "center of mass (b. shells in calc forces): "<< shells[i].getCm() << std::endl;
         shells[i].update();
-        std::cout << "center of mass (a. shells in calc forces): "<< shells[i].getCm() << std::endl;
-        
     }
 
-    //std::cout << "VOID FORCES" << std::endl;
     // RESET FORCES
     for (int i = 0 ; i < number_of_shells; i++)
     {
@@ -987,7 +972,6 @@ void Simulator::copy_shells_data()
         turgors[i] = shells[i].getTurgor();
     }
     
-    std::cout << "box.getX(), box.getY(), box.getZ() = " << box.getX() << " " << box.getY() << " " << box.getZ() <<std::endl;
     
     fc.set_dl_dims(-box.getX(), box.getX(), 0);
     fc.set_dl_dims(-box.getY(), box.getY(), 1);

@@ -266,9 +266,6 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         cms[i] /= vertex_counter[i];
     }
     
-    
-    std::cout << "center of mass (fc): "<< cms[0] << std::endl;
-    
     double x1, y1, z1;
     double x2, y2, z2;
     double x3, y3, z3;
@@ -635,5 +632,4 @@ void ForcesCalculator::zero_forces(std::vector<double>& forces) const
 void ForcesCalculator::set_dl_dims(const double min_val, const double max_val, const int axis)
 {
     dl.set_system_dims(min_val, max_val, axis);
-    std::cout << dl.cfg.DIM << " " << dl.cfg.M << " " << dl.cfg.xmin << " " << dl.cfg.ymin << " " << dl.cfg.zmin << std::endl;
 }
