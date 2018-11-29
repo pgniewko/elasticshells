@@ -47,7 +47,7 @@ Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), r_p(x, y, z), verte
 //}
 
 Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), f_c(orig.f_c), r_p(orig.r_p), f_p(orig.f_p),
-    v_p(orig.v_p), v_c(orig.v_c), a_p(orig.a_p), a_c(orig.a_c),
+    v_p(orig.v_p), v_c(orig.v_c), a_p(orig.a_p), a_c(orig.a_c), fnonbonded(orig.fnonbonded),
     vertex_degree(orig.vertex_degree), facets_number(orig.facets_number), myid(orig.myid), myCellId(orig.myCellId)
 {
     for (int i = 0; i < vertex_degree; i++)
@@ -217,6 +217,10 @@ void Vertex::voidForce()
     f_c.x = 0.0;
     f_c.y = 0.0;
     f_c.z = 0.0;
+    
+    fnonbonded.x = 0.0;
+    fnonbonded.y = 0.0;
+    fnonbonded.z = 0.0;
 }
 
 int Vertex::set_id(int idx)

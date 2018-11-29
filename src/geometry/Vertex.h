@@ -49,6 +49,8 @@ class Vertex
         Vector3D v_c;
         Vector3D a_p;
         Vector3D a_c;
+        
+        Vector3D fnonbonded;
 
         //int bondedVerts[NEIGH_MAX];
         std::vector<int> bondedVerts;

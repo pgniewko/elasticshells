@@ -342,6 +342,7 @@ void DomainList::calcNbForces(std::vector<Shell>& cells, const Box& box) const
             // INTRA-DOMAIN CONTACTS
             for (target = head[domainIdx]; target != 0; target = target->next)
             {
+                
                 for (partner = target->next; partner != 0; partner = partner->next)
                 {
                     nbForce(target, partner, cells, box);
@@ -350,7 +351,7 @@ void DomainList::calcNbForces(std::vector<Shell>& cells, const Box& box) const
 
             // INTER-DOMAIN CONTACTS
             for (target = head[domainIdx]; target != 0; target = target->next)
-            {
+            {   
                 for (int k = 0; k < domains[domainIdx].neighborDomainNumber; k++)
                 {
                     neighIndex = domains[domainIdx].neighborDomainIdx[k];
@@ -373,6 +374,7 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Shell>& ce
 {
     int cellId_target = target->get_shell_id();
     int cellId_partner = partner->get_shell_id();
+    
 
     const struct shell_params_t params1 = cells[cellId_target].get_params();
     const struct shell_params_t params2 = cells[cellId_partner].get_params();
@@ -385,7 +387,7 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Shell>& ce
     double nu2 = params2.nu;
 
     Vector3D force(0, 0, 0);
-    Vector3D dij;
+    Vector3D dij; 
 
     if (cellId_target != cellId_partner)
     {
@@ -393,6 +395,10 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Shell>& ce
         force = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
         target->f_c  += force;
         partner->f_c += -force;
+        
+        target->fnonbonded  += force;
+        partner->fnonbonded += -force;
+        
     }
     else
     {
@@ -405,12 +411,14 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Shell>& ce
             force = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
             target->f_c  += force;
             partner->f_c += -force;
+            
+            target->fnonbonded  += force;
+            partner->fnonbonded += -force;
         }
     }
 }
 
 
-// *****************************************************************************
 Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vector<Shell>& cells, const Box& box) const
 {
 
@@ -435,18 +443,6 @@ Vector3D DomainList::getNbForce(Vertex* target, Vertex* partner, const std::vect
         Box::getDistance(dij, partner->r_c, target->r_c, box);
         force = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
     }
-
-//    else
-//    {
-//        int i = target->getId();
-//        int j = partner->getId();
-//
-//        if (i != j && !target->isNeighbor(j))
-//        {
-//            Box::getDistance(dij, partner->r_c, target->r_c, box);
-//            force = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
-//        }
-//    }
 
     return force;
 }

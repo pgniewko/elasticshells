@@ -109,7 +109,7 @@ class Simulator
         
         void copy_shells_data();
         
-        void assertEqualForces(); // a temporary function
+        bool assertEqualForces(); // a temporary function
 
         Integrator* integrator;
 

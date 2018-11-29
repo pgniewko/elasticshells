@@ -24,24 +24,30 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
                                         const double Eb, const double nub)
 {
     
+    
     zero_forces(forces);
 
+    //std::cout << "ELEMENTS" << std::endl;
     // ITERATE OVER ELEMENTS
     evaluate_elements(xyz, forces, elements);
 
     // ITERATE OVER HINGES
     if (bending)
     {
+        //std::cout << "HINGES" << std::endl;
         evaluate_hinges(xyz, forces, hinges);
     }
     
+    //std::cout << "PRESSURE" << std::endl;
     // CALCULATE MASS CENTERS
     // PRESSURE FORCES
     evaluate_pressure(xyz, forces, elements, vs_map, turgors, num_shells);
     
+    //std::cout << "NONBONDED" << std::endl;
     // END WITH NON-BONDED
     evaluate_nonbonded(xyz, forces, elements, rv, E, nu);
     
+    //std::cout << "BOX" << std::endl;
     // CALCULATE BOX FORCES
     evaluate_box(xyz, forces, rv, E, nu,  Eb, nub);
     
@@ -99,6 +105,11 @@ void ForcesCalculator::evaluate_elements(const std::vector<double>& xyz,
         forces[3 * vert_a + 1] += (T11.y + T12.y);
         forces[3 * vert_a + 2] += (T11.z + T12.z);
         
+//        if (vert_a == id_v1 || vert_a == id_v2)
+//        {
+//            //std::cout << "vert_a=" << vert_a << " " << (T11 + T12) <<  std::endl;
+//        }
+        
         
         T21  =  el.ki[2] * l2_sq * (va - vb) + el.ki[0] * l0_sq * (vc - vb);
         T22  = (el.ci[0] * l1_sq + el.ci[1] * l0_sq) * (va - vb);
@@ -106,6 +117,11 @@ void ForcesCalculator::evaluate_elements(const std::vector<double>& xyz,
         forces[3 * vert_b + 0] += (T21.x + T22.x);
         forces[3 * vert_b + 1] += (T21.y + T22.y);
         forces[3 * vert_b + 2] += (T21.z + T22.z);
+        
+//        if (vert_b == id_v1 || vert_b == id_v2)
+//        {
+//            //std::cout << "vert_b=" << vert_b << " " << (T21 + T22) <<  std::endl;
+//        }
  
         
         T31  = el.ki[1] * l1_sq * (va - vc) + el.ki[0] * l0_sq * (vb - vc);
@@ -113,7 +129,12 @@ void ForcesCalculator::evaluate_elements(const std::vector<double>& xyz,
         T32 += (el.ci[1] * l2_sq + el.ci[2] * l1_sq) * (vb - vc);        
         forces[3 * vert_c + 0] += (T31.x + T32.x);
         forces[3 * vert_c + 1] += (T31.y + T32.y);
-        forces[3 * vert_c + 2] += (T31.z + T32.z);        
+        forces[3 * vert_c + 2] += (T31.z + T32.z);
+        
+//        if (vert_c == id_v1 || vert_c == id_v2)
+//        {
+//            //std::cout << "vert_c=" << vert_c << " " << (T31 + T32) <<  std::endl;
+//        }
     }
 }
 
@@ -314,6 +335,21 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         Vector3D fb = turgor * calculate_dV(vb, vc, va, cm);
         Vector3D fc = turgor * calculate_dV(vc, va, vb, cm);
         
+//        if (vert_a == id_v1 || vert_a == id_v2)
+//        {
+//            //std::cout << "vert_a=" << vert_a << " " << fa <<  std::endl;
+//        }
+//        
+//        if (vert_b == id_v1 || vert_b == id_v2)
+//        {
+//            //std::cout << "vert_b=" << vert_b << " " << fb <<  std::endl;
+//        }
+//        
+//        if (vert_c == id_v1 || vert_c == id_v2)
+//        {
+//            //std::cout << "vert_c=" << vert_c << " " << fc <<  std::endl;
+//        }
+        
         forces[3 * vert_a + 0] += fa.x;
         forces[3 * vert_a + 1] += fa.y;
         forces[3 * vert_a + 2] += fa.z;
@@ -347,6 +383,17 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
 {
     
     uint n = xyz.size() / 3;
+    
+
+//    std::cout << "dl.neighs_num[156]=" << dl.neighs_num[156] << std::endl;
+//    std::cout << "index for (2,14): " << dl.get_domain_index(xyz[3*id_v1+0],xyz[3*id_v1+1],xyz[3*id_v1+2]) <<std::endl;
+//    std::cout << "index for (8,500): " << dl.get_domain_index(xyz[3*id_v2+0],xyz[3*id_v2+1],xyz[3*id_v2+2]) <<std::endl;
+//    for (int nix = 0; nix < dl.neighs_num[156]; nix++)
+//    {
+//         int n_idomain = dl.neighbors[156][nix];
+//         std::cout<< n_idomain << ",";
+//    }
+//    std::cout << std::endl;
     
     pairs_t contacts = dl.get_nb_lists(xyz, n, rv);
     
@@ -390,6 +437,19 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
                     fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
                     fij = fmagn * (dij / dij.length());
             
+//                    if (i == id_v1 || i == id_v2)
+//                    {
+//                        std::cout << "i="   << i   << " j=" << j<< " " << fij <<  std::endl;
+//                        std::cout << "ri="  << ri  << std::endl;
+//                        std::cout << "rj="  << rj  << std::endl;
+//                        std::cout << "dij=" << dij << std::endl;
+//                    }
+//                    
+//                    if (j == id_v1 || j == id_v2)
+//                    {
+//                        std::cout << "j=" << j << " " << fij <<  std::endl;
+//                    }
+                    
                     forces[3 * i + 0] += fij.x;
                     forces[3 * i + 1] += fij.y;
                     forces[3 * i + 2] += fij.z;
@@ -446,8 +506,9 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
 
         if (h > 0)
         {
+            
             fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
-            fij = 0.5* fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
+            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
             
             forces[3 * vert_a + 0] -= fij.x; // OPPOSITE SIGN !!
             forces[3 * vert_a + 1] -= fij.y; // OPPOSITE SIGN !!
@@ -456,6 +517,16 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
             forces[3 * vert_b + 0] += fij.x; // OPPOSITE SIGN !!
             forces[3 * vert_b + 1] += fij.y; // OPPOSITE SIGN !!
             forces[3 * vert_b + 2] += fij.z; // OPPOSITE SIGN !!
+            
+//            if (vert_a == id_v1 || vert_a == id_v2)
+//            {
+//                std::cout << "(bounded) vert_a=" << vert_a << " " << fij <<  std::endl;
+//            }
+//            if (vert_b == id_v1 || vert_b == id_v2)
+//            {
+//                std::cout << "(bounded) vert_b=" << vert_b << " " << fij <<  std::endl;
+//            }
+            
         }
         
         // va-vc
@@ -477,6 +548,16 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
             forces[3 * vert_c + 0] += fij.x; // OPPOSITE SIGN !!
             forces[3 * vert_c + 1] += fij.y; // OPPOSITE SIGN !!
             forces[3 * vert_c + 2] += fij.z; // OPPOSITE SIGN !!
+            //std::cout << "|fij|=" << fmagn << " vert_a="  << vert_a << " vert_c=" << vert_c << std::endl;
+            
+//            if (vert_a == id_v1 || vert_a == id_v2)
+//            {
+//                std::cout << "(bounded) vert_a=" << vert_a << " " << fij <<  std::endl;
+//            }
+//            if (vert_c == id_v1 || vert_c == id_v2)
+//            {
+//                std::cout << "(bounded) vert_c=" << vert_c << " " << fij <<  std::endl;
+//            }
         }
         
         // vb-vc
@@ -498,6 +579,16 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
             forces[3 * vert_c + 0] += fij.x; // OPPOSITE SIGN !!
             forces[3 * vert_c + 1] += fij.y; // OPPOSITE SIGN !!
             forces[3 * vert_c + 2] += fij.z; // OPPOSITE SIGN !!
+            //std::cout << "|fij|=" << fmagn << " vert_b="  << vert_b << " vert_c=" << vert_c << std::endl;
+            
+//            if (vert_b == id_v1 || vert_b == id_v2)
+//            {
+//                std::cout << "(bounded) vert_b=" << vert_b << " " << fij <<  std::endl;
+//            }
+//            if (vert_c == id_v1 || vert_c == id_v2)
+//            {
+//                std::cout << "(bounded) vert_c=" << vert_c << " " << fij <<  std::endl;
+//            }
         }
     }
 }
@@ -598,6 +689,11 @@ void ForcesCalculator::evaluate_box(const std::vector<double>& xyz,
         forces[3 * i + 0] += force_collector.x;
         forces[3 * i + 1] += force_collector.y;
         forces[3 * i + 2] += force_collector.z;
+        
+//        if (i == id_v1 || i == id_v2)
+//        {
+//            //std::cout << "i=" << i << " " << force_collector <<  std::endl;
+//        }
     }
 }
 
