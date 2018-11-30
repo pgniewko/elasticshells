@@ -22,7 +22,6 @@ struct arguments
     std::string ob_config_file;
     std::string sch_config_file;
 
-    char* integrator_a;
     char* tritype;
 
     int d;

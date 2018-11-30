@@ -46,7 +46,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
 
-    integrator = new Integrator(this, args.integrator_a);
+    integrator = new Integrator(this); //, args.integrator_a);
 
     setTriangulator(args.tritype);
     box.setX(args.bsx);
@@ -994,7 +994,6 @@ bool Simulator::assertEqualForces()
             {
                 std::cout << "(Y) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.y << " "<< forces[3*vn+1] << " diff="<< fabs(shells[i].vertices[j].f_c.y - forces[3*vn+1]) << std::endl;
                 std::cout << shells[i].vertices[j].r_c << " " << box.getX() << " " << box.getY() << " " << box.getZ() << std::endl;
-                std::cout << "shells[i].vertices[j].fnonbonded=" << shells[i].vertices[j].fnonbonded << std::endl;
                 std::cout << "vec diff Y=" << shells[i].vertices[j].f_c.y - forces[3*vn+1] << std::endl;
                 break_sim = true;
             }
@@ -1003,7 +1002,6 @@ bool Simulator::assertEqualForces()
             {
                 std::cout << "(Z) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.z << " "<< forces[3*vn+2] << " diff="<< fabs(shells[i].vertices[j].f_c.z - forces[3*vn+2]) << std::endl;
                 std::cout << shells[i].vertices[j].r_c << " " << box.getX() << " " << box.getY() << " " << box.getZ() << std::endl;
-                std::cout << "shells[i].vertices[j].fnonbonded=" << shells[i].vertices[j].fnonbonded << std::endl;
                 std::cout << "vec diff Z=" << shells[i].vertices[j].f_c.z - forces[3*vn+2] << std::endl;
                 break_sim = true;
             }

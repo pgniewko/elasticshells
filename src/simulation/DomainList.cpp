@@ -395,10 +395,6 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Shell>& ce
         force = HertzianRepulsion::calcForce(dij, r1, r2, e1, e2, nu1, nu2);
         target->f_c  += force;
         partner->f_c += -force;
-        
-        target->fnonbonded  += force;
-        partner->fnonbonded += -force;
-        
     }
     else
     {
@@ -411,9 +407,6 @@ void DomainList::nbForce(Vertex* target, Vertex* partner, std::vector<Shell>& ce
             force = HertzianRepulsion::calcForce(dij, r1, r1, e1, e1, nu1, nu1);
             target->f_c  += force;
             partner->f_c += -force;
-            
-            target->fnonbonded  += force;
-            partner->fnonbonded += -force;
         }
     }
 }

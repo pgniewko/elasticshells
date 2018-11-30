@@ -10,7 +10,7 @@ class Integrator
 {
     public:
         Integrator();
-        explicit Integrator(Simulator*, char*);
+        explicit Integrator(Simulator*); //, char*);
         Integrator(const Integrator& orig);
         virtual ~Integrator();
 
@@ -21,13 +21,9 @@ class Integrator
 
         void (Integrator::*integrator)(Simulator*) = 0;
 
-        void setIntegrator(void (Integrator::*functoall)(Simulator* s));
-        void setIntegrator(Simulator* s, char*);
+//        void setIntegrator(void (Integrator::*functoall)(Simulator* s));
+//        void setIntegrator(Simulator* s, char*);
 
-        void eulerIntegrator(Simulator*);
-        void heunIntegrator(Simulator*);
-        void rungeKuttaIntegrator(Simulator*);
-        void gearCpIntegrator(Simulator*);
         void fireIntegrator(Simulator*);
         void _vv(Simulator*);
 

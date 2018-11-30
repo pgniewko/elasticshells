@@ -52,10 +52,6 @@ static struct argp_option options[] =
     {"time",      't', "FLOAT", 0, "Total simulation time [default: 1.0]"},
     {"ns",        401,   "INT", 0, "Number of simulation steps [default: 10]"},
     {"dt",        402, "FLOAT", 0, "Time step [default: 0.001]"},
-    {
-        "int",       403,   "STR", 0, "Integrator of equations of motion: Forward-Euler[fe], Heun[hm], Runge-Kutta 2nd order[rk], "
-        "Gear corrector-predictor[cp], Conjugate Gradients [cg], Boost-CG [bcg], FIRE [fire] [default: fe]"
-    },
     {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Linked-domains[2] [default: 0]"},
     {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
     {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
@@ -115,7 +111,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->files_prefix = (char*)&"biofilm";
             arguments->output_dir = (char*)&"./output/";
             arguments->input_dir  = (char*)&"./input/";
-            arguments->integrator_a = (char*)&"fe";
+//            arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
             arguments->d = 3;
             arguments->platotype = 0;
@@ -205,10 +201,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 
         case 402:
             arguments->dt = arg ? strtod (arg, NULL) : 0.001;
-            break;
-
-        case 403:
-            arguments->integrator_a = arg;
             break;
 
         case 404:

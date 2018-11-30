@@ -11,9 +11,20 @@ double Integrator::FIRE_DTMAX(0.0);
 
 Integrator::Integrator() {}
 
-Integrator::Integrator(Simulator* s, char* token_)
+Integrator::Integrator(Simulator* s)
 {
-    setIntegrator(s, token_);
+    
+    integrator = &Integrator::fireIntegrator;
+
+    FIRE_DT = s->params.dt;
+    FIRE_DTMAX = 25.0 * s->params.dt;
+    FIRE_ALPHA = 0.1;
+    FIRE_Nmin = 5;
+    FIRE_N = 0;
+    integrator_logs << utils::LogLevel::FINE  << "FIRE INTEGRATOR IS USED\n";
+        
+    
+    //setIntegrator(s);
 }
 
 Integrator::Integrator(const Integrator& orig)
@@ -22,63 +33,63 @@ Integrator::Integrator(const Integrator& orig)
     // delete a pointer
 }
 
-Integrator::~Integrator()  {}
+Integrator::~Integrator() {}
 
 void Integrator::integrate(Simulator* s)
 {
     (*this.*integrator)(s);
 }
 
-void Integrator::setIntegrator(void (Integrator::*functoall)(Simulator*))
-{
-    integrator = functoall;
-}
+//void Integrator::setIntegrator(void (Integrator::*functoall)(Simulator*))
+//{
+//    integrator = functoall;
+//}
 
-void Integrator::setIntegrator(Simulator* s, char* token)
-{
-    if (STRCMP (token, "fe"))
-    {
-        this->setIntegrator(&Integrator::eulerIntegrator);
-        integrator_logs << utils::LogLevel::FINE  << "FORWARD-EULER INTEGRATOR IS USED\n";
-    }
-    else if (STRCMP (token, "hm"))
-    {
-        this->setIntegrator(&Integrator::heunIntegrator);
-        integrator_logs << utils::LogLevel::FINE  << "HEUN INTEGRATOR IS USED\n";
-    }
-    else if (STRCMP (token, "rk"))
-    {
-        this->setIntegrator(&Integrator::rungeKuttaIntegrator);
-        integrator_logs << utils::LogLevel::FINE  << "RUNGE-KUTTA INTEGRATOR IS USED\n";
-    }
-    else if (STRCMP (token, "cp"))
-    {
-        this->setIntegrator(&Integrator::gearCpIntegrator);
-        integrator_logs << utils::LogLevel::FINE  << "GEAR-CP INTEGRATOR IS USED\n";
-    }
-    else if (STRCMP (token, "fire"))
-    {
-        this->setIntegrator(&Integrator::fireIntegrator);
-
-        FIRE_DT = s->params.dt;
-        FIRE_DTMAX = 25.0 * s->params.dt;
-        FIRE_ALPHA = 0.1;
-        FIRE_Nmin = 5;
-        FIRE_N = 0;
-        integrator_logs << utils::LogLevel::FINE  << "FIRE INTEGRATOR IS USED\n";
-    }
-    else
-    {
-        this->setIntegrator(&Integrator::eulerIntegrator);
-        integrator_logs << utils::LogLevel::FINE  << "DEFAULT FORWARD EULER IS USED\n";
-    }
-
-    if (integrator == NULL)
-    {
-        integrator_logs << utils::LogLevel::CRITICAL << "integrator == NULL";
-        exit(EXIT_FAILURE);
-    }
-}
+//void Integrator::setIntegrator(Simulator* s, char* token)
+//{
+//    if (STRCMP (token, "fe"))
+//    {
+//        this->setIntegrator(&Integrator::eulerIntegrator);
+//        integrator_logs << utils::LogLevel::FINE  << "FORWARD-EULER INTEGRATOR IS USED\n";
+//    }
+//    else if (STRCMP (token, "hm"))
+//    {
+//        this->setIntegrator(&Integrator::heunIntegrator);
+//        integrator_logs << utils::LogLevel::FINE  << "HEUN INTEGRATOR IS USED\n";
+//    }
+//    else if (STRCMP (token, "rk"))
+//    {
+//        this->setIntegrator(&Integrator::rungeKuttaIntegrator);
+//        integrator_logs << utils::LogLevel::FINE  << "RUNGE-KUTTA INTEGRATOR IS USED\n";
+//    }
+//    else if (STRCMP (token, "cp"))
+//    {
+//        this->setIntegrator(&Integrator::gearCpIntegrator);
+//        integrator_logs << utils::LogLevel::FINE  << "GEAR-CP INTEGRATOR IS USED\n";
+//    }
+//    else if (STRCMP (token, "fire"))
+//    {
+//        this->setIntegrator(&Integrator::fireIntegrator);
+//
+//        FIRE_DT = s->params.dt;
+//        FIRE_DTMAX = 25.0 * s->params.dt;
+//        FIRE_ALPHA = 0.1;
+//        FIRE_Nmin = 5;
+//        FIRE_N = 0;
+//        integrator_logs << utils::LogLevel::FINE  << "FIRE INTEGRATOR IS USED\n";
+//    }
+//    else
+//    {
+//        this->setIntegrator(&Integrator::eulerIntegrator);
+//        integrator_logs << utils::LogLevel::FINE  << "DEFAULT FORWARD EULER IS USED\n";
+//    }
+//
+//    if (integrator == NULL)
+//    {
+//        integrator_logs << utils::LogLevel::CRITICAL << "integrator == NULL";
+//        exit(EXIT_FAILURE);
+//    }
+//}
 
 void Integrator::resetParams(Simulator* s)
 {
@@ -91,7 +102,7 @@ void Integrator::resetParams(Simulator* s)
         for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
             s->shells[i].vertices[j].v_c *= 0.0; // freeze the system
-            s->shells[i].vertices[j].a_c *= 0.0; // freeze the system
+            //s->shells[i].vertices[j].a_c *= 0.0; // freeze the system
         }
     }
 
@@ -103,132 +114,6 @@ void Integrator::resetParams(Simulator* s)
  * Viscosity of each vertex is assumed to be 1.0 !
  *
  */
-
-void Integrator::eulerIntegrator(Simulator* s)
-{
-    s->calcForces();
-    double dt = s->params.dt;
-
-    for (int i = 0; i < s->number_of_shells; i++)
-    {
-        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-        {
-            s->shells[i].vertices[j].r_c += dt * s->shells[i].vertices[j].f_c;
-        }
-    }
-}
-
-void Integrator::heunIntegrator(Simulator* s)
-{
-    s->calcForces();
-    double dt = s->params.dt;
-
-    for (int i = 0; i < s->number_of_shells; i++)
-    {
-        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-        {
-            s->shells[i].vertices[j].r_p = s->shells[i].vertices[j].r_c;
-            s->shells[i].vertices[j].f_p = s->shells[i].vertices[j].f_c;
-        }
-    }
-
-    //move the whole time-step and calculate  forces
-    for (int i = 0; i < s->number_of_shells; i++)
-    {
-        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-        {
-            s->shells[i].vertices[j].r_c += dt * s->shells[i].vertices[j].f_c;
-        }
-    }
-
-    s->calcForces();
-
-    // Move the whole time-step upon the forces acting in the half-time-step
-    for (int i = 0; i < s->number_of_shells; i++)
-    {
-        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-        {
-            s->shells[i].vertices[j].r_c = s->shells[i].vertices[j].r_p + 0.5 * dt * ( s->shells[i].vertices[j].f_p + s->shells[i].vertices[j].f_c);
-        }
-    }
-}
-
-void Integrator::rungeKuttaIntegrator(Simulator* s)
-{
-    double dt = s->params.dt;
-
-    for (int i = 0; i < s->number_of_shells; i++)
-    {
-        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-        {
-            s->shells[i].vertices[j].r_p = s->shells[i].vertices[j].r_c;
-        }
-    }
-
-    s->calcForces();
-
-    //move half time-step and calculate  forces
-    for (int i = 0; i < s->number_of_shells; i++)
-    {
-        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-        {
-            s->shells[i].vertices[j].r_c += 0.5 * dt * s->shells[i].vertices[j].f_c;
-        }
-    }
-
-    s->calcForces();
-
-    // Move the whole time-step upon the forces acting in the half-time-step
-    for (int i = 0; i < s->number_of_shells; i++)
-    {
-        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-        {
-            s->shells[i].vertices[j].r_c = s->shells[i].vertices[j].r_p + dt * s->shells[i].vertices[j].f_c;
-        }
-    }
-}
-
-void Integrator::gearCpIntegrator(Simulator* s)
-{
-    double dt = s->params.dt;
-    double C1, C2;
-
-    C1 = dt;
-    C2 = dt * dt / 2.0;
-
-    for (int i = 0; i < s->number_of_shells; i++)
-    {
-        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-        {
-            s->shells[i].vertices[j].r_p = s->shells[i].vertices[j].r_c + C1 * s->shells[i].vertices[j].v_c + C2 * s->shells[i].vertices[j].a_c;
-            s->shells[i].vertices[j].v_p = s->shells[i].vertices[j].v_c + C1 * s->shells[i].vertices[j].a_c;
-            s->shells[i].vertices[j].a_p = s->shells[i].vertices[j].a_c;
-        }
-    }
-
-
-    s->calcForces();
-
-    double gear0 = 5.0 / 12.0;
-    double gear2 = 1.0 / 2.0;
-
-    double CR = gear0 * C1;
-    double CA = gear2 * C1 / C2;
-
-    Vector3D corr_v;
-
-    for (int i = 0; i < s->number_of_shells; i++)
-    {
-        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-        {
-            corr_v = s->shells[i].vertices[j].f_c - s->shells[i].vertices[j].v_p; // viscosity = 1.0
-
-            s->shells[i].vertices[j].r_c = s->shells[i].vertices[j].r_p + CR * corr_v;
-            s->shells[i].vertices[j].v_c = s->shells[i].vertices[j].f_c;
-            s->shells[i].vertices[j].a_c = s->shells[i].vertices[j].a_p + CA * corr_v;
-        }
-    }
-}
 
 void Integrator::fireIntegrator(Simulator* s)
 {
@@ -285,7 +170,7 @@ void Integrator::fireIntegrator(Simulator* s)
             for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
             {
                 s->shells[i].vertices[j].v_c *= 0.0; // freeze the system
-                s->shells[i].vertices[j].a_c *= 0.0; // freeze the system
+                //s->shells[i].vertices[j].a_c *= 0.0; // freeze the system
             }
         }
 
