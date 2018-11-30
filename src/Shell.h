@@ -86,14 +86,9 @@ class Shell
         Vector3D center_of_mass;
         
         std::vector<Vertex> vertices;
-        //Vertex vertices[MAX_V];
-        
         std::vector<VertexTriangle> triangles;
         std::vector<BendingHinge> bhinges;
         
-        //VertexTriangle triangles[MAX_T];
-        //BendingHinge bhinges [2 * MAX_T];
-
         int shell_id = -1;
         double contactForce(const Shell&, const Box&, const bool = false) const;
         double contactForce(const Box&) const;

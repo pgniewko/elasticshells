@@ -22,9 +22,6 @@ Integrator::Integrator(Simulator* s)
     FIRE_Nmin = 5;
     FIRE_N = 0;
     integrator_logs << utils::LogLevel::FINE  << "FIRE INTEGRATOR IS USED\n";
-        
-    
-    //setIntegrator(s);
 }
 
 Integrator::Integrator(const Integrator& orig)
@@ -40,57 +37,6 @@ void Integrator::integrate(Simulator* s)
     (*this.*integrator)(s);
 }
 
-//void Integrator::setIntegrator(void (Integrator::*functoall)(Simulator*))
-//{
-//    integrator = functoall;
-//}
-
-//void Integrator::setIntegrator(Simulator* s, char* token)
-//{
-//    if (STRCMP (token, "fe"))
-//    {
-//        this->setIntegrator(&Integrator::eulerIntegrator);
-//        integrator_logs << utils::LogLevel::FINE  << "FORWARD-EULER INTEGRATOR IS USED\n";
-//    }
-//    else if (STRCMP (token, "hm"))
-//    {
-//        this->setIntegrator(&Integrator::heunIntegrator);
-//        integrator_logs << utils::LogLevel::FINE  << "HEUN INTEGRATOR IS USED\n";
-//    }
-//    else if (STRCMP (token, "rk"))
-//    {
-//        this->setIntegrator(&Integrator::rungeKuttaIntegrator);
-//        integrator_logs << utils::LogLevel::FINE  << "RUNGE-KUTTA INTEGRATOR IS USED\n";
-//    }
-//    else if (STRCMP (token, "cp"))
-//    {
-//        this->setIntegrator(&Integrator::gearCpIntegrator);
-//        integrator_logs << utils::LogLevel::FINE  << "GEAR-CP INTEGRATOR IS USED\n";
-//    }
-//    else if (STRCMP (token, "fire"))
-//    {
-//        this->setIntegrator(&Integrator::fireIntegrator);
-//
-//        FIRE_DT = s->params.dt;
-//        FIRE_DTMAX = 25.0 * s->params.dt;
-//        FIRE_ALPHA = 0.1;
-//        FIRE_Nmin = 5;
-//        FIRE_N = 0;
-//        integrator_logs << utils::LogLevel::FINE  << "FIRE INTEGRATOR IS USED\n";
-//    }
-//    else
-//    {
-//        this->setIntegrator(&Integrator::eulerIntegrator);
-//        integrator_logs << utils::LogLevel::FINE  << "DEFAULT FORWARD EULER IS USED\n";
-//    }
-//
-//    if (integrator == NULL)
-//    {
-//        integrator_logs << utils::LogLevel::CRITICAL << "integrator == NULL";
-//        exit(EXIT_FAILURE);
-//    }
-//}
-
 void Integrator::resetParams(Simulator* s)
 {
     FIRE_DT = s->params.dt;
@@ -102,7 +48,6 @@ void Integrator::resetParams(Simulator* s)
         for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
         {
             s->shells[i].vertices[j].v_c *= 0.0; // freeze the system
-            //s->shells[i].vertices[j].a_c *= 0.0; // freeze the system
         }
     }
 
@@ -170,7 +115,6 @@ void Integrator::fireIntegrator(Simulator* s)
             for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
             {
                 s->shells[i].vertices[j].v_c *= 0.0; // freeze the system
-                //s->shells[i].vertices[j].a_c *= 0.0; // freeze the system
             }
         }
 

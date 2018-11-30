@@ -361,7 +361,7 @@ void Simulator::analyze()
 
         domains.setBoxDim(box);
         update_neighbors_list();
-        log_sim.dumpState(box, shells, domains);
+        log_sim.dumpState(box, shells);
     }
 }
 
@@ -392,7 +392,7 @@ void Simulator::simulate(int steps)
     if (!Simulator::RESTART_FLAG)
     {
         traj.save_traj(shells, getTotalVertices());
-        log_sim.dumpState(box, shells, domains);
+        log_sim.dumpState(box, shells);
         saveTurgors();
         restarter.saveLastFrame(shells, box);
         restarter.saveTopologyFile(shells);
@@ -457,7 +457,7 @@ void Simulator::simulate(int steps)
             // **
 
             update_neighbors_list();
-            log_sim.dumpState(box, shells, domains);
+            log_sim.dumpState(box, shells);
             saveTurgors();
             traj.save_box(box, (step + 1) * params.dt);
             restarter.saveLastFrame(shells, box);
@@ -483,7 +483,7 @@ void Simulator::simulate(int steps)
 
     }
 
-    log_sim.dumpState(box, shells, domains);
+    log_sim.dumpState(box, shells);
     saveTurgors();
     traj.save_box(box, steps * params.dt);
     restarter.saveLastFrame(shells, box);

@@ -40,17 +40,13 @@ class Vertex
 
         Vector3D r_p;           // make it private
         Vector3D f_p;
-
-//        Vector3D v_p;
         Vector3D v_c;
-//        Vector3D a_p;
-//        Vector3D a_c;
 
         std::vector<int> bondedVerts;
         std::vector<int> bondedTris;
 
         int vertex_degree;              // make it private
-        int facets_number;                // make it private
+        int facets_number;              // make it private
 
         Vertex* next = NULL;
 

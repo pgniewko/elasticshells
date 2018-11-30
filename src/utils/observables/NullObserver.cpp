@@ -11,7 +11,7 @@ void NullObserver::set_params(const int num, std::vector<std::string> args_)
     return;
 };
 
-double NullObserver::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
+double NullObserver::observe(const Box& box, const std::vector<Shell>& shells)
 {
     return 0.0;
 }

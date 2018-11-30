@@ -134,11 +134,11 @@ void LogSimulation::printHeader()
     fflush(os);
 }
 
-void LogSimulation::dumpState(Box& box, std::vector<Shell>& cells, const DomainList& dl)
+void LogSimulation::dumpState(const Box& box, const std::vector<Shell>& shells)
 {
-    for (uint i = 0; i < cells.size(); i++)
+    for (uint i = 0; i < shells.size(); i++)
     {
-        cells[i].update();
+        shells[i].update();
     }
 
 
@@ -146,7 +146,7 @@ void LogSimulation::dumpState(Box& box, std::vector<Shell>& cells, const DomainL
     {
         try
         {
-            fprintf(os, (*it)->getFormat(), (*it)->observe(box, cells, dl) );
+            fprintf(os, (*it)->getFormat(), (*it)->observe(box, shells) );
             fprintf(os, "%s", " ");
         }
         catch (DataException& e)
