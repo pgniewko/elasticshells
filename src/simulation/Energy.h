@@ -2,9 +2,8 @@
 #define	ENERGY_H
 
 #include "Environment.h"
-#include "simulation/Box.h"
 #include "Shell.h"
-#include "simulation/DomainList.h"
+#include "simulation/Box.h"
 
 class Energy
 {
@@ -13,17 +12,17 @@ class Energy
         Energy(const Energy& orig);
         virtual ~Energy();
 
-        static double calcTotalEnergy(const std::vector<Shell>&, const Box&, const DomainList&);
+        static double calcTotalEnergy(const std::vector<Shell>&, const Box&);
         static double calcMembraneEnergy(const std::vector<Shell>&);
         static double calcOsmoticEnergy(const std::vector<Shell>&);
-        static double calcContactEnergy(const std::vector<Shell>&, const Box&, const DomainList&);
+        static double calcContactEnergy(const std::vector<Shell>&, const Box&);
 
         static double calcBendingEnergy(const std::vector<Shell>&);
         static double calcStretchEnergy(const std::vector<Shell>&);
-        static double calcShellShellEnergy(const std::vector<Shell>&, const Box&, const DomainList&);
+        static double calcShellShellEnergy(const std::vector<Shell>&, const Box&);
         static double calcShellBoxEnergy(const std::vector<Shell>&, const Box&);
 
-        static ulong ENERGY_EVALUATION_COUNTER;
+        static unsigned long ENERGY_EVALUATION_COUNTER;
 
     private:
 
