@@ -16,7 +16,6 @@ class Vertex
     public:
         Vertex();
         Vertex(double, double, double);
-//        Vertex(Vector3D);
         Vertex(const Vertex& orig);
         virtual ~Vertex();
         int set_id(int);
@@ -26,18 +25,15 @@ class Vertex
 
         void printVertex() const;
 
-        void addNeighbor(int);//, double);
-//        void removeNeighbor(int);
+        void addNeighbor(int);
         bool isNeighbor(int) const;
         void addTriangle(int);
-//        void removeTriangle(int);
 
         void voidForce();
         int get_vertex_degree() const;
         int getNumTris() const;
         int getNeighborId(int) const;
         int getTriangleId(int) const;
-//        double getNeighborR0(int) const;
 
         Vector3D r_c;
         Vector3D f_c;
@@ -49,17 +45,9 @@ class Vertex
         Vector3D v_c;
         Vector3D a_p;
         Vector3D a_c;
-        
-        Vector3D fnonbonded;
 
-        //int bondedVerts[NEIGH_MAX];
         std::vector<int> bondedVerts;
-//        double r0[NEIGH_MAX];
-//        double k0[NEIGH_MAX];
-
-        //int bondedTris[TRIAN_MAX];
         std::vector<int> bondedTris;
-        
 
         int vertex_degree;              // make it private
         int facets_number;                // make it private

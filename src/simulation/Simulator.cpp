@@ -501,14 +501,6 @@ void Simulator::calcForces()
 {
     FORCE_EVALUATION_COUTER++;
     
-//    std::cout << "[in calcForces] (2,14) r_c="  << shells[2].vertices[14].r_c  << std::endl;
-//    std::cout << "[in calcForces] (8,500) r_c=" << shells[8].vertices[500].r_c << std::endl;
-//    Vector3D dij;
-//    box.getDistance(dij, shells[8].vertices[500].r_c, shells[2].vertices[14].r_c, box);
-//    Vector3D force = HertzianRepulsion::calcForce(dij, params.r_vertex, params.r_vertex, params.E_shell, params.E_shell, params.nu, params.nu);
-//    std::cout << "force: " << force << std::endl;
-    
-    
     update_neighbors_list();
     // CALC CENTER OF MASS
 
@@ -559,7 +551,6 @@ void Simulator::calcForces()
             params.r_vertex, params.E_shell, params.nu,
             box.getE(), box.getNu());
     
-//    std::cout << "FORCE_EVALUATION_COUTER=" << FORCE_EVALUATION_COUTER << std::endl;
     
     bool test_break = assertEqualForces();
     
@@ -571,7 +562,6 @@ void Simulator::update_neighbors_list()
 {
     if (params.nbhandler == 2)
     {
-//        std::cout << "Rebuilding domains list" << std::endl;
         rebuildDomainsList();
     }
 }
@@ -588,9 +578,7 @@ void Simulator::rebuildDomainsList()
             //shells[i].vertices[j].next = 0;
         }
     }
-
-//    std::cout << "BOX dims: "<< box.getX()<<","<<box.getY() << ","<< box.getZ() << std::endl;
-//    std::cout << "DOMAINS dims: "<< domains.x_max << "," << domains.y_max << "," << domains.z_max << std::endl;
+    
     domains.voidDomains();
 
     for (uint i = 0; i < shells.size(); i++)
@@ -638,15 +626,12 @@ double Simulator::getLengthScale(double r_0)
 {
     double maxscale = 0.0;
 
-    //if (params.nbhandler == 2)
-    //{
-        maxscale = std::max(maxscale, params.r_vertex);
+    maxscale = std::max(maxscale, params.r_vertex);
 
-        if (params.d == 0)
-        {
-            maxscale = std::max(maxscale, r_0) ;
-        }
-    //}
+    if (params.d == 0)
+    {
+        maxscale = std::max(maxscale, r_0) ;
+    }
 
     return maxscale;
 }
@@ -948,11 +933,6 @@ void Simulator::creat_shells_image()
             hinge_counter++;
         }
     }
-    
-    object_map om1(2, 14);
-    object_map om2(8, 500);
-    fc.id_v1 = inv_vs_map[om1];
-    fc.id_v2 = inv_vs_map[om2];
 }
 
 void Simulator::copy_shells_data()
@@ -962,17 +942,7 @@ void Simulator::copy_shells_data()
     {
         double x_, y_, z_;
         for (int j = 0; j < shells[i].getNumberVertices(); j++)
-        {
-//            if (i==2 && j==14)
-//            {
-//                std::cout << "copying (2,14): r_c=" << shells[i].vertices[j].r_c<< std::endl;
-//            }
-//            
-//            if (i==8 && j==500)
-//            {
-//                std::cout << "copying (8,500): r_c=" << shells[i].vertices[j].r_c<< std::endl;
-//            }
-            
+        {            
             x_ = shells[i].vertices[j].r_c.x;
             y_ = shells[i].vertices[j].r_c.y;
             z_ = shells[i].vertices[j].r_c.z;
@@ -1017,12 +987,7 @@ bool Simulator::assertEqualForces()
                 std::cout << "(X) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.x << " "<< forces[3*vn+0] << " diff="<< fabs(shells[i].vertices[j].f_c.x - forces[3*vn+0]) << std::endl;
                 std::cout << shells[i].vertices[j].r_c << " " << box.getX() << " " << box.getY() << " " << box.getZ() << std::endl;
                 std::cout << "vec diff X=" << shells[i].vertices[j].f_c.x - forces[3*vn+0] << std::endl;
-                
-                //std::cout << "shells[i].vertices[j].fnonbonded=" << shells[i].vertices[j].fnonbonded << std::endl;
                 break_sim = true;
-                
-                
-                //exit(1);
             }
             
             if ( fabs(shells[i].vertices[j].f_c.y - forces[3*vn+1]) > delta15 )
@@ -1031,10 +996,7 @@ bool Simulator::assertEqualForces()
                 std::cout << shells[i].vertices[j].r_c << " " << box.getX() << " " << box.getY() << " " << box.getZ() << std::endl;
                 std::cout << "shells[i].vertices[j].fnonbonded=" << shells[i].vertices[j].fnonbonded << std::endl;
                 std::cout << "vec diff Y=" << shells[i].vertices[j].f_c.y - forces[3*vn+1] << std::endl;
-               
                 break_sim = true;
-                
-                //exit(1);
             }
             
             if ( fabs(shells[i].vertices[j].f_c.z - forces[3*vn+2]) > delta15 )
@@ -1044,7 +1006,6 @@ bool Simulator::assertEqualForces()
                 std::cout << "shells[i].vertices[j].fnonbonded=" << shells[i].vertices[j].fnonbonded << std::endl;
                 std::cout << "vec diff Z=" << shells[i].vertices[j].f_c.z - forces[3*vn+2] << std::endl;
                 break_sim = true;
-                //exit(1);
             }
         }
     }

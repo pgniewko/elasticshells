@@ -26,9 +26,6 @@ public:
                           const double Eb, const double nub);
     void set_dl_dims(const double, const double, const int);
     
-    int id_v1 = -1;
-    int id_v2 = -1;
-    
 private:
     int m;
     bool pbc;
