@@ -20,14 +20,14 @@ struct hinge
 
 struct object_map
 {
-    int cell_id;
+    int shell_id;
     int vert_id;
-    object_map(int ci, int vi) : cell_id(ci), vert_id(vi) {}
+    object_map(int ci, int vi) : shell_id(ci), vert_id(vi) {}
     bool operator==(const object_map &o) const {
-        return cell_id == o.cell_id && vert_id == o.vert_id;
+        return shell_id == o.shell_id && vert_id == o.vert_id;
     }
     bool operator<(const object_map &o)  const {
-        return cell_id < o.cell_id || (cell_id == o.cell_id && vert_id < o.vert_id);
+        return shell_id < o.shell_id || (shell_id == o.shell_id && vert_id < o.vert_id);
     }
 };
 

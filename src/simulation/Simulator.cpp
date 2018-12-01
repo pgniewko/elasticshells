@@ -547,15 +547,15 @@ void Simulator::calcForces()
     }
     
     copy_shells_data();
-    fc.calculate_forces(xyz, forces, elements, hinges, vs_map, turgors, shells.size(), 
+    fc.calculate_forces(xyz, forces, elements, hinges, vs_map, graph, turgors, shells.size(), 
             params.r_vertex, params.E_shell, params.nu,
             box.getE(), box.getNu());
     
     
     bool test_break = assertEqualForces();
     
-    if (test_break)
-        exit(1);
+    //if (test_break)
+    //    exit(1);
     
 }
 void Simulator::update_neighbors_list()
@@ -835,7 +835,30 @@ void Simulator::creat_shells_image()
             
             inv_vs_map[vm] = vertex_counter;
             
+            std::set<int> bonds;
+            graph[vertex_counter] = bonds;
+            
             vertex_counter++;
+        }
+    }
+    
+    for (uint i = 0; i < shells.size(); i++)
+    {
+        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        {
+            object_map vm_ij(i, j);
+            int ij_id = inv_vs_map[vm_ij];
+            
+            for (int k = 0; k < shells[i].getNumberVertices(); k++)
+            {
+                if (k != j && shells[i].vertices[j].isNeighbor(k))
+                {
+                    object_map vm_ik(i, k);
+                    int ik_id = inv_vs_map[vm_ik];
+                    graph[ij_id].insert(ik_id);
+                }
+            }
+            
         }
     }
 

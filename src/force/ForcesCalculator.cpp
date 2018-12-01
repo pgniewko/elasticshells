@@ -17,8 +17,9 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
                                         std::vector<double>& forces,
                                         const std::vector<element>& elements, 
                                         const std::vector<hinge>& hinges, 
-                                        const std::vector<object_map> vs_map,
-                                        const std::vector<double> turgors,
+                                        const std::vector<object_map>& vs_map,
+                                        std::unordered_map<int, std::set<int> >& graph_,
+                                        const std::vector<double>& turgors,
                                         const int num_shells,
                                         const double rv, const double E, const double nu,
                                         const double Eb, const double nub)
@@ -41,7 +42,7 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
     evaluate_pressure(xyz, forces, elements, vs_map, turgors, num_shells);
     
     // END WITH NON-BONDED
-    evaluate_nonbonded(xyz, forces, elements, rv, E, nu);
+    evaluate_nonbonded(xyz, forces, graph_, rv, E, nu);
     
     // CALCULATE BOX FORCES
     evaluate_box(xyz, forces, rv, E, nu,  Eb, nub);
@@ -235,8 +236,8 @@ double ForcesCalculator::calculate_theta(const Vector3D& ve1,
 void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz, 
                           std::vector<double>& forces,
                           const std::vector<element>& elements,
-                          const std::vector<object_map> vs_map,
-                          const std::vector<double> turgors,
+                          const std::vector<object_map>& vs_map,
+                          const std::vector<double>& turgors,
                           const int num_shells) const
 {
     std::vector<Vector3D> cms;
@@ -251,7 +252,7 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
     int cell_id;
     for (uint i = 0; i < xyz.size()/3; i++)
     {
-        cell_id = vs_map[i].cell_id;
+        cell_id = vs_map[i].shell_id;
         cms[cell_id].x += xyz[3*i + 0];
         cms[cell_id].y += xyz[3*i + 1];
         cms[cell_id].z += xyz[3*i + 2];
@@ -280,9 +281,9 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         vert_b = el.ib;
         vert_c = el.ic;
         
-        if (vs_map[vert_a].cell_id == vs_map[vert_b].cell_id && vs_map[vert_a].cell_id == vs_map[vert_c].cell_id)
+        if (vs_map[vert_a].shell_id == vs_map[vert_b].shell_id && vs_map[vert_a].shell_id == vs_map[vert_c].shell_id)
         {
-            cell_id = vs_map[vert_a].cell_id;
+            cell_id = vs_map[vert_a].shell_id;
             cm = cms[cell_id];
         }
         else
@@ -341,7 +342,7 @@ Vector3D ForcesCalculator::calculate_dV(const Vector3D& va,
 
 void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz, 
                                           std::vector<double>& forces,
-                                          const std::vector<element>& elements,
+                                          std::unordered_map<int, std::set<int> > graph_,
                                           const double rv, const double E, const double nu)
 {
     
@@ -369,7 +370,7 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
         for (uint k = 0; k < contacts[i].size(); k++)
         {
             j = contacts[i][k];
-            if (j > i)
+            if (j > i && !is_bonded(i, j, graph_) )
             {
                 xj = xyz[3 * j + 0];
                 yj = xyz[3 * j + 1];
@@ -402,103 +403,103 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
         }
     }
 
-    // ACCOUNT FOR POSSIBLE OVERLAPS BETWEEN BOUNDED 
-    // VERTICES
-    double x1, y1, z1;
-    double x2, y2, z2;
-    double x3, y3, z3;
-    
-    int vert_a, vert_b, vert_c;
-    Vector3D va, vb, vc;
-    
-    element el;
-    for (uint i = 0; i < elements.size(); i++)
-    {
-        el = elements[i];
-        vert_a = el.ia;
-        vert_b = el.ib;
-        vert_c = el.ic;
-        
-        x1 = xyz[3 * vert_a + 0];
-        y1 = xyz[3 * vert_a + 1];
-        z1 = xyz[3 * vert_a + 2];
-        
-        x2 = xyz[3 * vert_b + 0];
-        y2 = xyz[3 * vert_b + 1];
-        z2 = xyz[3 * vert_b + 2];
-        
-        x3 = xyz[3 * vert_c + 0];
-        y3 = xyz[3 * vert_c + 1];
-        z3 = xyz[3 * vert_c + 2];
-        
-        va = Vector3D(x1, y1, z1);
-        vb = Vector3D(x2, y2, z2);
-        vc = Vector3D(x3, y3, z3);
-        
-        // HERTZ TO BALANCE ...
-        // va-vb
-        distance(dij, vb, va);    
-        r_eff = 0.5 * rv;
-        h = 2 * rv - dij.length();
-        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
-        e_eff = 1.0 / e_eff;
-
-        if (h > 0)
-        {
-            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
-            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
-            
-            forces[3 * vert_a + 0] -= fij.x; // OPPOSITE SIGN !!
-            forces[3 * vert_a + 1] -= fij.y; // OPPOSITE SIGN !!
-            forces[3 * vert_a + 2] -= fij.z; // OPPOSITE SIGN !!
-            
-            forces[3 * vert_b + 0] += fij.x; // OPPOSITE SIGN !!
-            forces[3 * vert_b + 1] += fij.y; // OPPOSITE SIGN !!
-            forces[3 * vert_b + 2] += fij.z; // OPPOSITE SIGN !!
-        }
-        
-        // va-vc
-        distance(dij, vc, va);    
-        r_eff = 0.5 * rv;
-        h = 2 * rv - dij.length();
-        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
-        e_eff = 1.0 / e_eff;
-
-        if (h > 0)
-        {
-            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
-            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
-            
-            forces[3 * vert_a + 0] -= fij.x; // OPPOSITE SIGN !!
-            forces[3 * vert_a + 1] -= fij.y; // OPPOSITE SIGN !!
-            forces[3 * vert_a + 2] -= fij.z; // OPPOSITE SIGN !!
-            
-            forces[3 * vert_c + 0] += fij.x; // OPPOSITE SIGN !!
-            forces[3 * vert_c + 1] += fij.y; // OPPOSITE SIGN !!
-            forces[3 * vert_c + 2] += fij.z; // OPPOSITE SIGN !!
-        }
-        
-        // vb-vc
-        distance(dij, vc, vb);    
-        r_eff = 0.5 * rv;
-        h = 2 * rv - dij.length();
-        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
-        e_eff = 1.0 / e_eff;
-
-        if (h > 0)
-        {
-            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
-            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
-            
-            forces[3 * vert_b + 0] -= fij.x; // OPPOSITE SIGN !!
-            forces[3 * vert_b + 1] -= fij.y; // OPPOSITE SIGN !!
-            forces[3 * vert_b + 2] -= fij.z; // OPPOSITE SIGN !!
-            
-            forces[3 * vert_c + 0] += fij.x; // OPPOSITE SIGN !!
-            forces[3 * vert_c + 1] += fij.y; // OPPOSITE SIGN !!
-            forces[3 * vert_c + 2] += fij.z; // OPPOSITE SIGN !!
-        }
-    }
+//    // ACCOUNT FOR POSSIBLE OVERLAPS BETWEEN BOUNDED 
+//    // VERTICES
+//    double x1, y1, z1;
+//    double x2, y2, z2;
+//    double x3, y3, z3;
+//    
+//    int vert_a, vert_b, vert_c;
+//    Vector3D va, vb, vc;
+//    
+//    element el;
+//    for (uint i = 0; i < elements.size(); i++)
+//    {
+//        el = elements[i];
+//        vert_a = el.ia;
+//        vert_b = el.ib;
+//        vert_c = el.ic;
+//        
+//        x1 = xyz[3 * vert_a + 0];
+//        y1 = xyz[3 * vert_a + 1];
+//        z1 = xyz[3 * vert_a + 2];
+//        
+//        x2 = xyz[3 * vert_b + 0];
+//        y2 = xyz[3 * vert_b + 1];
+//        z2 = xyz[3 * vert_b + 2];
+//        
+//        x3 = xyz[3 * vert_c + 0];
+//        y3 = xyz[3 * vert_c + 1];
+//        z3 = xyz[3 * vert_c + 2];
+//        
+//        va = Vector3D(x1, y1, z1);
+//        vb = Vector3D(x2, y2, z2);
+//        vc = Vector3D(x3, y3, z3);
+//        
+//        // HERTZ TO BALANCE ...
+//        // va-vb
+//        distance(dij, vb, va);    
+//        r_eff = 0.5 * rv;
+//        h = 2 * rv - dij.length();
+//        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
+//        e_eff = 1.0 / e_eff;
+//
+//        if (h > 0)
+//        {
+//            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
+//            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
+//            
+//            forces[3 * vert_a + 0] -= fij.x; // OPPOSITE SIGN !!
+//            forces[3 * vert_a + 1] -= fij.y; // OPPOSITE SIGN !!
+//            forces[3 * vert_a + 2] -= fij.z; // OPPOSITE SIGN !!
+//            
+//            forces[3 * vert_b + 0] += fij.x; // OPPOSITE SIGN !!
+//            forces[3 * vert_b + 1] += fij.y; // OPPOSITE SIGN !!
+//            forces[3 * vert_b + 2] += fij.z; // OPPOSITE SIGN !!
+//        }
+//        
+//        // va-vc
+//        distance(dij, vc, va);    
+//        r_eff = 0.5 * rv;
+//        h = 2 * rv - dij.length();
+//        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
+//        e_eff = 1.0 / e_eff;
+//
+//        if (h > 0)
+//        {
+//            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
+//            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
+//            
+//            forces[3 * vert_a + 0] -= fij.x; // OPPOSITE SIGN !!
+//            forces[3 * vert_a + 1] -= fij.y; // OPPOSITE SIGN !!
+//            forces[3 * vert_a + 2] -= fij.z; // OPPOSITE SIGN !!
+//            
+//            forces[3 * vert_c + 0] += fij.x; // OPPOSITE SIGN !!
+//            forces[3 * vert_c + 1] += fij.y; // OPPOSITE SIGN !!
+//            forces[3 * vert_c + 2] += fij.z; // OPPOSITE SIGN !!
+//        }
+//        
+//        // vb-vc
+//        distance(dij, vc, vb);    
+//        r_eff = 0.5 * rv;
+//        h = 2 * rv - dij.length();
+//        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
+//        e_eff = 1.0 / e_eff;
+//
+//        if (h > 0)
+//        {
+//            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
+//            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
+//            
+//            forces[3 * vert_b + 0] -= fij.x; // OPPOSITE SIGN !!
+//            forces[3 * vert_b + 1] -= fij.y; // OPPOSITE SIGN !!
+//            forces[3 * vert_b + 2] -= fij.z; // OPPOSITE SIGN !!
+//            
+//            forces[3 * vert_c + 0] += fij.x; // OPPOSITE SIGN !!
+//            forces[3 * vert_c + 1] += fij.y; // OPPOSITE SIGN !!
+//            forces[3 * vert_c + 2] += fij.z; // OPPOSITE SIGN !!
+//        }
+//    }
 }
 
 
@@ -630,4 +631,12 @@ void ForcesCalculator::zero_forces(std::vector<double>& forces) const
 void ForcesCalculator::set_dl_dims(const double min_val, const double max_val, const int axis)
 {
     dl.set_system_dims(min_val, max_val, axis);
+}
+
+bool ForcesCalculator::is_bonded(int i, int j, std::unordered_map<int, std::set<int> >& graph_)
+{
+    std::set<int> element = graph_[i];
+    const bool is_in = element.find(j) != element.end();
+    return is_in;
+    
 }

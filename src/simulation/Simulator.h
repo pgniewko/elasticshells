@@ -7,6 +7,8 @@
 #include <stdio.h>      /* fprintf*/
 #include <stdlib.h>     /* atoi,  strtod */
 #include <assert.h>
+#include <set>
+#include <unordered_map>
 
 #include "Box.h"
 #include "Environment.h"
@@ -139,6 +141,8 @@ class Simulator
         std::map<object_map, int> inv_hs_map;
         
         std::vector<double> turgors;
+        
+        std::unordered_map<int, std::set<int> > graph;
         /// ************
         
 
