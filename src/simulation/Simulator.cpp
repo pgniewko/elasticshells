@@ -68,7 +68,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     logParams();
     
     
-    fc = ForcesCalculator(MAX_M, args.pbc, !args.nobending);
+    fc = ForcesCalculator(25, args.pbc, !args.nobending);
 
 }
 
@@ -235,7 +235,8 @@ void Simulator::initShells(int N, double r_min, double r_max, bool jam)
     restarter.saveTopologyFile(shells);
     set_min_force();
 
-    creat_shells_image();
+    create_shells_image();
+    copy_shells_data();
 
 }
 
@@ -828,7 +829,7 @@ void Simulator::recenterShells()
     return;
 }
 
-void Simulator::creat_shells_image()
+void Simulator::create_shells_image()
 {
     simulator_logs << utils::LogLevel::INFO  << "Creating local image of the shells\n";
     int vertex_counter = 0;

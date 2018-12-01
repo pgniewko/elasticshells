@@ -107,7 +107,7 @@ class Simulator
 
         double volumeFraction();
         
-        void creat_shells_image();
+        void create_shells_image();
         
         void copy_shells_data();
         void copy_back_shells_data();

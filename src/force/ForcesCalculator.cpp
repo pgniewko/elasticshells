@@ -342,7 +342,7 @@ Vector3D ForcesCalculator::calculate_dV(const Vector3D& va,
 
 void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz, 
                                           std::vector<double>& forces,
-                                          std::unordered_map<int, std::set<int> > graph_,
+                                          std::unordered_map<int, std::set<int> >& graph_,
                                           const double rv, const double E, const double nu)
 {
     
