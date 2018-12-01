@@ -61,13 +61,14 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configureScheduler(args.sch_config_file);
 
-    domains.setupDomainsList(getLengthScale( std::max(0.5 * args.init_radius1, args.init_radius2) ), box);
+    //domains.setupDomainsList(getLengthScale( std::max(0.5 * args.init_radius1, args.init_radius2) ), box);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     Shell::no_bending = args.nobending;
     logParams();
     
-    fc = ForcesCalculator(domains.m, args.pbc, !args.nobending);
+    
+    fc = ForcesCalculator(MAX_M, args.pbc, !args.nobending);
 
 }
 
@@ -145,7 +146,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_EPS=" << OsmoticForce::getEpsilon() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "MAX_SCALE=" << domains.getMaxScale() << "\n";
+//    simulator_logs << utils::LogLevel::FINER << "MAX_SCALE=" << domains.getMaxScale() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Y="  << box.getY() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
@@ -359,8 +360,8 @@ void Simulator::analyze()
             simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE (in <<analyze>> mode) SET TO= "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
         }
 
-        domains.setBoxDim(box);
-        update_neighbors_list();
+//        domains.setBoxDim(box);
+//        update_neighbors_list();
         log_sim.dumpState(box, shells);
     }
 }
@@ -372,13 +373,13 @@ void Simulator::simulate()
 
 void Simulator::simulate(int steps)
 {
-    updateShells();
-
-    if (params.nbhandler == 2)
-    {
-        domains.setBoxDim(box);
-        rebuildDomainsList();
-    }
+//    updateShells();
+//
+//    if (params.nbhandler == 2)
+//    {
+//        domains.setBoxDim(box);
+//        rebuildDomainsList();
+//    }
 
     // LOGER READY TO WORK
     log_sim.registerObservers();
@@ -401,21 +402,20 @@ void Simulator::simulate(int steps)
     }
 
     //================
-    update_neighbors_list();
+//    update_neighbors_list();
     calcForces();
-    
-    for (int i = 0; i < number_of_shells; i++)
-    {
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
-        {
-            shells[i].vertices[j].f_p = shells[i].vertices[j].f_c;
-        }
-    }
+//    
+//    for (int i = 0; i < number_of_shells; i++)
+//    {
+//        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+//        {
+//            shells[i].vertices[j].f_p = shells[i].vertices[j].f_c;
+//        }
+//    }
 
 
     bool resized = false;
-
-
+    
     for (int step = 0; step < steps; step++)
     {
         if ( box.nthTodo() )
@@ -429,24 +429,27 @@ void Simulator::simulate(int steps)
             simulator_logs << utils::LogLevel::INFO << 100.0 * step / steps << "% OF THE SIMULATION IS DONE" "\n";
         }
 
-        unsigned long loop_couter = 0;
+        //unsigned long loop_couter = 0;
 
+        
+        copy_shells_data();
         do
         {
             do
             {
                 integrate();
-                loop_couter++;
+                //loop_couter++;
 
-                if ( (loop_couter + 1) % 5000 == 0)
-                {
-                    restarter.saveLastFrame(shells, box); // SO RESTARTING IS PRODUCTIVE
-                }
+//                if ( (loop_couter + 1) % 5000 == 0)
+//                {
+//                    restarter.saveLastFrame(shells, box); // SO RESTARTING IS PRODUCTIVE
+//                }
             }
             while ( check_min_force() );
         }
         while ( check_const_volume() );
 
+        copy_back_shells_data();
         integrator->resetParams(this);
 
 
@@ -456,7 +459,7 @@ void Simulator::simulate(int steps)
             traj.save_traj(shells, getTotalVertices());
             // **
 
-            update_neighbors_list();
+//            update_neighbors_list();
             log_sim.dumpState(box, shells);
             saveTurgors();
             traj.save_box(box, (step + 1) * params.dt);
@@ -475,12 +478,11 @@ void Simulator::simulate(int steps)
 
         if (resized)
         {
-            domains.setBoxDim(box);
+//            domains.setBoxDim(box);
             box.saveRemainingSchedule();
         }
 
         recenterShells();
-
     }
 
     log_sim.dumpState(box, shells);
@@ -499,96 +501,100 @@ void Simulator::simulate(int steps)
 
 void Simulator::calcForces()
 {
-    FORCE_EVALUATION_COUTER++;
+ //   FORCE_EVALUATION_COUTER++;
     
-    update_neighbors_list();
-    // CALC CENTER OF MASS
-
-    for (uint i = 0; i < shells.size(); i++)
-    {
-        shells[i].update();
-    }
-
-    // RESET FORCES
-    for (int i = 0 ; i < number_of_shells; i++)
-    {
-        shells[i].voidForces();
-    }
-
-    // CALCULATE INTRA-CELLULAR FORCES
-    for (int i = 0 ; i < number_of_shells; i++)
-    {
-        shells[i].calcBondedForces();
-    }
-
-    // CALCULATE INTER-CELLULAR FORCES
-    if (params.nbhandler == 0)
-    {
-        for (int i = 0; i < number_of_shells; i++)
-        {
-            for (int j = 0; j < number_of_shells; j++)
-            {
-                shells[i].calcNbForcesON2(shells[j], box);
-            }
-        }
-    }
-    else if (params.nbhandler == 2)
-    {
-        domains.calcNbForces(shells, box);
-    }
-
-    // CALCULATE FORCES BETWEEN CELLS AND BOX
-    if (!box.pbc)
-    {
-        for (int i = 0 ; i < number_of_shells; i++)
-        {
-            shells[i].calcBoxForces(box);
-        }
-    }
+//    update_neighbors_list();
+//    // CALC CENTER OF MASS
+//
+//    for (uint i = 0; i < shells.size(); i++)
+//    {
+//        shells[i].update();
+//    }
+//
+//    // RESET FORCES
+//    for (int i = 0 ; i < number_of_shells; i++)
+//    {
+//        shells[i].voidForces();
+//    }
+//
+//    // CALCULATE INTRA-CELLULAR FORCES
+//    for (int i = 0 ; i < number_of_shells; i++)
+//    {
+//        shells[i].calcBondedForces();
+//    }
+//
+//    // CALCULATE INTER-CELLULAR FORCES
+//    if (params.nbhandler == 0)
+//    {
+//        for (int i = 0; i < number_of_shells; i++)
+//        {
+//            for (int j = 0; j < number_of_shells; j++)
+//            {
+//                shells[i].calcNbForcesON2(shells[j], box);
+//            }
+//        }
+//    }
+//    else if (params.nbhandler == 2)
+//    {
+//        domains.calcNbForces(shells, box);
+//    }
+//
+//    // CALCULATE FORCES BETWEEN CELLS AND BOX
+//    if (!box.pbc)
+//    {
+//        for (int i = 0 ; i < number_of_shells; i++)
+//        {
+//            shells[i].calcBoxForces(box);
+//        }
+//    }
     
-    copy_shells_data();
+    //copy_shells_data();
+    
     fc.calculate_forces(xyz, forces, elements, hinges, vs_map, graph, turgors, shells.size(), 
             params.r_vertex, params.E_shell, params.nu,
             box.getE(), box.getNu());
     
+    FORCE_EVALUATION_COUTER++;
     
-    bool test_break = assertEqualForces();
+    
+    //bool test_break = assertEqualForces();
     
     //if (test_break)
     //    exit(1);
     
 }
-void Simulator::update_neighbors_list()
-{
-    if (params.nbhandler == 2)
-    {
-        rebuildDomainsList();
-    }
-}
 
-void Simulator::rebuildDomainsList()
-{
-    // This code is redundant cause the way linked domains are constructed.
-    // I.e. all vertices's ->nexts are reassigned, and heads are set to zero,
-    // so no dangling ends
-    for (uint i = 0; i < shells.size(); i++)
-    {
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
-        {
-            //shells[i].vertices[j].next = 0;
-        }
-    }
-    
-    domains.voidDomains();
-
-    for (uint i = 0; i < shells.size(); i++)
-    {
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
-        {
-            domains.assignVertex(&shells[i].vertices[j]);
-        }
-    }
-}
+//void Simulator::update_neighbors_list()
+//{
+//    if (params.nbhandler == 2)
+//    {
+//        rebuildDomainsList();
+//    }
+//}
+//
+//void Simulator::rebuildDomainsList()
+//{
+//    // This code is redundant cause the way linked domains are constructed.
+//    // I.e. all vertices's ->nexts are reassigned, and heads are set to zero,
+//    // so no dangling ends
+//    for (uint i = 0; i < shells.size(); i++)
+//    {
+//        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+//        {
+//            //shells[i].vertices[j].next = 0;
+//        }
+//    }
+//    
+//    domains.voidDomains();
+//
+//    for (uint i = 0; i < shells.size(); i++)
+//    {
+//        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+//        {
+//            domains.assignVertex(&shells[i].vertices[j]);
+//        }
+//    }
+//}
 
 void Simulator::shiftShell(const Vector3D& v3d, int shell_id)
 {
@@ -680,16 +686,19 @@ void Simulator::set_min_force()
         max_turgor = std::max(max_turgor, shells[i].getTurgor());
     }
 
-    MIN_FORCE_SQ = FORCE_FRAC * max_turgor * average_area;
-    MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
+    MIN_FORCE = FORCE_FRAC * max_turgor * average_area;
+    //MIN_FORCE_SQ = FORCE_FRAC * max_turgor * average_area;
+    MIN_FORCE_SQ = MIN_FORCE * MIN_FORCE;
 
     if (shells[0].getNumberVertices() == 1)
     {
+        MIN_FORCE = 1e-12;
         MIN_FORCE_SQ = 1e-12;
         MIN_FORCE_SQ = MIN_FORCE_SQ * MIN_FORCE_SQ;
     }
 
     Shell::FORCE_FRAC   = FORCE_FRAC;
+    Shell::MIN_FORCE    = MIN_FORCE;
     Shell::MIN_FORCE_SQ = MIN_FORCE_SQ;
 
     simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE_SQ) << " [units?]\n";
@@ -697,18 +706,28 @@ void Simulator::set_min_force()
 
 bool Simulator::check_min_force()
 {
-    for (int i = 0; i < number_of_shells; i++)
+    //double fx, fy, fz;
+    for (uint i = 0; i < forces.size(); i++)
     {
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        if (constants::sqrt3 * forces[i] > MIN_FORCE)
         {
-            if (shells[i].vertices[j].f_c.length_sq() > MIN_FORCE_SQ)
-            {
-                return true;
-            }
+            return true;
         }
     }
-
     return false;
+    
+//    for (int i = 0; i < number_of_shells; i++)
+//    {
+//        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+//        {
+//            if (shells[i].vertices[j].f_c.length_sq() > MIN_FORCE_SQ)
+//            {
+//                return true;
+//            }
+//        }
+//    }
+//
+//    return false;
 }
 
 bool Simulator::check_const_volume()
@@ -726,7 +745,8 @@ bool Simulator::check_const_volume()
             if ( fabs(step) > eps )
             {
                 flag = true;
-                shells[i].ajustTurgor(step);
+                turgors[i] = shells[i].ajust_turgor(step);
+                //turgors[i] = shells[i].getTurgor();
             }
         }
 
@@ -740,9 +760,9 @@ bool Simulator::check_const_volume()
 
 void Simulator::integrate()
 {
-    update_neighbors_list();
+//    update_neighbors_list();
     integrator->integrate(this);
-    updateShells();
+//    updateShells();
 }
 
 void Simulator::saveTurgors()
@@ -956,6 +976,8 @@ void Simulator::creat_shells_image()
             hinge_counter++;
         }
     }
+    
+    integrator->set_n( xyz.size() );
 }
 
 void Simulator::copy_shells_data()
@@ -985,50 +1007,61 @@ void Simulator::copy_shells_data()
         turgors[i] = shells[i].getTurgor();
     }
     
-    
     fc.set_dl_dims(-box.getX(), box.getX(), 0);
     fc.set_dl_dims(-box.getY(), box.getY(), 1);
     fc.set_dl_dims(-box.getZ(), box.getZ(), 2);
 }
 
 
-
-bool Simulator::assertEqualForces()
+void Simulator::copy_back_shells_data()
 {
-    bool break_sim = false;
-    const double delta15 = 0.000000000000001;
-    for (int i = 0; i < number_of_shells; i++)
+    for (uint i = 0; i < xyz.size(); i +=3)
     {
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
-        {
-            object_map vm(i, j);
-            int vn = inv_vs_map[vm];
-            
-            
-            if ( fabs(shells[i].vertices[j].f_c.x - forces[3*vn+0]) > delta15 )
-            {
-                std::cout << "(X) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.x << " "<< forces[3*vn+0] << " diff="<< fabs(shells[i].vertices[j].f_c.x - forces[3*vn+0]) << std::endl;
-                std::cout << shells[i].vertices[j].r_c << " " << box.getX() << " " << box.getY() << " " << box.getZ() << std::endl;
-                std::cout << "vec diff X=" << shells[i].vertices[j].f_c.x - forces[3*vn+0] << std::endl;
-                break_sim = true;
-            }
-            
-            if ( fabs(shells[i].vertices[j].f_c.y - forces[3*vn+1]) > delta15 )
-            {
-                std::cout << "(Y) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.y << " "<< forces[3*vn+1] << " diff="<< fabs(shells[i].vertices[j].f_c.y - forces[3*vn+1]) << std::endl;
-                std::cout << shells[i].vertices[j].r_c << " " << box.getX() << " " << box.getY() << " " << box.getZ() << std::endl;
-                std::cout << "vec diff Y=" << shells[i].vertices[j].f_c.y - forces[3*vn+1] << std::endl;
-                break_sim = true;
-            }
-            
-            if ( fabs(shells[i].vertices[j].f_c.z - forces[3*vn+2]) > delta15 )
-            {
-                std::cout << "(Z) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.z << " "<< forces[3*vn+2] << " diff="<< fabs(shells[i].vertices[j].f_c.z - forces[3*vn+2]) << std::endl;
-                std::cout << shells[i].vertices[j].r_c << " " << box.getX() << " " << box.getY() << " " << box.getZ() << std::endl;
-                std::cout << "vec diff Z=" << shells[i].vertices[j].f_c.z - forces[3*vn+2] << std::endl;
-                break_sim = true;
-            }
-        }
+        int shell_id = vs_map[i].shell_id;
+        int vert_id  = vs_map[i].vert_id;
+        shells[shell_id].vertices[vert_id].r_c.x = xyz[i + 0];
+        shells[shell_id].vertices[vert_id].r_c.x = xyz[i + 1];
+        shells[shell_id].vertices[vert_id].r_c.x = xyz[i + 2];
     }
-    return break_sim;
 }
+
+
+//bool Simulator::assertEqualForces()
+//{
+//    bool break_sim = false;
+//    const double delta15 = 0.000000000000001;
+//    for (int i = 0; i < number_of_shells; i++)
+//    {
+//        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+//        {
+//            object_map vm(i, j);
+//            int vn = inv_vs_map[vm];
+//            
+//            
+//            if ( fabs(shells[i].vertices[j].f_c.x - forces[3*vn+0]) > delta15 )
+//            {
+//                std::cout << "(X) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.x << " "<< forces[3*vn+0] << " diff="<< fabs(shells[i].vertices[j].f_c.x - forces[3*vn+0]) << std::endl;
+//                std::cout << shells[i].vertices[j].r_c << " " << box.getX() << " " << box.getY() << " " << box.getZ() << std::endl;
+//                std::cout << "vec diff X=" << shells[i].vertices[j].f_c.x - forces[3*vn+0] << std::endl;
+//                break_sim = true;
+//            }
+//            
+//            if ( fabs(shells[i].vertices[j].f_c.y - forces[3*vn+1]) > delta15 )
+//            {
+//                std::cout << "(Y) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.y << " "<< forces[3*vn+1] << " diff="<< fabs(shells[i].vertices[j].f_c.y - forces[3*vn+1]) << std::endl;
+//                std::cout << shells[i].vertices[j].r_c << " " << box.getX() << " " << box.getY() << " " << box.getZ() << std::endl;
+//                std::cout << "vec diff Y=" << shells[i].vertices[j].f_c.y - forces[3*vn+1] << std::endl;
+//                break_sim = true;
+//            }
+//            
+//            if ( fabs(shells[i].vertices[j].f_c.z - forces[3*vn+2]) > delta15 )
+//            {
+//                std::cout << "(Z) i=" << i << " j=" << j << " " << shells[i].vertices[j].f_c.z << " "<< forces[3*vn+2] << " diff="<< fabs(shells[i].vertices[j].f_c.z - forces[3*vn+2]) << std::endl;
+//                std::cout << shells[i].vertices[j].r_c << " " << box.getX() << " " << box.getY() << " " << box.getZ() << std::endl;
+//                std::cout << "vec diff Z=" << shells[i].vertices[j].f_c.z - forces[3*vn+2] << std::endl;
+//                break_sim = true;
+//            }
+//        }
+//    }
+//    return break_sim;
+//}

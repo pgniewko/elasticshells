@@ -237,7 +237,7 @@ void constructTopology(Vertex* vertices, VertexTriangle* triangles, int number_v
         double abl = ab.length();
         double acl = ac.length();
         double bcl = bc.length();
-        int tid = triangles[i].myid;
+        int tid = triangles[i].my_id;
         vertices[aid].addNeighbor(bid, abl);
         vertices[aid].addNeighbor(cid, acl);
         vertices[bid].addNeighbor(aid, abl);

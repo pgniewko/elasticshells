@@ -108,7 +108,7 @@ void Tinker::constructTopology(Shell& cell)
 //        double abl = ab.length();
 //        double acl = ac.length();
 //        double bcl = bc.length();
-        int tid = cell.triangles[i].myid;
+        int tid = cell.triangles[i].my_id;
 //        std::cout << "i=" << i << std::endl;
         cell.vertices[aid].addNeighbor(bid);//, abl);
         cell.vertices[aid].addNeighbor(cid);//, acl);

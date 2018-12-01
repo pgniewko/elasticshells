@@ -249,7 +249,7 @@ void Restarter::addVTriangles(std::vector<Shell>& shells, int cix) const
                 if (shell_id == cix)
                 {
                     int t_id = std::stoi(pairs[ 2 ].c_str(), NULL);
-                    shells[cix].triangles[t_id].myid = t_id;
+                    shells[cix].triangles[t_id].my_id = t_id;
                     shells[cix].triangles[t_id].ia = std::stoi(pairs[ 3 ].c_str(), NULL);
                     shells[cix].triangles[t_id].ib = std::stoi(pairs[ 4 ].c_str(), NULL);
                     shells[cix].triangles[t_id].ic = std::stoi(pairs[ 5 ].c_str(), NULL);

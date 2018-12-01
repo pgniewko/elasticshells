@@ -48,12 +48,12 @@ class Shell
         int getNumberVertices() const;
         int getNumberHinges() const;
 
-        void calcBondedForces();
-        void calcFemForces();
-        void calcOsmoticForces();
-
-        void calcNbForcesON2(const Shell&, const Box&);
-        void calcBoxForces(const Box&);
+//        void calcBondedForces();
+//        void calcFemForces();
+//        void calcOsmoticForces();
+//
+//        void calcNbForcesON2(const Shell&, const Box&);
+//        void calcBoxForces(const Box&);
 
         void addXYZ(const Vector3D&);
 
@@ -71,7 +71,7 @@ class Shell
         void setBSprings(double, double, double);
         void setConstantVolume(double = 1.0);
         double checkVolumeCondition();
-        void ajustTurgor(double = 0.0);
+        double ajust_turgor(double = 0.0);
 
         void setInitR(double);
 
@@ -80,8 +80,8 @@ class Shell
         double getVertexR() const;
         double getE() const;
         double getNu() const;
-
-        void voidForces();
+//
+//        void voidForces();
 
         Vector3D center_of_mass;
         
@@ -90,19 +90,19 @@ class Shell
         std::vector<BendingHinge> bhinges;
         
         int shell_id = -1;
-        double contactForce(const Shell&, const Box&, const bool = false) const;
-        double contactForce(const Box&) const;
-        double contactForceSF(const Box&) const; // for Surface Force use
-
-        double contactArea(const Shell&, const Box&) const;
-        double contactArea(const Shell&, const Box&, const double) const;
-        double contactArea(const Box&, double = 0.0) const;
-
-
-        double activeArea(const Box&, const std::vector<Shell>&, double = 0.0) const;
+//        double contactForce(const Shell&, const Box&, const bool = false) const;
+//        double contactForce(const Box&) const;
+//        double contactForceSF(const Box&) const; // for Surface Force use
+//
+//        double contactArea(const Shell&, const Box&) const;
+//        double contactArea(const Shell&, const Box&, const double) const;
+//        double contactArea(const Box&, double = 0.0) const;
+//
+//
+//        double activeArea(const Box&, const std::vector<Shell>&, double = 0.0) const;
         double calcSurfaceArea(double) const;
-        double contactArea2(const Box&, double = 0.0) const;
-        bool isInContact(const Shell&, const Box&) const;
+//        double contactArea2(const Box&, double = 0.0) const;
+//        bool isInContact(const Shell&, const Box&) const;
 
         double getTurgor() const;
         void update(double = 0.0);
@@ -114,18 +114,19 @@ class Shell
         friend std::ostream& operator<< (std::ostream&, const Shell&);
 
         static double FORCE_FRAC;
+        static double MIN_FORCE;
         static double MIN_FORCE_SQ;
 
     private:
 
         void randomRotate();
 
-        bool isInContact(const int, const Shell&, const Box&) const;
-        bool isInContact(const int, const Box&) const;
-
-        double project_force(const Shell&, const Box&, const Vector3D&, const int) const;
-        double project_force(const Box&, const Vector3D&, const int) const;
-        Vector3D box_force(const Box&, const int) const;
+//        bool isInContact(const int, const Shell&, const Box&) const;
+//        bool isInContact(const int, const Box&) const;
+//
+//        double project_force(const Shell&, const Box&, const Vector3D&, const int) const;
+//        double project_force(const Box&, const Vector3D&, const int) const;
+//        Vector3D box_force(const Box&, const int) const;
 
         shell_params_t params;
         int number_v = 0;

@@ -23,10 +23,10 @@ class VertexTriangle
         double area(const std::vector<Vertex>&, const Vector3D, double) const;
 
         Vector3D normal(const std::vector<Vertex>&) const;
-        void calcFemForces(std::vector<Vertex>&) const;
-        double calcFemEnergy(const std::vector<Vertex>&) const;
+        //void calcFemForces(std::vector<Vertex>&) const;
+        //double calcFemEnergy(const std::vector<Vertex>&) const;
 
-        void printVertexTriangle() const;
+//        void printVertexTriangle() const;
         void subsVertex(int, int);
 
         void setParams(const std::vector<Vertex>&, const double, const double, const double);
@@ -34,7 +34,7 @@ class VertexTriangle
         int ia = -1;
         int ib = -1;
         int ic = -1;
-        int myid = -1;
+        int my_id = -1;
 
         friend std::ostream& operator<< (std::ostream&, const VertexTriangle&);
 

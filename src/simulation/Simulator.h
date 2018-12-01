@@ -26,7 +26,7 @@
 #include "utils/io/LogSimulation.h"
 #include "utils/Logger.h"
 #include "force/OsmoticForce.h"
-#include "simulation/DomainList.h"
+//#include "simulation/DomainList.h"
 #include "simulation/Restarter.h"
 #include "simulation/Energy.h"
 #include "simulation/Packer.h"
@@ -88,14 +88,14 @@ class Simulator
 
         void calcForces();
         void integrate();
-        void rebuildDomainsList();
+//        void rebuildDomainsList();
 
 
         int getTotalVertices();
         double getLengthScale(double = 0.0);
 
         void updateShells();
-        void update_neighbors_list();
+//        void update_neighbors_list();
 
         void set_min_force();
         bool check_min_force();
@@ -110,8 +110,9 @@ class Simulator
         void creat_shells_image();
         
         void copy_shells_data();
+        void copy_back_shells_data();
         
-        bool assertEqualForces(); // a temporary function
+//        bool assertEqualForces(); // a temporary function
 
         Integrator* integrator;
 
@@ -152,12 +153,13 @@ class Simulator
         XyzTraj traj;
         LogSimulation log_sim;
 
-        DomainList domains;
+        //DomainList domains;
         Restarter restarter;
         
         ForcesCalculator fc;
 
         double MIN_FORCE_SQ = 0.0;
+        double MIN_FORCE = 0.0;
         double FORCE_FRAC = 0.0001;
 
 

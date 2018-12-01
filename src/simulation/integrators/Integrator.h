@@ -16,6 +16,7 @@ class Integrator
 
         void integrate(Simulator* s);
         void resetParams(Simulator* s);
+        void set_n(uint n);
 
     private:
 
@@ -23,15 +24,17 @@ class Integrator
 
         void fireIntegrator(Simulator*);
         void _vv(Simulator*);
+        
+         uint n;
+        std::vector<double> vel;
+        std::vector<double> f_p;
 
         static int FIRE_Nmin;
         static int FIRE_N;
         static double FIRE_DT;
         static double FIRE_ALPHA;
         static double FIRE_DTMAX;
-
         static utils::Logger integrator_logs;
-
 };
 
 #endif /* INTEGRATOR_H */

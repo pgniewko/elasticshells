@@ -12,7 +12,7 @@ class OsmoticForce
         OsmoticForce(const OsmoticForce& orig) = delete;
         virtual ~OsmoticForce() = delete;
 
-        static Vector3D calcForce(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&, const double);
+//        static Vector3D calcForce(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&, const double);
         static void setVolumeFlag(bool);
         static void setEpsilon(double);
         static double getEpsilon();
@@ -23,16 +23,16 @@ class OsmoticForce
         static double epsilon;
         static bool volumeFlag;
 };
-
-
-inline Vector3D OsmoticForce::calcForce(const Vector3D& va, const Vector3D& vb, const Vector3D& vc, const Vector3D& vd, const double turgor)
-{
-    Vector3D BD = vb - vd;
-    Vector3D CD = vc - vd;
-    Vector3D f = cross(BD, CD) / 6;
-    f *= turgor;
-
-    return f * Tetrahedron::volumeSgn(va, vb, vc, vd);
-}
+//
+//
+//inline Vector3D OsmoticForce::calcForce(const Vector3D& va, const Vector3D& vb, const Vector3D& vc, const Vector3D& vd, const double turgor)
+//{
+//    Vector3D BD = vb - vd;
+//    Vector3D CD = vc - vd;
+//    Vector3D f = cross(BD, CD) / 6;
+//    f *= turgor;
+//
+//    return f * Tetrahedron::volumeSgn(va, vb, vc, vd);
+//}
 
 #endif	/* OSMOTICFORCE_H */

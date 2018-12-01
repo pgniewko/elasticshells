@@ -20,10 +20,10 @@ class BendingHinge
         virtual ~BendingHinge();
 
         void setD(const double&, const double&, const double&);
-        void calcBendingForces(std::vector<Vertex>&) const;
+        //void calcBendingForces(std::vector<Vertex>&) const;
         double calcRadiusOfCurvature(std::vector<Vertex>&) const;
         void setThetaZero(const std::vector<Vertex>&);
-        double calcBendingEnergy(const std::vector<Vertex>&) const;
+        //double calcBendingEnergy(const std::vector<Vertex>&) const;
 
         void setId(int);
         int getId() const;

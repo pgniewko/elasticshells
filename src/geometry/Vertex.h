@@ -23,24 +23,24 @@ class Vertex
         int set_shell_id(int);
         int get_shell_id() const;
 
-        void printVertex() const;
+//        void printVertex() const;
 
         void addNeighbor(int);
         bool isNeighbor(int) const;
         void addTriangle(int);
 
-        void voidForce();
+//        void voidForce();
         int get_vertex_degree() const;
         int getNumTris() const;
         int getNeighborId(int) const;
         int getTriangleId(int) const;
 
         Vector3D r_c;
-        Vector3D f_c;
-
-        Vector3D r_p;           // make it private
-        Vector3D f_p;
-        Vector3D v_c;
+        
+//        Vector3D f_c;
+//        Vector3D r_p;           // make it private
+//        Vector3D f_p;
+//        Vector3D v_c;
 
         std::vector<int> bondedVerts;
         std::vector<int> bondedTris;
@@ -54,8 +54,8 @@ class Vertex
         friend std::ostream& operator<< (std::ostream&, const Vertex&);
 
     private:
-        int myid;
-        int myCellId;
+        int my_id;
+        int my_shell_id;
 };
 
 #endif	/* VERTEX_H */
