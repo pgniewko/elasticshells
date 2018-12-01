@@ -551,6 +551,11 @@ void Simulator::calcForces()
     
     //copy_shells_data();
     
+    for (uint i = 0; i < forces.size(); i++)
+    {
+        forces[i] = 0.0;    
+    }
+    
     fc.calculate_forces(xyz, forces, elements, hinges, vs_map, graph, turgors, shells.size(), 
             params.r_vertex, params.E_shell, params.nu,
             box.getE(), box.getNu());
