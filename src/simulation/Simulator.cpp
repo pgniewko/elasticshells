@@ -861,8 +861,8 @@ void Simulator::create_shells_image()
             
             inv_vs_map[vm] = vertex_counter;
             
-            std::set<int> bonds;
-            graph[vertex_counter] = bonds;
+            std::vector<int> bonds;
+            graph.push_back(bonds);
             
             vertex_counter++;
         }
@@ -881,7 +881,7 @@ void Simulator::create_shells_image()
                 {
                     object_map vm_ik(i, k);
                     int ik_id = inv_vs_map[vm_ik];
-                    graph[ij_id].insert(ik_id);
+                    graph[ij_id].push_back(ik_id);
                 }
             }
             

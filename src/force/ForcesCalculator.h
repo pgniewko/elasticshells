@@ -23,7 +23,7 @@ public:
                           const std::vector<element>& elements,
                           const std::vector<hinge>& hinges,
                           const std::vector<object_map>& vs_map,
-                          std::unordered_map<int, std::set<int> >& graph_,
+                          const std::vector<std::vector<int> >& graph_,
                           const std::vector<double>& turgors,
                           const int num_shells, 
                           const double rv, const double E, const double nu,
@@ -55,7 +55,7 @@ private:
     
     void evaluate_nonbonded(const std::vector<double>& xyz, 
                             std::vector<double>& forces,
-                            std::unordered_map<int, std::set<int> >& graph,
+                            const std::vector<std::vector<int> >& graph,
                             const double rv, const double E, const double nu);
     
     void evaluate_box(const std::vector<double>& xyz, 
@@ -69,7 +69,7 @@ private:
     Vector3D calculate_dV(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&) const;
     void distance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk) const;
     
-    bool is_bonded(int, int, std::unordered_map<int, std::set<int> > &);
+    bool is_bonded(int, int, const std::vector<std::vector<int> >&);
 };
 
 #endif /* FORCESCALCULATOR_H */
