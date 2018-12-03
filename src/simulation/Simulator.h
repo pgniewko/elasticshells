@@ -142,7 +142,7 @@ class Simulator
         
         std::vector<double> turgors;
         
-        std::unordered_map<int, std::set<int> > graph;
+        std::vector<std::vector<int> > graph;
         /// ************
         
 

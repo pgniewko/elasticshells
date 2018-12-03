@@ -18,7 +18,7 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
                                         const std::vector<element>& elements, 
                                         const std::vector<hinge>& hinges, 
                                         const std::vector<object_map>& vs_map,
-                                        std::unordered_map<int, std::set<int> >& graph_,
+                                        const std::vector<std::vector<int> >& graph_,
                                         const std::vector<double>& turgors,
                                         const int num_shells,
                                         const double rv, const double E, const double nu,
@@ -342,7 +342,7 @@ Vector3D ForcesCalculator::calculate_dV(const Vector3D& va,
 
 void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz, 
                                           std::vector<double>& forces,
-                                          std::unordered_map<int, std::set<int> > graph_,
+                                          const std::vector<std::vector<int> >& graph_,
                                           const double rv, const double E, const double nu)
 {
     
@@ -633,10 +633,14 @@ void ForcesCalculator::set_dl_dims(const double min_val, const double max_val, c
     dl.set_system_dims(min_val, max_val, axis);
 }
 
-bool ForcesCalculator::is_bonded(int i, int j, std::unordered_map<int, std::set<int> >& graph_)
+bool ForcesCalculator::is_bonded(int i, int j, const std::vector<std::vector<int> >& graph_)
 {
-    std::set<int> element = graph_[i];
-    const bool is_in = element.find(j) != element.end();
-    return is_in;
+    std::vector<int> el = graph_[i];
+    for (uint k = 0; k < el.size(); k++)
+        if (j != el[k])
+            return true;
+    
+            
+    return false;
     
 }
