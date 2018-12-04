@@ -26,7 +26,6 @@
 #include "utils/io/LogSimulation.h"
 #include "utils/Logger.h"
 #include "force/OsmoticForce.h"
-//#include "simulation/DomainList.h"
 #include "simulation/Restarter.h"
 #include "simulation/Energy.h"
 #include "simulation/Packer.h"
@@ -90,15 +89,11 @@ class Simulator
 
         void calcForces();
         void integrate();
-//        void rebuildDomainsList();
-
 
         int getTotalVertices();
         double getLengthScale(double = 0.0);
 
         void updateShells();
-//        void update_neighbors_list();
-
         void set_min_force();
         bool check_min_force();
         bool check_const_volume();
@@ -115,7 +110,6 @@ class Simulator
         void copy_back_shells_data();
         
         int estimate_m();
-//        bool assertEqualForces(); // a temporary function
 
         Integrator* integrator;
 
@@ -124,8 +118,6 @@ class Simulator
         params_t params;
 
         std::vector<Shell> shells;
-        
-        // ****
         std::vector<double> xyz;
         std::vector<double> forces;
         
@@ -147,8 +139,6 @@ class Simulator
         std::vector<double> turgors;
         
         std::vector<std::vector<int> > graph;
-        /// ************
-        
 
         Box box;
 
@@ -156,12 +146,9 @@ class Simulator
         XyzTraj traj;
         LogSimulation log_sim;
 
-        //DomainList domains;
         Restarter restarter;
         
         ForcesCalculator fc;
-
-        double MIN_FORCE_SQ = 0.0;
         double MIN_FORCE = 0.0;
         double FORCE_FRAC = 0.0001;
 
@@ -170,7 +157,6 @@ class Simulator
         static unsigned long FORCE_EVALUATION_COUTER;
 
         static bool RESTART_FLAG;
-
 };
 
 #endif	/* SIMULATOR_H */

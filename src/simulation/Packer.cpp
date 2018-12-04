@@ -124,8 +124,8 @@ void Packer::packShells(Box& box, std::vector<Shell>& cells, double thickness, b
     for (std::size_t i = 0; i < n; i++)
     {
         Vector3D new_position = box_scale * points[i].r_c;
-        cells[i].addXYZ( -cells[i].getCm() );
-        cells[i].addXYZ( new_position );
+        cells[i].add_vector( -cells[i].getCm() );
+        cells[i].add_vector( new_position );
         cells[i].update();
     }
 }

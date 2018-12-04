@@ -15,7 +15,6 @@ ForcesCalculator::~ForcesCalculator() {
 
 void ForcesCalculator::reset_dl(int m_, bool pbc_)
 {
-    //std::cout << "m=" << m_ << " pbc_=" << pbc_ << std::endl;
     dl = domain_list_t(m_, pbc_);
 }
 
@@ -40,7 +39,7 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
     // ITERATE OVER HINGES
     if (bending)
     {
-        //evaluate_hinges(xyz, forces, hinges);
+        evaluate_hinges(xyz, forces, hinges);
     }
     
     // CALCULATE MASS CENTERS
@@ -408,104 +407,6 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
             
         }
     }
-
-//    // ACCOUNT FOR POSSIBLE OVERLAPS BETWEEN BOUNDED 
-//    // VERTICES
-//    double x1, y1, z1;
-//    double x2, y2, z2;
-//    double x3, y3, z3;
-//    
-//    int vert_a, vert_b, vert_c;
-//    Vector3D va, vb, vc;
-//    
-//    element el;
-//    for (uint i = 0; i < elements.size(); i++)
-//    {
-//        el = elements[i];
-//        vert_a = el.ia;
-//        vert_b = el.ib;
-//        vert_c = el.ic;
-//        
-//        x1 = xyz[3 * vert_a + 0];
-//        y1 = xyz[3 * vert_a + 1];
-//        z1 = xyz[3 * vert_a + 2];
-//        
-//        x2 = xyz[3 * vert_b + 0];
-//        y2 = xyz[3 * vert_b + 1];
-//        z2 = xyz[3 * vert_b + 2];
-//        
-//        x3 = xyz[3 * vert_c + 0];
-//        y3 = xyz[3 * vert_c + 1];
-//        z3 = xyz[3 * vert_c + 2];
-//        
-//        va = Vector3D(x1, y1, z1);
-//        vb = Vector3D(x2, y2, z2);
-//        vc = Vector3D(x3, y3, z3);
-//        
-//        // HERTZ TO BALANCE ...
-//        // va-vb
-//        distance(dij, vb, va);    
-//        r_eff = 0.5 * rv;
-//        h = 2 * rv - dij.length();
-//        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
-//        e_eff = 1.0 / e_eff;
-//
-//        if (h > 0)
-//        {
-//            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
-//            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
-//            
-//            forces[3 * vert_a + 0] -= fij.x; // OPPOSITE SIGN !!
-//            forces[3 * vert_a + 1] -= fij.y; // OPPOSITE SIGN !!
-//            forces[3 * vert_a + 2] -= fij.z; // OPPOSITE SIGN !!
-//            
-//            forces[3 * vert_b + 0] += fij.x; // OPPOSITE SIGN !!
-//            forces[3 * vert_b + 1] += fij.y; // OPPOSITE SIGN !!
-//            forces[3 * vert_b + 2] += fij.z; // OPPOSITE SIGN !!
-//        }
-//        
-//        // va-vc
-//        distance(dij, vc, va);    
-//        r_eff = 0.5 * rv;
-//        h = 2 * rv - dij.length();
-//        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
-//        e_eff = 1.0 / e_eff;
-//
-//        if (h > 0)
-//        {
-//            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
-//            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
-//            
-//            forces[3 * vert_a + 0] -= fij.x; // OPPOSITE SIGN !!
-//            forces[3 * vert_a + 1] -= fij.y; // OPPOSITE SIGN !!
-//            forces[3 * vert_a + 2] -= fij.z; // OPPOSITE SIGN !!
-//            
-//            forces[3 * vert_c + 0] += fij.x; // OPPOSITE SIGN !!
-//            forces[3 * vert_c + 1] += fij.y; // OPPOSITE SIGN !!
-//            forces[3 * vert_c + 2] += fij.z; // OPPOSITE SIGN !!
-//        }
-//        
-//        // vb-vc
-//        distance(dij, vc, vb);    
-//        r_eff = 0.5 * rv;
-//        h = 2 * rv - dij.length();
-//        e_eff = (1 - nu * nu) / E + (1 - nu * nu) / E;
-//        e_eff = 1.0 / e_eff;
-//
-//        if (h > 0)
-//        {
-//            fmagn = constants::d4_3 * e_eff * pow(r_eff, 0.5) * pow(h, 1.5);
-//            fij = 0.5 * fmagn * (dij / dij.length()); // 0.5 factor as the edge belongs to two triangles
-//            
-//            forces[3 * vert_b + 0] -= fij.x; // OPPOSITE SIGN !!
-//            forces[3 * vert_b + 1] -= fij.y; // OPPOSITE SIGN !!
-//            forces[3 * vert_b + 2] -= fij.z; // OPPOSITE SIGN !!
-//            
-//            forces[3 * vert_c + 0] += fij.x; // OPPOSITE SIGN !!
-//            forces[3 * vert_c + 1] += fij.y; // OPPOSITE SIGN !!
-//            forces[3 * vert_c + 2] += fij.z; // OPPOSITE SIGN !!
-//        }
-//    }
 }
 
 

@@ -1,17 +1,17 @@
 #include "Vertex.h"
 
-Vertex::Vertex() : r_c(0.0, 0.0, 0.0), // f_c(0..0, 0.0, 0.0), // r_p(0, 0, 0), 
+Vertex::Vertex() : r_c(0.0, 0.0, 0.0),
         vertex_degree(0), facets_number(0), my_id(-1), my_shell_id(-1)
 {
 }
 
-Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), // r_p(x, y, z), 
+Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), 
     vertex_degree(0), facets_number(0),
     my_id(-1), my_shell_id(-1)
 {
 }
 
-Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), //f_c(orig.f_c), // r_p(orig.r_p), f_p(orig.f_p), v_c(orig.v_c),
+Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c),
     vertex_degree(orig.vertex_degree), facets_number(orig.facets_number), my_id(orig.my_id), my_shell_id(orig.my_shell_id)
 {
     for (int i = 0; i < vertex_degree; i++)
@@ -25,9 +25,7 @@ Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c), //f_c(orig.f_c), // r_p(orig
     }
 }
 
-Vertex::~Vertex() 
-{
-}
+Vertex::~Vertex() {}
 
 void Vertex::addNeighbor(int idx)
 {
@@ -96,13 +94,6 @@ bool Vertex::isNeighbor(int vidx) const
     return false;
 }
 
-//void Vertex::voidForce()
-//{
-//    f_c.x = 0.0;
-//    f_c.y = 0.0;
-//    f_c.z = 0.0;
-//}
-
 int Vertex::set_id(int idx)
 {
     my_id = idx;
@@ -144,33 +135,6 @@ int Vertex::getTriangleId(int idx) const
 {
     return bondedTris[idx];
 }
-
-// TODO:
-// zamien te funkcje na przeciazony >> operator
-// http://www.learncpp.com/cpp-tutorial/93-overloading-the-io-operators/
-//
-//void Vertex::printVertex() const
-//{
-//    std::cout << "myid=" << myid << " ";
-//    std::cout << "nneigh= " << vertex_degree << " ntrian=" << facets_number << " ";
-//    std::cout << " x=" << r_c.x << " y=" << r_c.y << " z=" << r_c.z << " : ";
-//    std::cout << " x=" << f_c.x << " y=" << f_c.y << " z=" << f_c.z << " : ";
-//
-//    for (int i = 0; i < vertex_degree; i++)
-//    {
-//        std::cout << bondedVerts[i] << " " ;
-//    }
-//
-//    std::cout << " : ";
-//
-//    for (int i = 0; i < facets_number; i++)
-//    {
-//        std::cout << bondedTris[i] << " " ;
-//    }
-//
-//    std::cout << std::endl;
-//    return;
-//}
 
 std::ostream& operator<< (std::ostream& out, const Vertex& v)
 {

@@ -62,12 +62,6 @@ int VertexTriangle::getId() const
     return my_id;
 }
 
-//void VertexTriangle::printVertexTriangle() const
-//{
-//    std::cout << "my id=" << my_id << " ";
-//    std::cout << " ia =" << ia << " ib =" << ib << " ic =" << ic << std::endl;
-//}
-
 void VertexTriangle::subsVertex(int ix_old, int ix_new)
 {
     if (ix_old == ia)
@@ -182,39 +176,6 @@ void VertexTriangle::setParams(const std::vector<Vertex>& vs, const double E, co
     setCi(vs, E, nu, t);
 }
 
-//void VertexTriangle::calcFemForces(std::vector<Vertex>& vs) const
-//{
-//    // 1 - a; 2 - b; 3 - c;
-//    double l0_sq = (vs[ib].r_c - vs[ic].r_c).length_sq() - L2[0];
-//    double l1_sq = (vs[ia].r_c - vs[ic].r_c).length_sq() - L2[1];
-//    double l2_sq = (vs[ia].r_c - vs[ib].r_c).length_sq() - L2[2];
-//
-//    Vector3D T11;
-//    Vector3D T12;
-//    T11 += ki[2] * l2_sq * (vs[ib].r_c - vs[ia].r_c) + ki[1] * l1_sq * (vs[ic].r_c - vs[ia].r_c);
-//    T12 += (ci[1] * l0_sq + ci[0] * l1_sq) * (vs[ib].r_c - vs[ia].r_c);
-//    T12 += (ci[2] * l0_sq + ci[0] * l2_sq) * (vs[ic].r_c - vs[ia].r_c);
-//
-//    vs[ia].f_c += (T11 + T12);
-//
-//    Vector3D T21;
-//    Vector3D T22;
-//    T21 += ki[2] * l2_sq * (vs[ia].r_c - vs[ib].r_c) + ki[0] * l0_sq * (vs[ic].r_c - vs[ib].r_c);
-//    T22 += (ci[0] * l1_sq + ci[1] * l0_sq) * (vs[ia].r_c - vs[ib].r_c);
-//    T22 += (ci[2] * l1_sq + ci[1] * l2_sq) * (vs[ic].r_c - vs[ib].r_c);
-//
-//    vs[ib].f_c += (T21 + T22);
-//
-//    Vector3D T31;
-//    Vector3D T32;
-//    T31 += ki[1] * l1_sq * (vs[ia].r_c - vs[ic].r_c) + ki[0] * l0_sq * (vs[ib].r_c - vs[ic].r_c);
-//    T32 += (ci[0] * l2_sq + ci[2] * l0_sq) * (vs[ia].r_c - vs[ic].r_c);
-//    T32 += (ci[1] * l2_sq + ci[2] * l1_sq) * (vs[ib].r_c - vs[ic].r_c);
-//
-//    vs[ic].f_c += (T31 + T32);
-//
-//}
-
 std::ostream& operator<< (std::ostream& out, const VertexTriangle& vt)
 {
     out << vt.my_id << ' ' << vt.ia << ' ' << vt.ib << ' ' << vt.ic << ' ';
@@ -224,21 +185,3 @@ std::ostream& operator<< (std::ostream& out, const VertexTriangle& vt)
     out << vt.ci[0] << ' ' << vt.ci[1] << ' '  << vt.ci[2] << ' ';
     return out;
 }
-
-//double VertexTriangle::calcFemEnergy(const std::vector<Vertex>& vs) const
-//{
-//    double energy = 0.0;
-//    double l0_sq = (vs[ib].r_c - vs[ic].r_c).length_sq() - L2[0];
-//    double l1_sq = (vs[ia].r_c - vs[ic].r_c).length_sq() - L2[1];
-//    double l2_sq = (vs[ia].r_c - vs[ib].r_c).length_sq() - L2[2];
-//
-//    energy += 0.25 * ki[0] * l0_sq * l0_sq;
-//    energy += 0.25 * ki[1] * l1_sq * l1_sq;
-//    energy += 0.25 * ki[2] * l2_sq * l2_sq;
-//
-//    energy += 0.5 * ci[0] * l1_sq * l2_sq;
-//    energy += 0.5 * ci[1] * l0_sq * l2_sq;
-//    energy += 0.5 * ci[2] * l0_sq * l1_sq;
-//
-//    return energy;
-//}
