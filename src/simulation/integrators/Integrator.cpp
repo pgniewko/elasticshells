@@ -113,9 +113,9 @@ void Integrator::fireIntegrator(Simulator* s)
         vel[i + 1] *= (1 - FIRE_ALPHA);
         vel[i + 2] *= (1 - FIRE_ALPHA);
         
-        vel[i + 0] += FIRE_ALPHA * fx * v_len / f_len;
-        vel[i + 1] += FIRE_ALPHA * fy * v_len / f_len;
-        vel[i + 2] += FIRE_ALPHA * fz * v_len / f_len;
+        vel[i + 0] += FIRE_ALPHA * v_len * fx / f_len;
+        vel[i + 1] += FIRE_ALPHA * v_len * fy / f_len;
+        vel[i + 2] += FIRE_ALPHA * v_len * fz / f_len;
     }
     
     //=========================
@@ -134,6 +134,7 @@ void Integrator::fireIntegrator(Simulator* s)
 //    }
 
 
+    //std::cout << "P=" << P << std::endl;
     if (P > 0 && FIRE_N > FIRE_Nmin)
     {
         FIRE_DT = std::min(FIRE_DTMAX, FIRE_DT * f_inc);
@@ -203,6 +204,7 @@ void Integrator::_vv(Simulator* s)
     // UPDATE VELOCITIES
     for (uint i = 0; i < n; i++)
     {
+        //std::cout << "s->forces[i]=" << s->forces[i] << std::endl;
         vel[i] += 0.5 * dt * s->forces[i];
         f_p[i] = s->forces[i];
     }
@@ -219,7 +221,9 @@ void Integrator::_vv(Simulator* s)
 
 void Integrator::set_n(uint n_)
 {
-     n = n;
+     n = n_;
+     
+     std::cout << "n=" << n << std::endl;
     for (uint i = 0; i < n; i++)
     {
         vel.push_back(0.0);

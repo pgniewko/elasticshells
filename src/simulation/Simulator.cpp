@@ -68,7 +68,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     logParams();
     
     
-    fc = ForcesCalculator(25, args.pbc, !args.nobending);
+    fc = ForcesCalculator(20, args.pbc, !args.nobending);
 
 }
 
@@ -451,6 +451,7 @@ void Simulator::simulate(int steps)
         while ( check_const_volume() );
 
         copy_back_shells_data();
+        //std::cout << "LOOP FINIHSED" << std::endl;
         integrator->resetParams(this);
 
 
@@ -551,6 +552,7 @@ void Simulator::calcForces()
     
     //copy_shells_data();
     
+    //std::cout << "Calculating forces" << std::endl;
     for (uint i = 0; i < forces.size(); i++)
     {
         forces[i] = 0.0;    
@@ -720,6 +722,7 @@ bool Simulator::check_min_force()
             return true;
         }
     }
+    //std::cout << "Minimum forces OK" << std::endl;
     return false;
     
 //    for (int i = 0; i < number_of_shells; i++)
@@ -740,6 +743,7 @@ bool Simulator::check_const_volume()
 {
     if (params.const_volume)
     {
+        copy_back_shells_data();
         double step;
         double eps = 0.001; // 0.1% accuracy
         bool flag = false;
@@ -1021,14 +1025,19 @@ void Simulator::copy_shells_data()
 
 void Simulator::copy_back_shells_data()
 {
-    for (uint i = 0; i < xyz.size(); i +=3)
+    //std::cout << "copying back data" << std::endl;
+    //std::cout << "vs_map.size()=" << vs_map.size() << std::endl;
+    for (uint i = 0; i < vs_map.size(); i++)
     {
         int shell_id = vs_map[i].shell_id;
         int vert_id  = vs_map[i].vert_id;
-        shells[shell_id].vertices[vert_id].r_c.x = xyz[i + 0];
-        shells[shell_id].vertices[vert_id].r_c.x = xyz[i + 1];
-        shells[shell_id].vertices[vert_id].r_c.x = xyz[i + 2];
+        //std::cout << "i=" << i << " shell id=" << shell_id << " vert_id=" << vert_id;
+        //std::cout << " " << xyz[i + 0] << " " <<  xyz[i + 1] << " " <<  xyz[i + 2] << std::endl;
+        shells[shell_id].vertices[vert_id].r_c.x = xyz[3*i + 0];
+        shells[shell_id].vertices[vert_id].r_c.y = xyz[3*i + 1];
+        shells[shell_id].vertices[vert_id].r_c.z = xyz[3*i + 2];
     }
+    //exit(1);
 }
 
 

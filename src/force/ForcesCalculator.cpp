@@ -34,7 +34,7 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
     // ITERATE OVER HINGES
     if (bending)
     {
-        evaluate_hinges(xyz, forces, hinges);
+        //evaluate_hinges(xyz, forces, hinges);
     }
     
     // CALCULATE MASS CENTERS
