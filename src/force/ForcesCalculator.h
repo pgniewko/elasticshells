@@ -30,6 +30,9 @@ public:
                           const double Eb, const double nub);
     void set_dl_dims(const double, const double, const int);
     
+    void reset_dl(int, bool);
+    
+    
 private:
     int m;
     bool pbc;

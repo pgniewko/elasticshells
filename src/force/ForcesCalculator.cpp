@@ -13,6 +13,12 @@ ForcesCalculator::ForcesCalculator(const ForcesCalculator& orig) : m(orig.m), pb
 ForcesCalculator::~ForcesCalculator() {
 }
 
+void ForcesCalculator::reset_dl(int m_, bool pbc_)
+{
+    //std::cout << "m=" << m_ << " pbc_=" << pbc_ << std::endl;
+    dl = domain_list_t(m_, pbc_);
+}
+
 void ForcesCalculator::calculate_forces(const std::vector<double>& xyz, 
                                         std::vector<double>& forces,
                                         const std::vector<element>& elements, 

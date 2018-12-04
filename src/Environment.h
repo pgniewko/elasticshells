@@ -13,7 +13,7 @@
 #define STRCMP(a,b) (!strcmp(a,b))
 #define SIGN(a) (a >= 0 ? 1 : -1)
 
-#define MAX_M 100 // maximum number of linked-domains - in each direction
+//#define MAX_M 100 // maximum number of linked-domains - in each direction
 //#define MAX_D_NEIGH 26 // MUST BE 26 - ALWAYS !
 
 namespace constants

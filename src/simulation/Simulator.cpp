@@ -68,7 +68,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     logParams();
     
     
-    fc = ForcesCalculator(20, args.pbc, !args.nobending);
+    fc = ForcesCalculator(estimate_m(), args.pbc, !args.nobending);
 
 }
 
@@ -219,6 +219,8 @@ void Simulator::initShells(int N, double r_min, double r_max, bool jam)
         {
             Packer::packShells(box, shells, params.th, true);
         }
+        fc.reset_dl( estimate_m(), box.pbc );
+        //std::cout << "jamming - box.X =" << box.getX() << std::endl;
     }
 
     if (params.d == 0)
@@ -472,6 +474,7 @@ void Simulator::simulate(int steps)
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
         {
             resized = box.resize( volumeFraction() );
+            fc.reset_dl( estimate_m(), box.pbc );
         }
         else
         {
@@ -1038,6 +1041,21 @@ void Simulator::copy_back_shells_data()
         shells[shell_id].vertices[vert_id].r_c.z = xyz[3*i + 2];
     }
     //exit(1);
+}
+
+int Simulator::estimate_m()
+{
+    double x_dim = 2 * box.getX();
+    double y_dim = 2 * box.getY();
+    double z_dim = 2 * box.getZ();
+    
+    double d = 2 * params.r_vertex;
+    
+    int m = std::min( (int)floor(x_dim/d), (int) floor(y_dim/d) );
+    m = std::min(m, (int) floor(z_dim/d) );
+    m = std::min(m, MAX_M);
+    //std::cout << "Setting m="<< m << " box.x=" << box.getX() << std::endl;
+    return m;    
 }
 
 

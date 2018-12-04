@@ -37,6 +37,8 @@
 #include "integrators/Integrator.h"
 #include "../force/ForcesCalculator.h"
 
+#define MAX_M 200
+
 struct params_t
 {
     int log_step;
@@ -112,6 +114,7 @@ class Simulator
         void copy_shells_data();
         void copy_back_shells_data();
         
+        int estimate_m();
 //        bool assertEqualForces(); // a temporary function
 
         Integrator* integrator;
