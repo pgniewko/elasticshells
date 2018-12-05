@@ -2,7 +2,7 @@
 
 utils::Logger Shell::cell_log("shell");
 
-bool Shell::no_bending = false;
+bool Shell::bending = false;
 
 double Shell::FORCE_FRAC(0.0);
 double Shell::MIN_FORCE(0.0);
@@ -75,19 +75,19 @@ double Shell::calcVolume(double eps) const
 
 void Shell::calc_cm()
 {
-    Vector3D tmp_m(0.0, 0.0, 0.0);
-    double Mm = 0.0;
+    Vector3D tmp(0.0, 0.0, 0.0);
+    double mass = 0.0;
 
     for (int i = 0; i < number_v; i++)
     {
-        tmp_m += vertices[i].r_c;
-        Mm += 1.0;
+        tmp += vertices[i].r_c;
+        mass += 1.0;
     }
 
-    if (Mm > 0.0)
+    if (mass > 0.0)
     {
-        tmp_m /= Mm;
-        center_of_mass = tmp_m;
+        tmp /= mass;
+        center_of_mass = tmp;
     }
     else
     {
@@ -157,10 +157,10 @@ void Shell::setDp(double dP, double ddp)
     double randu = uniform(-ddp, ddp);
     params.dp = dP + randu;
     V0 = calcVolume();
-    nRT = params.dp * V0 * ( 1.0 - OsmoticForce::getEpsilon() );
+    nRT = params.dp * V0 * (1.0 - OsmoticForce::getEpsilon());
 }
 
-void Shell::setSpringConst(double E, double t, double nu_, std::string model_t)
+void Shell::setSpringConst(double E, double t, double nu_)
 {
     for (int i = 0; i < number_t; i++)
     {
@@ -206,51 +206,6 @@ double Shell::getE() const
 double Shell::getNu() const
 {
     return params.nu;
-}
-
-void Shell::randomRotate()
-{
-    calc_cm();
-
-    double u1 = uniform();
-    double u2 = uniform();
-    double u3 = uniform();
-    double q0 = fastmath::fast_sqrt(1 - u1) * fastmath::fast_sin(2 * M_PI * u2);
-    double q1 = fastmath::fast_sqrt(1 - u1) * fastmath::fast_cos(2 * M_PI * u2);
-    double q2 = fastmath::fast_sqrt(u1) * fastmath::fast_sin(2 * M_PI * u3);
-    double q3 = fastmath::fast_sqrt(u1) * fastmath::fast_cos(2 * M_PI * u3);
-    double A[3][3];
-    A[0][0] = q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3;
-    A[0][1] = 2 * (q1 * q2 + q0 * q3);
-    A[0][2] = 2 * (q1 * q3 - q0 * q2);
-    A[1][0] = 2 * (q1 * q2 - q0 * q3);
-    A[1][1] = q0 * q0 - q1 * q1 + q2 * q2 - q3 * q3;
-    A[1][2] = 2 * (q2 * q3 + q0 * q1);
-    A[2][0] = 2 * (q1 * q3 + q0 * q2);
-    A[2][1] = 2 * (q2 * q3 - q0 * q1);
-    A[2][2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
-    double xnew = 0.0;
-    double ynew = 0.0;
-    double znew = 0.0;
-
-    for (int i = 0; i  < number_v; i++)
-    {
-        double xi = vertices[i].r_c.x - center_of_mass.x;
-        double yi = vertices[i].r_c.y - center_of_mass.y;
-        double zi = vertices[i].r_c.z - center_of_mass.z;
-        xnew  = A[0][0] * xi;
-        xnew += A[0][1] * yi;
-        xnew += A[0][2] * zi;
-        ynew  = A[1][0] * xi;
-        ynew += A[1][1] * yi;
-        ynew += A[1][2] * zi;
-        znew  = A[2][0] * xi;
-        znew += A[2][1] * yi;
-        znew += A[2][2] * zi;
-        vertices[i].r_c.x = xnew + center_of_mass.x;
-        vertices[i].r_c.y = ynew + center_of_mass.y;
-        vertices[i].r_c.z = znew + center_of_mass.z;
-    }
 }
 
 double Shell::getTurgor() const
@@ -336,4 +291,49 @@ std::ostream& operator<< (std::ostream& out, const Shell& c)
     }
 
     return out;
+}
+
+void Shell::randomRotate()
+{
+    calc_cm();
+
+    double u1 = uniform();
+    double u2 = uniform();
+    double u3 = uniform();
+    double q0 = fastmath::fast_sqrt(1 - u1) * fastmath::fast_sin(2 * M_PI * u2);
+    double q1 = fastmath::fast_sqrt(1 - u1) * fastmath::fast_cos(2 * M_PI * u2);
+    double q2 = fastmath::fast_sqrt(u1) * fastmath::fast_sin(2 * M_PI * u3);
+    double q3 = fastmath::fast_sqrt(u1) * fastmath::fast_cos(2 * M_PI * u3);
+    double A[3][3];
+    A[0][0] = q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3;
+    A[0][1] = 2 * (q1 * q2 + q0 * q3);
+    A[0][2] = 2 * (q1 * q3 - q0 * q2);
+    A[1][0] = 2 * (q1 * q2 - q0 * q3);
+    A[1][1] = q0 * q0 - q1 * q1 + q2 * q2 - q3 * q3;
+    A[1][2] = 2 * (q2 * q3 + q0 * q1);
+    A[2][0] = 2 * (q1 * q3 + q0 * q2);
+    A[2][1] = 2 * (q2 * q3 - q0 * q1);
+    A[2][2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
+    double xnew = 0.0;
+    double ynew = 0.0;
+    double znew = 0.0;
+
+    for (int i = 0; i  < number_v; i++)
+    {
+        double xi = vertices[i].r_c.x - center_of_mass.x;
+        double yi = vertices[i].r_c.y - center_of_mass.y;
+        double zi = vertices[i].r_c.z - center_of_mass.z;
+        xnew  = A[0][0] * xi;
+        xnew += A[0][1] * yi;
+        xnew += A[0][2] * zi;
+        ynew  = A[1][0] * xi;
+        ynew += A[1][1] * yi;
+        ynew += A[1][2] * zi;
+        znew  = A[2][0] * xi;
+        znew += A[2][1] * yi;
+        znew += A[2][2] * zi;
+        vertices[i].r_c.x = xnew + center_of_mass.x;
+        vertices[i].r_c.y = ynew + center_of_mass.y;
+        vertices[i].r_c.z = znew + center_of_mass.z;
+    }
 }

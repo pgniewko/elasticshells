@@ -60,7 +60,7 @@ static struct argp_option options[] =
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato], Random[rnd] [default: simple]"},
     {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
     {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], octa[2], ico[3] [default: 0]"},
-    {"no-bend",   417,       0, 0, "[default: false]"},
+    {"bend",      417,       0, 0, "[default: false]"},
     {"restart",   419,       0, 0, "[default: false]"},
     {"analyze",   420,       0, 0, "[default: false]"},
     {"jam",       'j',       0, 0, "[default: false]"},
@@ -143,7 +143,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->pbc = false;
             arguments->draw_box = true;
             arguments->osmotic_flag = false;
-            arguments->nobending = false;
+            arguments->bending = false;
             arguments->const_volume = false;
             arguments->restart = false;
             arguments->analyze = false;
@@ -236,7 +236,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
 
         case 417:
-            arguments->nobending = true;
+            arguments->bending = true;
             break;
 
         case 419:

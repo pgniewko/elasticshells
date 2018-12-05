@@ -58,7 +58,7 @@ class Shell
             params.dp = dp_;
         }
         void setDp(double, double);
-        void setSpringConst(double, double, double, std::string);
+        void setSpringConst(double, double, double);
         void setShellId(int);
         void setNu(double);
         void setBSprings(double, double, double);
@@ -88,7 +88,7 @@ class Shell
 
         const shell_params_t& get_params() const;
 
-        static bool no_bending;
+        static bool bending;
 
         friend std::ostream& operator<< (std::ostream&, const Shell&);
 
