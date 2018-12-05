@@ -41,14 +41,6 @@ void Integrator::resetParams(Simulator* s)
     FIRE_DT = s->params.dt;
     FIRE_ALPHA = 0.1;
     FIRE_N = 0;
-
-//    for (int i = 0; i < s->number_of_shells; i++)
-//    {
-//        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-//        {
-//            s->shells[i].vertices[j].v_c *= 0.0; // freeze the system
-//        }
-//    }
     
     for (uint i = 0; i < n; i++)
     {
@@ -61,13 +53,6 @@ void Integrator::resetParams(Simulator* s)
     }
 
 }
-
-/*
- * INTEGRATORS
- *
- * Viscosity of each vertex is assumed to be 1.0 !
- *
- */
 
 void Integrator::fireIntegrator(Simulator* s)
 {
@@ -87,14 +72,6 @@ void Integrator::fireIntegrator(Simulator* s)
         P += s->forces[i] * vel[i];
     }
     
-//    for (int i = 0; i < s->number_of_shells; i++)
-//    {
-//        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-//        {
-//            P += dot( s->shells[i].vertices[j].f_c, s->shells[i].vertices[j].v_c);
-//        }
-//    }
-
     double v_len, f_len;
     double vx, vy, vz;
     double fx, fy, fz;
@@ -118,23 +95,6 @@ void Integrator::fireIntegrator(Simulator* s)
         vel[i + 2] += FIRE_ALPHA * v_len * fz / f_len;
     }
     
-    //=========================
-
-//    for (int i = 0; i < s->number_of_shells; i++)
-//    {
-//        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-//        {
-//            double v_length = s->shells[i].vertices[j].v_c.length();
-//            Vector3D F = s->shells[i].vertices[j].f_c;
-//            F.normalize();
-//
-//            s->shells[i].vertices[j].v_c *= (1 - FIRE_ALPHA);
-//            s->shells[i].vertices[j].v_c += FIRE_ALPHA * F * v_length;
-//        }
-//    }
-
-
-    //std::cout << "P=" << P << std::endl;
     if (P > 0 && FIRE_N > FIRE_Nmin)
     {
         FIRE_DT = std::min(FIRE_DTMAX, FIRE_DT * f_inc);
@@ -153,16 +113,6 @@ void Integrator::fireIntegrator(Simulator* s)
                 vel[i] = 00.;
         }
         FIRE_N = 0;
-
-//        for (int i = 0; i < s->number_of_shells; i++)
-//        {
-//            for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-//            {
-//                s->shells[i].vertices[j].v_c *= 0.0; // freeze the system
-//            }
-//        }
-//
-//        FIRE_N = 0;
     }
 }
 
@@ -175,55 +125,27 @@ void Integrator::_vv(Simulator* s)
     {
         s->xyz[i] += dt * vel[i] + 0.5 * dt * dt * f_p[i]; // use previously calculated forces
     }
-    
-//    // UPDATE POSITIONS
-//    for (int i = 0; i < s->number_of_shells; i++)
-//    {
-//        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-//        {
-//            s->shells[i].vertices[j].r_c += dt * s->shells[i].vertices[j].v_c + 0.5 * dt * dt * s->shells[i].vertices[j].f_p; // use previously calculated forces
-//        }
-//    }
 
     // UPDATE VELOCITIES
     for (uint i = 0; i < n; i++)
     {
         vel[i] += 0.5 * dt * s->forces[i];
     }
-    
-//    for (int i = 0; i < s->number_of_shells; i++)
-//    {
-//        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-//        {
-//            s->shells[i].vertices[j].v_c += 0.5 * dt * s->shells[i].vertices[j].f_c;
-//        }
-//    }
 
     s->calcForces();
 
     // UPDATE VELOCITIES
     for (uint i = 0; i < n; i++)
     {
-        //std::cout << "s->forces[i]=" << s->forces[i] << std::endl;
         vel[i] += 0.5 * dt * s->forces[i];
         f_p[i] = s->forces[i];
     }
-    
-//    for (int i = 0; i < s->number_of_shells; i++)
-//    {
-//        for (int j = 0; j < s->shells[i].getNumberVertices(); j++)
-//        {
-//            s->shells[i].vertices[j].v_c += 0.5 * dt * s->shells[i].vertices[j].f_c;
-//            s->shells[i].vertices[j].f_p = s->shells[i].vertices[j].f_c; // copy forces for the next time step integration
-//        }
-//    }
 }
 
 void Integrator::set_n(uint n_)
 {
-     n = n_;
-     
-     std::cout << "n=" << n << std::endl;
+    n = n_;
+    
     for (uint i = 0; i < n; i++)
     {
         vel.push_back(0.0);
