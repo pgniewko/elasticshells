@@ -366,6 +366,7 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
     double e_eff;
     double fmagn;
     
+    
     for (uint i = 0; i < n; i++)
     {
         xi = xyz[3 * i + 0];
@@ -544,10 +545,8 @@ bool ForcesCalculator::is_bonded(int i, int j, const std::vector<std::vector<int
 {
     std::vector<int> el = graph_[i];
     for (uint k = 0; k < el.size(); k++)
-        if (j != el[k])
+        if (j == el[k])
             return true;
-    
             
     return false;
-    
 }

@@ -65,7 +65,8 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     Shell::no_bending = args.nobending;
     logParams();
     
-    fc = ForcesCalculator(estimate_m(), args.pbc, !args.nobending);
+    //fc = ForcesCalculator(estimate_m(), args.pbc, !args.nobending);
+    fc = ForcesCalculator(20, args.pbc, !args.nobending);
 
 }
 
@@ -215,7 +216,7 @@ void Simulator::initShells(int N, double r_min, double r_max, bool jam)
         {
             Packer::packShells(box, shells, params.th, true);
         }
-        fc.reset_dl( estimate_m(), box.pbc );
+//        fc.reset_dl( estimate_m(), box.pbc );
     }
 
     if (params.d == 0)
@@ -234,7 +235,6 @@ void Simulator::initShells(int N, double r_min, double r_max, bool jam)
 
     create_shells_image();
     copy_shells_data();
-
 }
 
 void Simulator::pushShell(const Shell& newShell)
@@ -385,6 +385,7 @@ void Simulator::simulate(int steps)
         traj.save_box(box, steps * params.dt);
         box.saveRemainingSchedule();
     }
+    
     calcForces();
 
     bool resized = false;
@@ -431,7 +432,10 @@ void Simulator::simulate(int steps)
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
         {
             resized = box.resize( volumeFraction() );
-            fc.reset_dl( estimate_m(), box.pbc );
+//            fc.reset_dl( estimate_m(), box.pbc );
+//            fc.set_dl_dims(-box.getX(), box.getX(), 0);
+//            fc.set_dl_dims(-box.getY(), box.getY(), 1);
+//            fc.set_dl_dims(-box.getZ(), box.getZ(), 2);
         }
         else
         {
