@@ -62,12 +62,10 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     box.configureScheduler(args.sch_config_file);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
-    Shell::no_bending = args.nobending;
+    Shell::bending = args.bending;
     logParams();
     
-    //fc = ForcesCalculator(estimate_m(), args.pbc, !args.nobending);
-    fc = ForcesCalculator(20, args.pbc, !args.nobending);
-
+    fc = ForcesCalculator(estimate_m(), args.pbc, args.bending);
 }
 
 Simulator::~Simulator()
@@ -160,7 +158,7 @@ void Simulator::initShells(int N, double r_min, double r_max, bool jam)
         r_max = r_min;
     }
 
-    simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (!Shell::no_bending ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (!Shell::bending ? "true" : "false") << "\n";
 
     double nx, ny, nz;
     bool flag = true;
@@ -216,7 +214,8 @@ void Simulator::initShells(int N, double r_min, double r_max, bool jam)
         {
             Packer::packShells(box, shells, params.th, true);
         }
-//        fc.reset_dl( estimate_m(), box.pbc );
+        
+        fc.reset_dl( estimate_m(), box.pbc );
     }
 
     if (params.d == 0)
@@ -281,7 +280,7 @@ void Simulator::addShell(double r0)
 
         new_shell.setEcc(params.E_shell);
         new_shell.setNu(params.nu);
-        new_shell.setSpringConst(params.E_shell, params.th, params.nu, std::string("fem"));
+        new_shell.setSpringConst(params.E_shell, params.th, params.nu);
         new_shell.setBSprings(params.E_shell, params.th, params.nu);
         new_shell.setDp(params.dp, params.ddp);
 
@@ -366,7 +365,7 @@ void Simulator::simulate()
 
 void Simulator::simulate(int steps)
 {
-    // LOGER READY TO WORK
+    // LOGGER READY TO WORK
     log_sim.registerObservers();
     log_sim.open();
     log_sim.printHeader();
@@ -432,10 +431,7 @@ void Simulator::simulate(int steps)
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
         {
             resized = box.resize( volumeFraction() );
-//            fc.reset_dl( estimate_m(), box.pbc );
-//            fc.set_dl_dims(-box.getX(), box.getX(), 0);
-//            fc.set_dl_dims(-box.getY(), box.getY(), 1);
-//            fc.set_dl_dims(-box.getZ(), box.getZ(), 2);
+            fc.reset_dl(estimate_m(), box.pbc );
         }
         else
         {
@@ -444,7 +440,6 @@ void Simulator::simulate(int steps)
 
         if (resized)
         {
-//            domains.setBoxDim(box);
             box.saveRemainingSchedule();
         }
 

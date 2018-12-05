@@ -13,9 +13,18 @@ ForcesCalculator::ForcesCalculator(const ForcesCalculator& orig) : m(orig.m), pb
 ForcesCalculator::~ForcesCalculator() {
 }
 
-void ForcesCalculator::reset_dl(int m_, bool pbc_)
+void ForcesCalculator::reset_dl(int m_, const Box& box)
 {
-    dl = domain_list_t(m_, pbc_);
+    dl = domain_list_t(m_, box.pbc);
+    
+    dl.set_system_dims(-box.getX(), box.getX(), 0);
+    dl.set_system_dims(-box.getY(), box.getY(), 1);
+    dl.set_system_dims(-box.getZ(), box.getZ(), 2);
+}
+
+void ForcesCalculator::set_dl_dims(const double min_val, const double max_val, const int axis)
+{
+    dl.set_system_dims(min_val, max_val, axis);
 }
 
 void ForcesCalculator::calculate_forces(const std::vector<double>& xyz, 
@@ -534,11 +543,6 @@ void ForcesCalculator::zero_forces(std::vector<double>& forces) const
     {
         forces[i] = 0.0;
     }
-}
-
-void ForcesCalculator::set_dl_dims(const double min_val, const double max_val, const int axis)
-{
-    dl.set_system_dims(min_val, max_val, axis);
 }
 
 bool ForcesCalculator::is_bonded(int i, int j, const std::vector<std::vector<int> >& graph_)

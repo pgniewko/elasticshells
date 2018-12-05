@@ -30,7 +30,7 @@ void Restarter::saveTopologyFile(const std::vector<Shell>& shells) const
 
     if ( os.is_open() )
     {
-        os << "NUMSHELLS " << shells.size() << ' ' << "fem" << ' ' << (Shell::no_bending ? "true" : "false") << "\n";
+        os << "NUMSHELLS " << shells.size() << ' ' << "fem" << ' ' << (Shell::bending ? "true" : "false") << "\n";
 
         for (uint i = 0; i < shells.size(); i++)
         {
