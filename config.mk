@@ -19,15 +19,14 @@ DBGFLAGS := -DDEBUG -g
 INCLUDE  := -I/usr/local/include -I$(CURDIR)/src -I/Users/pawel/include
 #LIB      := -L/usr/local/lib -L/usr/lib
 LIB      := -L/usr/local/lib
-DFLAGS   := -DTESTS
+DFLAGS   :=
 
 CXXFLAGS := -lm -Wall -O3 -Dulong="unsigned long" -Duint="unsigned int" -std=gnu++11 -fpermissive $(INCLUDE)
 LDFLAGS  := $(LIB)
-LDLIBS   := -lcppunit -ldl -largp -lsteinhardt -lrndmesh -lnblists -lgfortran -lgsl -lgslcblas
+LDLIBS   := -ldl -largp -lsteinhardt -lrndmesh -lnblists -lgfortran -lgsl -lgslcblas
 
 
 # Local dirs 
-TESTS    := ./tests
 SRC      := ./src
 BIN      := ./bin
 

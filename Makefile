@@ -18,16 +18,10 @@ ifeq ($(TEST), 1)
 endif
 
 TARGET       := $(BIN)/elasticshells
-TEST_RUNNER  := $(TESTS)/testsrunner
-
-
 SOURCES	     := main.cpp \
 		$(shell find $(SRC) -type f -name "*.cpp")
 
 HEADERS	     := $(shell find $(SRC) -type f -name "*.h")
-
-TEST_SOURCES := $(shell find $(TESTS) -type f -name "*.cpp") \
-		$(shell find $(SRC)   -type f -name "*.cpp")
 
 OBJECTS      := $(SOURCES:.cpp=.o)
 
@@ -42,15 +36,10 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 	@echo BUILDING IS DONE
 
-$(TEST_RUNNER): $(TEST_OBJECTS) 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ -lcppunit $(LDLIBS)
-
 #Compilation commands:
 main.o: $(SOURCES) $(HEADERS) #main.cpp 
 
 $(SRC)/%.o: $(SRC)/%.cpp $(SRC)/%.h
-
-$(TESTS)/%.o: $(TESTS)/%.cpp $(TESTS)/%.h
 
 %.o: %.cpp %.h
 	$(CXX) -MMD -MP $(CXXFLAGS) -c $< -o $@
@@ -64,12 +53,8 @@ build: $(TARGET)
 
 clean:
 	@echo Cleaning...
-	$(RM) $(TARGET) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS) $(DEPS)
+	$(RM) $(TARGET) $(OBJECTS) $(DEPS)
 	
-tests: $(TEST_RUNNER)
-	@$(TEST_RUNNER)
-	@echo Test done.
-
 install: $(TARGET)
 	@echo You must be root to install. Have password ready!
 	sudo install -m 755 $(TARGET) $(PREFIX)/bin
