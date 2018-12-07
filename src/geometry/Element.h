@@ -12,6 +12,7 @@ class Element
 {
         friend class Restarter;
         friend class Simulator;
+        friend class Observer;
     public:
         Element();
         explicit Element(int, int, int);

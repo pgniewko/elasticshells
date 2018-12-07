@@ -13,6 +13,7 @@ class Hinge
 {
         friend class Restarter;
         friend class Simulator;
+        friend class Observer;
     public:
         Hinge();
         explicit Hinge(int, int, int, int);
