@@ -8,15 +8,15 @@
 
 class Vertex;
 
-class VertexTriangle
+class Element
 {
         friend class Restarter;
         friend class Simulator;
     public:
-        VertexTriangle();
-        explicit VertexTriangle(int, int, int);
-        VertexTriangle(const VertexTriangle& orig);
-        virtual ~VertexTriangle();
+        Element();
+        explicit Element(int, int, int);
+        Element(const Element& orig);
+        virtual ~Element();
         void setId(int);
         int getId() const;
         double area(const std::vector<Vertex>&) const;
@@ -33,7 +33,7 @@ class VertexTriangle
         int ic = -1;
         int my_id = -1;
 
-        friend std::ostream& operator<< (std::ostream&, const VertexTriangle&);
+        friend std::ostream& operator<< (std::ostream&, const Element&);
 
     private:
         void setL2(const std::vector<Vertex>&);

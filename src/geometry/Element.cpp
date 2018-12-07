@@ -1,4 +1,4 @@
-#include "VertexTriangle.h"
+#include "Element.h"
 
 double cot(double x)
 {
@@ -6,11 +6,11 @@ double cot(double x)
 
 }
 
-VertexTriangle::VertexTriangle() : VertexTriangle(-1, -1, -1) 
+Element::Element() : Element(-1, -1, -1) 
 {
 }
 
-VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), my_id(-1)
+Element::Element(int a, int b, int c) : ia(a), ib(b), ic(c), my_id(-1)
 {
 //    try
 //    {
@@ -42,7 +42,7 @@ VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), my_id
 //    }
 }
 
-VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), 
+Element::Element(const Element& orig) : ia(orig.ia), 
         ib(orig.ib), 
         ic(orig.ic),
         my_id(orig.my_id)
@@ -56,19 +56,19 @@ VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia),
     }
 }
 
-VertexTriangle::~VertexTriangle() {}
+Element::~Element() {}
 
-void VertexTriangle::setId(int idx)
+void Element::setId(int idx)
 {
     my_id = idx;
 }
 
-int VertexTriangle::getId() const
+int Element::getId() const
 {
     return my_id;
 }
 
-void VertexTriangle::subsVertex(int ix_old, int ix_new)
+void Element::subsVertex(int ix_old, int ix_new)
 {
     if (ix_old == ia)
     {
@@ -89,7 +89,7 @@ void VertexTriangle::subsVertex(int ix_old, int ix_new)
     return;
 }
 
-double VertexTriangle::area(const std::vector<Vertex>& vs) const
+double Element::area(const std::vector<Vertex>& vs) const
 {
     if (ia != -1 && ib != -1 && ic != -1)
     {
@@ -102,7 +102,7 @@ double VertexTriangle::area(const std::vector<Vertex>& vs) const
     }
 }
 
-double VertexTriangle::area(const std::vector<Vertex>& vs, const Vector3D cm, double eps) const
+double Element::area(const std::vector<Vertex>& vs, const Vector3D cm, double eps) const
 {
     if (ia != -1 && ib != -1 && ic != -1)
     {
@@ -124,7 +124,7 @@ double VertexTriangle::area(const std::vector<Vertex>& vs, const Vector3D cm, do
     }
 }
 
-Vector3D VertexTriangle::normal(const std::vector<Vertex>& vs) const
+Vector3D Element::normal(const std::vector<Vertex>& vs) const
 {
     Vector3D ta = vs[ia].r_c;
     Vector3D tb = vs[ib].r_c;
@@ -134,14 +134,14 @@ Vector3D VertexTriangle::normal(const std::vector<Vertex>& vs) const
     return normal;
 }
 
-void VertexTriangle::setL2(const std::vector<Vertex>& vs)
+void Element::setL2(const std::vector<Vertex>& vs)
 {
     L2[0] = (vs[ib].r_c - vs[ic].r_c).length_sq();
     L2[1] = (vs[ia].r_c - vs[ic].r_c).length_sq();
     L2[2] = (vs[ia].r_c - vs[ib].r_c).length_sq();
 }
 
-void VertexTriangle::setAn(const std::vector<Vertex>& vs)
+void Element::setAn(const std::vector<Vertex>& vs)
 {
     // MAKE SURE THAT the angle is between 0-180
     Vector3D ca = vs[ic].r_c - vs[ia].r_c;
@@ -157,7 +157,7 @@ void VertexTriangle::setAn(const std::vector<Vertex>& vs)
     an[2] = ac.angle(bc);
 }
 
-void VertexTriangle::setKi(const std::vector<Vertex>& vs, const double& E, const double& nu, const double& t)
+void Element::setKi(const std::vector<Vertex>& vs, const double& E, const double& nu, const double& t)
 {
     double Ap = area(vs);
     ki[0] = E * t * (2.0 * cot(an[0]) * cot(an[0]) + 1.0 - nu) / (16.0 * Ap * (1.0 - nu * nu));
@@ -166,7 +166,7 @@ void VertexTriangle::setKi(const std::vector<Vertex>& vs, const double& E, const
 
 }
 
-void VertexTriangle::setCi(const std::vector<Vertex>& vs, const double& E, const double& nu, const double& t)
+void Element::setCi(const std::vector<Vertex>& vs, const double& E, const double& nu, const double& t)
 {
     double Ap = area(vs);
     ci[0] = E * t * (2.0 * cot(an[1]) * cot(an[2]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu * nu));
@@ -174,7 +174,7 @@ void VertexTriangle::setCi(const std::vector<Vertex>& vs, const double& E, const
     ci[2] = E * t * (2.0 * cot(an[0]) * cot(an[1]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu * nu));
 }
 
-void VertexTriangle::setParams(const std::vector<Vertex>& vs, const double E, const double nu, const double t)
+void Element::setParams(const std::vector<Vertex>& vs, const double E, const double nu, const double t)
 {
     setL2(vs);
     setAn(vs);
@@ -182,7 +182,7 @@ void VertexTriangle::setParams(const std::vector<Vertex>& vs, const double E, co
     setCi(vs, E, nu, t);
 }
 
-std::ostream& operator<< (std::ostream& out, const VertexTriangle& vt)
+std::ostream& operator<< (std::ostream& out, const Element& vt)
 {
     out << vt.my_id << ' ' << vt.ia << ' ' << vt.ib << ' ' << vt.ic << ' ';
     out << vt.an[0] << ' ' << vt.an[1] << ' '  << vt.an[2] << ' ';
