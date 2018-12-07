@@ -448,18 +448,14 @@ int main(int argc, char** argv)
         {
             if (arguments.restart)
             {
-                std::cout << "RESTART MODE" << std::endl;
                 simulator.restart();
-                std::cout << "past simulator.restart()" << std::endl;
             }
             else
             {
                 simulator.initShells(arguments.n_shells, arguments.init_radius1, arguments.init_radius2, arguments.jam);
             }
 
-            std::cout << "Gate 7" << std::endl;
             simulator.simulate(arguments.nsteps);
-            std::cout << "Gate 8" << std::endl;
         }
 
         clocks[0].toc();
@@ -467,16 +463,7 @@ int main(int argc, char** argv)
 
     }
 
-
-//#ifdef _OPENMP
-//    int gt = omp_get_max_threads();
-//    int ncpu = omp_get_num_procs();
-//    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << simulation_time << " [s] \n";
-//    biofilm_logs << utils::LogLevel::INFO << "TOTAL EXECUTION CPU-TIME[" << gt << "(n_th)/" << ncpu << "(n_pcu)] = " << clocks[0].time() << " [s] \n";
-//#else
     shells_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << clocks[0].time() << " [s] \n";
-//#endif
-
 
     return (EXIT_SUCCESS);
 }

@@ -304,18 +304,12 @@ void Simulator::addShell(double r0)
 
 void Simulator::restart()
 {
-    std::cout << "Gate 1" << std::endl;
     simulator_logs << utils::LogLevel::INFO << "Simulation runs in [restart] mode. \n" ;
     restarter.registerVMap();
-    std::cout << "Gate 2" << std::endl;
     restarter.readTopologyFile(shells);
-    std::cout << "Gate 3" << std::endl;
     restarter.readLastFrame(shells);
-    std::cout << "Gate 4" << std::endl;
     number_of_shells = shells.size();
-    std::cout << "Gate 5" << std::endl;
     set_min_force();
-    std::cout << "Gate 6" << std::endl;
     Simulator::RESTART_FLAG = true;
     create_shells_image();
     copy_shells_data();
@@ -366,56 +360,34 @@ void Simulator::analyze()
     }
 }
 
-//void Simulator::simulate()
-//{
-//    simulate(params.nsteps);
-//}
-
 void Simulator::simulate(int steps)
 {
     // LOGGER READY TO WORK
-    
-    std::cout << "Gate 7.1" << std::endl;
     log_sim.registerObservers();
-    std::cout << "Gate 7.2" << std::endl;
     log_sim.open();
-    std::cout << "Gate 7.3" << std::endl;
     log_sim.printHeader();
-    std::cout << "Gate 7.4" << std::endl;
 
     // TRAJECTORY FILE OPEND FOR DUMP
     traj.open();
-    std::cout << "Gate 7.5" << std::endl;
 
     // IF SIMULATION RESTART - DON'T DUMP THE STATS
     if (!Simulator::RESTART_FLAG)
     {
-        std::cout << "Gate 7.6" << std::endl;
         traj.save_traj(shells, getTotalVertices());
-        std::cout << "Gate 7.7" << std::endl;
         log_sim.dumpState(box, shells);
-        std::cout << "Gate 7.8" << std::endl;
         saveTurgors();
-        std::cout << "Gate 7.9" << std::endl;
         restarter.saveLastFrame(shells, box);
-        std::cout << "Gate 7.10" << std::endl;
         restarter.saveTopologyFile(shells);
-        std::cout << "Gate 7.11" << std::endl;
         traj.save_box(box, steps * params.dt);
-        std::cout << "Gate 7.12" << std::endl;
         box.saveRemainingSchedule();
-        std::cout << "Gate 7.13" << std::endl;
     }
     
-    std::cout << "Gate 7.14" << std::endl;
     calcForces();
-    std::cout << "Gate 7.15" << std::endl;
 
     bool resized = false;
     
     for (int step = 0; step < steps; step++)
     {
-        std::cout << "Gate 7.16" << std::endl;
         if ( box.nthTodo() )
         {
             simulator_logs << utils::LogLevel::INFO << "The simulation has reached the end of the schedule @ the step " << step << "/" << steps << ".\n";
@@ -426,17 +398,14 @@ void Simulator::simulate(int steps)
         {
             simulator_logs << utils::LogLevel::INFO << 100.0 * step / steps << "% OF THE SIMULATION IS DONE" "\n";
         }
-        std::cout << "Gate 7.16" << std::endl;
         
         copy_shells_data();
-        std::cout << "Gate 7.17" << std::endl;
+
         do
         {
             do
             {
-                //std::cout << "Gate 7.18" << std::endl;
                 integrate();
-                //std::cout << "Gate 7.19" << std::endl;
             }
             while ( check_min_force() );
         }
