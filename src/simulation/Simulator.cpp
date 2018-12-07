@@ -6,7 +6,7 @@ unsigned long Simulator::FORCE_EVALUATION_COUTER(0);
 bool Simulator::RESTART_FLAG(false);
 
 Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
-    sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
+    //sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
     traj(args.traj_file, args.box_file), log_sim(args.output_file, args.ob_config_file),
     restarter(args.topology_file, args.lf_file)
 {

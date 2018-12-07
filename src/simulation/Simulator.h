@@ -140,7 +140,7 @@ class Simulator
 
         Box box;
 
-        ScriptBuilder sb;
+        //ScriptBuilder sb;
         XyzTraj traj;
         LogSimulation log_sim;
 
