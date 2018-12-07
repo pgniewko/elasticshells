@@ -17,9 +17,9 @@ void TriangleTests::setUp()
     t1 = new Triangle(*v1, *v2, *v3);
     t2 = new Triangle(*v1, *v2, *v5);
     t3 = new Triangle(*v4, *v4, *v4);
-    vt1 = new VertexTriangle;
-    vt2 = new VertexTriangle(0, 1, 2);
-    vt3 = new VertexTriangle(0, 1, 3);
+    vt1 = new Element;
+    vt2 = new Element(0, 1, 2);
+    vt3 = new Element(0, 1, 3);
     vt3->setId(2);
 }
 
@@ -89,7 +89,7 @@ void TriangleTests::testVConstructors()
 
 void TriangleTests::testVTriangleCopy()
 {
-    VertexTriangle tmpvt1(*vt3);
+    Element tmpvt1(*vt3);
     CPPUNIT_ASSERT_EQUAL(0, tmpvt1.ia);
     CPPUNIT_ASSERT_EQUAL(1, tmpvt1.ib);
     CPPUNIT_ASSERT_EQUAL(3, tmpvt1.ic);

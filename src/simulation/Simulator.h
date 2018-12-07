@@ -70,11 +70,10 @@ class Simulator
         virtual ~Simulator();
 
         void simulate(int);
-
-        void initShells(int, double, double, bool = false);
-
         void restart();
         void analyze();
+        
+        void init_shells(int, double, double, bool = false);
 
     private:
 

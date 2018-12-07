@@ -72,22 +72,22 @@ void Restarter::readTopologyFile(std::vector<Shell>& shells) const
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
-        initShell(shells, i);
+        init_shell(shells, i);
     }
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
-        addVertices(shells, i);
+        add_vertices(shells, i);
     }
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
-        addVTriangles(shells, i);
+        add_elements(shells, i);
     }
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
-        addBHinges(shells, i);
+        add_hinges(shells, i);
     }
 }
 
@@ -125,7 +125,7 @@ std::pair<int, std::string> Restarter::get_number_of_shells() const
     return line_pair;
 }
 
-void Restarter::initShell(std::vector<Shell>& shells, int shell_idx) const
+void Restarter::init_shell(std::vector<Shell>& shells, int shell_idx) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
@@ -175,7 +175,7 @@ void Restarter::initShell(std::vector<Shell>& shells, int shell_idx) const
 }
 
 
-void Restarter::addVertices(std::vector<Shell>& shells, int cix) const
+void Restarter::add_vertices(std::vector<Shell>& shells, int cix) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
@@ -228,7 +228,7 @@ void Restarter::addVertices(std::vector<Shell>& shells, int cix) const
     os.close();
 }
 
-void Restarter::addVTriangles(std::vector<Shell>& shells, int cix) const
+void Restarter::add_elements(std::vector<Shell>& shells, int cix) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
@@ -280,7 +280,7 @@ void Restarter::addVTriangles(std::vector<Shell>& shells, int cix) const
 }
 
 
-void Restarter::addBHinges(std::vector<Shell>& shells, int cix) const
+void Restarter::add_hinges(std::vector<Shell>& shells, int cix) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);

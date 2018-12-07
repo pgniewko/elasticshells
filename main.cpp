@@ -452,7 +452,7 @@ int main(int argc, char** argv)
             }
             else
             {
-                simulator.initShells(arguments.n_shells, arguments.init_radius1, arguments.init_radius2, arguments.jam);
+                simulator.init_shells(arguments.n_shells, arguments.init_radius1, arguments.init_radius2, arguments.jam);
             }
 
             simulator.simulate(arguments.nsteps);

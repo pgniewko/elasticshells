@@ -57,8 +57,8 @@ void Tinker::constructVTriangles(Shell& shell, std::list<Triangle>& tris)
         int va = getVertex(shell, i->a);
         int vb = getVertex(shell, i->b);
         int vc = getVertex(shell, i->c);
-        VertexTriangle vrxt(va, vb, vc);
-        shell.triangles.push_back(VertexTriangle(vrxt));
+        Element vrxt(va, vb, vc);
+        shell.triangles.push_back(Element(vrxt));
         shell.triangles[shell.number_t].setId(shell.number_t);
         shell.number_t++;
     }
@@ -140,7 +140,7 @@ void Tinker::constructBSprings(Shell& shell)
                     if ( isBSpringUnique(x1_, x2_, x3_, x4_, shell) )
                     {
                         //cell.bhinges[cell.number_s] = BendingHinge(x1_, x2_, x3_, x4_);
-                        shell.hinges.push_back(BendingHinge(x1_, x2_, x3_, x4_));
+                        shell.hinges.push_back(Hinge(x1_, x2_, x3_, x4_));
                         shell.hinges[shell.number_h].setId(shell.number_h);
                         shell.number_h++;
                     }
@@ -165,7 +165,7 @@ bool Tinker::isUnique(std::list<Vector3D>& vlist, Vector3D& v, double e)
 
 bool Tinker::isBSpringUnique(int x1, int x2, int x3, int x4, Shell& cell)
 {
-    BendingHinge bs_tmp(x1, x2, x3, x4);
+    Hinge bs_tmp(x1, x2, x3, x4);
 
     for (int i = 0; i < cell.number_h; i++)
     {

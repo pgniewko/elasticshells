@@ -18,13 +18,13 @@ Shell::Shell(int nv, int nt, int nh)
     
     for(int i = 0; i < nt; i++)
     {
-        VertexTriangle new_vertx_triangle;
+        Element new_vertx_triangle;
         triangles.push_back( new_vertx_triangle );
     }
     
     for(int i = 0; i < nh; i++)
     {
-        BendingHinge new_hinge;
+        Hinge new_hinge;
         hinges.push_back( new_hinge );
     }
     

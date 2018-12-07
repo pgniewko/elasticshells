@@ -118,7 +118,7 @@ int getVertex(Vector3D& v, Vertex* vertices, int number_v, double e)
 }
 
 
-int  constructVTriangles(std::list<Triangle>& tris, Vertex* vertices, VertexTriangle* triangles, int number_v)
+int  constructVTriangles(std::list<Triangle>& tris, Vertex* vertices, Element* triangles, int number_v)
 {
     int number_t = 0;
 
@@ -127,8 +127,8 @@ int  constructVTriangles(std::list<Triangle>& tris, Vertex* vertices, VertexTria
         int va = getVertex(i->a, vertices, number_v, 0.001);
         int vb = getVertex(i->b, vertices, number_v, 0.001);
         int vc = getVertex(i->c, vertices, number_v, 0.001);
-        VertexTriangle vrxt(va, vb, vc);
-        triangles[number_t] = VertexTriangle(vrxt);
+        Element vrxt(va, vb, vc);
+        triangles[number_t] = Element(vrxt);
         triangles[number_t].setId(number_t);
         number_t++;
     }
@@ -184,7 +184,7 @@ double q(std::list<Triangle>& tris)
     return min_q;
 }
 
-double q_A(Vertex* vertices, VertexTriangle* triangles, int number_v)
+double q_A(Vertex* vertices, Element* triangles, int number_v)
 {
     int idx;
     double min_A = std::numeric_limits<double>::max();
@@ -224,7 +224,7 @@ double q_theta(std::list<Triangle>& tris)
     return min_angle / (M_PI / 3.0);
 }
 
-void constructTopology(Vertex* vertices, VertexTriangle* triangles, int number_v, int number_t)
+void constructTopology(Vertex* vertices, Element* triangles, int number_v, int number_t)
 {
     for (int i = 0; i < number_t; i++)
     {
@@ -254,7 +254,7 @@ int main(int argc, char** argv)
 {
 
     Vertex* vertices = new Vertex[170000];
-    VertexTriangle* triangles = new VertexTriangle[330000];
+    Element* triangles = new Element[330000];
 
     int number_v = 0;
     int number_t = 0;

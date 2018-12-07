@@ -11,8 +11,8 @@
 #include "geometry/Tetrahedron.h"
 #include "geometry/Triangle.h"
 #include "geometry/Vertex.h"
-#include "geometry/VertexTriangle.h"
-#include "force/BendingHinge.h"
+#include "geometry/Element.h"
+#include "geometry/Hinge.h"
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "simulation/Box.h"
 #include "simulation/Tinker.h"
@@ -77,8 +77,8 @@ class Shell
         Vector3D center_of_mass;
         
         std::vector<Vertex> vertices;
-        std::vector<VertexTriangle> triangles;
-        std::vector<BendingHinge> hinges;
+        std::vector<Element> triangles;
+        std::vector<Hinge> hinges;
         
         int shell_id = -1;
         double calcSurfaceArea(double) const;

@@ -7,7 +7,7 @@
 #include "geometry/Vector3D.h"
 #include "geometry/Triangle.h"
 #include "geometry/Vertex.h"
-#include "geometry/VertexTriangle.h"
+#include "geometry/Element.h"
 
 class TriangleTests : public CPPUNIT_NS::TestFixture
 {
@@ -42,7 +42,7 @@ class TriangleTests : public CPPUNIT_NS::TestFixture
     private:
         Vector3D* v1, *v2, *v3, *v4, *v5, *v6;
         Triangle* t1, *t2, *t3;
-        VertexTriangle* vt1, *vt2, *vt3;
+        Element* vt1, *vt2, *vt3;
         Vertex* vx1;
         void testMethod();
         void testFailedMethod();

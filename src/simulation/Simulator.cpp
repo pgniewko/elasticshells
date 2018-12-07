@@ -150,7 +150,7 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZmin() << "\n";
 }
 
-void Simulator::initShells(int N, double r_min, double r_max, bool jam)
+void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
 {
     if (r_min > r_max)
     {

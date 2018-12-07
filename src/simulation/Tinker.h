@@ -8,8 +8,8 @@
 #include "Shell.h"
 #include "geometry/Triangle.h"
 #include "geometry/Vertex.h"
-#include "geometry/VertexTriangle.h"
-#include "force/BendingHinge.h"
+#include "geometry/Element.h"
+#include "geometry/Hinge.h"
 
 class Shell;
 
