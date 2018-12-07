@@ -44,7 +44,7 @@ Shell::Shell(std::list<Triangle> tris) : shell_id(-1),
     Tinker::construct_elements(*this, tris);
     Tinker::construct_topology(*this);
     Tinker::construct_hinges(*this);
-    randomRotate();
+    random_rotate();
 }
 
 Shell::Shell(const Shell& orig) : center_of_mass(orig.center_of_mass), 
@@ -78,31 +78,7 @@ Shell::~Shell()
 {
 }
 
-double Shell::calcSurfaceArea(double d_param) const
-{
-    double totalSurface = 0.0;
-
-    for (int i = 0; i < number_t; i++)
-    {
-        totalSurface += triangles[i].area(vertices, center_of_mass, d_param);
-    }
-
-    return totalSurface;
-}
-
-double Shell::calcSurfaceArea() const
-{
-    double surface = 0.0;
-
-    for (int i = 0; i < number_t; i++)
-    {
-        surface += triangles[i].area(vertices);
-    }
-
-    return surface;
-}
-
-double Shell::calcVolume(double eps) const
+double Shell::calc_volume(double eps) const
 {
     double volume = 0.0;
 
@@ -148,7 +124,7 @@ void Shell::calc_cm()
     }
 }
 
-void Shell::setBSprings(double E, double t, double nu_)
+void Shell::set_hinges(double E, double t, double nu_)
 {
     if ( number_v == 1 || number_t == 1)
     {
@@ -185,35 +161,35 @@ int Shell::getNumberHinges() const
     return number_h;
 }
 
-void Shell::setVertexR(double rv)
+void Shell::set_vertex_size(double rv)
 {
     params.vertex_r = rv;
 }
 
-void Shell::setEcc(double a)
+void Shell::set_ecc(double a)
 {
     params.ecc = a;
 }
 
-void Shell::setNu(double nu)
+void Shell::set_nu(double nu)
 {
     params.nu = nu;
 }
 
-void Shell::setDp(double dP)
+void Shell::set_dp(double dP)
 {
-    setDp(dP, 0.0);
+    set_dp(dP, 0.0);
 }
 
-void Shell::setDp(double dP, double ddp)
+void Shell::set_dp(double dP, double ddp)
 {
     double randu = uniform(-ddp, ddp);
     params.dp = dP + randu;
-    V0 = calcVolume();
+    V0 = calc_volume();
     nRT = params.dp * V0 * (1.0 - OsmoticForce::getEpsilon());
 }
 
-void Shell::setSpringConst(double E, double t, double nu_)
+void Shell::set_elements_parameters(double E, double t, double nu_)
 {
     for (int i = 0; i < number_t; i++)
     {
@@ -221,7 +197,7 @@ void Shell::setSpringConst(double E, double t, double nu_)
     }
 }
 
-void Shell::setShellId(int ix)
+void Shell::set_shell_id(int ix)
 {
     shell_id = ix;
 
@@ -236,39 +212,39 @@ void Shell::setInitR(double rinit)
     params.init_r = rinit;
 }
 
-double Shell::getInitR() const
+double Shell::get_r0() const
 {
     return params.init_r;
 }
 
-Vector3D Shell::getCm() const
+Vector3D Shell::get_cm() const
 {
     return center_of_mass;
 }
 
-double Shell::getVertexR() const
+double Shell::get_vertex_size() const
 {
     return params.vertex_r;
 }
 
-double Shell::getE() const
+double Shell::get_E() const
 {
     return params.ecc;
 }
 
-double Shell::getNu() const
+double Shell::get_nu() const
 {
     return params.nu;
 }
 
-double Shell::getTurgor() const
+double Shell::get_turgor() const
 {
     double turgor;
 
     if ( OsmoticForce::getFlag() )
     {
         double excluded_volume = V0 * OsmoticForce::getEpsilon();
-        double cellVolume = calcVolume();
+        double cellVolume = calc_volume();
 
         if ( (cellVolume - excluded_volume) > 0 )
         {
@@ -288,24 +264,24 @@ double Shell::getTurgor() const
     return turgor;
 }
 
-void Shell::update(double d)
+void Shell::update()
 {
     calc_cm();
 }
 
-void Shell::setConstantVolume(double scale)
+void Shell::set_constant_volume(double scale)
 {
     params.vol_c = V0 * (scale * scale * scale);
 
-    if (calcVolume() != V0)
+    if (calc_volume() != V0)
     {
         cell_log << utils::LogLevel::WARNING << "(calcVolume() != V0) @setConstantVolume\n";
     }
 }
 
-double Shell::checkVolumeCondition()
+double Shell::check_volume_condition()
 {
-    double V = calcVolume();
+    double V = calc_volume();
     return (params.vol_c - V) / V;
 }
 
@@ -318,6 +294,30 @@ double Shell::ajust_turgor(double step)
 const shell_params_t& Shell::get_params() const
 {
     return params;
+}
+
+double Shell::calcSurfaceArea(double d_param) const
+{
+    double totalSurface = 0.0;
+    
+    for (int i = 0; i < number_t; i++)
+    {
+        totalSurface += triangles[i].area(vertices, center_of_mass, d_param);
+    }
+
+    return totalSurface;
+}
+
+double Shell::calcSurfaceArea() const
+{
+    double surface = 0.0;
+
+    for (int i = 0; i < number_t; i++)
+    {
+        surface += triangles[i].area(vertices);
+    }
+
+    return surface;
 }
 
 std::ostream& operator<< (std::ostream& out, const Shell& c)
@@ -346,7 +346,7 @@ std::ostream& operator<< (std::ostream& out, const Shell& c)
     return out;
 }
 
-void Shell::randomRotate()
+void Shell::random_rotate()
 {
     calc_cm();
 

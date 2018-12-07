@@ -21,7 +21,6 @@
 #include "geometry/algorithms/SimpleTriangulation.h"
 #include "geometry/algorithms/PlatonicTriangulatoin.h"
 #include "geometry/algorithms/RandomTriangulation.h"
-#include "utils/io/ScriptBuilder.h"
 #include "utils/io/XyzTraj.h"
 #include "utils/io/LogSimulation.h"
 #include "utils/Logger.h"
@@ -91,7 +90,7 @@ class Simulator
         int getTotalVertices();
         double getLengthScale(double = 0.0);
 
-        void updateShells();
+        void recalculate_mass_centers();
         void set_min_force();
         bool check_min_force();
         bool check_const_volume();
@@ -140,7 +139,6 @@ class Simulator
 
         Box box;
 
-        //ScriptBuilder sb;
         XyzTraj traj;
         LogSimulation log_sim;
 

@@ -6,7 +6,6 @@ unsigned long Simulator::FORCE_EVALUATION_COUTER(0);
 bool Simulator::RESTART_FLAG(false);
 
 Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
-    //sb(args.render_file, args.surface_file, args.traj_file, args.stress_file),
     traj(args.traj_file, args.box_file), log_sim(args.output_file, args.ob_config_file),
     restarter(args.topology_file, args.lf_file)
 {
@@ -185,9 +184,9 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
 
         for (int i = 0; i < number_of_shells; i++)
         {
-            Vector3D tmpcm = shells[i].getCm();
+            Vector3D tmpcm = shells[i].get_cm();
             Vector3D delta = shift - tmpcm;
-            rsum = shells[i].getInitR() + r0 + rc + constants::epsilon;
+            rsum = shells[i].get_r0() + r0 + rc + constants::epsilon;
 
             if ( delta.length() < rsum)
             {
@@ -225,7 +224,7 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
 
         for (int i = 0; i < number_of_shells; i++)
         {
-            shells[i].setVertexR( shells[i].getInitR() );
+            shells[i].set_vertex_size( shells[i].get_r0() );
         }
     }
 
@@ -274,24 +273,24 @@ void Simulator::addShell(double r0)
         }
 
         Shell new_shell(tris);
-        new_shell.setVertexR(params.r_vertex);
-        new_shell.setShellId(number_of_shells);
+        new_shell.set_vertex_size(params.r_vertex);
+        new_shell.set_shell_id(number_of_shells);
         new_shell.setInitR(r0);
 
-        new_shell.setEcc(params.E_shell);
-        new_shell.setNu(params.nu);
-        new_shell.setSpringConst(params.E_shell, params.th, params.nu);
-        new_shell.setBSprings(params.E_shell, params.th, params.nu);
-        new_shell.setDp(params.dp, params.ddp);
+        new_shell.set_ecc(params.E_shell);
+        new_shell.set_nu(params.nu);
+        new_shell.set_elements_parameters(params.E_shell, params.th, params.nu);
+        new_shell.set_hinges(params.E_shell, params.th, params.nu);
+        new_shell.set_dp(params.dp, params.ddp);
 
-        double radial_eps = 1.0 + (0.5 * (1 - params.nu)  * (new_shell.getTurgor() * r0) / (params.E_shell * params.th));
+        double radial_eps = 1.0 + (0.5 * (1 - params.nu)  * (new_shell.get_turgor() * r0) / (params.E_shell * params.th));
 
         if (new_shell.getNumberVertices() == 1)
         {
             radial_eps = 1.0;
         }
 
-        new_shell.setConstantVolume (radial_eps);
+        new_shell.set_constant_volume (radial_eps);
 
         pushShell(new_shell);
     }
@@ -349,13 +348,16 @@ void Simulator::analyze()
         restarter.read_frame(traj.get_traj_file(), shells, i);
         restarter.assign_turgors(turgor_list[i - 1], shells);
         restarter.assign_box_size(boxsize_list[i - 1], box);
-        updateShells();
+        recalculate_mass_centers();
 
         if (i == 1)
         {
             set_min_force();
             simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE (in <<analyze>> mode) SET TO= "  << sqrt(MIN_FORCE) << " [units?]\n";
         }
+        
+        create_shells_image();
+        copy_shells_data();
         log_sim.dump_state(box, shells);
     }
 }
@@ -486,7 +488,7 @@ double Simulator::volumeFraction()
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        shells_volume += shells[i].calcVolume();
+        shells_volume += shells[i].calc_volume();
     }
 
     return (shells_volume / box_vol);
@@ -543,7 +545,7 @@ void Simulator::setTriangulator(char* token)
     }
 }
 
-void Simulator::updateShells()
+void Simulator::recalculate_mass_centers()
 {
     for (uint i = 0; i < shells.size(); i++)
     {
@@ -560,7 +562,7 @@ void Simulator::set_min_force()
 
     for (int i = 0; i < number_of_shells; i++)
     {
-        max_turgor = std::max(max_turgor, shells[i].getTurgor());
+        max_turgor = std::max(max_turgor, shells[i].get_turgor());
     }
 
     MIN_FORCE = FORCE_FRAC * max_turgor * average_area;
@@ -599,7 +601,7 @@ bool Simulator::check_const_volume()
 
         for (int i = 0; i < number_of_shells; i++)
         {
-            step = shells[i].checkVolumeCondition();
+            step = shells[i].check_volume_condition();
 
             if ( fabs(step) > eps )
             {
@@ -648,7 +650,7 @@ void Simulator::saveTurgors()
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        shells_volume += shells[i].calcVolume();
+        shells_volume += shells[i].calc_volume();
     }
 
     fprintf(os, "%-7.4f %5.3f %5.3f %5.3f %7.4f ", box_volume, box_x, box_y, box_z, shells_volume);
@@ -656,8 +658,8 @@ void Simulator::saveTurgors()
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        turgor = shells[i].getTurgor();
-        cm = shells[i].getCm();
+        turgor = shells[i].get_turgor();
+        cm = shells[i].get_cm();
 
         fprintf(os, "%5.4f %6.4f %6.4f %6.4f ", turgor, cm.x, cm.y, cm.z);
     }
@@ -676,7 +678,7 @@ void Simulator::recenterShells()
     {
         for (uint i = 0; i < shells.size(); i++)
         {
-            Vector3D shift = Box::recenteringVector( shells[i].getCm(), box );
+            Vector3D shift = Box::recenteringVector( shells[i].get_cm(), box );
             shells[i].add_vector(shift);
         }
     }
@@ -860,7 +862,7 @@ void Simulator::copy_shells_data()
     
     for (uint i = 0; i < shells.size(); i++)
     {
-        turgors[i] = shells[i].getTurgor();
+        turgors[i] = shells[i].get_turgor();
     }
     
     fc.set_dl_dims(-box.getX(), box.getX(), 0);

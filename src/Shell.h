@@ -41,8 +41,9 @@ class Shell
         Shell(std::list<Triangle>);
         Shell(const Shell& orig);
         virtual ~Shell();
+        double calc_volume(double = 0.0) const;
         double calcSurfaceArea() const;
-        double calcVolume(double = 0.0) const;
+        double calcSurfaceArea(double) const;
         void calc_cm();
         int getNumberTriangles() const;
         int getNumberVertices() const;
@@ -50,29 +51,29 @@ class Shell
         
         void add_vector(const Vector3D&);
 
-        void setVertexR(double);
-        void setEcc(double);
-        void setDp(double);
-        void pushDp(double dp_)
+        void set_vertex_size(double);
+        void set_ecc(double);
+        void set_dp(double);
+        void push_dp(double dp_)
         {
             params.dp = dp_;
         }
-        void setDp(double, double);
-        void setSpringConst(double, double, double);
-        void setShellId(int);
-        void setNu(double);
-        void setBSprings(double, double, double);
-        void setConstantVolume(double = 1.0);
-        double checkVolumeCondition();
+        void set_dp(double, double);
+        void set_elements_parameters(double, double, double);
+        void set_shell_id(int);
+        void set_nu(double);
+        void set_hinges(double, double, double);
+        void set_constant_volume(double = 1.0);
+        double check_volume_condition();
         double ajust_turgor(double = 0.0);
 
         void setInitR(double);
 
-        double getInitR() const;
-        Vector3D getCm() const;
-        double getVertexR() const;
-        double getE() const;
-        double getNu() const;
+        double get_r0() const;
+        Vector3D get_cm() const;
+        double get_vertex_size() const;
+        double get_E() const;
+        double get_nu() const;
         
         Vector3D center_of_mass;
         
@@ -81,10 +82,9 @@ class Shell
         std::vector<Hinge> hinges;
         
         int shell_id = -1;
-        double calcSurfaceArea(double) const;
 
-        double getTurgor() const;
-        void update(double = 0.0);
+        double get_turgor() const;
+        void update();
 
         const shell_params_t& get_params() const;
 
@@ -97,7 +97,7 @@ class Shell
 
     private:
 
-        void randomRotate();
+        void random_rotate();
         
         shell_params_t params;
         int number_v = 0;

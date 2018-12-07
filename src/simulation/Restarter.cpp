@@ -450,7 +450,7 @@ void Restarter::assign_turgors(std::string turgor_line, std::vector<Shell>& shel
     for (uint i = 0; i < shells.size(); i++)
     {
         turgor = strtod(pairs[ 4 + 4 * i + 1 ].c_str(), NULL);
-        shells[i].pushDp(turgor);
+        shells[i].push_dp(turgor);
     }
 }
 

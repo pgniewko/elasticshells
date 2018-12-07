@@ -460,7 +460,6 @@ int main(int argc, char** argv)
 
         clocks[0].toc();
         simulation_time = read_timer( ) - simulation_time;
-
     }
 
     shells_logs << utils::LogLevel::INFO << "TOTAL EXECUTION WALL-TIME = " << clocks[0].time() << " [s] \n";
