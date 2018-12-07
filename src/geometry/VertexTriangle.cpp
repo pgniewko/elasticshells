@@ -3,23 +3,28 @@
 double cot(double x)
 {
     return 1.0 / tan(x);
+
+}
+
+VertexTriangle::VertexTriangle() : VertexTriangle(-1, -1, -1) 
+{
 }
 
 VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), my_id(-1)
 {
-    try
-    {
-        if (a < 0)
-            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
-                               "Runtime data is incorrect. Simulation will be terminated.\n");
-
-        if (b < 0)
-            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
-                               "Runtime data is incorrect. Simulation will be terminated.\n");
-
-        if (c < 0)
-            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
-                               "Runtime data is incorrect. Simulation will be terminated.\n");
+//    try
+//    {
+//        if (a < 0)
+//            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
+//                               "Runtime data is incorrect. Simulation will be terminated.\n");
+//
+//        if (b < 0)
+//            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
+//                               "Runtime data is incorrect. Simulation will be terminated.\n");
+//
+//        if (c < 0)
+//            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
+//                               "Runtime data is incorrect. Simulation will be terminated.\n");
 
         for (int i = 0; i < 3; i++)
         {
@@ -28,18 +33,19 @@ VertexTriangle::VertexTriangle(int a, int b, int c) : ia(a), ib(b), ic(c), my_id
             ki[i] = 0.0;
             ci[i] = 0.0;
         }
-    }
-
-    catch (RunTimeError& e)
-    {
-        std::cerr << e.what() << std::endl;
-        //exit(EXIT_FAILURE);
-    }
+//    }
+//
+//    catch (RunTimeError& e)
+//    {
+//        std::cerr << e.what() << std::endl;
+//        //exit(EXIT_FAILURE);
+//    }
 }
 
-VertexTriangle::VertexTriangle() : VertexTriangle(0, 0, 0) {}
-
-VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), ib(orig.ib), ic(orig.ic), my_id(orig.my_id)
+VertexTriangle::VertexTriangle(const VertexTriangle& orig) : ia(orig.ia), 
+        ib(orig.ib), 
+        ic(orig.ic),
+        my_id(orig.my_id)
 {
     for (int i = 0; i < 3; i++)
     {

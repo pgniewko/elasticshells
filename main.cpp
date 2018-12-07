@@ -448,14 +448,18 @@ int main(int argc, char** argv)
         {
             if (arguments.restart)
             {
+                std::cout << "RESTART MODE" << std::endl;
                 simulator.restart();
+                std::cout << "past simulator.restart()" << std::endl;
             }
             else
             {
                 simulator.initShells(arguments.n_shells, arguments.init_radius1, arguments.init_radius2, arguments.jam);
             }
 
+            std::cout << "Gate 7" << std::endl;
             simulator.simulate(arguments.nsteps);
+            std::cout << "Gate 8" << std::endl;
         }
 
         clocks[0].toc();

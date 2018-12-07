@@ -70,31 +70,39 @@ void Restarter::readTopologyFile(std::vector<Shell>& shells) const
 {
     std::pair<int, std::string>  nc_mtype = get_number_of_shells();
 
-    for (int i = 0; i < nc_mtype.first; i++)
-    {
-        Shell new_shell;
-        shells.push_back(new_shell);
-    }
+    std::cout << "nu of shells = " << nc_mtype.first << std::endl;
+//    for (int i = 0; i < nc_mtype.first; i++)
+//    {
+//        Shell new_shell;
+//        shells.push_back(new_shell);
+//    }
 
+    std::cout << "Gate 2.1"<< std::endl;
     for (int i = 0; i < nc_mtype.first; i++)
     {
         initShell(shells, i);
     }
+    
+    std::cout << "Gate 2.2"<< std::endl;
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
         addVertices(shells, i);
     }
+    
+    std::cout << "Gate 2.3"<< std::endl;
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
         addVTriangles(shells, i);
     }
+    std::cout << "Gate 2.4"<< std::endl;
 
     for (int i = 0; i < nc_mtype.first; i++)
     {
         addBHinges(shells, i);
     }
+    std::cout << "Gate 2.5"<< std::endl;
 }
 
 std::pair<int, std::string> Restarter::get_number_of_shells() const
@@ -131,7 +139,7 @@ std::pair<int, std::string> Restarter::get_number_of_shells() const
     return line_pair;
 }
 
-void Restarter::initShell(std::vector<Shell>& shells, int cix) const
+void Restarter::initShell(std::vector<Shell>& shells, int shell_idx) const
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
@@ -139,7 +147,6 @@ void Restarter::initShell(std::vector<Shell>& shells, int cix) const
 
     if ( os.is_open() )
     {
-
         while ( std::getline (os, line) )
         {
             if ( line.find("SHELL ") == 0 )
@@ -148,21 +155,28 @@ void Restarter::initShell(std::vector<Shell>& shells, int cix) const
 
                 int shell_id = std::stoi(pairs[ 1 ].c_str(), NULL);
 
-                if (shell_id == cix)
+                if (shell_id == shell_idx)
                 {
-                    shells[cix].shell_id  = std::stoi(pairs[ 1 ].c_str(), NULL);
-                    shells[cix].number_v  = std::stoi(pairs[ 2 ].c_str(), NULL);
-                    shells[cix].number_t  = std::stoi(pairs[ 3 ].c_str(), NULL);
-                    shells[cix].number_s  = std::stoi(pairs[ 4 ].c_str(), NULL);
+                    
+                    int nv = std::stoi(pairs[ 2 ].c_str(), NULL);
+                    int nt = std::stoi(pairs[ 3 ].c_str(), NULL);
+                    int nh = std::stoi(pairs[ 4 ].c_str(), NULL);
+                    shells.push_back( Shell( nv, nt, nh ) );
+                    std::cout << "shell_idx=" << shell_idx << " nv=" << shells[shell_idx].number_v << " nt=" << shells[shell_idx].number_t  << " nh=" << shells[shell_idx].number_h << std::endl;
+                    
+                    shells[shell_idx].shell_id  = std::stoi(pairs[ 1 ].c_str(), NULL);
+                    shells[shell_idx].number_v  = nv; //std::stoi(pairs[ 2 ].c_str(), NULL);
+                    shells[shell_idx].number_t  = nt; //std::stoi(pairs[ 3 ].c_str(), NULL);
+                    shells[shell_idx].number_h  = nh; //std::stoi(pairs[ 4 ].c_str(), NULL);
 
-                    shells[cix].params.vertex_r = strtod(pairs[ 5 ].c_str(), NULL);
-                    shells[cix].params.ecc = strtod(pairs[ 6 ].c_str(), NULL);
-                    shells[cix].params.nu = strtod(pairs[ 7 ].c_str(), NULL);
-                    shells[cix].params.dp = strtod(pairs[ 8 ].c_str(), NULL);
-                    shells[cix].params.init_r = strtod(pairs[ 9 ].c_str(), NULL);
-                    shells[cix].params.vol_c = strtod(pairs[ 10 ].c_str(), NULL);
-                    shells[cix].nRT = strtod(pairs[ 11 ].c_str(), NULL);
-                    shells[cix].V0 = strtod(pairs[ 12 ].c_str(), NULL);
+                    shells[shell_idx].params.vertex_r = strtod(pairs[ 5 ].c_str(), NULL);
+                    shells[shell_idx].params.ecc = strtod(pairs[ 6 ].c_str(), NULL);
+                    shells[shell_idx].params.nu = strtod(pairs[ 7 ].c_str(), NULL);
+                    shells[shell_idx].params.dp = strtod(pairs[ 8 ].c_str(), NULL);
+                    shells[shell_idx].params.init_r = strtod(pairs[ 9 ].c_str(), NULL);
+                    shells[shell_idx].params.vol_c = strtod(pairs[ 10 ].c_str(), NULL);
+                    shells[shell_idx].nRT = strtod(pairs[ 11 ].c_str(), NULL);
+                    shells[shell_idx].V0 = strtod(pairs[ 12 ].c_str(), NULL);
                 }
             }
         }
@@ -182,32 +196,40 @@ void Restarter::addVertices(std::vector<Shell>& shells, int cix) const
     os.open(topologyFile, std::ifstream::in);
     std::string line;
 
+    std::cout << "Gate 2.2.1"<< std::endl;
     if ( os.is_open() )
     {
         while ( std::getline (os, line) )
         {
             if ( line.find("SHELLVERTEX ") == 0 )
             {
+                std::cout << "Gate 2.2.2"<< std::endl;
                 std::vector<std::string> pairs = split(line, ' ');
 
                 int shell_id = std::stoi(pairs[ 1 ].c_str(), NULL);
 
                 if (shell_id == cix)
                 {
+                    std::cout << "Gate 2.2.3"<< std::endl;
                     int v_id = std::stoi(pairs[ 2 ].c_str(), NULL);
+                    std::cout << "Gate 2.2.4a" << " v_id=" << v_id<< std::endl;
                     shells[cix].vertices[v_id].set_id(v_id);
+                    std::cout << "Gate 2.2.4b" << " v_id=" << v_id<< std::endl;
                     shells[cix].vertices[v_id].set_shell_id(cix);
+                    std::cout << "Gate 2.2.4c" << " v_id=" << v_id<< std::endl;
                     shells[cix].vertices[v_id].vertex_degree = strtod(pairs[ 3 ].c_str(), NULL);
+                    std::cout << "Gate 2.2.4d" << " v_id=" << v_id<< std::endl;
                     shells[cix].vertices[v_id].facets_number = strtod(pairs[ 4 ].c_str(), NULL);
+                    std::cout << "Gate 2.2.4e" << " v_id=" << v_id<< std::endl;
 
                     int start_ix = 4;
 
+                    
                     for (int i = 0; i < shells[cix].vertices[v_id].vertex_degree; i++)
                     {
+                        std::cout << "Gate 2.2.4f" << " i=" << i << " xxx: " << pairs[ start_ix ].c_str() << std::endl;
+                        shells[cix].vertices[v_id].bondedVerts.push_back(-1);
                         shells[cix].vertices[v_id].bondedVerts[i] = std::stoi(pairs[ start_ix + 1 ].c_str(), NULL);
-//                        shells[cix].vertices[v_id].r0[i]          = strtod(pairs[ start_ix + 2 ].c_str(), NULL);
-//                        shells[cix].vertices[v_id].k0[i]          = strtod(pairs[ start_ix + 3 ].c_str(), NULL);
-//                        start_ix += 3;
                         start_ix++;
                     }
 
@@ -215,6 +237,8 @@ void Restarter::addVertices(std::vector<Shell>& shells, int cix) const
 
                     for (int i = 0; i < shells[cix].vertices[v_id].facets_number; i++)
                     {
+                        std::cout << "Gate 2.2.4g" << " i=" << i << " xxx: " << pairs[ start_ix ].c_str() << std::endl;
+                        shells[cix].vertices[v_id].bondedTris.push_back(-1);
                         shells[cix].vertices[v_id].bondedTris[i] = std::stoi(pairs[ start_ix ].c_str(), NULL);
                         start_ix++;
                     }
@@ -301,15 +325,15 @@ void Restarter::addBHinges(std::vector<Shell>& shells, int cix) const
                 if (shell_id == cix)
                 {
                     int b_id = std::stoi(pairs[ 2 ].c_str(), NULL);
-                    shells[cix].bhinges[b_id].setId(b_id);
+                    shells[cix].hinges[b_id].setId(b_id);
 
-                    shells[cix].bhinges[b_id].D = strtod(pairs[ 3 ].c_str(), NULL);
-                    shells[cix].bhinges[b_id].sinTheta0 = strtod(pairs[ 4 ].c_str(), NULL);
-                    shells[cix].bhinges[b_id].theta0 = strtod(pairs[ 5 ].c_str(), NULL);
-                    shells[cix].bhinges[b_id].x1 = std::stoi(pairs[ 6 ].c_str(), NULL);
-                    shells[cix].bhinges[b_id].x2 = std::stoi(pairs[ 7 ].c_str(), NULL);
-                    shells[cix].bhinges[b_id].x3 = std::stoi(pairs[ 8 ].c_str(), NULL);
-                    shells[cix].bhinges[b_id].x4 = std::stoi(pairs[ 9 ].c_str(), NULL);
+                    shells[cix].hinges[b_id].D = strtod(pairs[ 3 ].c_str(), NULL);
+                    shells[cix].hinges[b_id].sinTheta0 = strtod(pairs[ 4 ].c_str(), NULL);
+                    shells[cix].hinges[b_id].theta0 = strtod(pairs[ 5 ].c_str(), NULL);
+                    shells[cix].hinges[b_id].x1 = std::stoi(pairs[ 6 ].c_str(), NULL);
+                    shells[cix].hinges[b_id].x2 = std::stoi(pairs[ 7 ].c_str(), NULL);
+                    shells[cix].hinges[b_id].x3 = std::stoi(pairs[ 8 ].c_str(), NULL);
+                    shells[cix].hinges[b_id].x4 = std::stoi(pairs[ 9 ].c_str(), NULL);
                 }
             }
         }
@@ -349,39 +373,61 @@ void Restarter::registerVMap()
         // print error
     }
 
+    {
+        for ( auto it = vmap.begin(); it != vmap.end(); ++it )
+        {
+            std::cout << " " << it->first << ":" << it->second.first <<"," << it->second.second;
+        }
+        std::cout << std::endl;   
+    }
+    
     os.close();
 
 }
 
 void Restarter::readLastFrame(std::vector<Shell>& shells) const
 {
+    std::cout << "Gate 3.1" << std::endl;
     std::ifstream os;
     os.open(lastFrameFile, std::ifstream::in);
     std::string line;
 
+    uint line_counter = 0;
+    std::cout << "Gate 3.2" << std::endl;
     if ( os.is_open() )
     {
+        std::cout << "Gate 3.3" << std::endl;
         while ( std::getline (os, line) )
         {
-
+            line_counter++;
             std::vector<std::string> pairs = split(line, ' ');
 
-            if (pairs.size() > 1)
+            if (pairs.size() > 1 && line_counter > 1)
             {
+                std::cout << "Gate 3.4" << std::endl;
                 std::string vkey = pairs[ 0 ].c_str();
 
+                std::cout << "Gate 3.4.1a" << std::endl;
                 double x = strtod(pairs[ 1 ].c_str(), NULL);
+                std::cout << "Gate 3.4.1b" << std::endl;
                 double y = strtod(pairs[ 2 ].c_str(), NULL);
+                std::cout << "Gate 3.4.1c" << std::endl;
                 double z = strtod(pairs[ 3 ].c_str(), NULL);
+                std::cout << "Gate 3.4.2" << std::endl;
 
+                
                 std::pair<int, int> value = vmap.at( vkey );
+                std::cout << "Gate 3.4.3" << std::endl;
 
-                int ci = value.first;
+                std::cout << "value.first=" << value.first << " value.second=" << value.second << std::endl;
+                int si = value.first;
                 int vi = value.second;
+                std::cout << "Gate 3.4.4" << std::endl;
 
-                shells[ci].vertices[vi].r_c.x = x;
-                shells[ci].vertices[vi].r_c.y = y;
-                shells[ci].vertices[vi].r_c.z = z;
+                shells[si].vertices[vi].r_c.x = x;
+                shells[si].vertices[vi].r_c.y = y;
+                shells[si].vertices[vi].r_c.z = z;
+                std::cout << "Gate 3.4.5: vid=" << vi << " rx = " <<  x << " ry=" << y << " rz=" << z << std::endl;
             }
         }
 
@@ -391,7 +437,9 @@ void Restarter::readLastFrame(std::vector<Shell>& shells) const
         // print error
     }
 
+    std::cout << "Gate 3.5" << std::endl;
     os.close();
+    std::cout << "Gate 3.6" << std::endl;
 }
 
 void Restarter::readFrame(std::string trajFile, std::vector<Shell>& shells, int frameNumber) const

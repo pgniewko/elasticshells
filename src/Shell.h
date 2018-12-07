@@ -31,13 +31,13 @@ struct shell_params_t
 class Shell
 {
         friend class Tinker;
-        friend class DomainList;
         friend class Energy;
         friend class Restarter;
 
     public:
 
         Shell();
+        Shell(int,int,int);
         Shell(std::list<Triangle>);
         Shell(const Shell& orig);
         virtual ~Shell();
@@ -78,7 +78,7 @@ class Shell
         
         std::vector<Vertex> vertices;
         std::vector<VertexTriangle> triangles;
-        std::vector<BendingHinge> bhinges;
+        std::vector<BendingHinge> hinges;
         
         int shell_id = -1;
         double calcSurfaceArea(double) const;
@@ -102,7 +102,7 @@ class Shell
         shell_params_t params;
         int number_v = 0;
         int number_t = 0;
-        int number_s = 0;
+        int number_h = 0;
         double nRT = 0.0;
         double V0 = 0.0;
 

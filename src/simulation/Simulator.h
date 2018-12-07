@@ -69,7 +69,7 @@ class Simulator
         Simulator(const Simulator& orig) = delete;
         virtual ~Simulator();
 
-        void simulate();
+//        void simulate();
         void simulate(int);
 
         void initShells(int, double, double, bool = false);

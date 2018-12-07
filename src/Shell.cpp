@@ -8,9 +8,37 @@ double Shell::FORCE_FRAC(0.0);
 double Shell::MIN_FORCE(0.0);
 
 Shell::Shell() {}
+Shell::Shell(int nv, int nt, int nh) 
+{
+    for(int i = 0; i < nv; i++)
+    {
+        Vertex new_vertx;
+        vertices.push_back( new_vertx );
+    }
+    
+    for(int i = 0; i < nt; i++)
+    {
+        VertexTriangle new_vertx_triangle;
+        triangles.push_back( new_vertx_triangle );
+    }
+    
+    for(int i = 0; i < nh; i++)
+    {
+        BendingHinge new_hinge;
+        hinges.push_back( new_hinge );
+    }
+    
+    number_v = nv;
+    number_t = nt;
+    number_h = nh;
+}
 
-Shell::Shell(std::list<Triangle> tris) : shell_id(-1), number_v(0), number_t(0), number_s(0), nRT(0),
-    V0(0)
+Shell::Shell(std::list<Triangle> tris) : shell_id(-1), 
+        number_v(0), 
+        number_t(0), 
+        number_h(0), 
+        nRT(0),
+        V0(0)
 {
     Tinker::constructVertices(*this, tris);
     Tinker::constructVTriangles(*this, tris);
@@ -19,11 +47,36 @@ Shell::Shell(std::list<Triangle> tris) : shell_id(-1), number_v(0), number_t(0),
     randomRotate();
 }
 
-Shell::Shell(const Shell& orig) : center_of_mass(orig.center_of_mass), vertices(orig.vertices), triangles(orig.triangles), bhinges(orig.bhinges),
-    shell_id(orig.shell_id), params(orig.params), number_v(orig.number_v), number_t(orig.number_t), number_s(orig.number_s),
-    nRT(orig.nRT), V0(orig.V0) {}
+Shell::Shell(const Shell& orig) : center_of_mass(orig.center_of_mass), 
+        vertices(orig.vertices), 
+        triangles(orig.triangles), 
+        hinges(orig.hinges),
+        shell_id(orig.shell_id), 
+        params(orig.params), 
+        number_v(orig.number_v), 
+        number_t(orig.number_t), 
+        number_h(orig.number_h),
+        nRT(orig.nRT), V0(orig.V0) 
+{
+    for (int i = 0; i < number_v; i++)
+    {
+        vertices.push_back( orig.vertices[i] );
+    }
+    
+    for (int i = 0; i < number_t; i++)
+    {
+        triangles.push_back( orig.triangles[i] );
+    }
+    
+    for (int i = 0; i < number_h; i++)
+    {
+        hinges.push_back( orig.hinges[i] );
+    }
+}
 
-Shell::~Shell() {}
+Shell::~Shell() 
+{
+}
 
 double Shell::calcSurfaceArea(double d_param) const
 {
@@ -102,10 +155,10 @@ void Shell::setBSprings(double E, double t, double nu_)
         return;
     }
 
-    for (int i = 0; i < number_s; i++)
+    for (int i = 0; i < number_h; i++)
     {
-        bhinges[i].setD(E, t, nu_);
-        bhinges[i].setThetaZero(vertices);
+        hinges[i].setD(E, t, nu_);
+        hinges[i].setThetaZero(vertices);
     }
 }
 
@@ -129,7 +182,7 @@ int Shell::getNumberVertices() const
 
 int Shell::getNumberHinges() const
 {
-    return number_s;
+    return number_h;
 }
 
 void Shell::setVertexR(double rv)
@@ -270,7 +323,7 @@ const shell_params_t& Shell::get_params() const
 std::ostream& operator<< (std::ostream& out, const Shell& c)
 {
     out << "SHELL " << c.shell_id << ' ';
-    out << c.number_v << ' ' << c.number_t << ' ' << c.number_s << ' ';
+    out << c.number_v << ' ' << c.number_t << ' ' << c.number_h << ' ';
     out << c.params.vertex_r << ' ' << c.params.ecc << ' ' << c.params.nu << ' ';
     out << c.params.dp << ' ' << c.params.init_r << ' ' << c.params.vol_c << ' ';
     out << c.nRT << ' ' << c.V0 << "\n";
@@ -285,9 +338,9 @@ std::ostream& operator<< (std::ostream& out, const Shell& c)
         out << "SHELLTRIANG " <<  c.shell_id << ' ' << c.triangles[i] << '\n';
     }
 
-    for (int i = 0; i < c.number_s; i++)
+    for (int i = 0; i < c.number_h; i++)
     {
-        out << "SHELLHINGE " <<  c.shell_id << ' ' << c.bhinges[i].getId() << ' ' << c.bhinges[i] << '\n';
+        out << "SHELLHINGE " <<  c.shell_id << ' ' << c.hinges[i].getId() << ' ' << c.hinges[i] << '\n';
     }
 
     return out;

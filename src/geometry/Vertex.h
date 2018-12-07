@@ -38,7 +38,7 @@ class Vertex
         int vertex_degree;              // make it private
         int facets_number;              // make it private
 
-        Vertex* next = NULL;
+        //Vertex* next = NULL;
         friend std::ostream& operator<< (std::ostream&, const Vertex&);
 
     private:
