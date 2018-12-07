@@ -18,13 +18,26 @@ ifeq ($(TEST), 1)
 endif
 
 TARGET       := $(BIN)/elasticshells
+MESH         := $(BIN)/mesh
+TEST_RUNNER  := $(TESTS)/testsrunner
+
+
 SOURCES	     := main.cpp \
+		$(shell find $(SRC) -type f -name "*.cpp")
+
+MESH_SOURCES := mesh.cpp \
 		$(shell find $(SRC) -type f -name "*.cpp")
 
 HEADERS	     := $(shell find $(SRC) -type f -name "*.h")
 
+
+TEST_SOURCES := $(shell find $(TESTS) -type f -name "*.cpp") \
+		$(shell find $(SRC)   -type f -name "*.cpp")
+
 OBJECTS      := $(SOURCES:.cpp=.o)
 
+MESH_OBJECTS := $(MESH_SOURCES:.cpp=.o)
+	
 TEST_OBJECTS := $(TEST_SOURCES:.cpp=.o)
 
 DEPS         := $(OBJECTS:.o=.d)
@@ -36,10 +49,21 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 	@echo BUILDING IS DONE
 
+$(MESH): $(MESH_OBJECTS)
+	@echo LINKING ...
+	$(MKDIR) $(@D)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ $(LDLIBS)
+	@echo BUILDING IS DONE
+
+$(TEST_RUNNER): $(TEST_OBJECTS) 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ -lcppunit $(LDLIBS)
+
 #Compilation commands:
 main.o: $(SOURCES) $(HEADERS) #main.cpp 
 
 $(SRC)/%.o: $(SRC)/%.cpp $(SRC)/%.h
+
+$(TESTS)/%.o: $(TESTS)/%.cpp $(TESTS)/%.h
 
 %.o: %.cpp %.h
 	$(CXX) -MMD -MP $(CXXFLAGS) -c $< -o $@
@@ -53,8 +77,15 @@ build: $(TARGET)
 
 clean:
 	@echo Cleaning...
-	$(RM) $(TARGET) $(OBJECTS) $(DEPS)
+	$(RM) $(TARGET) $(TEST_RUNNER) $(OBJECTS) $(TEST_OBJECTS) $(DEPS)
 	
+tests: $(TEST_RUNNER)
+	@$(TEST_RUNNER)
+	@echo Test done.
+
+mesh: $(MESH)
+	@echo Mesh code is built.
+
 install: $(TARGET)
 	@echo You must be root to install. Have password ready!
 	sudo install -m 755 $(TARGET) $(PREFIX)/bin
