@@ -25,12 +25,12 @@ class Restarter
         void readLastFrame(std::vector<Shell>&) const;
         void registerVMap();
 
-        void readFrame(std::string, std::vector<Shell>&, int) const;
-        void assignTurgors(std::string, std::vector<Shell>&) const;
-        void assignBoxSize(std::string, Box&) const;
+        void read_frame(std::string, std::vector<Shell>&, int) const;
+        void assign_turgors(std::string, std::vector<Shell>&) const;
+        void assign_box_size(std::string, Box&) const;
 
     private:
-        int getTotalVertices(const std::vector<Shell>&) const;
+        int get_total_vertices(const std::vector<Shell>&) const;
 
         std::pair<int, std::string> get_number_of_shells() const;
         void init_shell(std::vector<Shell>&, int) const;
@@ -38,14 +38,10 @@ class Restarter
         void add_elements(std::vector<Shell>&, int) const;
         void add_hinges(std::vector<Shell>&, int) const;
 
-        //void validateVMap();
-
         std::string topologyFile;
         std::string lastFrameFile;
         std::unordered_map< std::string, std::pair<int, int> >  vmap;
         static utils::Logger restarter_logs;
-
-
 };
 
 #endif	/* RESTARTER_H */

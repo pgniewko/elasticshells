@@ -17,16 +17,14 @@ class Element
         explicit Element(int, int, int);
         Element(const Element& orig);
         virtual ~Element();
-        void setId(int);
-        int getId() const;
+        void set_id(int);
+        int get_id() const;
         double area(const std::vector<Vertex>&) const;
         double area(const std::vector<Vertex>&, const Vector3D, double) const;
 
         Vector3D normal(const std::vector<Vertex>&) const;
-        
-        void subsVertex(int, int);
 
-        void setParams(const std::vector<Vertex>&, const double, const double, const double);
+        void set_params(const std::vector<Vertex>&, const double, const double, const double);
 
         int ia = -1;
         int ib = -1;

@@ -40,10 +40,10 @@ Shell::Shell(std::list<Triangle> tris) : shell_id(-1),
         nRT(0),
         V0(0)
 {
-    Tinker::constructVertices(*this, tris);
-    Tinker::constructVTriangles(*this, tris);
-    Tinker::constructTopology(*this);
-    Tinker::constructBSprings(*this);
+    Tinker::construct_vertices(*this, tris);
+    Tinker::construct_elements(*this, tris);
+    Tinker::construct_topology(*this);
+    Tinker::construct_hinges(*this);
     randomRotate();
 }
 
@@ -217,7 +217,7 @@ void Shell::setSpringConst(double E, double t, double nu_)
 {
     for (int i = 0; i < number_t; i++)
     {
-        triangles[i].setParams(vertices, E, nu_, t);
+        triangles[i].set_params(vertices, E, nu_, t);
     }
 }
 

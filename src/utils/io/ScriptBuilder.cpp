@@ -10,7 +10,7 @@ ScriptBuilder::ScriptBuilder(const ScriptBuilder& orig) :
 
 ScriptBuilder::~ScriptBuilder() {}
 
-void ScriptBuilder::saveRenderScript(const std::vector<Shell>& cells, const Box& box, bool boxFlag, double rv) const
+void ScriptBuilder::save_render_script(const std::vector<Shell>& cells, const Box& box, bool boxFlag, double rv) const
 {
     std::ofstream os;
     os.open(script);
@@ -31,7 +31,7 @@ void ScriptBuilder::saveRenderScript(const std::vector<Shell>& cells, const Box&
 
         if (boxFlag)
         {
-            printBox(box, os);
+            print_box(box, os);
         }
 
         int lastCellIndex = 0;
@@ -56,7 +56,7 @@ void ScriptBuilder::saveRenderScript(const std::vector<Shell>& cells, const Box&
                 for (int k = 0; k < cells[i].vertices[j].vertex_degree; k++)
                 {
                     std::string strindex1 = new_base_index( lastCellIndex +  cells[i].vertices[j].get_id());
-                    std::string strindex2 = new_base_index( lastCellIndex +  cells[i].vertices[j].bondedVerts[k]);
+                    std::string strindex2 = new_base_index( lastCellIndex +  cells[i].vertices[j].bonded_vertices[k]);
                     os << "cmd.do(\"bond " << strindex1 << ", " << strindex2 << "\")\n";
                 }
             }
@@ -74,7 +74,7 @@ void ScriptBuilder::saveRenderScript(const std::vector<Shell>& cells, const Box&
     }
 }
 
-void ScriptBuilder::printBox(const Box& box, std::ofstream& os) const
+void ScriptBuilder::print_box(const Box& box, std::ofstream& os) const
 {
     if ( os.is_open() )
     {

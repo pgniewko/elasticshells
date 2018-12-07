@@ -24,20 +24,20 @@ class LogSimulation
         void open();
         void close();
 
-        void registerObservers();
-        void printHeader();
-        void dumpState(const Box&, const std::vector<Shell>&);
+        void register_observers();
+        void print_header();
+        void dump_state(const Box&, const std::vector<Shell>&);
 
-        const std::string getFileName() const;
+        const std::string get_file_name() const;
 
-        const std::vector<std::string> readTurgorsFile() const;
+        const std::vector<std::string> read_turgors_file() const;
 
     private:
         std::string logfile;
         std::string configfile;
         FILE* os;
         std::vector<Observer*> observers;
-        std::vector<std::string> readConfigFile();
+        std::vector<std::string> read_configuration_file();
 
         static utils::Logger log_logger;
 };

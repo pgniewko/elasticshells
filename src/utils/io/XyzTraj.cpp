@@ -155,7 +155,7 @@ const std::vector<std::string> XyzTraj::read_saved_box() const
     return list;
 }
 
-uint XyzTraj::countFramesNumber() const
+uint XyzTraj::count_frames() const
 {
     std::ifstream os;
     os.open(trajfile, std::ifstream::in);

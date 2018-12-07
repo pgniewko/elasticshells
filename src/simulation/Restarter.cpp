@@ -11,7 +11,7 @@ Restarter::~Restarter()
 {
 }
 
-int Restarter::getTotalVertices(const std::vector<Shell>& shells) const
+int Restarter::get_total_vertices(const std::vector<Shell>& shells) const
 {
     int totalnumber = 0;
 
@@ -62,7 +62,7 @@ void Restarter::saveLastFrame(const std::vector<Shell>& shells, const Box& box) 
 {
     XyzTraj lf_xyz(lastFrameFile, "NULL");
     lf_xyz.open_lf();
-    lf_xyz.save_traj(shells, getTotalVertices(shells), box);
+    lf_xyz.save_traj(shells, get_total_vertices(shells), box);
     lf_xyz.close_traj();
 }
 
@@ -203,8 +203,8 @@ void Restarter::add_vertices(std::vector<Shell>& shells, int cix) const
                     
                     for (int i = 0; i < shells[cix].vertices[v_id].vertex_degree; i++)
                     {
-                        shells[cix].vertices[v_id].bondedVerts.push_back(-1);
-                        shells[cix].vertices[v_id].bondedVerts[i] = std::stoi(pairs[ start_ix + 1 ].c_str(), NULL);
+                        shells[cix].vertices[v_id].bonded_vertices.push_back(-1);
+                        shells[cix].vertices[v_id].bonded_vertices[i] = std::stoi(pairs[ start_ix + 1 ].c_str(), NULL);
                         start_ix++;
                     }
 
@@ -212,8 +212,8 @@ void Restarter::add_vertices(std::vector<Shell>& shells, int cix) const
 
                     for (int i = 0; i < shells[cix].vertices[v_id].facets_number; i++)
                     {
-                        shells[cix].vertices[v_id].bondedTris.push_back(-1);
-                        shells[cix].vertices[v_id].bondedTris[i] = std::stoi(pairs[ start_ix ].c_str(), NULL);
+                        shells[cix].vertices[v_id].bonded_elements.push_back(-1);
+                        shells[cix].vertices[v_id].bonded_elements[i] = std::stoi(pairs[ start_ix ].c_str(), NULL);
                         start_ix++;
                     }
                 }
@@ -393,7 +393,7 @@ void Restarter::readLastFrame(std::vector<Shell>& shells) const
     os.close();
 }
 
-void Restarter::readFrame(std::string trajFile, std::vector<Shell>& shells, int frameNumber) const
+void Restarter::read_frame(std::string trajFile, std::vector<Shell>& shells, int frameNumber) const
 {
     std::ifstream os;
     os.open(trajFile, std::ifstream::in);
@@ -442,7 +442,7 @@ void Restarter::readFrame(std::string trajFile, std::vector<Shell>& shells, int 
 }
 
 
-void Restarter::assignTurgors(std::string turgor_line, std::vector<Shell>& shells) const
+void Restarter::assign_turgors(std::string turgor_line, std::vector<Shell>& shells) const
 {
     std::vector<std::string> pairs = split(turgor_line, ' ');
     double turgor;
@@ -454,7 +454,7 @@ void Restarter::assignTurgors(std::string turgor_line, std::vector<Shell>& shell
     }
 }
 
-void Restarter::assignBoxSize(std::string box_line, Box& box) const
+void Restarter::assign_box_size(std::string box_line, Box& box) const
 {
     std::vector<std::string> pairs = split(box_line, ' ');
     double x, y, z;

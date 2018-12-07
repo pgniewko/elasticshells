@@ -8,14 +8,14 @@ Tinker::Tinker(const Tinker& orig) {}
 
 Tinker::~Tinker() {}
 
-void Tinker::constructVertices(Shell& shell, std::list<Triangle>& tris)
+void Tinker::construct_vertices(Shell& shell, std::list<Triangle>& tris)
 {
     std::list<Vector3D> vectors;
     double xtmp, ytmp, ztmp;
 
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
-        if ( Tinker::isUnique(vectors, i->a) )
+        if ( Tinker::is_unique(vectors, i->a) )
         {
             vectors.push_back(i->a);
             xtmp = i->a.x;
@@ -26,7 +26,7 @@ void Tinker::constructVertices(Shell& shell, std::list<Triangle>& tris)
             shell.number_v++;
         }
 
-        if ( Tinker::isUnique(vectors, i->b) )
+        if ( Tinker::is_unique(vectors, i->b) )
         {
             vectors.push_back(i->b);
             xtmp = i->b.x;
@@ -37,7 +37,7 @@ void Tinker::constructVertices(Shell& shell, std::list<Triangle>& tris)
             shell.number_v++;
         }
 
-        if ( Tinker::isUnique(vectors, i->c) )
+        if ( Tinker::is_unique(vectors, i->c) )
         {
             vectors.push_back(i->c);
             xtmp = i->c.x;
@@ -50,21 +50,21 @@ void Tinker::constructVertices(Shell& shell, std::list<Triangle>& tris)
     }
 }
 
-void Tinker::constructVTriangles(Shell& shell, std::list<Triangle>& tris)
+void Tinker::construct_elements(Shell& shell, std::list<Triangle>& tris)
 {
     for (std::list<Triangle>::iterator i = tris.begin(); i != tris.end(); ++i)
     {
-        int va = getVertex(shell, i->a);
-        int vb = getVertex(shell, i->b);
-        int vc = getVertex(shell, i->c);
+        int va = get_vertex(shell, i->a);
+        int vb = get_vertex(shell, i->b);
+        int vc = get_vertex(shell, i->c);
         Element vrxt(va, vb, vc);
         shell.triangles.push_back(Element(vrxt));
-        shell.triangles[shell.number_t].setId(shell.number_t);
+        shell.triangles[shell.number_t].set_id(shell.number_t);
         shell.number_t++;
     }
 }
 
-int Tinker::getVertex(Shell& cell, const Vector3D& v, double e)
+int Tinker::get_vertex(Shell& cell, const Vector3D& v, double e)
 {
     for (int i = 0; i < cell.number_v; i++)
     {
@@ -76,7 +76,7 @@ int Tinker::getVertex(Shell& cell, const Vector3D& v, double e)
     return -1;
 }
 
-void Tinker::constructTopology(Shell& shell)
+void Tinker::construct_topology(Shell& shell)
 {
     for (int i = 0; i < shell.number_t; i++)
     {
@@ -85,19 +85,19 @@ void Tinker::constructTopology(Shell& shell)
         int cid = shell.triangles[i].ic;
         int tid = shell.triangles[i].my_id;
 
-        shell.vertices[aid].addNeighbor(bid);
-        shell.vertices[aid].addNeighbor(cid);
-        shell.vertices[bid].addNeighbor(aid);
-        shell.vertices[bid].addNeighbor(cid);
-        shell.vertices[cid].addNeighbor(aid);
-        shell.vertices[cid].addNeighbor(bid);
-        shell.vertices[aid].addTriangle(tid);
-        shell.vertices[bid].addTriangle(tid);
-        shell.vertices[cid].addTriangle(tid);
+        shell.vertices[aid].add_neighbor(bid);
+        shell.vertices[aid].add_neighbor(cid);
+        shell.vertices[bid].add_neighbor(aid);
+        shell.vertices[bid].add_neighbor(cid);
+        shell.vertices[cid].add_neighbor(aid);
+        shell.vertices[cid].add_neighbor(bid);
+        shell.vertices[aid].add_element(tid);
+        shell.vertices[bid].add_element(tid);
+        shell.vertices[cid].add_element(tid);
     }
 }
 
-void Tinker::constructBSprings(Shell& shell)
+void Tinker::construct_hinges(Shell& shell)
 {
 
     if (shell.getNumberVertices() == 1)
@@ -111,17 +111,17 @@ void Tinker::constructBSprings(Shell& shell)
         for (int j = 0; j < shell.vertices[x3].vertex_degree; j++)
         {
             std::vector<int> common_verts;
-            int x4 = shell.vertices[x3].bondedVerts[j];
+            int x4 = shell.vertices[x3].bonded_vertices[j];
 
             for (int k = 0; k < shell.vertices[x3].vertex_degree; k++)
             {
                 for (int l = 0; l < shell.vertices[x4].vertex_degree; l++)
                 {
-                    if (x4 != shell.vertices[x3].bondedVerts[k] && x3 != shell.vertices[x4].bondedVerts[l])
+                    if (x4 != shell.vertices[x3].bonded_vertices[k] && x3 != shell.vertices[x4].bonded_vertices[l])
                     {
-                        if (shell.vertices[x3].bondedVerts[k] == shell.vertices[x4].bondedVerts[l])
+                        if (shell.vertices[x3].bonded_vertices[k] == shell.vertices[x4].bonded_vertices[l])
                         {
-                            common_verts.push_back(shell.vertices[x3].bondedVerts[k]);
+                            common_verts.push_back(shell.vertices[x3].bonded_vertices[k]);
                         }
                     }
                 }
@@ -137,9 +137,8 @@ void Tinker::constructBSprings(Shell& shell)
                     int x1_ = std::min(common_verts[ix], common_verts[iy]);
                     int x2_ = std::max(common_verts[ix], common_verts[iy]);
 
-                    if ( isBSpringUnique(x1_, x2_, x3_, x4_, shell) )
+                    if ( is_hinge_unique(x1_, x2_, x3_, x4_, shell) )
                     {
-                        //cell.bhinges[cell.number_s] = BendingHinge(x1_, x2_, x3_, x4_);
                         shell.hinges.push_back(Hinge(x1_, x2_, x3_, x4_));
                         shell.hinges[shell.number_h].setId(shell.number_h);
                         shell.number_h++;
@@ -150,7 +149,7 @@ void Tinker::constructBSprings(Shell& shell)
     }
 }
 
-bool Tinker::isUnique(std::list<Vector3D>& vlist, Vector3D& v, double e)
+bool Tinker::is_unique(std::list<Vector3D>& vlist, Vector3D& v, double e)
 {
     for (std::list<Vector3D>::iterator i = vlist.begin(); i != vlist.end(); ++i)
     {
@@ -163,7 +162,7 @@ bool Tinker::isUnique(std::list<Vector3D>& vlist, Vector3D& v, double e)
     return true;
 }
 
-bool Tinker::isBSpringUnique(int x1, int x2, int x3, int x4, Shell& cell)
+bool Tinker::is_hinge_unique(int x1, int x2, int x3, int x4, Shell& cell)
 {
     Hinge bs_tmp(x1, x2, x3, x4);
 

@@ -39,7 +39,7 @@ void LogSimulation::close()
     }
 }
 
-std::vector<std::string> LogSimulation::readConfigFile()
+std::vector<std::string> LogSimulation::read_configuration_file()
 {
     std::ifstream cfile;
     cfile.open(configfile, std::ifstream::in);
@@ -65,9 +65,9 @@ std::vector<std::string> LogSimulation::readConfigFile()
     return list;
 }
 
-const std::vector<std::string> LogSimulation::readTurgorsFile() const
+const std::vector<std::string> LogSimulation::read_turgors_file() const
 {
-    std::string turgorsFile = getFileName() + ".turgor.out";
+    std::string turgorsFile = get_file_name() + ".turgor.out";
     std::ifstream cfile;
     cfile.open(turgorsFile, std::ifstream::in);
     std::vector<std::string> list;
@@ -92,9 +92,9 @@ const std::vector<std::string> LogSimulation::readTurgorsFile() const
     return list;
 }
 
-void LogSimulation::registerObservers()
+void LogSimulation::register_observers()
 {
-    std::vector<std::string> list = readConfigFile();
+    std::vector<std::string> list = read_configuration_file();
     std::vector<std::string> single_line;
 
     for (std::vector<std::string>::iterator it = list.begin(); it != list.end(); ++it)
@@ -121,7 +121,7 @@ void LogSimulation::registerObservers()
     }
 }
 
-void LogSimulation::printHeader()
+void LogSimulation::print_header()
 {
     fprintf(os, "%s ", "#");
 
@@ -134,7 +134,7 @@ void LogSimulation::printHeader()
     fflush(os);
 }
 
-void LogSimulation::dumpState(const Box& box, const std::vector<Shell>& shells)
+void LogSimulation::dump_state(const Box& box, const std::vector<Shell>& shells)
 {
     for (uint i = 0; i < shells.size(); i++)
     {
@@ -161,7 +161,7 @@ void LogSimulation::dumpState(const Box& box, const std::vector<Shell>& shells)
     fflush(os);
 }
 
-const std::string LogSimulation::getFileName() const
+const std::string LogSimulation::get_file_name() const
 {
     return logfile;
 }

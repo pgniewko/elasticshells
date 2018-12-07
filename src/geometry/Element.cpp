@@ -12,34 +12,13 @@ Element::Element() : Element(-1, -1, -1)
 
 Element::Element(int a, int b, int c) : ia(a), ib(b), ic(c), my_id(-1)
 {
-//    try
-//    {
-//        if (a < 0)
-//            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
-//                               "Runtime data is incorrect. Simulation will be terminated.\n");
-//
-//        if (b < 0)
-//            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
-//                               "Runtime data is incorrect. Simulation will be terminated.\n");
-//
-//        if (c < 0)
-//            throw RunTimeError("[VertexTriangle] Trying to add a vertex with a negative index.\n"
-//                               "Runtime data is incorrect. Simulation will be terminated.\n");
-
-        for (int i = 0; i < 3; i++)
-        {
-            an[i] = 0.0;
-            L2[i] = 0.0;
-            ki[i] = 0.0;
-            ci[i] = 0.0;
-        }
-//    }
-//
-//    catch (RunTimeError& e)
-//    {
-//        std::cerr << e.what() << std::endl;
-//        //exit(EXIT_FAILURE);
-//    }
+    for (int i = 0; i < 3; i++)
+    {
+        an[i] = 0.0;
+        L2[i] = 0.0;
+        ki[i] = 0.0;
+        ci[i] = 0.0;
+    }
 }
 
 Element::Element(const Element& orig) : ia(orig.ia), 
@@ -58,35 +37,14 @@ Element::Element(const Element& orig) : ia(orig.ia),
 
 Element::~Element() {}
 
-void Element::setId(int idx)
+void Element::set_id(int idx)
 {
     my_id = idx;
 }
 
-int Element::getId() const
+int Element::get_id() const
 {
     return my_id;
-}
-
-void Element::subsVertex(int ix_old, int ix_new)
-{
-    if (ix_old == ia)
-    {
-        ia = ix_new;
-        return;
-    }
-    else if (ix_old == ib)
-    {
-        ib = ix_new;
-        return;
-    }
-    else if (ix_old == ic)
-    {
-        ic = ix_new;
-        return;
-    }
-
-    return;
 }
 
 double Element::area(const std::vector<Vertex>& vs) const
@@ -174,7 +132,7 @@ void Element::setCi(const std::vector<Vertex>& vs, const double& E, const double
     ci[2] = E * t * (2.0 * cot(an[0]) * cot(an[1]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu * nu));
 }
 
-void Element::setParams(const std::vector<Vertex>& vs, const double E, const double nu, const double t)
+void Element::set_params(const std::vector<Vertex>& vs, const double E, const double nu, const double t)
 {
     setL2(vs);
     setAn(vs);

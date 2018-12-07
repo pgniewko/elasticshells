@@ -19,16 +19,16 @@ class Tinker
         Tinker();
         Tinker(const Tinker& orig);
         virtual ~Tinker();
-        static void constructVertices(Shell&, std::list<Triangle>&);
-        static void constructVTriangles(Shell&, std::list<Triangle>&);
-        static void constructTopology(Shell&);
-        static void constructBSprings(Shell&);
+        static void construct_vertices(Shell&, std::list<Triangle>&);
+        static void construct_elements(Shell&, std::list<Triangle>&);
+        static void construct_topology(Shell&);
+        static void construct_hinges(Shell&);
 
     private:
-        static bool isUnique(std::list<Vector3D>&, Vector3D&, double = constants::epsilon);
-        static bool isBSpringUnique(int, int, int, int, Shell&);
+        static bool is_unique(std::list<Vector3D>&, Vector3D&, double = constants::epsilon);
+        static bool is_hinge_unique(int, int, int, int, Shell&);
 
-        static int getVertex(Shell&, const Vector3D&, double = constants::epsilon);
+        static int get_vertex(Shell&, const Vector3D&, double = constants::epsilon);
 
         static utils::Logger tinker_log;
 };

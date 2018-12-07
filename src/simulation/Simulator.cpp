@@ -321,10 +321,10 @@ void Simulator::analyze()
     restarter.readTopologyFile(shells);
     number_of_shells = shells.size();
     
-    uint frames_number = traj.countFramesNumber();
+    uint frames_number = traj.count_frames();
     simulator_logs << utils::LogLevel::INFO << " Number of frames in a trajectory file: " << (int) frames_number << "\n" ;
 
-    std::vector<std::string> turgor_list = log_sim.readTurgorsFile();
+    std::vector<std::string> turgor_list = log_sim.read_turgors_file();
     std::vector<std::string> boxsize_list = traj.read_saved_box();
 
     if (turgor_list.size() != frames_number)
@@ -339,16 +339,16 @@ void Simulator::analyze()
         exit(EXIT_FAILURE);
     }
 
-    log_sim.registerObservers();
+    log_sim.register_observers();
     log_sim.open();
-    log_sim.printHeader();
+    log_sim.print_header();
 
     for (std::size_t i = 1; i <= frames_number; i++)
     {
         simulator_logs << utils::LogLevel::INFO << "[analyze] Processing frame number: " << i <<  "/" <<  (int) frames_number << "\n" ;
-        restarter.readFrame(traj.getTrajFile(), shells, i);
-        restarter.assignTurgors(turgor_list[i - 1], shells);
-        restarter.assignBoxSize(boxsize_list[i - 1], box);
+        restarter.read_frame(traj.get_traj_file(), shells, i);
+        restarter.assign_turgors(turgor_list[i - 1], shells);
+        restarter.assign_box_size(boxsize_list[i - 1], box);
         updateShells();
 
         if (i == 1)
@@ -356,16 +356,16 @@ void Simulator::analyze()
             set_min_force();
             simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE (in <<analyze>> mode) SET TO= "  << sqrt(MIN_FORCE) << " [units?]\n";
         }
-        log_sim.dumpState(box, shells);
+        log_sim.dump_state(box, shells);
     }
 }
 
 void Simulator::simulate(int steps)
 {
     // LOGGER READY TO WORK
-    log_sim.registerObservers();
+    log_sim.register_observers();
     log_sim.open();
-    log_sim.printHeader();
+    log_sim.print_header();
 
     // TRAJECTORY FILE OPEND FOR DUMP
     traj.open();
@@ -374,7 +374,7 @@ void Simulator::simulate(int steps)
     if (!Simulator::RESTART_FLAG)
     {
         traj.save_traj(shells, getTotalVertices());
-        log_sim.dumpState(box, shells);
+        log_sim.dump_state(box, shells);
         saveTurgors();
         restarter.saveLastFrame(shells, box);
         restarter.saveTopologyFile(shells);
@@ -419,7 +419,7 @@ void Simulator::simulate(int steps)
         {
             // ** SAVE COORDINATES - i.e. "logging" coordinates
             traj.save_traj(shells, getTotalVertices());
-            log_sim.dumpState(box, shells);
+            log_sim.dump_state(box, shells);
             saveTurgors();
             traj.save_box(box, (step + 1) * params.dt);
             restarter.saveLastFrame(shells, box);
@@ -444,7 +444,7 @@ void Simulator::simulate(int steps)
         recenterShells();
     }
 
-    log_sim.dumpState(box, shells);
+    log_sim.dump_state(box, shells);
     saveTurgors();
     traj.save_box(box, steps * params.dt);
     restarter.saveLastFrame(shells, box);
@@ -623,7 +623,7 @@ void Simulator::integrate()
 
 void Simulator::saveTurgors()
 {
-    std::string turgorDumpFile = log_sim.getFileName() + ".turgor.out";
+    std::string turgorDumpFile = log_sim.get_file_name() + ".turgor.out";
 
     double box_volume = box.getVolume();
     double box_x = box.getX();
@@ -727,7 +727,7 @@ void Simulator::create_shells_image()
             
             for (int k = 0; k < shells[i].getNumberVertices(); k++)
             {
-                if (k != j && shells[i].vertices[j].isNeighbor(k))
+                if (k != j && shells[i].vertices[j].is_neighbor(k))
                 {
                     object_map vm_ik(i, k);
                     int ik_id = inv_vs_map[vm_ik];

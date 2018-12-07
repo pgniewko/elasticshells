@@ -23,18 +23,18 @@ Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c),
 {
     for (int i = 0; i < vertex_degree; i++)
     {
-        bondedVerts.push_back( orig.bondedVerts[i] );
+        bonded_vertices.push_back( orig.bonded_vertices[i] );
     }
 
     for (int i = 0; i < facets_number; i++)
     {
-        bondedTris.push_back( orig.bondedTris[i] );
+        bonded_elements.push_back( orig.bonded_elements[i] );
     }
 }
 
 Vertex::~Vertex() {}
 
-void Vertex::addNeighbor(int idx)
+void Vertex::add_neighbor(int idx)
 {
     try
     {
@@ -45,13 +45,13 @@ void Vertex::addNeighbor(int idx)
 
         for (int i = 0; i < vertex_degree; i++)
         {
-            if (bondedVerts[i] == idx)
+            if (bonded_vertices[i] == idx)
             {
                 return;
             }
         }
 
-        bondedVerts.push_back( idx );
+        bonded_vertices.push_back( idx );
         vertex_degree++;
     }
     catch (RunTimeError& e)
@@ -62,7 +62,7 @@ void Vertex::addNeighbor(int idx)
 }
 
 
-void Vertex::addTriangle(int idx)
+void Vertex::add_element(int idx)
 {
     try
     {
@@ -72,13 +72,13 @@ void Vertex::addTriangle(int idx)
 
         for (int i = 0; i < facets_number; i++)
         {
-            if (bondedTris[i] == idx)
+            if (bonded_elements[i] == idx)
             {
                 return;
             }
         }
 
-        bondedTris.push_back( idx );
+        bonded_elements.push_back( idx );
         facets_number++;
     }
     catch (RunTimeError& e)
@@ -88,11 +88,11 @@ void Vertex::addTriangle(int idx)
     }
 }
 
-bool Vertex::isNeighbor(int vidx) const
+bool Vertex::is_neighbor(int vidx) const
 {
     for (int i = 0; i < vertex_degree; i++)
     {
-        if (bondedVerts[i] == vidx)
+        if (bonded_vertices[i] == vidx)
         {
             return true;
         }
@@ -135,12 +135,12 @@ int Vertex::getNumTris() const
 
 int Vertex::getNeighborId(int idx) const
 {
-    return bondedVerts[idx];
+    return bonded_vertices[idx];
 }
 
 int Vertex::getTriangleId(int idx) const
 {
-    return bondedTris[idx];
+    return bonded_elements[idx];
 }
 
 std::ostream& operator<< (std::ostream& out, const Vertex& v)
@@ -149,12 +149,12 @@ std::ostream& operator<< (std::ostream& out, const Vertex& v)
 
     for (int i = 0; i < v.vertex_degree; i++)
     {
-        out << v.bondedVerts[i] << ' ';
+        out << v.bonded_vertices[i] << ' ';
     }
 
     for (int i = 0; i < v.facets_number; i++)
     {
-        out << v.bondedTris[i] << ' ';
+        out << v.bonded_elements[i] << ' ';
     }
 
     return out;

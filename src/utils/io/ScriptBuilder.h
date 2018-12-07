@@ -16,10 +16,10 @@ class ScriptBuilder
         ScriptBuilder(const ScriptBuilder& orig);
         virtual ~ScriptBuilder();
 
-        void saveRenderScript(const std::vector<Shell>&, const Box&, bool = false, double = 0.1) const;
+        void save_render_script(const std::vector<Shell>&, const Box&, bool = false, double = 0.1) const;
 
     private:
-        void printBox(const Box&, std::ofstream&) const;
+        void print_box(const Box&, std::ofstream&) const;
         std::string script;
         std::string surfaceScript;
         std::string trajfile;
