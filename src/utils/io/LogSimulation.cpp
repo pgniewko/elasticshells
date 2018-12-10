@@ -136,11 +136,10 @@ void LogSimulation::print_header()
 
 void LogSimulation::dump_state(const Box& box, const std::vector<Shell>& shells)
 {
-    for (uint i = 0; i < shells.size(); i++)
-    {
-        shells[i].update();
-    }
-
+//    for (uint i = 0; i < shells.size(); i++)
+//    {
+//        shells[i].update();
+//    }
 
     for (std::vector<Observer*>::iterator it = observers.begin(); it != observers.end(); ++it)
     {
