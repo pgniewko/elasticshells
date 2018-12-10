@@ -92,29 +92,19 @@ Make sure that the dependencies are compiled with the same compiled (GNU compile
   brew install gsl
   ```
 
-* [CppUnit](http://cppunit.sourceforge.net/doc/cvs/index.html):
-  * On Mac OS you can install it with brew:
-  ```
-  brew install cppunit
-  ```
-
 * Linked-lists: [nblists](https://github.com/pgniewko/nblists)
 * Mesh generator: [rndmesh](https://github.com/pgniewko/rndmesh)
 * Order metrics: [steinhardt](https://github.com/pgniewko/steinhardt)
 * Fast-math library: [fastmah](https://github.com/pgniewko/fastmath)
 
-CONTENTS
-========
-
-* To check the number of lines of code run
-```
-find . -name "*.cpp" -exec wc {} \; | awk 'BEGIN{SUM=0} {SUM += $1} END{print SUM}'
-find . -name "*.h"   -exec wc {} \; | awk 'BEGIN{SUM=0} {SUM += $1} END{print SUM}'
-```
-
-
 USAGE
 =====
+The code can be used to generate and analyze packings of elastic shells with or without periodic boundary conditions.
+Please refer to the ```examples``` directory for scripts to execute the code. 
+
+* ```run_fem.sh``` - 
+* ```restart.sh``` - 
+* ```analyze.sh``` - 
 
 
 LICENSE
@@ -128,6 +118,10 @@ Copyright (C) 2014-2018,  Pawel Gniewek
 Email  : gniewko.pablo@gmail.com  
 All rights reserved.  
 License: BSD 3  
+
+REFERENCES
+==========
+1. "Mechanics of Confined Microbial Populations", P. Gniewek, Ph.D. Thesis, UC Berkeley (2018)
 
 ACKNOWLEDGMENTS
 ===============
