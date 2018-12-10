@@ -85,7 +85,7 @@ void XyzTraj::close_box()
 void XyzTraj::save_traj(const std::vector<Shell>& cells, int totV, const Box& box)
 {
     int lastCellIndex = 0;
-    fprintf(os, "%i %12.10f %12.10f %12.10f\n", totV, box.getX(), box.getY(), box.getZ());
+    fprintf(os, "%i %12.10f %12.10f %12.10f\n", totV, box.get_x(), box.get_y(), box.get_z());
 
     for (unsigned int i = 0; i < cells.size(); i++)
     {
@@ -124,7 +124,7 @@ void XyzTraj::save_traj(const std::vector<Shell>& cells, int totV)
 
 void XyzTraj::save_box(const Box& box, double t)
 {
-    fprintf(osb, "%12.10f %12.10f %12.10f \n", box.getX(), box.getY(), box.getZ());
+    fprintf(osb, "%12.10f %12.10f %12.10f \n", box.get_x(), box.get_y(), box.get_z());
     fflush(osb);
 }
 

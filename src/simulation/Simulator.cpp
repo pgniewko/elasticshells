@@ -48,9 +48,9 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     integrator = new Integrator(this);
 
     setTriangulator(args.tritype);
-    box.setX(args.bsx);
-    box.setY(args.bsy);
-    box.setZ(args.bsz);
+    box.set_x(args.bsx);
+    box.set_y(args.bsy);
+    box.set_z(args.bsz);
     box.setXmin(args.bsxe);
     box.setYmin(args.bsye);
     box.setZmin(args.bsze);
@@ -141,9 +141,9 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_EPS=" << OsmoticForce::getEpsilon() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.getX() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.Y="  << box.getY() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.getZ() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.get_x() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.Y="  << box.get_y() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.get_z() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.XE=" << box.getXmin() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.YE=" << box.getYmin() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZmin() << "\n";
@@ -169,9 +169,9 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
     {
         r0 = uniform(r_min, r_max);
         flag = true;
-        nx = uniform(-box.getX() + r0 + rc, box.getX() - r0 - rc);
-        ny = uniform(-box.getY() + r0 + rc, box.getY() - r0 - rc);
-        nz = uniform(-box.getZ() + r0 + rc, box.getZ() - r0 - rc);
+        nx = uniform(-box.get_x() + r0 + rc, box.get_x() - r0 - rc);
+        ny = uniform(-box.get_y() + r0 + rc, box.get_y() - r0 - rc);
+        nz = uniform(-box.get_z() + r0 + rc, box.get_z() - r0 - rc);
 
         if (number_of_shells == 0)
         {
@@ -483,7 +483,7 @@ void Simulator::shiftShell(const Vector3D& v3d, int shell_id)
 
 double Simulator::volumeFraction()
 {
-    double box_vol = box.getVolume();
+    double box_vol = box.get_volume();
     double shells_volume = 0.0;
 
     for (uint i = 0; i < shells.size(); i++)
@@ -627,10 +627,10 @@ void Simulator::saveTurgors()
 {
     std::string turgorDumpFile = log_sim.get_file_name() + ".turgor.out";
 
-    double box_volume = box.getVolume();
-    double box_x = box.getX();
-    double box_y = box.getY();
-    double box_z = box.getZ();
+    double box_volume = box.get_volume();
+    double box_x = box.get_x();
+    double box_y = box.get_y();
+    double box_z = box.get_z();
     double shells_volume = 0.0;
 
     FILE* os = fopen(turgorDumpFile.c_str(), "a");
@@ -865,9 +865,9 @@ void Simulator::copy_shells_data()
         turgors[i] = shells[i].get_turgor();
     }
     
-    fc.set_dl_dims(-box.getX(), box.getX(), 0);
-    fc.set_dl_dims(-box.getY(), box.getY(), 1);
-    fc.set_dl_dims(-box.getZ(), box.getZ(), 2);
+    fc.set_dl_dims(-box.get_x(), box.get_x(), 0);
+    fc.set_dl_dims(-box.get_y(), box.get_y(), 1);
+    fc.set_dl_dims(-box.get_z(), box.get_z(), 2);
 }
 
 
@@ -885,9 +885,9 @@ void Simulator::copy_back_shells_data()
 
 int Simulator::estimate_m()
 {
-    double x_dim = 2 * box.getX();
-    double y_dim = 2 * box.getY();
-    double z_dim = 2 * box.getZ();
+    double x_dim = 2 * box.get_x();
+    double y_dim = 2 * box.get_y();
+    double z_dim = 2 * box.get_z();
     
     double d = 2 * params.r_vertex;
     

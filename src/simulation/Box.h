@@ -15,12 +15,12 @@ class Box
         Box(const Box& orig);
         virtual ~Box();
 
-        void setX(const double);
-        double getX() const;
-        void setY(const double);
-        double getY() const;
-        void setZ(const double);
-        double getZ() const;
+        void set_x(const double);
+        double get_x() const;
+        void set_y(const double);
+        double get_y() const;
+        void set_z(const double);
+        double get_z() const;
 
         void setXmin(const double);
         void setYmin(const double);
@@ -32,8 +32,8 @@ class Box
 
         bool resize(double = 1.0);
 
-        double getVolume(const double = 0.0) const;
-        double getArea(const double = 0.0) const;
+        double get_volume(const double = 0.0) const;
+        double get_area(const double = 0.0) const;
 
         void setPbc(bool);
         void setEwall(double);
@@ -78,9 +78,9 @@ inline void Box::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& 
     if (box.pbc)
     {
         double x, y, z;
-        double bsx = 2 * box.getX();
-        double bsy = 2 * box.getY();
-        double bsz = 2 * box.getZ();
+        double bsx = 2 * box.get_x();
+        double bsy = 2 * box.get_y();
+        double bsz = 2 * box.get_z();
         x = round(dkj.x / bsx) *  bsx;
         y = round(dkj.y / bsy) *  bsy;
         z = round(dkj.z / bsz) *  bsz;
@@ -95,9 +95,9 @@ inline Vector3D Box::recenteringVector(const Vector3D& cm, const Box& box)
     if (box.pbc)
     {
         double x, y, z;
-        double bsx = 2 * box.getX();
-        double bsy = 2 * box.getY();
-        double bsz = 2 * box.getZ();
+        double bsx = 2 * box.get_x();
+        double bsy = 2 * box.get_y();
+        double bsz = 2 * box.get_z();
         x = round(cm.x / bsx) *  bsx;
         y = round(cm.y / bsy) *  bsy;
         z = round(cm.z / bsz) *  bsz;

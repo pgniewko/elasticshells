@@ -194,9 +194,9 @@ void Observer::copy_shells_data(const Box& box, const std::vector<Shell>& shells
         turgors[i] = shells[i].get_turgor();
     }
     
-    fc.set_dl_dims(-box.getX(), box.getX(), 0);
-    fc.set_dl_dims(-box.getY(), box.getY(), 1);
-    fc.set_dl_dims(-box.getZ(), box.getZ(), 2);
+    fc.set_dl_dims(-box.get_x(), box.get_x(), 0);
+    fc.set_dl_dims(-box.get_y(), box.get_y(), 1);
+    fc.set_dl_dims(-box.get_z(), box.get_z(), 2);
 }
 
 ObserverFactory::map_type* ObserverFactory::map = NULL;

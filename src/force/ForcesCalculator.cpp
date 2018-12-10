@@ -17,9 +17,9 @@ void ForcesCalculator::reset_dl(int m_, const Box& box)
 {
     dl = domain_list_t(m_, box.pbc);
     
-    dl.set_system_dims(-box.getX(), box.getX(), 0);
-    dl.set_system_dims(-box.getY(), box.getY(), 1);
-    dl.set_system_dims(-box.getZ(), box.getZ(), 2);
+    dl.set_system_dims(-box.get_x(), box.get_x(), 0);
+    dl.set_system_dims(-box.get_y(), box.get_y(), 1);
+    dl.set_system_dims(-box.get_z(), box.get_z(), 2);
 }
 
 void ForcesCalculator::set_dl_dims(const double min_val, const double max_val, const int axis)

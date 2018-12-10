@@ -462,7 +462,7 @@ void Restarter::assign_box_size(std::string box_line, Box& box) const
     y = strtod(pairs[ 1 ].c_str(), NULL);
     z = strtod(pairs[ 2 ].c_str(), NULL);
 
-    box.setX(x);
-    box.setY(y);
-    box.setZ(z);
+    box.set_x(x);
+    box.set_y(y);
+    box.set_z(z);
 }

@@ -61,12 +61,12 @@ bool Box::resize(double vf_)
     }
 }
 
-double Box::getVolume(const double rv) const
+double Box::get_volume(const double rv) const
 {
     return 2.0 * (x - rv) * 2.0 * (y - rv) * 2.0 * (z - rv);
 }
 
-double Box::getArea(const double rv) const
+double Box::get_area(const double rv) const
 {
     double xc = x - rv;
     double yc = y - rv;
@@ -74,32 +74,32 @@ double Box::getArea(const double rv) const
     return 2 * (4 * xc * yc + 4 * xc * zc + 4 * yc * zc);
 }
 
-void Box::setX(const double newx)
+void Box::set_x(const double newx)
 {
     x = newx;
 }
 
-double Box::getX() const
+double Box::get_x() const
 {
     return x;
 }
 
-void Box::setY(const double newy)
+void Box::set_y(const double newy)
 {
     y = newy;
 }
 
-double Box::getY() const
+double Box::get_y() const
 {
     return y;
 }
 
-void Box::setZ(const double newz)
+void Box::set_z(const double newz)
 {
     z = newz;
 }
 
-double Box::getZ() const
+double Box::get_z() const
 {
     return z;
 }

@@ -117,9 +117,9 @@ void Packer::packShells(Box& box, std::vector<Shell>& cells, double thickness, b
 
     double box_scale = points[0].radius_f / points[0].radius;
 
-    box.setX(box_scale * sim_box.x);
-    box.setY(box_scale * sim_box.y);
-    box.setZ(box_scale * sim_box.z);
+    box.set_x(box_scale * sim_box.x);
+    box.set_y(box_scale * sim_box.y);
+    box.set_z(box_scale * sim_box.z);
 
     for (std::size_t i = 0; i < n; i++)
     {
