@@ -1,5 +1,7 @@
 #! /bin/bash -x
 
+MY_PATH=`pwd`
+
 cd $MY_PATH
 
 N=3
@@ -7,13 +9,13 @@ NS=200
 BSX=7.0
 BSY=7.0
 BSZ=7.0
-BSXE=1.5
-BSYE=1.5
-BSZE=15.
-DX=-0.0
-DY=-0.0
-DZ=-0.0
-ODIR=$MY_PATH/output/
+BSXE=2.5
+BSYE=2.5
+BSZE=2.5
+DX=-0.02
+DY=-0.02
+DZ=-0.02
+ODIR=$MY_PATH/analyze/
 IDIR=$MY_PATH/input/
 BOXS=1
 LOGS=1
@@ -36,4 +38,4 @@ time $bf_software -n $N --depth $DEPTH --ns $NS --dt $DT --dp $dP --ddp=$ddP  --
         --rv $RCUT --prefix $PREFIX --out-dir $ODIR --in-dir $IDIR  \
         $PBC --tt rnd \
         -d --ir 2.5 --ir2 2.5 --seed $SEED \
-        --vol-f --bend --jam --analyze
+        --vol-f --analyze
