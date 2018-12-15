@@ -20,7 +20,6 @@ double Aspherity::observe(const Box& box, const std::vector<Shell>& shells)
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        //shells[i].calc_cm();
         Vector3D cell_cm = shells[i].center_of_mass;
 
         for (int j = 0; j < shells[i].getNumberVertices(); j++)
