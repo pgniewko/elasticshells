@@ -264,10 +264,10 @@ double Shell::get_turgor() const
     return turgor;
 }
 
-void Shell::update()
-{
-    calc_cm();
-}
+//void Shell::update()
+//{
+//    calc_cm();
+//}
 
 void Shell::set_constant_volume(double scale)
 {

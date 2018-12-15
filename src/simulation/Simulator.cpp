@@ -478,7 +478,7 @@ void Simulator::calcForces()
 void Simulator::shiftShell(const Vector3D& v3d, int shell_id)
 {
     shells[shell_id].add_vector(v3d);
-    shells[shell_id].update();
+    shells[shell_id].calc_cm(); //.update();
 }
 
 double Simulator::volumeFraction()
@@ -549,7 +549,7 @@ void Simulator::recalculate_mass_centers()
 {
     for (uint i = 0; i < shells.size(); i++)
     {
-        shells[i].update();
+        shells[i].calc_cm();
     }
 }
 

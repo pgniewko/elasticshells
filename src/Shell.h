@@ -84,7 +84,7 @@ class Shell
         int shell_id = -1;
 
         double get_turgor() const;
-        void update();
+//        void update();
 
         const shell_params_t& get_params() const;
 

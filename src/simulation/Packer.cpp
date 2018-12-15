@@ -21,9 +21,9 @@ Packer::Packer(const Packer& orig) {}
 
 Packer::~Packer() {}
 
-void Packer::packShells(Box& box, std::vector<Shell>& cells, double thickness, bool flag)
+void Packer::packShells(Box& box, std::vector<Shell>& shells, double thickness, bool flag)
 {
-    std::size_t n = cells.size();
+    std::size_t n = shells.size();
     std::vector<point_t> points;
 
     for (std::size_t i = 0; i < n; i++)
@@ -63,12 +63,12 @@ void Packer::packShells(Box& box, std::vector<Shell>& cells, double thickness, b
 
         for (std::size_t i = 0; i < n; i++)
         {
-            E = cells[i].get_E();
+            E = shells[i].get_E();
             t = thickness;
-            P = cells[i].get_turgor();
-            r0 = cells[i].get_r0();
-            rv = cells[i].get_vertex_size();
-            nu = cells[i].get_nu();
+            P = shells[i].get_turgor();
+            r0 = shells[i].get_r0();
+            rv = shells[i].get_vertex_size();
+            nu = shells[i].get_nu();
 
             if (flag)
             {
@@ -124,9 +124,9 @@ void Packer::packShells(Box& box, std::vector<Shell>& cells, double thickness, b
     for (std::size_t i = 0; i < n; i++)
     {
         Vector3D new_position = box_scale * points[i].r_c;
-        cells[i].add_vector( -cells[i].get_cm() );
-        cells[i].add_vector( new_position );
-        cells[i].update();
+        shells[i].add_vector( -shells[i].get_cm() );
+        shells[i].add_vector( new_position );
+        shells[i].calc_cm();
     }
 }
 
