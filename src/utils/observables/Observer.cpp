@@ -197,6 +197,18 @@ void Observer::copy_shells_data(const Box& box, const std::vector<Shell>& shells
     fc.set_dl_dims(-box.get_x(), box.get_x(), 0);
     fc.set_dl_dims(-box.get_y(), box.get_y(), 1);
     fc.set_dl_dims(-box.get_z(), box.get_z(), 2);
+    
+    contacts = fc.contact_list(xyz, graph, vs_map, (int) shells.size(), shells[0].get_vertex_size());
+}
+
+bool Observer::is_in_contact(int i, int j)
+{
+    std::vector<int> line = contacts[i];
+    for (uint k = 0; k < line.size(); k++)
+        if (line[k] == j)
+            return true;
+    
+    return false;
 }
 
 ObserverFactory::map_type* ObserverFactory::map = NULL;
