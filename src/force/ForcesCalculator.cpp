@@ -419,7 +419,6 @@ void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
     }
 }
 
-
 void ForcesCalculator::evaluate_box(const std::vector<double>& xyz, 
                             std::vector<double>& forces,
                             const double rv, const double E, const double nu, 
@@ -553,4 +552,72 @@ bool ForcesCalculator::is_bonded(int i, int j, const std::vector<std::vector<int
             return true;
             
     return false;
+}
+
+pairs_t ForcesCalculator::contact_list(const std::vector<double>& xyz,
+                        const std::vector<std::vector<int> >& graph_,
+                        const std::vector<object_map>& vs_map,
+                        const int num_shells,
+                        const double rv)
+{ 
+    std::unordered_map<int,int> shells_pairs_map;
+    uint n = xyz.size() / 3;
+    
+    pairs_t contacts = dl.get_nb_lists(xyz, n, rv);
+    
+    double xi,yi,zi;
+    double xj,yj,zj;
+
+    uint j;
+    Vector3D ri, rj, dij;
+    
+    double h;
+    
+    for (uint i = 0; i < n; i++)
+    {
+        xi = xyz[3 * i + 0];
+        yi = xyz[3 * i + 1];
+        zi = xyz[3 * i + 2];
+        ri = Vector3D(xi, yi, zi);
+        for (uint k = 0; k < contacts[i].size(); k++)
+        {
+            j = contacts[i][k];
+            if (j > i && !is_bonded(i, j, graph_) )
+            {
+                xj = xyz[3 * j + 0];
+                yj = xyz[3 * j + 1];
+                zj = xyz[3 * j + 2];
+                rj = Vector3D(xj, yj, zj);
+            
+                distance(dij, rj, ri);
+                h = 2 * rv - dij.length();
+            
+                if (h > 0)
+                {
+                    int shell_id_1 = vs_map[i].shell_id;
+                    int shell_id_2 = vs_map[j].shell_id;
+                    if (shell_id_1 != shell_id_2)
+                    {
+                        shells_pairs_map[shell_id_1] = shell_id_2;
+                        shells_pairs_map[shell_id_2] = shell_id_1;
+                    }
+                }
+            }
+        }
+    }
+    
+    pairs_t shells_pairs;
+    
+    for (int i = 0; i < num_shells; i++)
+    {
+        int_vec line;
+        shells_pairs.push_back( line );
+    }
+    
+    for (std::pair<int,int>  element : shells_pairs_map)
+    {
+        shells_pairs[element.first].push_back(element.second);
+    }
+    
+    return shells_pairs;
 }

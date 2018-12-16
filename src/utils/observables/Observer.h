@@ -32,6 +32,8 @@ class Observer
         
         void copy_shells_data(const Box&, const std::vector<Shell>&);
         
+        bool is_in_contact(int, int);
+        
         const std::string observer_name;
         const std::string output_format;
         int i_param;
@@ -55,6 +57,8 @@ class Observer
         std::vector<double> turgors;
         
         std::vector<std::vector<int> > graph;
+        
+        pairs_t contacts;
 };
 
 template<typename T>

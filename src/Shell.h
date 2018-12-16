@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Environment.h"
-#include "force/HookeanForce.h"
+//#include "force/HookeanForce.h"
 #include "force/OsmoticForce.h"
 #include "force/HertzianRepulsion.h"
 #include "geometry/Vector3D.h"
@@ -84,8 +84,6 @@ class Shell
         int shell_id = -1;
 
         double get_turgor() const;
-//        void update();
-
         const shell_params_t& get_params() const;
 
         static bool bending;
