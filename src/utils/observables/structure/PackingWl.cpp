@@ -11,7 +11,7 @@ void PackingWl::set_params(const int num, std::vector<std::string> args_)
     i_param = atoi(args_[ num + 0 ].c_str());
 }
 
-double PackingWl::observe(const Box& box, std::vector<Shell>& shells, const DomainList& dl)
+double PackingWl::observe(const Box& box, const std::vector<Shell>& shells)
 {
     if (box.pbc == false)
     {
@@ -19,28 +19,29 @@ double PackingWl::observe(const Box& box, std::vector<Shell>& shells, const Doma
     }
 
     double qlsum = 0.0;
+    
+    create_shells_image(box, shells);
+    copy_shells_data(box, shells);
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        qlsum += PackingWl::calcWl(box, shells, i, dl);
+        qlsum += PackingWl::calcWl(box, shells, i);
     }
 
     qlsum /= (double) shells.size();
     return qlsum;
 }
 
-double PackingWl::calcWl(const Box& box, std::vector<Shell>& shells, unsigned int ci)
+double PackingWl::calcWl(const Box& box, const std::vector<Shell>& shells, unsigned int ci)
 {
     Vector3D ci_cm = shells[ci].get_cm();
     std::vector<Vector3D> neighs_cm;
 
-    bool is_in_contact;
     for (uint i = 0; i < shells.size(); i++)
     {
         if (i != ci)
         {
-            //is_in_contact = ;
-            if ( is_in_contact )
+            if ( is_in_contact(i,ci) )
             {
                 Vector3D dij;
                 Vector3D cm = shells[i].get_cm();

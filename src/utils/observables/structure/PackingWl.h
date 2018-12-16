@@ -7,7 +7,7 @@
 
 #include "utils/observables/Observer.h"
 
-class PackingWl  : public Observer
+class PackingWl : public Observer
 {
     public:
         explicit PackingWl(const char*, const char*);
