@@ -22,39 +22,40 @@ class Box
         void set_z(const double);
         double get_z() const;
 
-        void setXmin(const double);
-        void setYmin(const double);
-        void setZmin(const double);
+        void set_x_min(const double);
+        void set_y_min(const double);
+        void set_z_min(const double);
 
-        double getXmin() const;
-        double getYmin() const;
-        double getZmin() const;
+        double get_x_min() const;
+        double get_y_min() const;
+        double get_z_min() const;
 
         bool resize(double = 1.0);
 
         double get_volume(const double = 0.0) const;
         double get_area(const double = 0.0) const;
 
-        void setPbc(bool);
-        void setEwall(double);
-        void setNu(double);
-        bool pbc;
-        double getXEdge(const double = 0.0) const;
-        double getYEdge(const double = 0.0) const;
-        double getZEdge(const double = 0.0) const;
-        double getNu() const;
-        double getE() const;
+        void set_pbc(bool);
+        void set_E(double);
+        void set_nu(double);
+        double get_nu() const;
+        double get_E() const;
+//        double getXEdge(const double = 0.0) const;
+//        double getYEdge(const double = 0.0) const;
+//        double getZEdge(const double = 0.0) const;
 
-        void configureScheduler(std::string);
-        void setDefaultSchedule(int, int, double, double, double, double, double, double);
+        void configure_scheduler(std::string);
+        void set_default_schedule(int, int, double, double, double, double, double, double);
 
-        static void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const Box&);
-        static Vector3D recenteringVector(const Vector3D&, const Box& box);
+        static void get_distance(Vector3D&, const Vector3D&, const Vector3D&, const Box&);
+        static Vector3D recentering_vector(const Vector3D&, const Box& box);
 
-        void saveRemainingSchedule();
+        void save_remaining_schedule();
 
         bool nthTodo();
 
+        bool pbc;
+        
     private:
         double x;
         double y;
@@ -71,7 +72,7 @@ class Box
 };
 
 // TODO: OPTIMIZE THIS FUNCTION - IT'S A CRUCIAL ONE
-inline void Box::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box) // Vector pointing from vk to vj
+inline void Box::get_distance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk, const Box& box) // Vector pointing from vk to vj
 {
     dkj = vk - vj;
 
@@ -90,7 +91,7 @@ inline void Box::getDistance(Vector3D& dkj, const Vector3D& vj, const Vector3D& 
     }
 }
 
-inline Vector3D Box::recenteringVector(const Vector3D& cm, const Box& box)
+inline Vector3D Box::recentering_vector(const Vector3D& cm, const Box& box)
 {
     if (box.pbc)
     {

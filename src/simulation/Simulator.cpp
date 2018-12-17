@@ -51,14 +51,14 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     box.set_x(args.bsx);
     box.set_y(args.bsy);
     box.set_z(args.bsz);
-    box.setXmin(args.bsxe);
-    box.setYmin(args.bsye);
-    box.setZmin(args.bsze);
-    box.setPbc(args.pbc);
-    box.setEwall(args.E_wall);
-    box.setNu(args.nu);
-    box.setDefaultSchedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
-    box.configureScheduler(args.sch_config_file);
+    box.set_x_min(args.bsxe);
+    box.set_y_min(args.bsye);
+    box.set_z_min(args.bsze);
+    box.set_pbc(args.pbc);
+    box.set_E(args.E_wall);
+    box.set_nu(args.nu);
+    box.set_default_schedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
+    box.configure_scheduler(args.sch_config_file);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     Shell::bending = args.bending;
@@ -132,10 +132,10 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "DP="  << params.dp << " [MPa]\n";
     simulator_logs << utils::LogLevel::FINE  << "DDP="  << params.ddp << " [MPa]\n";
     simulator_logs << utils::LogLevel::FINE  << "E SHELL="  << params.E_shell << " [MPa]\n";
-    simulator_logs << utils::LogLevel::FINE  << "E BOX="  << box.getE() << " [MPa]\n";
+    simulator_logs << utils::LogLevel::FINE  << "E BOX="  << box.get_E() << " [MPa]\n";
     simulator_logs << utils::LogLevel::FINE  << "SURFACE_MODULUS="  << (params.E_shell * params.th) << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (SHELL)="  << params.nu << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (BOX)="  << box.getNu() << "\n";
+    simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (BOX)="  << box.get_nu() << "\n";
     simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << " [micron]\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
@@ -144,9 +144,9 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.get_x() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Y="  << box.get_y() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.get_z() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.XE=" << box.getXmin() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.YE=" << box.getYmin() << "\n";
-    simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.getZmin() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.XE=" << box.get_x_min() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.YE=" << box.get_y_min() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "BOX.ZE=" << box.get_z_min() << "\n";
 }
 
 void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
@@ -381,7 +381,7 @@ void Simulator::simulate(int steps)
         restarter.saveLastFrame(shells, box);
         restarter.saveTopologyFile(shells);
         traj.save_box(box, steps * params.dt);
-        box.saveRemainingSchedule();
+        box.save_remaining_schedule();
     }
     
     calcForces();
@@ -440,7 +440,7 @@ void Simulator::simulate(int steps)
 
         if (resized)
         {
-            box.saveRemainingSchedule();
+            box.save_remaining_schedule();
         }
 
         recenterShells();
@@ -451,7 +451,7 @@ void Simulator::simulate(int steps)
     traj.save_box(box, steps * params.dt);
     restarter.saveLastFrame(shells, box);
     traj.save_traj(shells, getTotalVertices());
-    box.saveRemainingSchedule();
+    box.save_remaining_schedule();
 
     traj.close();
     log_sim.close();
@@ -469,7 +469,7 @@ void Simulator::calcForces()
     
     fc.calculate_forces(xyz, forces, elements, hinges, vs_map, graph, turgors, shells.size(), 
             params.r_vertex, params.E_shell, params.nu,
-            box.getE(), box.getNu());
+            box.get_E(), box.get_nu());
     
     FORCE_EVALUATION_COUTER++;
     
@@ -678,7 +678,7 @@ void Simulator::recenterShells()
     {
         for (uint i = 0; i < shells.size(); i++)
         {
-            Vector3D shift = Box::recenteringVector( shells[i].get_cm(), box );
+            Vector3D shift = Box::recentering_vector( shells[i].get_cm(), box );
             shells[i].add_vector(shift);
         }
     }

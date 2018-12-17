@@ -33,9 +33,9 @@ void Packer::packShells(Box& box, std::vector<Shell>& shells, double thickness, 
     }
 
     box_t sim_box;
-    sim_box.x = box.getXmin();
-    sim_box.y = box.getYmin();
-    sim_box.z = box.getZmin();
+    sim_box.x = box.get_x_min();
+    sim_box.y = box.get_y_min();
+    sim_box.z = box.get_z_min();
     sim_box.pbc = box.pbc;
 
     double radius_i;

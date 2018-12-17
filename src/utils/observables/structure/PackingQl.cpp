@@ -45,7 +45,7 @@ double PackingQl::calcQl(const Box& box, const std::vector<Shell>& shells, unsig
             {
                 Vector3D dij;
                 Vector3D cm = shells[i].get_cm();
-                Box::getDistance(dij, ci_cm, cm, box);
+                Box::get_distance(dij, ci_cm, cm, box);
                 cm = ci_cm + dij;
                 neighs_cm.push_back(cm);
             }

@@ -13,17 +13,17 @@ Box::Box(const Box& orig) : pbc(orig.pbc),
 
 Box::~Box() {}
 
-void Box::setPbc(bool pbcf)
+void Box::set_pbc(bool pbcf)
 {
     pbc = pbcf;
 }
 
-void Box::setEwall(double e)
+void Box::set_E(double e)
 {
     E_box = e;
 }
 
-void Box::setNu(double n)
+void Box::set_nu(double n)
 {
     nu = n;
 }
@@ -104,73 +104,73 @@ double Box::get_z() const
     return z;
 }
 
-void Box::setXmin(const double xend)
+void Box::set_x_min(const double xend)
 {
     x_min = xend;
 }
 
-void Box::setYmin(const double yend)
+void Box::set_y_min(const double yend)
 {
     y_min = yend;
 }
 
-void Box::setZmin(const double zend)
+void Box::set_z_min(const double zend)
 {
     z_min = zend;
 }
 
-double Box::getXmin() const
+double Box::get_x_min() const
 {
     return x_min;
 }
-double Box::getYmin() const
+double Box::get_y_min() const
 {
     return y_min;
 }
 
-double Box::getZmin() const
+double Box::get_z_min() const
 {
     return z_min;
 }
 
-double Box::getXEdge(const double rv) const
-{
-    return 2 * (x - rv);
-}
+//double Box::getXEdge(const double rv) const
+//{
+//    return 2 * (x - rv);
+//}
+//
+//double Box::getYEdge(const double rv) const
+//{
+//    return 2 * (y - rv);
+//}
+//
+//double Box::getZEdge(const double rv) const
+//{
+//    return 2 * (z - rv);
+//}
 
-double Box::getYEdge(const double rv) const
-{
-    return 2 * (y - rv);
-}
-
-double Box::getZEdge(const double rv) const
-{
-    return 2 * (z - rv);
-}
-
-double Box::getE() const
+double Box::get_E() const
 {
     return E_box;
 }
 
-double Box::getNu() const
+double Box::get_nu() const
 {
     return nu;
 }
 
-void Box::configureScheduler(std::string schf)
+void Box::configure_scheduler(std::string schf)
 {
     my_schedule.setFileName(schf);
     my_schedule.registerSchedules();
     my_schedule.configureSchedule();
 }
 
-void Box::setDefaultSchedule(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
+void Box::set_default_schedule(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
 {
     my_schedule.setDefault(ns, in, _dx, _dy, _dz, _rx, _ry, _rz);
 }
 
-void Box::saveRemainingSchedule()
+void Box::save_remaining_schedule()
 {
     my_schedule.saveRemainingSchedule();
 }
