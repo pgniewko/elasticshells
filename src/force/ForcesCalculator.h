@@ -32,7 +32,7 @@ public:
     
     void reset_dl(int, const Box&);
     
-    pairs_t contact_list(const std::vector<double>& xyz,
+    pairs_t contacts_list(const std::vector<double>& xyz,
                         const std::vector<std::vector<int> >& graph,
                         const std::vector<object_map>& vs_map,
                         const int num_shells,

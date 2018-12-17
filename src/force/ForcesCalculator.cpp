@@ -554,7 +554,7 @@ bool ForcesCalculator::is_bonded(int i, int j, const std::vector<std::vector<int
     return false;
 }
 
-pairs_t ForcesCalculator::contact_list(const std::vector<double>& xyz,
+pairs_t ForcesCalculator::contacts_list(const std::vector<double>& xyz,
                         const std::vector<std::vector<int> >& graph_,
                         const std::vector<object_map>& vs_map,
                         const int num_shells,
