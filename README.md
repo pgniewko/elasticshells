@@ -4,9 +4,7 @@
 
 DESCRIPTION
 ==================================================
-```elasticshells``` simulator is written in C/C++ and uses modern computer
-architectures and technologies: OpenMP for shared-memory systems, 
-SSE vectorization for x86_64 CPU.
+```elasticshells``` simulator is written in C/C++, designed to simulate compacted packings of elastic shells.
 
 GETTING THE CODE
 ==================================================
@@ -24,24 +22,24 @@ COMPILING AND INSTALLATION - LINUX
 ==================================================
 
 * Executables
-To build executables run:
+To build the exe file run in the command line:
 ```
 make
 ```
 To change compilation settings edit `config.mk` file.  
-Executables will be located in `./bin` directory.  
+Exe file is located in `./bin` directory.  
 The software has been tested with GNU compilers >= 4.8.5.    
 To built on OS X systems `arpg.h` library must be installed and linked (`LDLIBS   := ... largp ...`) in `config.mk` file.
 
 * Installation
 
-To install binary files run:
+To install binary files run in the command line:
 ```
 make install
 ```
 
-Binary files will be installed in `$PREFIX=/usr/local` (by default) directory.
-To uninstall executables use:
+The binary file is installed in `$PREFIX=/usr/local` (by default) directory.
+To uninstall the binary file run in the command line:
 ```
 make uninstall
 ```
@@ -53,11 +51,11 @@ Please note that you must be root in order to install at `/usr/local`.
     + Run the binary file as usual: 
         `biofilm [OPTIONS ...]`
     + Run gprof tool in order to analyze the performance:
-        `gprof biofilm gmon.out | less`
+        `gprof elasticshells gmon.out | less`
 
 * Performance profiling with `valgrind`:
     + Run the binary file with `valgrind --tool=callgrind`:
-        `valgrind --tool=callgrind biofilm`
+        `valgrind --tool=callgrind elasticshells`
     + Check the results with the `kcachegrind`:
         ` kcachegrind callgrind.out.xxx`
 
@@ -68,8 +66,6 @@ Please note that you must be root in order to install at `/usr/local`.
 EXTERNAL LIBRARIES
 ================
 Make sure that the dependencies are compiled with the same compiled (GNU compiler (>=4.8.5) recommended) as `elasticshells` 
-
-* For compiling and running tests [CppUnit](sourceforge.net/projects/cppunit) is needed.
 
 * ```argp.h``` library is needed for command line parsing. 
   * On Mac OS X it can be easily installed with:
@@ -109,13 +105,12 @@ Please refer to the ```examples``` directory for scripts to execute the code.
 
 LICENSE
 =======
-The library is open-source. If you want to cite the library in any published work please contact me at gniewko.pablo@gmail.com 
-for an information about credits or check my [website](http://meetpg.pl). Physics background and models benchmarking can be fount in the [notes](http://meetpg.pl/notes.html).
+The library is open-source. If you want to cite the library in any published work please contact me at gniewko.pablo@gmail.com for an information about credits.
 
 COPYRIGHT NOTICE
 ================
-Copyright (C) 2014-2018,  Pawel Gniewek  
-Email  : gniewko.pablo@gmail.com  
+Copyright (C) 2014-2018, Pawel Gniewek  
+Email : gniewko.pablo@gmail.com  
 All rights reserved.  
 License: BSD 3  
 
