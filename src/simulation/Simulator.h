@@ -39,7 +39,7 @@
 
 struct params_t
 {
-    int log_step;
+    //int log_step;
     int nsteps;
     int d;
     int nbhandler;
@@ -53,7 +53,7 @@ struct params_t
     double ddp;
     double ttime;
     double r_vertex;
-    bool draw_box;
+    //bool draw_box;
     bool const_volume;
 };
 

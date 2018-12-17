@@ -29,9 +29,9 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
         exit(EXIT_FAILURE);
     }
 
-    params.log_step = args.log_step;
+    //params.log_step = args.log_step;
     params.d = args.d;
-    params.nbhandler = args.nb_flag;
+    //params.nbhandler = args.nb_flag;
     params.E_shell = args.E_shell;
     params.nu = args.nu;
     params.th = args.thickness;
@@ -40,7 +40,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     params.ddp = args.ddp;
     params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
-    params.draw_box = args.draw_box;
+    //params.draw_box = args.draw_box;
     params.const_volume = args.const_volume;
     params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
@@ -57,7 +57,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     box.set_pbc(args.pbc);
     box.set_E(args.E_wall);
     box.set_nu(args.nu);
-    box.set_default_schedule(params.nsteps, args.box_step, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
+    box.set_default_schedule(params.nsteps, 1, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configure_scheduler(args.sch_config_file);
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
@@ -125,7 +125,7 @@ void Simulator::diagnoseParams(arguments args)
 void Simulator::logParams()
 {
     simulator_logs << utils::LogLevel::INFO  << "SIM_STEPS=" << params.nsteps << "\n";
-    simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
+//    simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "TRIANGULATOR="  << triangulator << "\n";
     simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << " [s]\n";
     simulator_logs << utils::LogLevel::FINE  << "DEPTH="  << params.d << "\n";
@@ -133,12 +133,12 @@ void Simulator::logParams()
     simulator_logs << utils::LogLevel::FINE  << "DDP="  << params.ddp << " [MPa]\n";
     simulator_logs << utils::LogLevel::FINE  << "E SHELL="  << params.E_shell << " [MPa]\n";
     simulator_logs << utils::LogLevel::FINE  << "E BOX="  << box.get_E() << " [MPa]\n";
-    simulator_logs << utils::LogLevel::FINE  << "SURFACE_MODULUS="  << (params.E_shell * params.th) << "\n";
+    //simulator_logs << utils::LogLevel::FINE  << "SURFACE_MODULUS="  << (params.E_shell * params.th) << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (SHELL)="  << params.nu << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (BOX)="  << box.get_nu() << "\n";
     simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << " [micron]\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
-    simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
+    //simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_EPS=" << OsmoticForce::getEpsilon() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.get_x() << "\n";
@@ -417,8 +417,8 @@ void Simulator::simulate(int steps)
         integrator->resetParams(this);
 
 
-        if ( (step + 1) % params.log_step == 0 )
-        {
+        //if ( (step + 1) % params.log_step == 0 )
+        //{
             // ** SAVE COORDINATES - i.e. "logging" coordinates
             traj.save_traj(shells, getTotalVertices());
             log_sim.dump_state(box, shells);
@@ -426,7 +426,7 @@ void Simulator::simulate(int steps)
             traj.save_box(box, (step + 1) * params.dt);
             restarter.saveLastFrame(shells, box);
             restarter.saveTopologyFile(shells);
-        }
+        //}
 
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
         {
