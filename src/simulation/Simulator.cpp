@@ -11,7 +11,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
 {
     try
     {
-        diagnoseParams(args);
+        diagnose_params(args);
     }
     catch (NotImplementedException& e)
     {
@@ -38,16 +38,16 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     params.dt = args.dt;
     params.dp = args.dp;
     params.ddp = args.ddp;
-    params.ttime = args.ttime;
+    //params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
     //params.draw_box = args.draw_box;
     params.const_volume = args.const_volume;
-    params.nsteps = args.nsteps ? args.nsteps : (int)params.ttime / params.dt;
+    params.nsteps = args.nsteps; // ? args.nsteps : (int)params.ttime / params.dt;
     params.platotype = args.platotype;
 
     integrator = new Integrator(this);
 
-    setTriangulator(args.tritype);
+    set_triangulator(args.tritype);
     box.set_x(args.bsx);
     box.set_y(args.bsy);
     box.set_z(args.bsz);
@@ -62,7 +62,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     OsmoticForce::setVolumeFlag(args.osmotic_flag);
     OsmoticForce::setEpsilon(args.eps);
     Shell::bending = args.bending;
-    logParams();
+    log_params();
 
     fc = ForcesCalculator(estimate_m(), args.pbc, args.bending);
 }
@@ -72,7 +72,7 @@ Simulator::~Simulator()
     delete integrator;
 }
 
-void Simulator::diagnoseParams(arguments args)
+void Simulator::diagnose_params(arguments args)
 {
     if (args.d < 0)
         throw NotImplementedException("NotImplementedException:\n"
@@ -122,7 +122,7 @@ void Simulator::diagnoseParams(arguments args)
 
 }
 
-void Simulator::logParams()
+void Simulator::log_params()
 {
     simulator_logs << utils::LogLevel::INFO  << "SIM_STEPS=" << params.nsteps << "\n";
 //    simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
@@ -196,8 +196,8 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
 
         if (flag)
         {
-            addShell(r0);
-            shiftShell(shift, number_of_shells - 1);
+            add_shell(r0);
+            shift_shell(shift, number_of_shells - 1);
         }
     }
 
@@ -235,7 +235,7 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
     copy_shells_data();
 }
 
-void Simulator::pushShell(const Shell& newShell)
+void Simulator::push_shell(const Shell& newShell)
 {
     try
     {
@@ -249,7 +249,7 @@ void Simulator::pushShell(const Shell& newShell)
     }
 }
 
-void Simulator::addShell(double r0)
+void Simulator::add_shell(double r0)
 {
     try
     {
@@ -292,7 +292,7 @@ void Simulator::addShell(double r0)
 
         new_shell.set_constant_volume (radial_eps);
 
-        pushShell(new_shell);
+        push_shell(new_shell);
     }
     catch (MaxSizeException& e)
     {
@@ -377,14 +377,14 @@ void Simulator::simulate(int steps)
     {
         traj.save_traj(shells, getTotalVertices());
         log_sim.dump_state(box, shells);
-        saveTurgors();
+        save_turgors();
         restarter.saveLastFrame(shells, box);
         restarter.saveTopologyFile(shells);
         traj.save_box(box, steps * params.dt);
         box.save_remaining_schedule();
     }
 
-    calcForces();
+    calculate_forces();
 
     bool resized = false;
 
@@ -422,7 +422,7 @@ void Simulator::simulate(int steps)
             // ** SAVE COORDINATES - i.e. "logging" coordinates
             traj.save_traj(shells, getTotalVertices());
             log_sim.dump_state(box, shells);
-            saveTurgors();
+            save_turgors();
             traj.save_box(box, (step + 1) * params.dt);
             restarter.saveLastFrame(shells, box);
             restarter.saveTopologyFile(shells);
@@ -430,7 +430,7 @@ void Simulator::simulate(int steps)
 
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
         {
-            resized = box.resize( volumeFraction() );
+            resized = box.resize( volume_fraction() );
             fc.reset_dl(estimate_m(), box);
         }
         else
@@ -443,11 +443,11 @@ void Simulator::simulate(int steps)
             box.save_remaining_schedule();
         }
 
-        recenterShells();
+        recenter_shells();
     }
 
     log_sim.dump_state(box, shells);
-    saveTurgors();
+    save_turgors();
     traj.save_box(box, steps * params.dt);
     restarter.saveLastFrame(shells, box);
     traj.save_traj(shells, getTotalVertices());
@@ -460,7 +460,7 @@ void Simulator::simulate(int steps)
     simulator_logs << utils::LogLevel::FINEST << "Energy has been evaluated "  << Energy::ENERGY_EVALUATION_COUNTER << " times.\n";
 }
 
-void Simulator::calcForces()
+void Simulator::calculate_forces()
 {
     for (uint i = 0; i < forces.size(); i++)
     {
@@ -475,13 +475,13 @@ void Simulator::calcForces()
 
 }
 
-void Simulator::shiftShell(const Vector3D& v3d, int shell_id)
+void Simulator::shift_shell(const Vector3D& v3d, int shell_id)
 {
     shells[shell_id].add_vector(v3d);
     shells[shell_id].calc_cm(); //.update();
 }
 
-double Simulator::volumeFraction()
+double Simulator::volume_fraction()
 {
     double box_vol = box.get_volume();
     double shells_volume = 0.0;
@@ -524,7 +524,7 @@ double Simulator::getLengthScale(double r_0)
 /*
  * TRIANGULATION
  */
-void Simulator::setTriangulator(char* token)
+void Simulator::set_triangulator(char* token)
 {
     if (STRCMP (token, "simple"))
     {
@@ -624,7 +624,7 @@ void Simulator::integrate()
     integrator->integrate(this);
 }
 
-void Simulator::saveTurgors()
+void Simulator::save_turgors()
 {
     std::string turgorDumpFile = log_sim.get_file_name() + ".turgor.out";
 
@@ -673,7 +673,7 @@ void Simulator::saveTurgors()
     }
 }
 
-void Simulator::recenterShells()
+void Simulator::recenter_shells()
 {
     if (box.pbc)
     {

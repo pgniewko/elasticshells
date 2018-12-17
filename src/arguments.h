@@ -39,7 +39,7 @@ struct arguments
     double dp;
     double ddp;
     double eps;
-    double ttime;
+    //double ttime;
     double r_vertex;                   /* vertex radius */
     double init_radius1;
     double init_radius2;

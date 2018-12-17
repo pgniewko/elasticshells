@@ -51,7 +51,7 @@ struct params_t
     double dt;
     double dp;
     double ddp;
-    double ttime;
+    //double ttime;
     double r_vertex;
     //bool draw_box;
     bool const_volume;
@@ -76,15 +76,15 @@ class Simulator
 
     private:
 
-        void shiftShell(const Vector3D&, int);
-        void setTriangulator(char*);
-        void diagnoseParams(arguments);
-        void logParams();
+        void shift_shell(const Vector3D&, int);
+        void set_triangulator(char*);
+        void diagnose_params(arguments);
+        void log_params();
 
-        void pushShell(const Shell&);
-        void addShell(double);
+        void push_shell(const Shell&);
+        void add_shell(double);
 
-        void calcForces();
+        void calculate_forces();
         void integrate();
 
         int getTotalVertices();
@@ -95,11 +95,11 @@ class Simulator
         bool check_min_force();
         bool check_const_volume();
 
-        void saveTurgors();
+        void save_turgors();
 
-        void recenterShells();
+        void recenter_shells();
 
-        double volumeFraction();
+        double volume_fraction();
 
         void create_shells_image();
 

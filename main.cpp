@@ -48,9 +48,9 @@ static struct argp_option options[] =
 
     {0,             0,       0, 0, "Simulation Options:", 4},
     {"number",    'n',   "INT", 0, "Init number of particles. Not in work when positions read from the file [default: 1]"},
-    {"time",      't', "FLOAT", 0, "Total simulation time [default: 1.0]"},
+//    {"time",      't', "FLOAT", 0, "Total simulation time [default: 1.0]"},
     {"ns",        401,   "INT", 0, "Number of simulation steps [default: 10]"},
-    {"dt",        402, "FLOAT", 0, "Time step [default: 0.001]"},
+    {"dt",        402, "FLOAT", 0, "Integration time step [default: 0.001]"},
 //    {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Linked-domains[2] [default: 0]"},
 //    {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
 //    {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
@@ -65,11 +65,11 @@ static struct argp_option options[] =
     {"jam",       'j',       0, 0, "[default: false]"},
 
     {0,             0,       0, 0, "Shell Options:", 5},
-    {"ecc",       500, "FLOAT", 0, "Shell-wall Young's modulus [UNIT=0.1 MPa] [default: 1500.0]"},
-    {"ecw",       501, "FLOAT", 0, "Box Young's modulus [UNIT=0.1 MPa] [default: 2000.0]"},
+    {"E",         500, "FLOAT", 0, "Shell Young's modulus [default: 100.0]"},
+    {"Ebox",      501, "FLOAT", 0, "Box Young's modulus [default: 200.0]"},
     {"ir",        502, "FLOAT", 0, "Shells size at the initialization - lower limit [default:2.5"},
     {"ir2",       503, "FLOAT", 0, "Shells size at the initialization - upper limit [default:2.5]"},
-    {"dp",        504, "FLOAT", 0, "Osmotic pressure [default: 0.0]"},
+    {"dp",        504, "FLOAT", 0, "Osmotic pressure [default: 1.0]"},
     {"osm",       505,       0, 0, "Volume dependent osmotic pressure [default:  false]"},
     {"rv",        506, "FLOAT", 0, "Radius of a single vertex [default: 0.25]"},
     {"ddp",       512, "FLOAT", 0, "Variation in osmotic pressure [UNIT=0.1 MPa] [default: 0.0]"},
@@ -118,15 +118,15 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
 //            arguments->box_step = 10;
             arguments->n_shells = 1;
             arguments->nsteps = 10;
-            arguments->E_shell = 1500.0;
-            arguments->E_wall = 2000.0;
+            arguments->E_shell = 100.0;
+            arguments->E_wall = 200.0;
             arguments->nu = 0.5;
             arguments->thickness = 0.1;
             arguments->dt = 0.001;
-            arguments->dp = 0.0;
+            arguments->dp = 1.0;
             arguments->ddp = 0.0;
             arguments->eps = 0.0;
-            arguments->ttime = 1.0;
+//            arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
             arguments->init_radius1 = 2.5;
             arguments->init_radius2 = 2.5;
@@ -190,9 +190,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->n_shells = arg ? atoi (arg) : 1;
             break;
 
-        case 't':
-            arguments->ttime = arg ? strtod (arg, NULL) : 1.0;
-            break;
+//        case 't':
+//            arguments->ttime = arg ? strtod (arg, NULL) : 1.0;
+//            break;
 
         case 401:
             arguments->nsteps = arg ? atoi (arg) : 100;

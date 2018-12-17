@@ -134,7 +134,7 @@ void Integrator::_vv(Simulator* s)
         vel[i] += 0.5 * dt * s->forces[i];
     }
 
-    s->calcForces();
+    s->calculate_forces();
 
     // UPDATE VELOCITIES
     for (uint i = 0; i < n; i++)
