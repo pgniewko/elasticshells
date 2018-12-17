@@ -24,7 +24,7 @@ class Integrator
 
         void fireIntegrator(Simulator*);
         void _vv(Simulator*);
-        
+
         uint n;
         std::vector<double> vel;
         std::vector<double> f_p;

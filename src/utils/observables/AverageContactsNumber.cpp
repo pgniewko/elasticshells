@@ -15,7 +15,7 @@ double AverageContactsNumber::observe(const Box& box, const std::vector<Shell>& 
 {
     create_shells_image(box, shells);
     copy_shells_data(box, shells);
-    
+
     double contact_number = 0.0;
     std::size_t n = shells.size();
 

@@ -41,12 +41,12 @@ void Integrator::resetParams(Simulator* s)
     FIRE_DT = s->params.dt;
     FIRE_ALPHA = 0.1;
     FIRE_N = 0;
-    
+
     for (uint i = 0; i < n; i++)
     {
         vel[i] = 0.0;
     }
-    
+
     for (uint i = 0; i < n; i++)
     {
         f_p[i] = s->forces[i];
@@ -71,10 +71,11 @@ void Integrator::fireIntegrator(Simulator* s)
     {
         P += s->forces[i] * vel[i];
     }
-    
+
     double v_len, f_len;
     double vx, vy, vz;
     double fx, fy, fz;
+
     for (uint i = 0; i < n; i += 3)
     {
         vx = vel[i + 0];
@@ -83,18 +84,18 @@ void Integrator::fireIntegrator(Simulator* s)
         fx = s->forces[i + 0];
         fy = s->forces[i + 1];
         fz = s->forces[i + 2];
-        v_len = fastmath::fast_sqrt(vx*vx + vy*vy + vz*vz);
-        f_len = fastmath::fast_sqrt(fx*fx + fy*fy + fz*fz);
-        
+        v_len = fastmath::fast_sqrt(vx * vx + vy * vy + vz * vz);
+        f_len = fastmath::fast_sqrt(fx * fx + fy * fy + fz * fz);
+
         vel[i + 0] *= (1 - FIRE_ALPHA);
         vel[i + 1] *= (1 - FIRE_ALPHA);
         vel[i + 2] *= (1 - FIRE_ALPHA);
-        
+
         vel[i + 0] += FIRE_ALPHA * v_len * fx / f_len;
         vel[i + 1] += FIRE_ALPHA * v_len * fy / f_len;
         vel[i + 2] += FIRE_ALPHA * v_len * fz / f_len;
     }
-    
+
     if (P > 0 && FIRE_N > FIRE_Nmin)
     {
         FIRE_DT = std::min(FIRE_DTMAX, FIRE_DT * f_inc);
@@ -107,11 +108,12 @@ void Integrator::fireIntegrator(Simulator* s)
     {
         FIRE_DT *= f_dec;
         FIRE_ALPHA = a_start;
-        
+
         for (uint i = 0; i < n; i++)
         {
-                vel[i] = 00.;
+            vel[i] = 00.;
         }
+
         FIRE_N = 0;
     }
 }
@@ -145,7 +147,7 @@ void Integrator::_vv(Simulator* s)
 void Integrator::set_n(uint n_)
 {
     n = n_;
-    
+
     for (uint i = 0; i < n; i++)
     {
         vel.push_back(0.0);

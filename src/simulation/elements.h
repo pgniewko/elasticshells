@@ -23,10 +23,12 @@ struct object_map
     int shell_id;
     int vert_id;
     object_map(int ci, int vi) : shell_id(ci), vert_id(vi) {}
-    bool operator==(const object_map &o) const {
+    bool operator==(const object_map& o) const
+    {
         return shell_id == o.shell_id && vert_id == o.vert_id;
     }
-    bool operator<(const object_map &o)  const {
+    bool operator<(const object_map& o)  const
+    {
         return shell_id < o.shell_id || (shell_id == o.shell_id && vert_id < o.vert_id);
     }
 };

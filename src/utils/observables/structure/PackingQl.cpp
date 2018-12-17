@@ -22,7 +22,7 @@ double PackingQl::observe(const Box& box, const std::vector<Shell>& shells)
 
     create_shells_image(box, shells);
     copy_shells_data(box, shells);
-    
+
     for (uint i = 0; i < shells.size(); i++)
     {
         qlsum += PackingQl::calcQl(box, shells, i);
@@ -41,7 +41,7 @@ double PackingQl::calcQl(const Box& box, const std::vector<Shell>& shells, unsig
     {
         if (i != ci)
         {
-            if ( is_in_contact(i,ci) )
+            if ( is_in_contact(i, ci) )
             {
                 Vector3D dij;
                 Vector3D cm = shells[i].get_cm();

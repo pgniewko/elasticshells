@@ -36,7 +36,7 @@ class Shell
     public:
 
         Shell();
-        Shell(int,int,int);
+        Shell(int, int, int);
         Shell(std::list<Triangle>);
         Shell(const Shell& orig);
         virtual ~Shell();
@@ -47,7 +47,7 @@ class Shell
         int get_number_triangles() const;
         int get_number_vertices() const;
         int get_number_hinges() const;
-        
+
         void add_vector(const Vector3D&);
 
         void set_vertex_size(double);
@@ -73,13 +73,13 @@ class Shell
         double get_vertex_size() const;
         double get_E() const;
         double get_nu() const;
-        
+
         Vector3D center_of_mass;
-        
+
         std::vector<Vertex> vertices;
         std::vector<Element> triangles;
         std::vector<Hinge> hinges;
-        
+
         int shell_id = -1;
 
         double get_turgor() const;
@@ -95,7 +95,7 @@ class Shell
     private:
 
         void random_rotate();
-        
+
         shell_params_t params;
         int number_v = 0;
         int number_t = 0;

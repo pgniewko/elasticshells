@@ -8,37 +8,37 @@ double Shell::FORCE_FRAC(0.0);
 double Shell::MIN_FORCE(0.0);
 
 Shell::Shell() {}
-Shell::Shell(int nv, int nt, int nh) 
+Shell::Shell(int nv, int nt, int nh)
 {
-    for(int i = 0; i < nv; i++)
+    for (int i = 0; i < nv; i++)
     {
         Vertex new_vertx;
         vertices.push_back( new_vertx );
     }
-    
-    for(int i = 0; i < nt; i++)
+
+    for (int i = 0; i < nt; i++)
     {
         Element new_vertx_triangle;
         triangles.push_back( new_vertx_triangle );
     }
-    
-    for(int i = 0; i < nh; i++)
+
+    for (int i = 0; i < nh; i++)
     {
         Hinge new_hinge;
         hinges.push_back( new_hinge );
     }
-    
+
     number_v = nv;
     number_t = nt;
     number_h = nh;
 }
 
-Shell::Shell(std::list<Triangle> tris) : shell_id(-1), 
-        number_v(0), 
-        number_t(0), 
-        number_h(0), 
-        nRT(0),
-        V0(0)
+Shell::Shell(std::list<Triangle> tris) : shell_id(-1),
+    number_v(0),
+    number_t(0),
+    number_h(0),
+    nRT(0),
+    V0(0)
 {
     Tinker::construct_vertices(*this, tris);
     Tinker::construct_elements(*this, tris);
@@ -47,34 +47,34 @@ Shell::Shell(std::list<Triangle> tris) : shell_id(-1),
     random_rotate();
 }
 
-Shell::Shell(const Shell& orig) : center_of_mass(orig.center_of_mass), 
-        vertices(orig.vertices), 
-        triangles(orig.triangles), 
-        hinges(orig.hinges),
-        shell_id(orig.shell_id), 
-        params(orig.params), 
-        number_v(orig.number_v), 
-        number_t(orig.number_t), 
-        number_h(orig.number_h),
-        nRT(orig.nRT), V0(orig.V0) 
+Shell::Shell(const Shell& orig) : center_of_mass(orig.center_of_mass),
+    vertices(orig.vertices),
+    triangles(orig.triangles),
+    hinges(orig.hinges),
+    shell_id(orig.shell_id),
+    params(orig.params),
+    number_v(orig.number_v),
+    number_t(orig.number_t),
+    number_h(orig.number_h),
+    nRT(orig.nRT), V0(orig.V0)
 {
     for (int i = 0; i < number_v; i++)
     {
         vertices.push_back( orig.vertices[i] );
     }
-    
+
     for (int i = 0; i < number_t; i++)
     {
         triangles.push_back( orig.triangles[i] );
     }
-    
+
     for (int i = 0; i < number_h; i++)
     {
         hinges.push_back( orig.hinges[i] );
     }
 }
 
-Shell::~Shell() 
+Shell::~Shell()
 {
 }
 
@@ -294,7 +294,7 @@ const shell_params_t& Shell::get_params() const
 double Shell::calc_surface_area(double d_param) const
 {
     double totalSurface = 0.0;
-    
+
     for (int i = 0; i < number_t; i++)
     {
         totalSurface += triangles[i].area(vertices, center_of_mass, d_param);

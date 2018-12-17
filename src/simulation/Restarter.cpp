@@ -143,12 +143,12 @@ void Restarter::init_shell(std::vector<Shell>& shells, int shell_idx) const
 
                 if (shell_id == shell_idx)
                 {
-                    
+
                     int nv = std::stoi(pairs[ 2 ].c_str(), NULL);
                     int nt = std::stoi(pairs[ 3 ].c_str(), NULL);
                     int nh = std::stoi(pairs[ 4 ].c_str(), NULL);
                     shells.push_back( Shell( nv, nt, nh ) );
-                     
+
                     shells[shell_idx].shell_id  = std::stoi(pairs[ 1 ].c_str(), NULL);
                     shells[shell_idx].number_v  = nv; //std::stoi(pairs[ 2 ].c_str(), NULL);
                     shells[shell_idx].number_t  = nt; //std::stoi(pairs[ 3 ].c_str(), NULL);
@@ -200,7 +200,7 @@ void Restarter::add_vertices(std::vector<Shell>& shells, int cix) const
                     shells[cix].vertices[v_id].facets_number = strtod(pairs[ 4 ].c_str(), NULL);
 
                     int start_ix = 4;
-                    
+
                     for (int i = 0; i < shells[cix].vertices[v_id].vertex_degree; i++)
                     {
                         shells[cix].vertices[v_id].bonded_vertices.push_back(-1);
@@ -346,7 +346,7 @@ void Restarter::registerVMap()
     {
         // print error
     }
-    
+
     os.close();
 
 }
@@ -358,6 +358,7 @@ void Restarter::readLastFrame(std::vector<Shell>& shells) const
     std::string line;
 
     uint line_counter = 0;
+
     if ( os.is_open() )
     {
         while ( std::getline (os, line) )
@@ -372,9 +373,9 @@ void Restarter::readLastFrame(std::vector<Shell>& shells) const
                 double x = strtod(pairs[ 1 ].c_str(), NULL);
                 double y = strtod(pairs[ 2 ].c_str(), NULL);
                 double z = strtod(pairs[ 3 ].c_str(), NULL);
-                
+
                 std::pair<int, int> value = vmap.at( vkey );
-                
+
                 int si = value.first;
                 int vi = value.second;
 

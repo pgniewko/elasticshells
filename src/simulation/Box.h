@@ -55,7 +55,7 @@ class Box
         bool nthTodo();
 
         bool pbc;
-        
+
     private:
         double x;
         double y;

@@ -6,7 +6,7 @@ double cot(double x)
 
 }
 
-Element::Element() : Element(-1, -1, -1) 
+Element::Element() : Element(-1, -1, -1)
 {
 }
 
@@ -21,10 +21,10 @@ Element::Element(int a, int b, int c) : ia(a), ib(b), ic(c), my_id(-1)
     }
 }
 
-Element::Element(const Element& orig) : ia(orig.ia), 
-        ib(orig.ib), 
-        ic(orig.ic),
-        my_id(orig.my_id)
+Element::Element(const Element& orig) : ia(orig.ia),
+    ib(orig.ib),
+    ic(orig.ic),
+    my_id(orig.my_id)
 {
     for (int i = 0; i < 3; i++)
     {
@@ -66,7 +66,7 @@ double Element::area(const std::vector<Vertex>& vs, const Vector3D cm, double ep
     {
         return area(vs);
     }
-    
+
     if (ia != -1 && ib != -1 && ic != -1)
     {
         Vector3D ta = vs[ia].r_c - cm;

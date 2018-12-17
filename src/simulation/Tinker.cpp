@@ -73,6 +73,7 @@ int Tinker::get_vertex(Shell& cell, const Vector3D& v, double e)
             return cell.vertices[i].get_id();
         }
     }
+
     return -1;
 }
 

@@ -1,25 +1,25 @@
 #include "Vertex.h"
 
-Vertex::Vertex() : r_c(0.0, 0.0, 0.0), 
-        vertex_degree(0), 
-        facets_number(0), 
-        my_id(-1), 
-        my_shell_id(-1)
+Vertex::Vertex() : r_c(0.0, 0.0, 0.0),
+    vertex_degree(0),
+    facets_number(0),
+    my_id(-1),
+    my_shell_id(-1)
 {
 }
 
-Vertex::Vertex(double x, double y, double z) : r_c(x, y, z), 
-        vertex_degree(0), 
-        facets_number(0),
-        my_id(-1), my_shell_id(-1)
+Vertex::Vertex(double x, double y, double z) : r_c(x, y, z),
+    vertex_degree(0),
+    facets_number(0),
+    my_id(-1), my_shell_id(-1)
 {
 }
 
 Vertex::Vertex(const Vertex& orig) : r_c(orig.r_c),
-        vertex_degree(orig.vertex_degree), 
-        facets_number(orig.facets_number), 
-        my_id(orig.my_id), 
-        my_shell_id(orig.my_shell_id)
+    vertex_degree(orig.vertex_degree),
+    facets_number(orig.facets_number),
+    my_id(orig.my_id),
+    my_shell_id(orig.my_shell_id)
 {
     for (int i = 0; i < vertex_degree; i++)
     {

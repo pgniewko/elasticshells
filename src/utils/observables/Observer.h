@@ -27,37 +27,37 @@ class Observer
         const char* getName();
 
     protected:
-        
+
         void create_shells_image(const Box&, const std::vector<Shell>&);
-        
+
         void copy_shells_data(const Box&, const std::vector<Shell>&);
-        
+
         bool is_in_contact(int, int);
-        
+
         const std::string observer_name;
         const std::string output_format;
         int i_param;
         double d_param;
-        
+
         std::vector<double> xyz;
         std::vector<double> forces;
         ForcesCalculator fc;
-        
+
         std::vector<element> elements;
         std::vector<hinge> hinges;
         std::vector<object_map> vs_map;
         std::map<object_map, int> inv_vs_map;
-        
+
         std::vector<object_map> ts_map;
         std::map<object_map, int> inv_ts_map;
-        
+
         std::vector<object_map> hs_map;
         std::map<object_map, int> inv_hs_map;
-        
+
         std::vector<double> turgors;
-        
+
         std::vector<std::vector<int> > graph;
-        
+
         pairs_t contacts;
 };
 

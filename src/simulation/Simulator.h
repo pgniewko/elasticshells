@@ -71,7 +71,7 @@ class Simulator
         void simulate(int);
         void restart();
         void analyze();
-        
+
         void init_shells(int, double, double, bool = false);
 
     private:
@@ -100,12 +100,12 @@ class Simulator
         void recenterShells();
 
         double volumeFraction();
-        
+
         void create_shells_image();
-        
+
         void copy_shells_data();
         void copy_back_shells_data();
-        
+
         int estimate_m();
 
         Integrator* integrator;
@@ -117,24 +117,24 @@ class Simulator
         std::vector<Shell> shells;
         std::vector<double> xyz;
         std::vector<double> forces;
-        
+
         int vertex_number = 0;
         int hinge_number = 0 ;
         int element_number = 0;
-        
+
         std::vector<element> elements;
         std::vector<hinge> hinges;
         std::vector<object_map> vs_map;
         std::map<object_map, int> inv_vs_map;
-        
+
         std::vector<object_map> ts_map;
         std::map<object_map, int> inv_ts_map;
-        
+
         std::vector<object_map> hs_map;
         std::map<object_map, int> inv_hs_map;
-        
+
         std::vector<double> turgors;
-        
+
         std::vector<std::vector<int> > graph;
 
         Box box;
@@ -143,7 +143,7 @@ class Simulator
         LogSimulation log_sim;
 
         Restarter restarter;
-        
+
         ForcesCalculator fc;
         double MIN_FORCE = 0.0;
         double FORCE_FRAC = 0.0001;

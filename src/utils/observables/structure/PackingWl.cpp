@@ -19,7 +19,7 @@ double PackingWl::observe(const Box& box, const std::vector<Shell>& shells)
     }
 
     double qlsum = 0.0;
-    
+
     create_shells_image(box, shells);
     copy_shells_data(box, shells);
 
@@ -41,7 +41,7 @@ double PackingWl::calcWl(const Box& box, const std::vector<Shell>& shells, unsig
     {
         if (i != ci)
         {
-            if ( is_in_contact(i,ci) )
+            if ( is_in_contact(i, ci) )
             {
                 Vector3D dij;
                 Vector3D cm = shells[i].get_cm();
