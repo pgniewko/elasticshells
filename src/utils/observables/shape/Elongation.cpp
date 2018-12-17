@@ -26,7 +26,7 @@ double Elongation::observe(const Box& box, const std::vector<Shell>& shells)
 
         Vector3D cell_cm = shells[i].center_of_mass;
 
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {
             l = (shells[i].vertices[j].r_c - cell_cm).length();
             min_r = std::min( min_r, l );

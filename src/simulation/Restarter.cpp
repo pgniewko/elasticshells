@@ -17,7 +17,7 @@ int Restarter::get_total_vertices(const std::vector<Shell>& shells) const
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        totalnumber += shells[i].getNumberVertices();
+        totalnumber += shells[i].get_number_vertices();
     }
 
     return totalnumber;
@@ -42,12 +42,12 @@ void Restarter::saveTopologyFile(const std::vector<Shell>& shells) const
 
         for (uint i = 0; i < shells.size(); i++)
         {
-            for (int j = 0; j < shells[i].getNumberVertices(); j++)
+            for (int j = 0; j < shells[i].get_number_vertices(); j++)
             {
                 os << "VMAP " <<  new_base_index( last_shell_index +  shells[i].vertices[j].get_id() ) << ' ' << i << ' ' << j << "\n";
             }
 
-            last_shell_index += shells[i].getNumberVertices();
+            last_shell_index += shells[i].get_number_vertices();
         }
 
         os.close();

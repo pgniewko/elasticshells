@@ -38,7 +38,7 @@ double Tensorial::observe(const Box& box, const std::vector<Shell>& shells)
 
         double ev1 = 0.0, ev2 = 0.0, ev3 = 0.0;
 
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {
             rj = shells[i].vertices[j].r_c - cell_cm;
 
@@ -59,7 +59,7 @@ double Tensorial::observe(const Box& box, const std::vector<Shell>& shells)
         for (int j = 0; j < 3; j++)
             for (int k = 0; k < 3; k++)
             {
-                A[j][k] /= shells[i].getNumberVertices();
+                A[j][k] /= shells[i].get_number_vertices();
             }
 
         eigen_decomposition(A, V, d);

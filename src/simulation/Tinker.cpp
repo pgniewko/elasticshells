@@ -100,7 +100,7 @@ void Tinker::construct_topology(Shell& shell)
 void Tinker::construct_hinges(Shell& shell)
 {
 
-    if (shell.getNumberVertices() == 1)
+    if (shell.get_number_vertices() == 1)
     {
         shell.number_h = 0;
         return;

@@ -44,7 +44,7 @@ double Roundness::miniball_r(const Shell& shell)
     int             d = 3;            // dimension
     int             n;      // number of points
 
-    n = shell.getNumberVertices();
+    n = shell.get_number_vertices();
 
     mytype** ap = new mytype*[n];
 

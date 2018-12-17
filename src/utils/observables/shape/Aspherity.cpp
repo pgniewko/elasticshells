@@ -22,23 +22,23 @@ double Aspherity::observe(const Box& box, const std::vector<Shell>& shells)
     {
         Vector3D cell_cm = shells[i].center_of_mass;
 
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {
             av_radius += (shells[i].vertices[j].r_c - cell_cm).length();
         }
 
-        av_radius /= shells[i].getNumberVertices();
+        av_radius /= shells[i].get_number_vertices();
         sq_av_radius = av_radius * av_radius;
         double res;
 
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {
             res = (shells[i].vertices[j].r_c - cell_cm).length() - av_radius;
             sq_sum += res * res;
         }
 
         sq_sum /= sq_av_radius;
-        sq_sum /= shells[i].getNumberVertices();
+        sq_sum /= shells[i].get_number_vertices();
         sq_total += sq_sum;
     }
 

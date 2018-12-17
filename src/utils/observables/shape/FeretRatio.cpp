@@ -22,9 +22,9 @@ double FeretRatio::observe(const Box& box, const std::vector<Shell>& shells)
     {
         max_d = 0.0;
 
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {
-            for (int k = j + 1; k < shells[i].getNumberVertices(); k++)
+            for (int k = j + 1; k < shells[i].get_number_vertices(); k++)
             {
                 // MAXIMUM FERET'S DIAMETER a.k.a. Maximum Caliber
                 max_d = std::max(max_d, (shells[i].vertices[j].r_c - shells[i].vertices[k].r_c).length() );

@@ -25,7 +25,7 @@ void Observer::create_shells_image(const Box& box, const std::vector<Shell>& she
     {
         turgors.push_back( 0.0 );
         double x_, y_, z_;
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {
             x_ = shells[i].vertices[j].r_c.x;
             y_ = shells[i].vertices[j].r_c.y;
@@ -53,12 +53,12 @@ void Observer::create_shells_image(const Box& box, const std::vector<Shell>& she
     
     for (uint i = 0; i < shells.size(); i++)
     {
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {
             object_map vm_ij(i, j);
             int ij_id = inv_vs_map[vm_ij];
             
-            for (int k = 0; k < shells[i].getNumberVertices(); k++)
+            for (int k = 0; k < shells[i].get_number_vertices(); k++)
             {
                 if (k != j && shells[i].vertices[j].is_neighbor(k))
                 {
@@ -78,7 +78,7 @@ void Observer::create_shells_image(const Box& box, const std::vector<Shell>& she
         int ia, ib, ic;
         int ia_mapped, ib_mapped, ic_mapped;
         
-        for (int j = 0; j < shells[i].getNumberTriangles(); j++)
+        for (int j = 0; j < shells[i].get_number_triangles(); j++)
         {
             element el_;
             ia = shells[i].triangles[j].ia;
@@ -128,7 +128,7 @@ void Observer::create_shells_image(const Box& box, const std::vector<Shell>& she
     {
         int x1, x2, x3, x4;
         int x1_mapped, x2_mapped, x3_mapped, x4_mapped;
-        for (int j = 0; j < shells[i].getNumberHinges(); j++)
+        for (int j = 0; j < shells[i].get_number_hinges(); j++)
         {
             
             hinge h_;
@@ -173,7 +173,7 @@ void Observer::copy_shells_data(const Box& box, const std::vector<Shell>& shells
     for (uint i = 0; i < shells.size(); i++)
     {
         double x_, y_, z_;
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {            
             x_ = shells[i].vertices[j].r_c.x;
             y_ = shells[i].vertices[j].r_c.y;

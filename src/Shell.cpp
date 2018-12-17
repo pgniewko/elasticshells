@@ -146,17 +146,17 @@ void Shell::add_vector(const Vector3D& nxyz)
     }
 }
 
-int Shell::getNumberTriangles() const
+int Shell::get_number_triangles() const
 {
     return number_t;
 }
 
-int Shell::getNumberVertices() const
+int Shell::get_number_vertices() const
 {
     return number_v;
 }
 
-int Shell::getNumberHinges() const
+int Shell::get_number_hinges() const
 {
     return number_h;
 }
@@ -207,7 +207,7 @@ void Shell::set_shell_id(int ix)
     }
 }
 
-void Shell::setInitR(double rinit)
+void Shell::set_r0(double rinit)
 {
     params.init_r = rinit;
 }
@@ -291,7 +291,7 @@ const shell_params_t& Shell::get_params() const
     return params;
 }
 
-double Shell::calcSurfaceArea(double d_param) const
+double Shell::calc_surface_area(double d_param) const
 {
     double totalSurface = 0.0;
     
@@ -303,17 +303,17 @@ double Shell::calcSurfaceArea(double d_param) const
     return totalSurface;
 }
 
-double Shell::calcSurfaceArea() const
-{
-    double surface = 0.0;
-
-    for (int i = 0; i < number_t; i++)
-    {
-        surface += triangles[i].area(vertices);
-    }
-
-    return surface;
-}
+//double Shell::calcSurfaceArea() const
+//{
+//    double surface = 0.0;
+//
+//    for (int i = 0; i < number_t; i++)
+//    {
+//        surface += triangles[i].area(vertices);
+//    }
+//
+//    return surface;
+//}
 
 std::ostream& operator<< (std::ostream& out, const Shell& c)
 {

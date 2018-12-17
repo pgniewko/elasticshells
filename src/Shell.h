@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "Environment.h"
-//#include "force/HookeanForce.h"
 #include "force/OsmoticForce.h"
 #include "force/HertzianRepulsion.h"
 #include "geometry/Vector3D.h"
@@ -42,12 +41,12 @@ class Shell
         Shell(const Shell& orig);
         virtual ~Shell();
         double calc_volume(double = 0.0) const;
-        double calcSurfaceArea() const;
-        double calcSurfaceArea(double) const;
+        //double calcSurfaceArea() const;
+        double calc_surface_area(double = 0.0) const;
         void calc_cm();
-        int getNumberTriangles() const;
-        int getNumberVertices() const;
-        int getNumberHinges() const;
+        int get_number_triangles() const;
+        int get_number_vertices() const;
+        int get_number_hinges() const;
         
         void add_vector(const Vector3D&);
 
@@ -67,7 +66,7 @@ class Shell
         double check_volume_condition();
         double ajust_turgor(double = 0.0);
 
-        void setInitR(double);
+        void set_r0(double);
 
         double get_r0() const;
         Vector3D get_cm() const;

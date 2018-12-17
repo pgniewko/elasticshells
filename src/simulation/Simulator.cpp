@@ -275,7 +275,7 @@ void Simulator::addShell(double r0)
         Shell new_shell(tris);
         new_shell.set_vertex_size(params.r_vertex);
         new_shell.set_shell_id(number_of_shells);
-        new_shell.setInitR(r0);
+        new_shell.set_r0(r0);
 
         new_shell.set_ecc(params.E_shell);
         new_shell.set_nu(params.nu);
@@ -285,7 +285,7 @@ void Simulator::addShell(double r0)
 
         double radial_eps = 1.0 + (0.5 * (1 - params.nu)  * (new_shell.get_turgor() * r0) / (params.E_shell * params.th));
 
-        if (new_shell.getNumberVertices() == 1)
+        if (new_shell.get_number_vertices() == 1)
         {
             radial_eps = 1.0;
         }
@@ -501,7 +501,7 @@ int Simulator::getTotalVertices()
 
     for (int i = 0; i < number_of_shells; i++)
     {
-        totalnumber += shells[i].getNumberVertices();
+        totalnumber += shells[i].get_number_vertices();
     }
 
     return totalnumber;
@@ -555,8 +555,8 @@ void Simulator::recalculate_mass_centers()
 
 void Simulator::set_min_force()
 {
-    double average_area = shells[0].calcSurfaceArea();
-    average_area /= shells[0].getNumberTriangles();
+    double average_area = shells[0].calc_surface_area();
+    average_area /= shells[0].get_number_triangles();
 
     double max_turgor = 0.0;
 
@@ -567,7 +567,7 @@ void Simulator::set_min_force()
 
     MIN_FORCE = FORCE_FRAC * max_turgor * average_area;
 
-    if (shells[0].getNumberVertices() == 1)
+    if (shells[0].get_number_vertices() == 1)
     {
         MIN_FORCE = 1e-12;
     }
@@ -694,7 +694,7 @@ void Simulator::create_shells_image()
     {
         turgors.push_back( 0.0 );
         double x_, y_, z_;
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {
             x_ = shells[i].vertices[j].r_c.x;
             y_ = shells[i].vertices[j].r_c.y;
@@ -722,12 +722,12 @@ void Simulator::create_shells_image()
     
     for (uint i = 0; i < shells.size(); i++)
     {
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {
             object_map vm_ij(i, j);
             int ij_id = inv_vs_map[vm_ij];
             
-            for (int k = 0; k < shells[i].getNumberVertices(); k++)
+            for (int k = 0; k < shells[i].get_number_vertices(); k++)
             {
                 if (k != j && shells[i].vertices[j].is_neighbor(k))
                 {
@@ -747,7 +747,7 @@ void Simulator::create_shells_image()
         int ia, ib, ic;
         int ia_mapped, ib_mapped, ic_mapped;
         
-        for (int j = 0; j < shells[i].getNumberTriangles(); j++)
+        for (int j = 0; j < shells[i].get_number_triangles(); j++)
         {
             element el_;
             ia = shells[i].triangles[j].ia;
@@ -797,7 +797,7 @@ void Simulator::create_shells_image()
     {
         int x1, x2, x3, x4;
         int x1_mapped, x2_mapped, x3_mapped, x4_mapped;
-        for (int j = 0; j < shells[i].getNumberHinges(); j++)
+        for (int j = 0; j < shells[i].get_number_hinges(); j++)
         {
             
             hinge h_;
@@ -844,7 +844,7 @@ void Simulator::copy_shells_data()
     for (uint i = 0; i < shells.size(); i++)
     {
         double x_, y_, z_;
-        for (int j = 0; j < shells[i].getNumberVertices(); j++)
+        for (int j = 0; j < shells[i].get_number_vertices(); j++)
         {            
             x_ = shells[i].vertices[j].r_c.x;
             y_ = shells[i].vertices[j].r_c.y;

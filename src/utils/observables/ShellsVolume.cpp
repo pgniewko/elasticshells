@@ -20,7 +20,7 @@ double ShellsVolume::observe(const Box& box, const std::vector<Shell>& shells)
         shellsvolume += shells[i].calc_volume(d_param);
     }
 
-    if (shells[0].getNumberVertices() == 1)
+    if (shells[0].get_number_vertices() == 1)
     {
         double overlapvolume = 0.0;
 

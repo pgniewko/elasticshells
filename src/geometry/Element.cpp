@@ -62,6 +62,11 @@ double Element::area(const std::vector<Vertex>& vs) const
 
 double Element::area(const std::vector<Vertex>& vs, const Vector3D cm, double eps) const
 {
+    if (eps == 0)
+    {
+        return area(vs);
+    }
+    
     if (ia != -1 && ib != -1 && ic != -1)
     {
         Vector3D ta = vs[ia].r_c - cm;
