@@ -42,7 +42,7 @@ struct params_t
     //int log_step;
     int nsteps;
     int d;
-    int nbhandler;
+    //int nbhandler;
     int platotype;
 
     double E_shell;

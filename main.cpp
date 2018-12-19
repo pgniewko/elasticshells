@@ -57,7 +57,7 @@ static struct argp_option options[] =
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato], Random[rnd] [default: simple]"},
-    {"depth",     413,   "INT", 0, "Triangulation depth [default: 3]"},
+    {"depth",     413,   "INT", 0, "Triangulation depth [default: 5]"},
     {"plato",     414,   "INT", 0, "PlatonicTriangulation type: tetra[0], cube[1], octa[2], ico[3] [default: 0]"},
     {"bend",      417,       0, 0, "[default: false]"},
     {"restart",   419,       0, 0, "[default: false]"},
@@ -65,8 +65,8 @@ static struct argp_option options[] =
     {"jam",       'j',       0, 0, "[default: false]"},
 
     {0,             0,       0, 0, "Shell Options:", 5},
-    {"E",         500, "FLOAT", 0, "Shell Young's modulus [default: 100.0]"},
-    {"Ebox",      501, "FLOAT", 0, "Box Young's modulus [default: 200.0]"},
+    {"E-shell",   500, "FLOAT", 0, "Shell Young's modulus [default: 100.0]"},
+    {"E-wall",    501, "FLOAT", 0, "Box Young's modulus [default: 200.0]"},
     {"ir",        502, "FLOAT", 0, "Shells size at the initialization - lower limit [default:2.5"},
     {"ir2",       503, "FLOAT", 0, "Shells size at the initialization - upper limit [default:2.5]"},
     {"dp",        504, "FLOAT", 0, "Osmotic pressure [default: 1.0]"},
@@ -227,7 +227,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
 
         case 413:
-            arguments->d = arg ? atoi (arg) : 3;
+            arguments->d = arg ? atoi (arg) : 5;
             break;
 
         case 414:

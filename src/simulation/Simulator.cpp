@@ -157,7 +157,7 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
         r_max = r_min;
     }
 
-    simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (!Shell::bending ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (Shell::bending ? "true" : "false") << "\n";
 
     double nx, ny, nz;
     bool flag = true;

@@ -8,7 +8,6 @@ AverageContactsNumber::~AverageContactsNumber() {}
 
 void AverageContactsNumber::set_params(const int num, std::vector<std::string> args_)
 {
-    i_param = atoi(args_[ num + 0 ].c_str());
 };
 
 double AverageContactsNumber::observe(const Box& box, const std::vector<Shell>& shells)

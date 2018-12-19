@@ -10,8 +10,7 @@ Pressure::~Pressure() {}
 
 void Pressure::set_params(const int num, std::vector<std::string> args_)
 {
-    i_param = atoi(args_[ num + 0 ].c_str());
-    d_param = strtod(args_[ num + 1 ].c_str(), NULL);
+    d_param = strtod(args_[ num + 0 ].c_str(), NULL);
 }
 
 double Pressure::observe(const Box& box, const std::vector<Shell>& shells)
