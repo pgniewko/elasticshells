@@ -6,9 +6,9 @@ cd $MY_PATH
 
 N=5
 NS=200
-BSX=6.0
-BSY=6.0
-BSZ=6.0
+BSX=10.0
+BSY=10.0
+BSZ=10.0
 BSXE=3.0
 BSYE=3.0
 BSZE=3.0
@@ -30,5 +30,5 @@ time $bf_software -n $N --ns $NS --dt $DT --dp $dP --ddp=$ddP --th 0.1 --nu 0.5 
         --prefix $PREFIX --out-dir $ODIR --in-dir $IDIR  \
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
         --tt rnd -d --rv $RCUT --ir 2.5 --ir2 2.5 --seed $SEED \
-        --vol-f $PBC
+        --vol-f --jam $PBC
 

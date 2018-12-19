@@ -216,7 +216,7 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
 
         fc.reset_dl(estimate_m(), box);
     }
-
+    
     if (params.d == 0)
     {
         simulator_logs << utils::LogLevel::WARNING  << "Single vertex representation\n";
@@ -230,7 +230,7 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
 
     restarter.saveTopologyFile(shells);
     set_min_force();
-
+    
     create_shells_image();
     copy_shells_data();
 }
