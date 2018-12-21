@@ -39,6 +39,8 @@ class Observer
         int i_param;
         double d_param;
 
+        bool image_not_created = true;
+        
         std::vector<double> xyz;
         std::vector<double> forces;
         ForcesCalculator fc;

@@ -29,20 +29,16 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
         exit(EXIT_FAILURE);
     }
 
-    //params.log_step = args.log_step;
     params.d = args.d;
-    //params.nbhandler = args.nb_flag;
     params.E_shell = args.E_shell;
     params.nu = args.nu;
     params.th = args.thickness;
     params.dt = args.dt;
     params.dp = args.dp;
     params.ddp = args.ddp;
-    //params.ttime = args.ttime;
     params.r_vertex = args.r_vertex;
-    //params.draw_box = args.draw_box;
     params.const_volume = args.const_volume;
-    params.nsteps = args.nsteps; // ? args.nsteps : (int)params.ttime / params.dt;
+    params.nsteps = args.nsteps;
     params.platotype = args.platotype;
 
     integrator = new Integrator(this);
@@ -125,7 +121,6 @@ void Simulator::diagnose_params(arguments args)
 void Simulator::log_params()
 {
     simulator_logs << utils::LogLevel::INFO  << "SIM_STEPS=" << params.nsteps << "\n";
-//    simulator_logs << utils::LogLevel::INFO  << "LOG_STEP="  << params.log_step << "\n";
     simulator_logs << utils::LogLevel::INFO  << "TRIANGULATOR="  << triangulator << "\n";
     simulator_logs << utils::LogLevel::FINE  << "TIME STEP(DT)="  << params.dt << " [s]\n";
     simulator_logs << utils::LogLevel::FINE  << "DEPTH="  << params.d << "\n";
@@ -133,12 +128,10 @@ void Simulator::log_params()
     simulator_logs << utils::LogLevel::FINE  << "DDP="  << params.ddp << " [MPa]\n";
     simulator_logs << utils::LogLevel::FINE  << "E SHELL="  << params.E_shell << " [MPa]\n";
     simulator_logs << utils::LogLevel::FINE  << "E BOX="  << box.get_E() << " [MPa]\n";
-    //simulator_logs << utils::LogLevel::FINE  << "SURFACE_MODULUS="  << (params.E_shell * params.th) << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (SHELL)="  << params.nu << "\n";
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (BOX)="  << box.get_nu() << "\n";
     simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << " [micron]\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
-    //simulator_logs << utils::LogLevel::FINE  << "BOX.BOX_DRAW=" << (params.draw_box ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
     simulator_logs << utils::LogLevel::FINER << "OSMOTIC_EPS=" << OsmoticForce::getEpsilon() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.get_x() << "\n";
@@ -306,8 +299,9 @@ void Simulator::restart()
     simulator_logs << utils::LogLevel::INFO << "Simulation runs in [restart] mode. \n" ;
     restarter.registerVMap();
     restarter.readTopologyFile(shells);
-    restarter.readLastFrame(shells);
     number_of_shells = shells.size();
+    restarter.readLastFrame(shells);
+    recalculate_mass_centers();
     set_min_force();
     Simulator::RESTART_FLAG = true;
     create_shells_image();
@@ -416,17 +410,12 @@ void Simulator::simulate(int steps)
         copy_back_shells_data();
         integrator->resetParams(this);
 
-
-        //if ( (step + 1) % params.log_step == 0 )
-        //{
-            // ** SAVE COORDINATES - i.e. "logging" coordinates
-            traj.save_traj(shells, getTotalVertices());
-            log_sim.dump_state(box, shells);
-            save_turgors();
-            traj.save_box(box, (step + 1) * params.dt);
-            restarter.saveLastFrame(shells, box);
-            restarter.saveTopologyFile(shells);
-        //}
+        traj.save_traj(shells, getTotalVertices());
+        log_sim.dump_state(box, shells);
+        save_turgors();
+        traj.save_box(box, (step + 1) * params.dt);
+        restarter.saveLastFrame(shells, box);
+        restarter.saveTopologyFile(shells);
 
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
         {
@@ -662,7 +651,7 @@ void Simulator::save_turgors()
         turgor = shells[i].get_turgor();
         cm = shells[i].get_cm();
 
-        fprintf(os, "%5.4f %6.4f %6.4f %6.4f ", turgor, cm.x, cm.y, cm.z);
+        fprintf(os, "%10.8f %6.4f %6.4f %6.4f ", turgor, cm.x, cm.y, cm.z);
     }
 
     fprintf(os, "%s", "\n");
@@ -889,6 +878,7 @@ void Simulator::copy_back_shells_data()
         shells[shell_id].vertices[vert_id].r_c.y = xyz[3 * i + 1];
         shells[shell_id].vertices[vert_id].r_c.z = xyz[3 * i + 2];
     }
+    recalculate_mass_centers();
 }
 
 int Simulator::estimate_m()

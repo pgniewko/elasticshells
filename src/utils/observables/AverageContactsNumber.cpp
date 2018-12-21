@@ -12,7 +12,10 @@ void AverageContactsNumber::set_params(const int num, std::vector<std::string> a
 
 double AverageContactsNumber::observe(const Box& box, const std::vector<Shell>& shells)
 {
-    create_shells_image(box, shells);
+    if (image_not_created)
+    {
+        create_shells_image(box, shells);
+    }
     copy_shells_data(box, shells);
 
     double contact_number = 0.0;

@@ -19,6 +19,7 @@ class Pressure : public Observer
         double total_force(const Box&, const std::vector<Shell>&);
         static DerivedRegister<Pressure> reg;
         static utils::Logger sp_log;
+        bool info_not_printed = true;
 };
 
 #endif	/* PRESSURE_H */

@@ -44,16 +44,11 @@ static struct argp_option options[] =
     {"in-dir",      302,  "STR",  0, "... [default: ./input]" },
     {"prefix",      303,  "STR",  0, "... [default: biofilm]" },
     {"seed",        304, "LONG",  0, "Random generator seed [default: 0x123] " },
-//    {"abort", OPT_ABORT, 0, 0, "Abort before showing any output"},
 
     {0,             0,       0, 0, "Simulation Options:", 4},
     {"number",    'n',   "INT", 0, "Init number of particles. Not in work when positions read from the file [default: 1]"},
-//    {"time",      't', "FLOAT", 0, "Total simulation time [default: 1.0]"},
     {"ns",        401,   "INT", 0, "Number of simulation steps [default: 10]"},
     {"dt",        402, "FLOAT", 0, "Integration time step [default: 0.001]"},
-//    {"nb",        404,   "INT", 0, "Nb interaction handler: Naive O(N^2)[0], Linked-domains[2] [default: 0]"},
-//    {"log-step",  405,   "INT", 0, "Log step interval [default: 10]"},
-//    {"box-step",  407,   "INT", 0, "Box manipulation step interval [default: 10]"},
     {"pbc",       410,       0, 0, "Activate periodic boundary conditions [default: false]"},
     {"no-box",    411,       0, 0, "Deactivate box in rendering script - [default: true]"},
     {"tt",        412,   "STR", 0, "Triangulation type: Simple[simple], Platonic[plato], Random[rnd] [default: simple]"},
@@ -64,9 +59,9 @@ static struct argp_option options[] =
     {"analyze",   420,       0, 0, "[default: false]"},
     {"jam",       'j',       0, 0, "[default: false]"},
 
-    {0,             0,       0, 0, "Shell Options:", 5},
+    {0,             0,       0, 0, "Material Properties:", 5},
     {"E-shell",   500, "FLOAT", 0, "Shell Young's modulus [default: 100.0]"},
-    {"E-wall",    501, "FLOAT", 0, "Box Young's modulus [default: 200.0]"},
+    {"E-box",     501, "FLOAT", 0, "Box Young's modulus [default: 200.0]"},
     {"ir",        502, "FLOAT", 0, "Shells size at the initialization - lower limit [default:2.5"},
     {"ir2",       503, "FLOAT", 0, "Shells size at the initialization - upper limit [default:2.5]"},
     {"dp",        504, "FLOAT", 0, "Osmotic pressure [default: 1.0]"},
@@ -106,16 +101,12 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->silent = 0;
             arguments->verbose = 1;
             arguments->debug = 0;
-            //arguments->abort = 0;
             arguments->files_prefix = (char*)&"biofilm";
             arguments->output_dir = (char*)&"./output/";
             arguments->input_dir  = (char*)&"./input/";
-//            arguments->integrator_a = (char*)&"fe";
             arguments->tritype = (char*)&"simple";
             arguments->d = 3;
             arguments->platotype = 0;
-//            arguments->log_step = 10;
-//            arguments->box_step = 10;
             arguments->n_shells = 1;
             arguments->nsteps = 10;
             arguments->E_shell = 100.0;
@@ -126,7 +117,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->dp = 1.0;
             arguments->ddp = 0.0;
             arguments->eps = 0.0;
-//            arguments->ttime = 1.0;
             arguments->r_vertex = 0.25;
             arguments->init_radius1 = 2.5;
             arguments->init_radius2 = 2.5;
@@ -140,14 +130,12 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->bsye = 5.0;
             arguments->bsze = 5.0;
             arguments->pbc = false;
-//            arguments->draw_box = true;
             arguments->osmotic_flag = false;
             arguments->bending = false;
             arguments->const_volume = false;
             arguments->restart = false;
             arguments->analyze = false;
             arguments->jam = false;
-//            arguments->nb_flag = 0;
             arguments->seed = 0x123;
             break;
 
@@ -190,10 +178,6 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->n_shells = arg ? atoi (arg) : 1;
             break;
 
-//        case 't':
-//            arguments->ttime = arg ? strtod (arg, NULL) : 1.0;
-//            break;
-
         case 401:
             arguments->nsteps = arg ? atoi (arg) : 100;
             break;
@@ -202,25 +186,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->dt = arg ? strtod (arg, NULL) : 0.001;
             break;
 
-//        case 404:
-//            arguments->nb_flag = arg ? atoi (arg) : 0;
-//            break;
-
-//        case 405:
-//            arguments->log_step = arg ? atoi (arg) : 10;
-//            break;
-//
-//        case 407:
-//            arguments->box_step = arg ? atoi (arg) : 10;
-//            break;
-
         case 410:
             arguments->pbc = true;
             break;
-
-//        case 411:
-//            arguments->draw_box = false;
-//            break;
 
         case 412:
             arguments->tritype = arg;
@@ -334,13 +302,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 609:
             arguments->bsze = arg ?  strtod (arg, NULL) : 10.0;
             break;
-
-//        case OPT_ABORT:
-//            arguments->abort = 1;
-//            break;
-
-//      case ARGP_KEY_NO_ARGS:
-//          argp_usage (state);
+            
         case ARGP_KEY_ARG:
             arguments->strings = &state->argv[state->next];
             state->next = state->argc;
@@ -399,19 +361,10 @@ int main(int argc, char** argv)
     {
         utils::LogManager::set_level("SEVERE");
     }
-
-//    if (arguments.abort)
-//    {
-//        shells_logs << utils::LogLevel::SEVERE << "PROGRAM FORCED TO *ABORT*\n";
-//        exit(EXIT_FAILURE);
-//    }
-
-    //arguments.render_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".py");
+    
     arguments.traj_file    = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".xyz");
     arguments.box_file     = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".box.xyz");
     arguments.output_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".out");
-    //arguments.surface_file = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".surface.py");
-    //arguments.stress_file  = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".stress.py");
     arguments.topology_file = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".top");
     arguments.lf_file      = std::string(arguments.output_dir) + std::string(arguments.files_prefix) + std::string(".lf.xyz");
 
@@ -421,12 +374,9 @@ int main(int argc, char** argv)
     /* Initialize MT19937 Pseudo-random-number generator. */
     unsigned long init[4] = {arguments.seed, 0x234, 0x345, 0x456}, length = 4;
     init_by_array(init, length);
-    //shells_logs << utils::LogLevel::FILE << "RENDER_FILE = "      << arguments.render_file << "\n";
     shells_logs << utils::LogLevel::FILE << "TRAJ_FILE = "        << arguments.traj_file << "\n";
     shells_logs << utils::LogLevel::FILE << "BOX_FILE = "         << arguments.box_file << "\n";
     shells_logs << utils::LogLevel::FILE << "OUTPUT_FILE = "      << arguments.output_file << "\n";
-    //shells_logs << utils::LogLevel::FILE << "SURFACE_FILE = "     << arguments.surface_file << "\n";
-    //shells_logs << utils::LogLevel::FILE << "STRESS_FILE = "      << arguments.stress_file << "\n";
     shells_logs << utils::LogLevel::FILE << "OBSERVERS_CONFIG = " << arguments.ob_config_file << "\n";
 
     if (arguments.n_shells == 0)

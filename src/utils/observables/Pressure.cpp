@@ -14,17 +14,17 @@ void Pressure::set_params(const int num, std::vector<std::string> args_)
 }
 
 double Pressure::observe(const Box& box, const std::vector<Shell>& shells)
-{
-
+{    
     double pressure = 0.0;
 
-    if (box.pbc)
+    if (box.pbc && info_not_printed)
     {
         sp_log << utils::LogLevel::INFO << "PRESSURE FOR PBC IS NOT IMPLEMENTED AT THE MOMENT" << "\n";
+        info_not_printed = false;
         return 0.0;
     }
 
-    double totalForce = total_force(box, shells);//SurfaceForce::calcTotalForce(box, shells);
+    double totalForce = total_force(box, shells);
     double area = box.get_area(d_param);
     pressure = totalForce / area;
 
@@ -37,7 +37,12 @@ double Pressure::total_force(const Box& box, const std::vector<Shell>& shells)
     {
         return 0.0;
     }
-
+    if (image_not_created)
+    {
+        create_shells_image(box, shells);
+    }
+    copy_shells_data(box, shells);
+    
     Vector3D wall_yz(0, 0, 0);
     Vector3D wall_xz(0, 0, 0);
     Vector3D wall_xy(0, 0, 0);

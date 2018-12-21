@@ -170,6 +170,7 @@ void Observer::create_shells_image(const Box& box, const std::vector<Shell>& she
             hinge_counter++;
         }
     }
+    image_not_created = false;
 }
 
 void Observer::copy_shells_data(const Box& box, const std::vector<Shell>& shells)
