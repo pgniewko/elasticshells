@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>           // std::stoi
 #include <climits>          // MAX_INT
-#include <cmath>        // std::max
+#include <cmath>            // std::max
 
 #include "utils/Logger.h"
 #include "utils/utils.h"
@@ -37,18 +37,18 @@ class Scheduler
         Scheduler();
         Scheduler(const Scheduler& orig);
         virtual ~Scheduler();
-        std::vector<std::string> readScheduleFile();
-        void setFileName(std::string);
-        void configureSchedule();
-        void registerSchedules();
-        void checkSchedule();
-        void changeSchedule();
-        void printSchedule();
-        void saveRemainingSchedule();
-        void setDefault(int, int, double, double, double, double, double, double);
+        std::vector<std::string> read_schedule_file();
+        void set_file_name(std::string);
+        void configure_schedule();
+        void register_schedules();
+        void check_schedule();
+        void change_schedule();
+        void print_schedule();
+        void save_remaining_schedule();
+        void set_default(int, int, double, double, double, double, double, double);
         void execute(double&, double&, double&, const double);
 
-        bool nthTodo();
+        bool nth_todo();
 
     protected:
         std::string schedulefile;

@@ -13,7 +13,7 @@ Integrator::Integrator() : n(0) {}
 
 Integrator::Integrator(Simulator* s) : n(0)
 {
-    integrator = &Integrator::fireIntegrator;
+    integrator = &Integrator::fire_integrator;
 
     FIRE_DT = s->params.dt;
     FIRE_DTMAX = 25.0 * s->params.dt;
@@ -36,7 +36,7 @@ void Integrator::integrate(Simulator* s)
     (*this.*integrator)(s);
 }
 
-void Integrator::resetParams(Simulator* s)
+void Integrator::reset_params(Simulator* s)
 {
     FIRE_DT = s->params.dt;
     FIRE_ALPHA = 0.1;
@@ -54,7 +54,7 @@ void Integrator::resetParams(Simulator* s)
 
 }
 
-void Integrator::fireIntegrator(Simulator* s)
+void Integrator::fire_integrator(Simulator* s)
 {
     double f_inc = 1.1;
     double f_dec = 0.5;

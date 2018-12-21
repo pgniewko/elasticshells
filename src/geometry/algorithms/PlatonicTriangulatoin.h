@@ -22,10 +22,10 @@ class PlatonicTriangulatoin : public Triangulation
         std::list<Triangle> triangulate(double);
 
     private:
-        void createTetrahedron();
-        void createHexahedron();
-        void createOctahedron();
-        void createIcosahedron();
+        void create_tetrahedron();
+        void create_hexahedron();
+        void create_octahedron();
+        void create_icosahedron();
         void subdivide();
         int depth;
         int type;

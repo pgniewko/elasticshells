@@ -29,23 +29,23 @@ std::list<Triangle> PlatonicTriangulatoin::triangulate(double r0)
     {
         if (type == 0)
         {
-            createTetrahedron();
+            create_tetrahedron();
         }
         else if (type == 1)
         {
-            createHexahedron();
+            create_hexahedron();
         }
         else if (type == 2)
         {
-            createOctahedron();
+            create_octahedron();
         }
         else if (type == 3)
         {
-            createIcosahedron();
+            create_icosahedron();
         }
         else
         {
-            createTetrahedron();
+            create_tetrahedron();
         }
 
         for (int i = 0; i < (depth - 1); i++)
@@ -71,7 +71,7 @@ std::list<Triangle> PlatonicTriangulatoin::triangulate()
 }
 
 
-void PlatonicTriangulatoin::createTetrahedron()
+void PlatonicTriangulatoin::create_tetrahedron()
 {
     double C = constants::sqrt3 / 3.0; // - OK, checked. change C = SQRT3/3 to 1. no diff.
     tris.push_back(Triangle(Vector3D( C, C, C), Vector3D(-C, -C, C), Vector3D(-C, C, -C) ));
@@ -80,7 +80,7 @@ void PlatonicTriangulatoin::createTetrahedron()
     tris.push_back(Triangle(Vector3D( C, -C, -C), Vector3D( C, C, C), Vector3D(-C, C, -C) ));
 }
 
-void PlatonicTriangulatoin::createHexahedron()
+void PlatonicTriangulatoin::create_hexahedron()
 {
     // create cube - OK, checked
     //top
@@ -104,7 +104,7 @@ void PlatonicTriangulatoin::createHexahedron()
     /**/
 }
 
-void PlatonicTriangulatoin::createOctahedron()
+void PlatonicTriangulatoin::create_octahedron()
 {
     // Join vertices to create a unit octahedron - OK, checked
     // The top half
@@ -119,7 +119,7 @@ void PlatonicTriangulatoin::createOctahedron()
     tris.push_back(Triangle(Vector3D( 0, -1, 0), Vector3D( 1, 0, 0), Vector3D( 0, 0, -1)));
 }
 
-void PlatonicTriangulatoin::createIcosahedron()
+void PlatonicTriangulatoin::create_icosahedron()
 {
     //Twelve vertices of icosahedron on unit sphere
     double t = 0.8506508084; // t=(1+sqrt(5))/2, tau=t/sqrt(1+t^2)

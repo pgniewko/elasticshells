@@ -21,7 +21,7 @@ Packer::Packer(const Packer& orig) {}
 
 Packer::~Packer() {}
 
-void Packer::packShells(Box& box, std::vector<Shell>& shells, double thickness, bool flag)
+void Packer::pack_shells(Box& box, std::vector<Shell>& shells, double thickness, bool flag)
 {
     std::size_t n = shells.size();
     std::vector<point_t> points;
@@ -86,8 +86,8 @@ void Packer::packShells(Box& box, std::vector<Shell>& shells, double thickness, 
 
         do
         {
-            Packer::inflatePoints(points);
-            Packer::recenterShells(points, sim_box);
+            Packer::inflate_points(points);
+            Packer::recenter_shells(points, sim_box);
 
             do
             {
@@ -107,7 +107,7 @@ void Packer::packShells(Box& box, std::vector<Shell>& shells, double thickness, 
         while ( !Packer::jammed(points, sim_box, P_final) ); // jamming condition, very small, residual pressure
 
     }
-    while ( anyRattlerOrCrowder(points, sim_box, Z) );
+    while ( any_rattler_or_crowder(points, sim_box, Z) );
 
 
     packer_logs << utils::LogLevel::INFO << "Jammed packing generated @:";
@@ -139,7 +139,7 @@ void Packer::fire(std::vector<point_t>& points, box_t& box)
     double f_a = 0.99;
 
     // MD step
-    Packer::velocityVerlet(points, box);
+    Packer::velocity_verlet(points, box);
 
 
     // CALC P PARAMETER
@@ -185,7 +185,7 @@ void Packer::fire(std::vector<point_t>& points, box_t& box)
     }
 }
 
-void Packer::getDistance(Vector3D& dij, const Vector3D& vi, const Vector3D& vj, const box_t& box)
+void Packer::get_distance(Vector3D& dij, const Vector3D& vi, const Vector3D& vj, const box_t& box)
 {
     dij = vj - vi;
 
@@ -204,7 +204,7 @@ void Packer::getDistance(Vector3D& dij, const Vector3D& vi, const Vector3D& vj, 
     }
 }
 
-void Packer::calcBoxForces(std::vector<point_t>& points, const box_t& box)
+void Packer::calc_box_forces(std::vector<point_t>& points, const box_t& box)
 {
     std::size_t n = points.size();
     Vector3D wallYZ, wallXZ, wallXY;
@@ -229,21 +229,21 @@ void Packer::calcBoxForces(std::vector<point_t>& points, const box_t& box)
         wallYZ.y = points[i].r_c.y;
         wallYZ.z = points[i].r_c.z;
         dij = points[i].r_c - wallYZ;
-        points[i].f_c += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+        points[i].f_c += HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
         sgny = SIGN(points[i].r_c.y);
         wallXZ.x = points[i].r_c.x;
         wallXZ.y = sgny * bsy;
         wallXZ.z = points[i].r_c.z;
         dij = points[i].r_c - wallXZ;
-        points[i].f_c += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+        points[i].f_c += HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
         sgnz = SIGN(points[i].r_c.z);
         wallXY.x = points[i].r_c.x;
         wallXY.y = points[i].r_c.y;
         wallXY.z = sgnz * bsz;
         dij = points[i].r_c - wallXY;
-        points[i].f_c += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+        points[i].f_c += HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
 
         sgnx = SIGN(points[i].r_c.x);
@@ -251,26 +251,26 @@ void Packer::calcBoxForces(std::vector<point_t>& points, const box_t& box)
         wallYZ.y = points[i].r_c.y;
         wallYZ.z = points[i].r_c.z;
         dij = points[i].r_c - wallYZ;
-        points[i].f_c += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+        points[i].f_c += HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
         sgny = SIGN(points[i].r_c.y);
         wallXZ.x = points[i].r_c.x;
         wallXZ.y = -sgny * bsy;
         wallXZ.z = points[i].r_c.z;
         dij = points[i].r_c - wallXZ;
-        points[i].f_c += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+        points[i].f_c += HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
         sgnz = SIGN(points[i].r_c.z);
         wallXY.x = points[i].r_c.x;
         wallXY.y = points[i].r_c.y;
         wallXY.z = -sgnz * bsz;
         dij = points[i].r_c - wallXY;
-        points[i].f_c += HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+        points[i].f_c += HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
     }
 }
 
-void Packer::calcForces(std::vector<point_t>& points, box_t& box)
+void Packer::calc_forces(std::vector<point_t>& points, box_t& box)
 {
     std::size_t n = points.size();
 
@@ -289,8 +289,8 @@ void Packer::calcForces(std::vector<point_t>& points, box_t& box)
         for (std::size_t j = i + 1; j < n; j++)
         {
 
-            Packer::getDistance(dij, points[j].r_c, points[i].r_c, box);
-            force_ij = HertzianRepulsion::calcForce(dij, points[i].radius, points[j].radius, 1.0, 1.0, 0.5, 0.5);
+            Packer::get_distance(dij, points[j].r_c, points[i].r_c, box);
+            force_ij = HertzianRepulsion::calc_force(dij, points[i].radius, points[j].radius, 1.0, 1.0, 0.5, 0.5);
             points[i].f_c +=  force_ij;
             points[j].f_c += -force_ij;
         }
@@ -298,11 +298,11 @@ void Packer::calcForces(std::vector<point_t>& points, box_t& box)
 
     if (!box.pbc)
     {
-        calcBoxForces(points, box);
+        calc_box_forces(points, box);
     }
 }
 
-void Packer::velocityVerlet(std::vector<point_t>& points, box_t& box)
+void Packer::velocity_verlet(std::vector<point_t>& points, box_t& box)
 {
     std::size_t n = points.size();
     double dt = FIRE_DT;
@@ -319,7 +319,7 @@ void Packer::velocityVerlet(std::vector<point_t>& points, box_t& box)
         points[i].v_c += 0.5 * dt * points[i].f_c;
     }
 
-    calcForces(points, box);
+    calc_forces(points, box);
 
     // UPDATE VELOCITIES
     for (std::size_t i = 0; i < n; i++)
@@ -333,7 +333,7 @@ void Packer::velocityVerlet(std::vector<point_t>& points, box_t& box)
 
 bool Packer::check_min_force(std::vector<point_t>& points, box_t& box)
 {
-    Packer::calcForces(points, box);
+    Packer::calc_forces(points, box);
     std::size_t n = points.size();
 
     for (std::size_t i = 0; i < n; i++)
@@ -349,7 +349,7 @@ bool Packer::check_min_force(std::vector<point_t>& points, box_t& box)
 
 bool Packer::jammed(std::vector<point_t>& points, box_t& box, double& pf)
 {
-    double pressure = Packer::calcPressure(points, box);
+    double pressure = Packer::calc_pressure(points, box);
 
     if (pressure > Packer::P_MIN && pressure < Packer::P_MAX)
     {
@@ -370,7 +370,7 @@ bool Packer::jammed(std::vector<point_t>& points, box_t& box, double& pf)
     return false;
 }
 
-void Packer::inflatePoints(std::vector<point_t>& points)
+void Packer::inflate_points(std::vector<point_t>& points)
 {
     std::size_t n = points.size();
 
@@ -380,7 +380,7 @@ void Packer::inflatePoints(std::vector<point_t>& points)
     }
 }
 
-void Packer::recenterShells(std::vector<point_t>& points, box_t& box)
+void Packer::recenter_shells(std::vector<point_t>& points, box_t& box)
 {
     if (box.pbc)
     {
@@ -402,7 +402,7 @@ void Packer::recenterShells(std::vector<point_t>& points, box_t& box)
     return;
 }
 
-double Packer::calcPressure(std::vector<point_t>& points, box_t& box)
+double Packer::calc_pressure(std::vector<point_t>& points, box_t& box)
 {
     double pressure = 0.0;
 
@@ -418,8 +418,8 @@ double Packer::calcPressure(std::vector<point_t>& points, box_t& box)
         {
             for (std::size_t j = i + 1; j < n; j++)
             {
-                Packer::getDistance(rij, points[i].r_c, points[j].r_c, box);
-                fij = HertzianRepulsion::calcForce(rij, points[i].radius, points[j].radius, 1.0, 1.0, 0.5, 0.5);
+                Packer::get_distance(rij, points[i].r_c, points[j].r_c, box);
+                fij = HertzianRepulsion::calc_force(rij, points[i].radius, points[j].radius, 1.0, 1.0, 0.5, 0.5);
                 pressure += dot(rij, fij);
             }
         }
@@ -434,7 +434,7 @@ double Packer::calcPressure(std::vector<point_t>& points, box_t& box)
 
         for (std::size_t i = 0; i < points.size(); i++)
         {
-            totalForce += Packer::boxForce(points[i], box);
+            totalForce += Packer::box_force(points[i], box);
         }
 
         pressure = totalForce / boxArea;
@@ -443,7 +443,7 @@ double Packer::calcPressure(std::vector<point_t>& points, box_t& box)
     return pressure;
 }
 
-double Packer::boxForce(point_t& point, box_t& box)
+double Packer::box_force(point_t& point, box_t& box)
 {
     Vector3D wallYZ, wallXZ, wallXY;
     Vector3D dij;
@@ -466,21 +466,21 @@ double Packer::boxForce(point_t& point, box_t& box)
     wallYZ.y = point.r_c.y;
     wallYZ.z = point.r_c.z;
     dij = point.r_c - wallYZ;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
     force_collector += force.length();
     sgny = SIGN(point.r_c.y);
     wallXZ.x = point.r_c.x;
     wallXZ.y = sgny * bsy;
     wallXZ.z = point.r_c.z;
     dij = point.r_c - wallXZ;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
     force_collector += force.length();
     sgnz = SIGN(point.r_c.z);
     wallXY.x = point.r_c.x;
     wallXY.y = point.r_c.y;
     wallXY.z = sgnz * bsz;
     dij = point.r_c - wallXY;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
     force_collector += force.length();
 
     sgnx = SIGN(point.r_c.x);
@@ -488,27 +488,27 @@ double Packer::boxForce(point_t& point, box_t& box)
     wallYZ.y = point.r_c.y;
     wallYZ.z = point.r_c.z;
     dij = point.r_c - wallYZ;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
     force_collector += force.length();
     sgny = SIGN(point.r_c.y);
     wallXZ.x = point.r_c.x;
     wallXZ.y = -sgny * bsy;
     wallXZ.z = point.r_c.z;
     dij = point.r_c - wallXZ;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
     force_collector += force.length();
     sgnz = SIGN(point.r_c.z);
     wallXY.x = point.r_c.x;
     wallXY.y = point.r_c.y;
     wallXY.z = -sgnz * bsz;
     dij = point.r_c - wallXY;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
     force_collector += force.length();
 
     return force_collector;
 }
 
-bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t& box, double& Z)
+bool Packer::any_rattler_or_crowder(const std::vector<point_t>& points, const box_t& box, double& Z)
 {
     bool thereIsRattler = false;
 
@@ -529,13 +529,13 @@ bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t
         {
             if (i != j)
             {
-                num_contacts[i] += shellContacts(points[i], points[j], box);
+                num_contacts[i] += shell_contacts(points[i], points[j], box);
             }
         }
 
         if (!box.pbc)
         {
-            num_contacts[i] += boxContacts(points[i], box);
+            num_contacts[i] += box_contacts(points[i], box);
         }
     }
 
@@ -563,7 +563,7 @@ bool Packer::anyRattlerOrCrowder(const std::vector<point_t>& points, const box_t
     return (thereIsRattler || overpacked );
 }
 
-int Packer::boxContacts(const point_t& point, const box_t& box)
+int Packer::box_contacts(const point_t& point, const box_t& box)
 {
     Vector3D wallYZ, wallXZ, wallXY;
     Vector3D dij;
@@ -586,7 +586,7 @@ int Packer::boxContacts(const point_t& point, const box_t& box)
     wallYZ.y = point.r_c.y;
     wallYZ.z = point.r_c.z;
     dij = point.r_c - wallYZ;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
     if ( force.length() )
     {
@@ -599,7 +599,7 @@ int Packer::boxContacts(const point_t& point, const box_t& box)
     wallXZ.y = sgny * bsy;
     wallXZ.z = point.r_c.z;
     dij = point.r_c - wallXZ;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
     if ( force.length() )
     {
@@ -611,7 +611,7 @@ int Packer::boxContacts(const point_t& point, const box_t& box)
     wallXY.y = point.r_c.y;
     wallXY.z = sgnz * bsz;
     dij = point.r_c - wallXY;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
     if ( force.length() )
     {
@@ -623,7 +623,7 @@ int Packer::boxContacts(const point_t& point, const box_t& box)
     wallYZ.y = point.r_c.y;
     wallYZ.z = point.r_c.z;
     dij = point.r_c - wallYZ;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
     if ( force.length() )
     {
@@ -635,7 +635,7 @@ int Packer::boxContacts(const point_t& point, const box_t& box)
     wallXZ.y = -sgny * bsy;
     wallXZ.z = point.r_c.z;
     dij = point.r_c - wallXZ;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
     if ( force.length() )
     {
@@ -647,7 +647,7 @@ int Packer::boxContacts(const point_t& point, const box_t& box)
     wallXY.y = point.r_c.y;
     wallXY.z = -sgnz * bsz;
     dij = point.r_c - wallXY;
-    force = HertzianRepulsion::calcForce(dij, r1, rb_, e1, eb, nu1, nub);
+    force = HertzianRepulsion::calc_force(dij, r1, rb_, e1, eb, nu1, nub);
 
     if ( force.length() )
     {
@@ -658,13 +658,13 @@ int Packer::boxContacts(const point_t& point, const box_t& box)
     return number_of_contacs;
 }
 
-int Packer::shellContacts(const point_t& point_1, const point_t& point_2, const box_t& box)
+int Packer::shell_contacts(const point_t& point_1, const point_t& point_2, const box_t& box)
 {
     Vector3D force_ij;
     Vector3D dij;
 
-    Packer::getDistance(dij, point_2.r_c, point_1.r_c, box);
-    force_ij = HertzianRepulsion::calcForce(dij, point_1.radius, point_2.radius, 1.0, 1.0, 0.5, 0.5);
+    Packer::get_distance(dij, point_2.r_c, point_1.r_c, box);
+    force_ij = HertzianRepulsion::calc_force(dij, point_1.radius, point_2.radius, 1.0, 1.0, 0.5, 0.5);
 
     if ( force_ij.length_sq() > 0)
     {

@@ -41,7 +41,6 @@ class Shell
         Shell(const Shell& orig);
         virtual ~Shell();
         double calc_volume(double = 0.0) const;
-        //double calcSurfaceArea() const;
         double calc_surface_area(double = 0.0) const;
         void calc_cm();
         int get_number_triangles() const;

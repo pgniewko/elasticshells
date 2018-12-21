@@ -62,18 +62,3 @@ Vector3D Triangle::normal() const
     norm /= norm.length();
     return norm;
 }
-
-void Triangle::printTriangle() {}
-
-Vector3D Triangle::getVertexA()
-{
-    return this->a;
-}
-Vector3D Triangle::getVertexB()
-{
-    return this->b;
-}
-Vector3D Triangle::getVertexC()
-{
-    return this->c;
-}

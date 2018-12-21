@@ -16,10 +16,9 @@ class SimpleTriangulation : public Triangulation
         std::list<Triangle> triangulate();
         std::list<Triangle> triangulate(double);
     private:
-        void createCube();
+        void create_cube();
         void subdivide();
         int depth;
-
 };
 
 #endif	/* SIMPLETRIANGULATION_H */

@@ -128,17 +128,17 @@ int Vertex::get_vertex_degree() const
     return vertex_degree;
 }
 
-int Vertex::getNumTris() const
+int Vertex::get_number_of_triangles() const
 {
     return facets_number;
 }
 
-int Vertex::getNeighborId(int idx) const
+int Vertex::get_neighbor_id(int idx) const
 {
     return bonded_vertices[idx];
 }
 
-int Vertex::getTriangleId(int idx) const
+int Vertex::get_triangle_id(int idx) const
 {
     return bonded_elements[idx];
 }

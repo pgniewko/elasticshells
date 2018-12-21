@@ -15,8 +15,6 @@ class Triangulation
         Triangulation(const Triangulation& orig);
         virtual ~Triangulation();
         virtual std::list<Triangle> triangulate() = 0;
-        void saveTriangulatedSurface(const char*, bool);
-        void saveRenderingScript(const char*, const char*);
     protected:
         std::list<Triangle> tris;
 

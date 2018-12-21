@@ -15,14 +15,14 @@ class Integrator
         virtual ~Integrator();
 
         void integrate(Simulator* s);
-        void resetParams(Simulator* s);
+        void reset_params(Simulator* s);
         void set_n(uint n);
 
     private:
 
         void (Integrator::*integrator)(Simulator*) = 0;
 
-        void fireIntegrator(Simulator*);
+        void fire_integrator(Simulator*);
         void _vv(Simulator*);
 
         uint n;

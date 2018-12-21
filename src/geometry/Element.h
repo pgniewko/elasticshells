@@ -35,10 +35,10 @@ class Element
         friend std::ostream& operator<< (std::ostream&, const Element&);
 
     private:
-        void setL2(const std::vector<Vertex>&);
-        void setAn(const std::vector<Vertex>&);
-        void setKi(const std::vector<Vertex>&, const double&, const double&, const double&);
-        void setCi(const std::vector<Vertex>&, const double&, const double&, const double&);
+        void set_l2(const std::vector<Vertex>&);
+        void set_an(const std::vector<Vertex>&);
+        void set_ki(const std::vector<Vertex>&, const double&, const double&, const double&);
+        void set_ci(const std::vector<Vertex>&, const double&, const double&, const double&);
 
         double an[3];
         double L2[3];

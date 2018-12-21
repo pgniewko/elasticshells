@@ -97,14 +97,14 @@ Vector3D Element::normal(const std::vector<Vertex>& vs) const
     return normal;
 }
 
-void Element::setL2(const std::vector<Vertex>& vs)
+void Element::set_l2(const std::vector<Vertex>& vs)
 {
     L2[0] = (vs[ib].r_c - vs[ic].r_c).length_sq();
     L2[1] = (vs[ia].r_c - vs[ic].r_c).length_sq();
     L2[2] = (vs[ia].r_c - vs[ib].r_c).length_sq();
 }
 
-void Element::setAn(const std::vector<Vertex>& vs)
+void Element::set_an(const std::vector<Vertex>& vs)
 {
     // MAKE SURE THAT the angle is between 0-180
     Vector3D ca = vs[ic].r_c - vs[ia].r_c;
@@ -120,7 +120,7 @@ void Element::setAn(const std::vector<Vertex>& vs)
     an[2] = ac.angle(bc);
 }
 
-void Element::setKi(const std::vector<Vertex>& vs, const double& E, const double& nu, const double& t)
+void Element::set_ki(const std::vector<Vertex>& vs, const double& E, const double& nu, const double& t)
 {
     double Ap = area(vs);
     ki[0] = E * t * (2.0 * cot(an[0]) * cot(an[0]) + 1.0 - nu) / (16.0 * Ap * (1.0 - nu * nu));
@@ -129,7 +129,7 @@ void Element::setKi(const std::vector<Vertex>& vs, const double& E, const double
 
 }
 
-void Element::setCi(const std::vector<Vertex>& vs, const double& E, const double& nu, const double& t)
+void Element::set_ci(const std::vector<Vertex>& vs, const double& E, const double& nu, const double& t)
 {
     double Ap = area(vs);
     ci[0] = E * t * (2.0 * cot(an[1]) * cot(an[2]) + nu - 1.0 ) / (16.0 * Ap * (1.0 - nu * nu));
@@ -139,10 +139,10 @@ void Element::setCi(const std::vector<Vertex>& vs, const double& E, const double
 
 void Element::set_params(const std::vector<Vertex>& vs, const double E, const double nu, const double t)
 {
-    setL2(vs);
-    setAn(vs);
-    setKi(vs, E, nu, t);
-    setCi(vs, E, nu, t);
+    set_l2(vs);
+    set_an(vs);
+    set_ki(vs, E, nu, t);
+    set_ci(vs, E, nu, t);
 }
 
 std::ostream& operator<< (std::ostream& out, const Element& vt)

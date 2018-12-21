@@ -21,12 +21,12 @@ Hinge::~Hinge()
 {
 }
 
-void Hinge::setD(const double& E, const double& t, const double& nu)
+void Hinge::set_d(const double& E, const double& t, const double& nu)
 {
     D = E * t * t * t / (12.0 * (1.0 - nu * nu));
 }
 
-double Hinge::calcRadiusOfCurvature(std::vector<Vertex>& vs) const
+double Hinge::calc_radius_of_curvature(std::vector<Vertex>& vs) const
 {
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
     double E_norm = E.length();
@@ -47,9 +47,9 @@ double Hinge::calcRadiusOfCurvature(std::vector<Vertex>& vs) const
     return R1;
 }
 
-void Hinge::setThetaZero(const std::vector<Vertex>& vs)
+void Hinge::set_theta_zero(const std::vector<Vertex>& vs)
 {
-    sinTheta0 = calcSinTheta(vs);
+    sinTheta0 = calc_sin_theta(vs);
 
     if (sinTheta0 < 0) // ENFORCE THAT THE INDEXING IS SUCH THAT THE ANGLE IS PI-THETA; THETA > 0
     {
@@ -58,18 +58,18 @@ void Hinge::setThetaZero(const std::vector<Vertex>& vs)
         x2 = x_tmp;
     }
 
-    sinTheta0 = calcSinTheta(vs);
+    sinTheta0 = calc_sin_theta(vs);
     theta0 = asin(sinTheta0);
 
 }
 
-double Hinge::calcTheta(const std::vector<Vertex>& vs) const
+double Hinge::calc_theta(const std::vector<Vertex>& vs) const
 {
-    double sin_theta = calcSinTheta(vs);
+    double sin_theta = calc_sin_theta(vs);
     return asin(sin_theta);
 }
 
-double Hinge::calcSinTheta(const std::vector<Vertex>& vs) const
+double Hinge::calc_sin_theta(const std::vector<Vertex>& vs) const
 {
 
     Vector3D E = vs[x4].r_c - vs[x3].r_c;
@@ -86,12 +86,12 @@ double Hinge::calcSinTheta(const std::vector<Vertex>& vs) const
     return ( sign * cross_n1n2.length() );
 }
 
-void Hinge::setId(int idx)
+void Hinge::set_id(int idx)
 {
     myid = idx;
 }
 
-int Hinge::getId() const
+int Hinge::get_id() const
 {
     return myid;
 }

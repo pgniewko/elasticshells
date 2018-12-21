@@ -9,7 +9,7 @@ class Tetrahedron
     public:
         static double volume(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&);
         static double volume(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&, const double);
-        static double volumeSgn(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&);
+        static double volume_sgn(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&);
 };
 
 #endif	/* TETRAHEDRON_H */

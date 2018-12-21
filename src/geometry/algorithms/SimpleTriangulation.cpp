@@ -25,7 +25,7 @@ std::list<Triangle> SimpleTriangulation::triangulate(double r0)
     }
     else
     {
-        createCube();
+        create_cube();
 
         for (int i = 0; i < (depth - 1); i++)
         {
@@ -48,7 +48,7 @@ std::list<Triangle> SimpleTriangulation::triangulate()
     return triangulate(1.0);
 }
 
-void SimpleTriangulation::createCube()
+void SimpleTriangulation::create_cube()
 {
     // create cube
     //top

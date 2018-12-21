@@ -20,12 +20,12 @@ class Hinge
         Hinge(const Hinge& orig);
         virtual ~Hinge();
 
-        void setD(const double&, const double&, const double&);
-        double calcRadiusOfCurvature(std::vector<Vertex>&) const;
-        void setThetaZero(const std::vector<Vertex>&);
+        void set_d(const double&, const double&, const double&);
+        double calc_radius_of_curvature(std::vector<Vertex>&) const;
+        void set_theta_zero(const std::vector<Vertex>&);
 
-        void setId(int);
-        int getId() const;
+        void set_id(int);
+        int get_id() const;
 
         friend bool operator== (Hinge&, Hinge&);
         friend std::ostream& operator<< (std::ostream&, const Hinge&);
@@ -39,8 +39,8 @@ class Hinge
         int x3 = -1;
         int x4 = -1;
         int myid = 1;
-        double calcTheta(const std::vector<Vertex>&) const;
-        double calcSinTheta(const std::vector<Vertex>&) const;
+        double calc_theta(const std::vector<Vertex>&) const;
+        double calc_sin_theta(const std::vector<Vertex>&) const;
 };
 
 inline bool operator== (Hinge& bs1, Hinge& bs2)

@@ -26,7 +26,7 @@ double Tetrahedron::volume(const Vector3D& a, const Vector3D& b, const Vector3D&
     return ( fabs(AD * cross(BD, CD)) / 6.0 );
 }
 
-double Tetrahedron::volumeSgn(const Vector3D& a, const Vector3D& b, const Vector3D& c, const Vector3D& cm)
+double Tetrahedron::volume_sgn(const Vector3D& a, const Vector3D& b, const Vector3D& c, const Vector3D& cm)
 {
     double volume = (a - cm) * cross((b - cm), (c - cm));
     return  SIGN( volume );

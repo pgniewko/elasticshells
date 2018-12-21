@@ -12,15 +12,15 @@ class Energy
         Energy(const Energy& orig);
         virtual ~Energy();
 
-        static double calcTotalEnergy(const std::vector<Shell>&, const Box&);
-        static double calcMembraneEnergy(const std::vector<Shell>&);
-        static double calcOsmoticEnergy(const std::vector<Shell>&);
-        static double calcContactEnergy(const std::vector<Shell>&, const Box&);
+        static double calc_total_energy(const std::vector<Shell>&, const Box&);
+        static double calc_membrane_energy(const std::vector<Shell>&);
+        static double calc_osmotic_energy(const std::vector<Shell>&);
+        static double calc_contact_energy(const std::vector<Shell>&, const Box&);
 
-        static double calcBendingEnergy(const std::vector<Shell>&);
-        static double calcStretchEnergy(const std::vector<Shell>&);
-        static double calcShellShellEnergy(const std::vector<Shell>&, const Box&);
-        static double calcShellBoxEnergy(const std::vector<Shell>&, const Box&);
+        static double calc_bending_energy(const std::vector<Shell>&);
+        static double calc_stretch_energy(const std::vector<Shell>&);
+        static double calc_shell_shell_energy(const std::vector<Shell>&, const Box&);
+        static double calc_shell_box_energy(const std::vector<Shell>&, const Box&);
 
         static unsigned long ENERGY_EVALUATION_COUNTER;
 

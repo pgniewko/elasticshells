@@ -23,7 +23,7 @@ int Restarter::get_total_vertices(const std::vector<Shell>& shells) const
     return totalnumber;
 }
 
-void Restarter::saveTopologyFile(const std::vector<Shell>& shells) const
+void Restarter::save_topology_file(const std::vector<Shell>& shells) const
 {
     std::ofstream os;
     os.open(topologyFile);
@@ -58,7 +58,7 @@ void Restarter::saveTopologyFile(const std::vector<Shell>& shells) const
     }
 }
 
-void Restarter::saveLastFrame(const std::vector<Shell>& shells, const Box& box) const
+void Restarter::save_last_frame(const std::vector<Shell>& shells, const Box& box) const
 {
     XyzTraj lf_xyz(lastFrameFile, "NULL");
     lf_xyz.open_lf();
@@ -66,7 +66,7 @@ void Restarter::saveLastFrame(const std::vector<Shell>& shells, const Box& box) 
     lf_xyz.close_traj();
 }
 
-void Restarter::readTopologyFile(std::vector<Shell>& shells) const
+void Restarter::read_topology_file(std::vector<Shell>& shells) const
 {
     std::pair<int, std::string>  nc_mtype = get_number_of_shells();
 
@@ -299,7 +299,7 @@ void Restarter::add_hinges(std::vector<Shell>& shells, int cix) const
                 if (shell_id == cix)
                 {
                     int b_id = std::stoi(pairs[ 2 ].c_str(), NULL);
-                    shells[cix].hinges[b_id].setId(b_id);
+                    shells[cix].hinges[b_id].set_id(b_id);
 
                     shells[cix].hinges[b_id].D = strtod(pairs[ 3 ].c_str(), NULL);
                     shells[cix].hinges[b_id].sinTheta0 = strtod(pairs[ 4 ].c_str(), NULL);
@@ -320,7 +320,7 @@ void Restarter::add_hinges(std::vector<Shell>& shells, int cix) const
     os.close();
 }
 
-void Restarter::registerVMap()
+void Restarter::register_vmap()
 {
     std::ifstream os;
     os.open(topologyFile, std::ifstream::in);
@@ -351,7 +351,7 @@ void Restarter::registerVMap()
 
 }
 
-void Restarter::readLastFrame(std::vector<Shell>& shells) const
+void Restarter::read_last_frame(std::vector<Shell>& shells) const
 {
     std::ifstream os;
     os.open(lastFrameFile, std::ifstream::in);

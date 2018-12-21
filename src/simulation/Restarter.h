@@ -19,11 +19,11 @@ class Restarter
         Restarter(const Restarter& orig);
         virtual ~Restarter();
 
-        void saveTopologyFile(const std::vector<Shell>&) const;
-        void saveLastFrame(const std::vector<Shell>&, const Box&) const;
-        void readTopologyFile(std::vector<Shell>&) const;
-        void readLastFrame(std::vector<Shell>&) const;
-        void registerVMap();
+        void save_topology_file(const std::vector<Shell>&) const;
+        void save_last_frame(const std::vector<Shell>&, const Box&) const;
+        void read_topology_file(std::vector<Shell>&) const;
+        void read_last_frame(std::vector<Shell>&) const;
+        void register_vmap();
 
         void read_frame(std::string, std::vector<Shell>&, int) const;
         void assign_turgors(std::string, std::vector<Shell>&) const;

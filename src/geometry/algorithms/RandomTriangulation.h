@@ -17,7 +17,6 @@ class RandomTriangulation : public Triangulation
         std::list<Triangle> triangulate();
         std::list<Triangle> triangulate(double);
 
-
     private:
 
         int n_steps;

@@ -55,8 +55,8 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     box.set_nu(args.nu);
     box.set_default_schedule(params.nsteps, 1, args.bsdx, args.bsdy, args.bsdz, 0.0, 0.0, 0.0);
     box.configure_scheduler(args.sch_config_file);
-    OsmoticForce::setVolumeFlag(args.osmotic_flag);
-    OsmoticForce::setEpsilon(args.eps);
+    OsmoticForce::set_volume_flag(args.osmotic_flag);
+    OsmoticForce::set_epsilon(args.eps);
     Shell::bending = args.bending;
     log_params();
 
@@ -132,8 +132,8 @@ void Simulator::log_params()
     simulator_logs << utils::LogLevel::FINE  << "POISSON'S_RATIO (BOX)="  << box.get_nu() << "\n";
     simulator_logs << utils::LogLevel::FINE  << "R_VERTEX="  << params.r_vertex << " [micron]\n";
     simulator_logs << utils::LogLevel::FINE  << "BOX.PBC=" << (box.pbc ? "true" : "false") << "\n";
-    simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::getFlag() ? "true" : "false") << "\n";
-    simulator_logs << utils::LogLevel::FINER << "OSMOTIC_EPS=" << OsmoticForce::getEpsilon() << "\n";
+    simulator_logs << utils::LogLevel::FINER << "OSMOTIC_FLAG=" << (OsmoticForce::get_flag() ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::FINER << "OSMOTIC_EPS=" << OsmoticForce::get_epsilon() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.X="  << box.get_x() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Y="  << box.get_y() << "\n";
     simulator_logs << utils::LogLevel::FINER << "BOX.Z="  << box.get_z() << "\n";
@@ -200,11 +200,11 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
 
         if (params.d == 0)
         {
-            Packer::packShells(box, shells, params.th, false);
+            Packer::pack_shells(box, shells, params.th, false);
         }
         else
         {
-            Packer::packShells(box, shells, params.th, true);
+            Packer::pack_shells(box, shells, params.th, true);
         }
 
         fc.reset_dl(estimate_m(), box);
@@ -221,7 +221,7 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
         }
     }
 
-    restarter.saveTopologyFile(shells);
+    restarter.save_topology_file(shells);
     set_min_force();
     
     create_shells_image();
@@ -297,10 +297,10 @@ void Simulator::add_shell(double r0)
 void Simulator::restart()
 {
     simulator_logs << utils::LogLevel::INFO << "Simulation runs in [restart] mode. \n" ;
-    restarter.registerVMap();
-    restarter.readTopologyFile(shells);
+    restarter.register_vmap();
+    restarter.read_topology_file(shells);
     number_of_shells = shells.size();
-    restarter.readLastFrame(shells);
+    restarter.read_last_frame(shells);
     recalculate_mass_centers();
     set_min_force();
     Simulator::RESTART_FLAG = true;
@@ -310,8 +310,8 @@ void Simulator::restart()
 
 void Simulator::analyze()
 {
-    restarter.registerVMap();
-    restarter.readTopologyFile(shells);
+    restarter.register_vmap();
+    restarter.read_topology_file(shells);
     number_of_shells = shells.size();
 
     uint frames_number = traj.count_frames();
@@ -369,11 +369,11 @@ void Simulator::simulate(int steps)
     // IF SIMULATION RESTART - DON'T DUMP THE STATS
     if (!Simulator::RESTART_FLAG)
     {
-        traj.save_traj(shells, getTotalVertices());
+        traj.save_traj(shells, get_total_vertices());
         log_sim.dump_state(box, shells);
         save_turgors();
-        restarter.saveLastFrame(shells, box);
-        restarter.saveTopologyFile(shells);
+        restarter.save_last_frame(shells, box);
+        restarter.save_topology_file(shells);
         traj.save_box(box, steps * params.dt);
         box.save_remaining_schedule();
     }
@@ -408,14 +408,14 @@ void Simulator::simulate(int steps)
         while ( check_const_volume() );
 
         copy_back_shells_data();
-        integrator->resetParams(this);
+        integrator->reset_params(this);
 
-        traj.save_traj(shells, getTotalVertices());
+        traj.save_traj(shells, get_total_vertices());
         log_sim.dump_state(box, shells);
         save_turgors();
         traj.save_box(box, (step + 1) * params.dt);
-        restarter.saveLastFrame(shells, box);
-        restarter.saveTopologyFile(shells);
+        restarter.save_last_frame(shells, box);
+        restarter.save_topology_file(shells);
 
         if ( step < steps - 1 ) // DO NOT RESIZE ON THE LAST STEP
         {
@@ -438,8 +438,8 @@ void Simulator::simulate(int steps)
     log_sim.dump_state(box, shells);
     save_turgors();
     traj.save_box(box, steps * params.dt);
-    restarter.saveLastFrame(shells, box);
-    traj.save_traj(shells, getTotalVertices());
+    restarter.save_last_frame(shells, box);
+    traj.save_traj(shells, get_total_vertices());
     box.save_remaining_schedule();
 
     traj.close();
@@ -484,7 +484,7 @@ double Simulator::volume_fraction()
 
 }
 
-int Simulator::getTotalVertices()
+int Simulator::get_total_vertices()
 {
     int totalnumber = 0;
 
@@ -496,7 +496,7 @@ int Simulator::getTotalVertices()
     return totalnumber;
 }
 
-double Simulator::getLengthScale(double r_0)
+double Simulator::get_length_scale(double r_0)
 {
     double maxscale = 0.0;
 

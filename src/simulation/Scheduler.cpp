@@ -15,7 +15,7 @@ Scheduler::Scheduler(const Scheduler& orig) :
 
 Scheduler::~Scheduler() {}
 
-std::vector<std::string> Scheduler::readScheduleFile()
+std::vector<std::string> Scheduler::read_schedule_file()
 {
     std::ifstream cfile;
     cfile.open(schedulefile, std::ifstream::in);
@@ -41,9 +41,9 @@ std::vector<std::string> Scheduler::readScheduleFile()
     return list;
 }
 
-void Scheduler::registerSchedules()
+void Scheduler::register_schedules()
 {
-    std::vector<std::string> list = readScheduleFile();
+    std::vector<std::string> list = read_schedule_file();
 
     if ( list.size() > 0)
     {
@@ -75,12 +75,12 @@ void Scheduler::registerSchedules()
     }
 }
 
-void Scheduler::setFileName(std::string schf)
+void Scheduler::set_file_name(std::string schf)
 {
     schedulefile = schf;
 }
 
-void Scheduler::configureSchedule()
+void Scheduler::configure_schedule()
 {
     if ( !schedules.empty() )
     {
@@ -89,7 +89,7 @@ void Scheduler::configureSchedule()
     }
 }
 
-void Scheduler::printSchedule()
+void Scheduler::print_schedule()
 {
     for (uint i = 0; i < schedules.size(); i++)
     {
@@ -101,7 +101,7 @@ void Scheduler::printSchedule()
     std::cout << default_schedule.n_steps << " " << default_schedule.interval << " " << default_schedule.dx << " " << default_schedule.dy << " " << default_schedule.dz << " " << default_schedule.rx << " " << default_schedule.ry << " " << default_schedule.rz << std::endl;
 }
 
-void Scheduler::saveRemainingSchedule()
+void Scheduler::save_remaining_schedule()
 {
     std::ofstream ofile;
     ofile.open(std::string(schedulefile) + std::string(".remain"), std::ifstream::out);
@@ -134,7 +134,7 @@ void Scheduler::saveRemainingSchedule()
     }
 }
 
-void Scheduler::setDefault(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
+void Scheduler::set_default(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
 {
     default_schedule = schedule_t(ns, in, _dx, _dy, _dz, _rx, _ry, _rz, 0.95);
 }
@@ -204,7 +204,7 @@ void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
 
 }
 
-bool Scheduler::nthTodo()
+bool Scheduler::nth_todo()
 {
     if ( schedules.empty() && schedule_registered )
     {

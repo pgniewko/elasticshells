@@ -19,8 +19,8 @@ class MembraneTriangulation : public Triangulation
         std::list<Triangle> hexagon;
         std::list<Triangle> diamond1;
         std::list<Triangle> diamond2;
-        void createHex(double, double);
-        void putTwoTriangles(double);
+        void create_hex(double, double);
+        void put_two_triangles(double);
         void subdivide();
 };
 

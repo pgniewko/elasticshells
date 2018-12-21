@@ -40,9 +40,6 @@ class Box
         void set_nu(double);
         double get_nu() const;
         double get_E() const;
-//        double getXEdge(const double = 0.0) const;
-//        double getYEdge(const double = 0.0) const;
-//        double getZEdge(const double = 0.0) const;
 
         void configure_scheduler(std::string);
         void set_default_schedule(int, int, double, double, double, double, double, double);

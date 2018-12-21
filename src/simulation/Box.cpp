@@ -133,21 +133,6 @@ double Box::get_z_min() const
     return z_min;
 }
 
-//double Box::getXEdge(const double rv) const
-//{
-//    return 2 * (x - rv);
-//}
-//
-//double Box::getYEdge(const double rv) const
-//{
-//    return 2 * (y - rv);
-//}
-//
-//double Box::getZEdge(const double rv) const
-//{
-//    return 2 * (z - rv);
-//}
-
 double Box::get_E() const
 {
     return E_box;
@@ -160,22 +145,22 @@ double Box::get_nu() const
 
 void Box::configure_scheduler(std::string schf)
 {
-    my_schedule.setFileName(schf);
-    my_schedule.registerSchedules();
-    my_schedule.configureSchedule();
+    my_schedule.set_file_name(schf);
+    my_schedule.register_schedules();
+    my_schedule.configure_schedule();
 }
 
 void Box::set_default_schedule(int ns, int in, double _dx, double _dy, double _dz, double _rx, double _ry, double _rz)
 {
-    my_schedule.setDefault(ns, in, _dx, _dy, _dz, _rx, _ry, _rz);
+    my_schedule.set_default(ns, in, _dx, _dy, _dz, _rx, _ry, _rz);
 }
 
 void Box::save_remaining_schedule()
 {
-    my_schedule.saveRemainingSchedule();
+    my_schedule.save_remaining_schedule();
 }
 
 bool Box::nthTodo()
 {
-    return my_schedule.nthTodo();
+    return my_schedule.nth_todo();
 }

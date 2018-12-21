@@ -26,9 +26,9 @@ class Vertex
         bool is_neighbor(int) const;
         void add_element(int);
         int get_vertex_degree() const;
-        int getNumTris() const;
-        int getNeighborId(int) const;
-        int getTriangleId(int) const;
+        int get_number_of_triangles() const;
+        int get_neighbor_id(int) const;
+        int get_triangle_id(int) const;
 
         Vector3D r_c;
 

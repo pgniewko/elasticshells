@@ -133,8 +133,8 @@ void Shell::set_hinges(double E, double t, double nu_)
 
     for (int i = 0; i < number_h; i++)
     {
-        hinges[i].setD(E, t, nu_);
-        hinges[i].setThetaZero(vertices);
+        hinges[i].set_d(E, t, nu_);
+        hinges[i].set_theta_zero(vertices);
     }
 }
 
@@ -186,7 +186,7 @@ void Shell::set_dp(double dP, double ddp)
     double randu = uniform(-ddp, ddp);
     params.dp = dP + randu;
     V0 = calc_volume();
-    nRT = params.dp * V0 * (1.0 - OsmoticForce::getEpsilon());
+    nRT = params.dp * V0 * (1.0 - OsmoticForce::get_epsilon());
 }
 
 void Shell::set_elements_parameters(double E, double t, double nu_)
@@ -241,9 +241,9 @@ double Shell::get_turgor() const
 {
     double turgor;
 
-    if ( OsmoticForce::getFlag() )
+    if ( OsmoticForce::get_flag() )
     {
-        double excluded_volume = V0 * OsmoticForce::getEpsilon();
+        double excluded_volume = V0 * OsmoticForce::get_epsilon();
         double cellVolume = calc_volume();
 
         if ( (cellVolume - excluded_volume) > 0 )
@@ -335,7 +335,7 @@ std::ostream& operator<< (std::ostream& out, const Shell& c)
 
     for (int i = 0; i < c.number_h; i++)
     {
-        out << "SHELLHINGE " <<  c.shell_id << ' ' << c.hinges[i].getId() << ' ' << c.hinges[i] << '\n';
+        out << "SHELLHINGE " <<  c.shell_id << ' ' << c.hinges[i].get_id() << ' ' << c.hinges[i] << '\n';
     }
 
     return out;

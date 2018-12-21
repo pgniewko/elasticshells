@@ -355,7 +355,7 @@ Vector3D ForcesCalculator::calculate_dV(const Vector3D& va,
     Vector3D CD = vc - vd;
     Vector3D f = cross(BD, CD) / 6;
 
-    return f * Tetrahedron::volumeSgn(va, vb, vc, vd);
+    return f * Tetrahedron::volume_sgn(va, vb, vc, vd);
 }
 
 void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,

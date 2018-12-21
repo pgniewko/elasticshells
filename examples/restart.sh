@@ -41,7 +41,7 @@ cd -
 
 bf_software=$MY_PATH/../bin/elasticshells
 
-time $bf_software -n $N --ns $NS --dt $DT --dp $dP --ddp=$ddP --th 0.1 --nu 0.5 --E-shell 100 --E-wall 200 \
+time $bf_software -n $N --ns $NS --dt $DT --dp $dP --ddp=$ddP --th 0.1 --nu 0.5 --E-shell 100 --E-box 200 \
         --prefix $PREFIX --out-dir $ODIR --in-dir $IDIR  \
         --bsx $BSX --bsy $BSY --bsz $BSZ --bsxe $BSXE --bsye $BSYE --bsze $BSZE \
         --tt rnd -d --rv $RCUT --ir 2.5 --ir2 2.5 --seed $SEED \

@@ -25,7 +25,7 @@ std::list<Triangle> MembraneTriangulation::triangulate(double L, double eps, int
 
     double ta = (L + eps) / N ;
     double h = 0.5 * sqrt(3.0) * ta;
-    createHex(ta, h);
+    create_hex(ta, h);
 
     Vector3D x_shift(ta, 0, 0);
     Vector3D y_shift(0, 2 * h, 0);
@@ -63,7 +63,7 @@ std::list<Triangle> MembraneTriangulation::triangulate(double L, double eps, int
 
 }
 
-void MembraneTriangulation::createHex(double a, double h)
+void MembraneTriangulation::create_hex(double a, double h)
 {
     double a2 = a / 2.0;
 
@@ -83,7 +83,7 @@ void MembraneTriangulation::createHex(double a, double h)
     diamond2.push_back(Triangle(Vector3D( 0, 0, 0), Vector3D(a, 0, 0), Vector3D( a2, -h, 0)));
 }
 
-void MembraneTriangulation::putTwoTriangles(double L0)
+void MembraneTriangulation::put_two_triangles(double L0)
 {
     tris.push_back(Triangle(Vector3D( L0, L0, 0), Vector3D( -L0, -L0, 0), Vector3D( L0, -L0, 0) ) );
     tris.push_back(Triangle(Vector3D( L0, L0, 0), Vector3D( -L0, -L0, 0), Vector3D( -L0, L0, 0) ) );

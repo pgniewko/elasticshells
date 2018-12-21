@@ -39,10 +39,8 @@
 
 struct params_t
 {
-    //int log_step;
     int nsteps;
     int d;
-    //int nbhandler;
     int platotype;
 
     double E_shell;
@@ -51,9 +49,7 @@ struct params_t
     double dt;
     double dp;
     double ddp;
-    //double ttime;
     double r_vertex;
-    //bool draw_box;
     bool const_volume;
 };
 
@@ -87,8 +83,8 @@ class Simulator
         void calculate_forces();
         void integrate();
 
-        int getTotalVertices();
-        double getLengthScale(double = 0.0);
+        int get_total_vertices();
+        double get_length_scale(double = 0.0);
 
         void recalculate_mass_centers();
         void set_min_force();

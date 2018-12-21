@@ -141,7 +141,7 @@ void Tinker::construct_hinges(Shell& shell)
                     if ( is_hinge_unique(x1_, x2_, x3_, x4_, shell) )
                     {
                         shell.hinges.push_back(Hinge(x1_, x2_, x3_, x4_));
-                        shell.hinges[shell.number_h].setId(shell.number_h);
+                        shell.hinges[shell.number_h].set_id(shell.number_h);
                         shell.number_h++;
                     }
                 }

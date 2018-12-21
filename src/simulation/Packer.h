@@ -35,29 +35,29 @@ class Packer
         Packer(const Packer& orig);
         virtual ~Packer();
 
-        static void packShells(Box&, std::vector<Shell>&, double, bool = true);
+        static void pack_shells(Box&, std::vector<Shell>&, double, bool = true);
 
     private:
 
         static void fire(std::vector<point_t>&, box_t&);
-        static void velocityVerlet(std::vector<point_t>&, box_t&);
-        static void calcForces(std::vector<point_t>&, box_t&);
+        static void velocity_verlet(std::vector<point_t>&, box_t&);
+        static void calc_forces(std::vector<point_t>&, box_t&);
         static bool check_min_force(std::vector<point_t>&, box_t&);
 
         static bool jammed(std::vector<point_t>&, box_t&, double&);
-        static void inflatePoints(std::vector<point_t>&);
-        static void recenterShells(std::vector<point_t>&, box_t&);
+        static void inflate_points(std::vector<point_t>&);
+        static void recenter_shells(std::vector<point_t>&, box_t&);
 
-        static double calcPressure(std::vector<point_t>&, box_t&);
-        static double boxForce(point_t&, box_t&);
+        static double calc_pressure(std::vector<point_t>&, box_t&);
+        static double box_force(point_t&, box_t&);
 
-        static void getDistance(Vector3D&, const Vector3D&, const Vector3D&, const box_t&);
-        static void calcBoxForces(std::vector<point_t>&, const box_t&);
+        static void get_distance(Vector3D&, const Vector3D&, const Vector3D&, const box_t&);
+        static void calc_box_forces(std::vector<point_t>&, const box_t&);
 
 
-        static bool anyRattlerOrCrowder(const std::vector<point_t>&, const box_t&, double&);
-        static int boxContacts(const point_t&, const box_t&);
-        static int shellContacts(const point_t&, const point_t&, const box_t&);
+        static bool any_rattler_or_crowder(const std::vector<point_t>&, const box_t&, double&);
+        static int box_contacts(const point_t&, const box_t&);
+        static int shell_contacts(const point_t&, const point_t&, const box_t&);
 
 
         static int FIRE_Nmin;

@@ -1,21 +1,21 @@
 #include "OsmoticForce.h"
 
-void OsmoticForce::setVolumeFlag(bool flag)
+void OsmoticForce::set_volume_flag(bool flag)
 {
     volumeFlag = flag;
 }
 
-void OsmoticForce::setEpsilon(double eps)
+void OsmoticForce::set_epsilon(double eps)
 {
     epsilon = eps;
 }
 
-double OsmoticForce::getEpsilon()
+double OsmoticForce::get_epsilon()
 {
     return epsilon;
 }
 
-bool OsmoticForce::getFlag()
+bool OsmoticForce::get_flag()
 {
     return volumeFlag;
 }

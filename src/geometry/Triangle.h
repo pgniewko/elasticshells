@@ -13,13 +13,7 @@ class Triangle
         double area() const;
         double min_angle() const;
         Vector3D normal() const;
-        void printTriangle();
         Vector3D a, b, c;
-
-        Vector3D getVertexA();
-        Vector3D getVertexB();
-        Vector3D getVertexC();
-
 };
 
 #endif	/* TRIANGLE_H */

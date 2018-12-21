@@ -11,10 +11,10 @@ class OsmoticForce
         OsmoticForce() = delete;
         OsmoticForce(const OsmoticForce& orig) = delete;
         virtual ~OsmoticForce() = delete;
-        static void setVolumeFlag(bool);
-        static void setEpsilon(double);
-        static double getEpsilon();
-        static bool getFlag();
+        static void set_volume_flag(bool);
+        static void set_epsilon(double);
+        static double get_epsilon();
+        static bool get_flag();
 
 
     private:

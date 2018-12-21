@@ -1,6 +1,6 @@
 #include "HertzianRepulsion.h"
 
-Vector3D HertzianRepulsion::calcForce(const Vector3D& dij, const double R1, const double R2, const double e1, const double e2, const double nu1, const double nu2)
+Vector3D HertzianRepulsion::calc_force(const Vector3D& dij, const double R1, const double R2, const double e1, const double e2, const double nu1, const double nu2)
 {
     double h;
     double r_eff;
@@ -32,7 +32,7 @@ Vector3D HertzianRepulsion::calcForce(const Vector3D& dij, const double R1, cons
     }
 }
 
-double HertzianRepulsion::calcEnergy(const Vector3D& dij, const double R1, const double R2, const double e1, const double e2, const double nu1, const double nu2)
+double HertzianRepulsion::calc_energy(const Vector3D& dij, const double R1, const double R2, const double e1, const double e2, const double nu1, const double nu2)
 {
     double energy = 0.0;
     double h;
