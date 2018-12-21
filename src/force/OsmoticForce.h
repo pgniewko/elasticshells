@@ -19,7 +19,7 @@ class OsmoticForce
 
     private:
         static double epsilon;
-        static bool volumeFlag;
+        static bool volume_flag;
 };
 
 #endif	/* OSMOTICFORCE_H */

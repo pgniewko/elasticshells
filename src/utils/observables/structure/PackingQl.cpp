@@ -25,14 +25,14 @@ double PackingQl::observe(const Box& box, const std::vector<Shell>& shells)
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        qlsum += PackingQl::calcQl(box, shells, i);
+        qlsum += PackingQl::calc_ql(box, shells, i);
     }
 
     qlsum /= (double) shells.size();
     return qlsum;
 }
 
-double PackingQl::calcQl(const Box& box, const std::vector<Shell>& shells, unsigned int ci)
+double PackingQl::calc_ql(const Box& box, const std::vector<Shell>& shells, unsigned int ci)
 {
     Vector3D ci_cm = shells[ci].get_cm();
     std::vector<Vector3D> neighs_cm;

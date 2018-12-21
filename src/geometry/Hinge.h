@@ -32,13 +32,13 @@ class Hinge
 
     private:
         double D = 0.0;
-        double sinTheta0 = 0.0;
-        double theta0 = 0.0;
+        double sin_theta_0 = 0.0;
+        double theta_0 = 0.0;
         int x1 = -1;
         int x2 = -1;
         int x3 = -1;
         int x4 = -1;
-        int myid = 1;
+        int my_id = 1;
         double calc_theta(const std::vector<Vertex>&) const;
         double calc_sin_theta(const std::vector<Vertex>&) const;
 };

@@ -18,7 +18,7 @@ class PackingWl : public Observer
         double observe(const Box&, const std::vector<Shell>&);
 
     private:
-        double calcWl(const Box&, const std::vector<Shell>&, unsigned int);
+        double calc_wl(const Box&, const std::vector<Shell>&, unsigned int);
         static DerivedRegister<PackingWl> reg;
 };
 

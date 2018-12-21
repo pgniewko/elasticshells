@@ -822,8 +822,8 @@ void Simulator::create_shells_image()
             h_.v4 = x4_mapped;
 
             h_.D = shells[i].hinges[j].D;
-            h_.theta0 = shells[i].hinges[j].theta0;
-            h_.sinTheta0 = shells[i].hinges[j].sinTheta0;
+            h_.theta0 = shells[i].hinges[j].theta_0;
+            h_.sinTheta0 = shells[i].hinges[j].sin_theta_0;
 
             hinges.push_back(h_);
 

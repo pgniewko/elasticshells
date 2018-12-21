@@ -18,7 +18,7 @@ class PackingQl : public Observer
         double observe(const Box&, const std::vector<Shell>&);
 
     private:
-        double calcQl(const Box&, const std::vector<Shell>&, unsigned int);
+        double calc_ql(const Box&, const std::vector<Shell>&, unsigned int);
         static DerivedRegister<PackingQl> reg;
 };
 

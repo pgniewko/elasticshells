@@ -8,6 +8,7 @@ double Shell::FORCE_FRAC(0.0);
 double Shell::MIN_FORCE(0.0);
 
 Shell::Shell() {}
+
 Shell::Shell(int nv, int nt, int nh)
 {
     for (int i = 0; i < nv; i++)

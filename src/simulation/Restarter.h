@@ -38,8 +38,8 @@ class Restarter
         void add_elements(std::vector<Shell>&, int) const;
         void add_hinges(std::vector<Shell>&, int) const;
 
-        std::string topologyFile;
-        std::string lastFrameFile;
+        std::string topology_file;
+        std::string last_frame_file;
         std::unordered_map< std::string, std::pair<int, int> >  vmap;
         static utils::Logger restarter_logs;
 };

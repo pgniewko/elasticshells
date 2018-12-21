@@ -2,7 +2,7 @@
 
 void OsmoticForce::set_volume_flag(bool flag)
 {
-    volumeFlag = flag;
+    volume_flag = flag;
 }
 
 void OsmoticForce::set_epsilon(double eps)
@@ -17,8 +17,8 @@ double OsmoticForce::get_epsilon()
 
 bool OsmoticForce::get_flag()
 {
-    return volumeFlag;
+    return volume_flag;
 }
 
 double OsmoticForce::epsilon = 0.0;
-bool OsmoticForce::volumeFlag = false;
+bool OsmoticForce::volume_flag = false;

@@ -25,14 +25,14 @@ double PackingWl::observe(const Box& box, const std::vector<Shell>& shells)
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        qlsum += PackingWl::calcWl(box, shells, i);
+        qlsum += PackingWl::calc_wl(box, shells, i);
     }
 
     qlsum /= (double) shells.size();
     return qlsum;
 }
 
-double PackingWl::calcWl(const Box& box, const std::vector<Shell>& shells, unsigned int ci)
+double PackingWl::calc_wl(const Box& box, const std::vector<Shell>& shells, unsigned int ci)
 {
     Vector3D ci_cm = shells[ci].get_cm();
     std::vector<Vector3D> neighs_cm;

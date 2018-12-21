@@ -2,10 +2,10 @@
 
 utils::Logger Restarter::restarter_logs("restarter");
 
-Restarter::Restarter(std::string tf, std::string lff) : topologyFile(tf), lastFrameFile(lff)
+Restarter::Restarter(std::string tf, std::string lff) : topology_file(tf), last_frame_file(lff)
 {}
 
-Restarter::Restarter(const Restarter& orig) : topologyFile(orig.topologyFile), lastFrameFile(orig.lastFrameFile) {}
+Restarter::Restarter(const Restarter& orig) : topology_file(orig.topology_file), last_frame_file(orig.last_frame_file) {}
 
 Restarter::~Restarter()
 {
@@ -26,7 +26,7 @@ int Restarter::get_total_vertices(const std::vector<Shell>& shells) const
 void Restarter::save_topology_file(const std::vector<Shell>& shells) const
 {
     std::ofstream os;
-    os.open(topologyFile);
+    os.open(topology_file);
 
     if ( os.is_open() )
     {
@@ -54,13 +54,13 @@ void Restarter::save_topology_file(const std::vector<Shell>& shells) const
     }
     else
     {
-        restarter_logs << utils::LogLevel::WARNING << "Could not open file:" << topologyFile << "\n";
+        restarter_logs << utils::LogLevel::WARNING << "Could not open file:" << topology_file << "\n";
     }
 }
 
 void Restarter::save_last_frame(const std::vector<Shell>& shells, const Box& box) const
 {
-    XyzTraj lf_xyz(lastFrameFile, "NULL");
+    XyzTraj lf_xyz(last_frame_file, "NULL");
     lf_xyz.open_lf();
     lf_xyz.save_traj(shells, get_total_vertices(shells), box);
     lf_xyz.close_traj();
@@ -94,7 +94,7 @@ void Restarter::read_topology_file(std::vector<Shell>& shells) const
 std::pair<int, std::string> Restarter::get_number_of_shells() const
 {
     std::ifstream os;
-    os.open(topologyFile, std::ifstream::in);
+    os.open(topology_file, std::ifstream::in);
     std::string line;
 
 
@@ -128,7 +128,7 @@ std::pair<int, std::string> Restarter::get_number_of_shells() const
 void Restarter::init_shell(std::vector<Shell>& shells, int shell_idx) const
 {
     std::ifstream os;
-    os.open(topologyFile, std::ifstream::in);
+    os.open(topology_file, std::ifstream::in);
     std::string line;
 
     if ( os.is_open() )
@@ -178,7 +178,7 @@ void Restarter::init_shell(std::vector<Shell>& shells, int shell_idx) const
 void Restarter::add_vertices(std::vector<Shell>& shells, int cix) const
 {
     std::ifstream os;
-    os.open(topologyFile, std::ifstream::in);
+    os.open(topology_file, std::ifstream::in);
     std::string line;
 
     if ( os.is_open() )
@@ -231,7 +231,7 @@ void Restarter::add_vertices(std::vector<Shell>& shells, int cix) const
 void Restarter::add_elements(std::vector<Shell>& shells, int cix) const
 {
     std::ifstream os;
-    os.open(topologyFile, std::ifstream::in);
+    os.open(topology_file, std::ifstream::in);
     std::string line;
 
     if ( os.is_open() )
@@ -283,7 +283,7 @@ void Restarter::add_elements(std::vector<Shell>& shells, int cix) const
 void Restarter::add_hinges(std::vector<Shell>& shells, int cix) const
 {
     std::ifstream os;
-    os.open(topologyFile, std::ifstream::in);
+    os.open(topology_file, std::ifstream::in);
     std::string line;
 
     if ( os.is_open() )
@@ -302,8 +302,8 @@ void Restarter::add_hinges(std::vector<Shell>& shells, int cix) const
                     shells[cix].hinges[b_id].set_id(b_id);
 
                     shells[cix].hinges[b_id].D = strtod(pairs[ 3 ].c_str(), NULL);
-                    shells[cix].hinges[b_id].sinTheta0 = strtod(pairs[ 4 ].c_str(), NULL);
-                    shells[cix].hinges[b_id].theta0 = strtod(pairs[ 5 ].c_str(), NULL);
+                    shells[cix].hinges[b_id].sin_theta_0 = strtod(pairs[ 4 ].c_str(), NULL);
+                    shells[cix].hinges[b_id].theta_0 = strtod(pairs[ 5 ].c_str(), NULL);
                     shells[cix].hinges[b_id].x1 = std::stoi(pairs[ 6 ].c_str(), NULL);
                     shells[cix].hinges[b_id].x2 = std::stoi(pairs[ 7 ].c_str(), NULL);
                     shells[cix].hinges[b_id].x3 = std::stoi(pairs[ 8 ].c_str(), NULL);
@@ -323,7 +323,7 @@ void Restarter::add_hinges(std::vector<Shell>& shells, int cix) const
 void Restarter::register_vmap()
 {
     std::ifstream os;
-    os.open(topologyFile, std::ifstream::in);
+    os.open(topology_file, std::ifstream::in);
     std::string line;
 
     if ( os.is_open() )
@@ -354,7 +354,7 @@ void Restarter::register_vmap()
 void Restarter::read_last_frame(std::vector<Shell>& shells) const
 {
     std::ifstream os;
-    os.open(lastFrameFile, std::ifstream::in);
+    os.open(last_frame_file, std::ifstream::in);
     std::string line;
 
     uint line_counter = 0;
