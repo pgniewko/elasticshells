@@ -573,7 +573,13 @@ pairs_t ForcesCalculator::contacts_list(const std::vector<double>& xyz,
                                         const int num_shells,
                                         const double rv)
 {
-    std::unordered_map<int, int> shells_pairs_map;
+    pairs_t shells_pairs;
+    for (int i = 0; i < num_shells; i++)
+    {
+        int_vec line;
+        shells_pairs.push_back( line );
+    }
+    
     uint n = xyz.size() / 3;
 
     pairs_t contacts = dl.get_nb_lists(xyz, n, rv);
@@ -597,7 +603,7 @@ pairs_t ForcesCalculator::contacts_list(const std::vector<double>& xyz,
         {
             j = contacts[i][k];
 
-            if (j > i && !is_bonded(i, j, graph_) )
+            if ( !is_bonded(i, j, graph_) )
             {
                 xj = xyz[3 * j + 0];
                 yj = xyz[3 * j + 1];
@@ -612,27 +618,19 @@ pairs_t ForcesCalculator::contacts_list(const std::vector<double>& xyz,
                     int shell_id_1 = vs_map[i].shell_id;
                     int shell_id_2 = vs_map[j].shell_id;
 
-                    if (shell_id_1 != shell_id_2)
+                    std::vector<int> line = contacts[shell_id_1];
+                    for (uint kline = 0; kline < line.size(); kline++)
                     {
-                        shells_pairs_map[shell_id_1] = shell_id_2;
-                        shells_pairs_map[shell_id_2] = shell_id_1;
+                        if (line[kline] == shell_id_1)
+                        {
+                            break;
+                        }
+                        shells_pairs[shell_id_1].push_back(shell_id_2);
+                        shells_pairs[shell_id_2].push_back(shell_id_1);
                     }
                 }
             }
         }
-    }
-
-    pairs_t shells_pairs;
-
-    for (int i = 0; i < num_shells; i++)
-    {
-        int_vec line;
-        shells_pairs.push_back( line );
-    }
-
-    for (std::pair<int, int>  element : shells_pairs_map)
-    {
-        shells_pairs[element.first].push_back(element.second);
     }
 
     return shells_pairs;

@@ -137,13 +137,12 @@ class Simulator
 
         XyzTraj traj;
         LogSimulation log_sim;
-
         Restarter restarter;
 
         ForcesCalculator fc;
         double MIN_FORCE = 0.0;
         double FORCE_FRAC = 0.0001;
-
+        bool info_not_printed = true;
 
         static utils::Logger simulator_logs;
         static unsigned long FORCE_EVALUATION_COUTER;

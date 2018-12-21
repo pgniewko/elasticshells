@@ -678,7 +678,12 @@ void Simulator::recenter_shells()
 
 void Simulator::create_shells_image()
 {
-    simulator_logs << utils::LogLevel::INFO  << "Creating local image of the shells\n";
+    if (info_not_printed)
+    {
+        simulator_logs << utils::LogLevel::INFO  << "Creating local image of the shells\n";
+        info_not_printed = false;
+    }
+    
     int vertex_counter = 0;
 
     for (uint i = 0; i < shells.size(); i++)

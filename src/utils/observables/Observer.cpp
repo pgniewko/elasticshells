@@ -1,5 +1,7 @@
 #include "Observer.h"
 
+int Observer::MAX_M = 200;
+
 Observer::Observer(const char* name, const char* format) :
     observer_name(name), output_format(format), i_param(0), d_param(0.0) {}
 
@@ -202,6 +204,17 @@ void Observer::copy_shells_data(const Box& box, const std::vector<Shell>& shells
         turgors[i] = shells[i].get_turgor();
     }
 
+    double x_dim = 2 * box.get_x();
+    double y_dim = 2 * box.get_y();
+    double z_dim = 2 * box.get_z();
+
+    double d = 2 * shells[0].get_vertex_size();
+
+    int m = std::min( (int)floor(x_dim / d), (int) floor(y_dim / d) );
+    m = std::min(m, (int) floor(z_dim / d) );
+    m = std::min(m, MAX_M);
+    fc = ForcesCalculator(m, box.pbc, Shell::bending);
+    
     fc.set_dl_dims(-box.get_x(), box.get_x(), 0);
     fc.set_dl_dims(-box.get_y(), box.get_y(), 1);
     fc.set_dl_dims(-box.get_z(), box.get_z(), 2);

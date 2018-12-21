@@ -61,6 +61,8 @@ class Observer
         std::vector<std::vector<int> > graph;
 
         pairs_t contacts;
+        
+        static int MAX_M;
 };
 
 template<typename T>
