@@ -141,7 +141,6 @@ void Scheduler::set_default(int ns, int in, double _dx, double _dy, double _dz, 
 
 void Scheduler::execute(double& dx, double& dy, double& dz, const double vf_)
 {
-//    if (schedules.size() > 0)
     if ( !schedules.empty() )
     {
         if (current_schedule.counter % current_schedule.interval == 0)

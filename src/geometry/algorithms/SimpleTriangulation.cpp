@@ -16,9 +16,6 @@ SimpleTriangulation::~SimpleTriangulation() {}
 
 std::list<Triangle> SimpleTriangulation::triangulate(double r0)
 {
-//    if (depth < 0)
-//    {
-//        return NULL;
     if (depth == 0)
     {
         tris.push_back( Triangle(Vector3D(0, 0, 0), Vector3D(0, 0, 0), Vector3D(0, 0, 0)) );

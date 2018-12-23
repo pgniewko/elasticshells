@@ -14,15 +14,6 @@ std::list<Triangle> MembraneTriangulation::triangulate()
 
 std::list<Triangle> MembraneTriangulation::triangulate(double L, double eps, int N)
 {
-//    N = 10;
-//    double a = 2*(L + eps) / N;
-//
-//    putTwoTriangles(L + eps);
-//    for (int i = 0; i < N; i++)
-//    {
-//        subdivide();
-//    }
-
     double ta = (L + eps) / N ;
     double h = 0.5 * sqrt(3.0) * ta;
     create_hex(ta, h);
@@ -57,7 +48,6 @@ std::list<Triangle> MembraneTriangulation::triangulate(double L, double eps, int
             }
         }
     }
-
 
     return tris;
 

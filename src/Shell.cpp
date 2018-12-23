@@ -304,18 +304,6 @@ double Shell::calc_surface_area(double d_param) const
     return totalSurface;
 }
 
-//double Shell::calcSurfaceArea() const
-//{
-//    double surface = 0.0;
-//
-//    for (int i = 0; i < number_t; i++)
-//    {
-//        surface += triangles[i].area(vertices);
-//    }
-//
-//    return surface;
-//}
-
 std::ostream& operator<< (std::ostream& out, const Shell& c)
 {
     out << "SHELL " << c.shell_id << ' ';

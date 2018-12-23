@@ -16,7 +16,6 @@ class OsmoticForce
         static double get_epsilon();
         static bool get_flag();
 
-
     private:
         static double epsilon;
         static bool volume_flag;

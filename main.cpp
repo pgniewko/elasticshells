@@ -22,8 +22,8 @@
 
 utils::Logger shells_logs("elasticshells");
 
-const char* argp_program_version = "elasticshells 0.9.5";
-const char* argp_program_bug_address = "<pawel.gniewek@berkeley.edu>";
+const char* argp_program_version = "elasticshells 0.9.9";
+const char* argp_program_bug_address = "<gniewko.pablo@gmail.com>";
 
 static char doc[] =
     "Copyright (C) 2014-2018, Pawel Gniewek. \nAll rights reserved.";
