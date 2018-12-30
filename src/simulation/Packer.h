@@ -59,7 +59,6 @@ class Packer
         static int box_contacts(const point_t&, const box_t&);
         static int shell_contacts(const point_t&, const point_t&, const box_t&);
 
-
         static int FIRE_Nmin;
         static int FIRE_N;
         static double FIRE_DT;

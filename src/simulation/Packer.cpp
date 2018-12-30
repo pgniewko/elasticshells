@@ -33,9 +33,12 @@ void Packer::pack_shells(Box& box, std::vector<Shell>& shells, double thickness,
     }
 
     box_t sim_box;
-    sim_box.x = box.get_x_min();
-    sim_box.y = box.get_y_min();
-    sim_box.z = box.get_z_min();
+    //sim_box.x = box.get_x_min();
+    //sim_box.y = box.get_y_min();
+    //sim_box.z = box.get_z_min();
+    sim_box.x = box.get_x();
+    sim_box.y = box.get_y();
+    sim_box.z = box.get_z();
     sim_box.pbc = box.pbc;
 
     double radius_i;
@@ -120,7 +123,7 @@ void Packer::pack_shells(Box& box, std::vector<Shell>& shells, double thickness,
     box.set_x(box_scale * sim_box.x);
     box.set_y(box_scale * sim_box.y);
     box.set_z(box_scale * sim_box.z);
-
+    
     for (std::size_t i = 0; i < n; i++)
     {
         Vector3D new_position = box_scale * points[i].r_c;
