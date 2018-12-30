@@ -1,6 +1,6 @@
 #include "Energy.h"
 
-char* Energy::model_t = "fem";
+const char* Energy::model_t = "fem";
 utils::Logger Energy::energy_logs("energy");
 unsigned long Energy::ENERGY_EVALUATION_COUNTER(0);
 

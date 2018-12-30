@@ -12,6 +12,7 @@
 
 struct point_t
 {
+    point_t() :radius(0), radius_f(0)  {}
     Vector3D r_c;
     Vector3D v_c;
     Vector3D f_c;

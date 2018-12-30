@@ -26,7 +26,7 @@ class Energy
 
     private:
 
-        static char* model_t;
+        const static char* model_t;
         static utils::Logger energy_logs;
 };
 

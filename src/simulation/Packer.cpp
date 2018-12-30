@@ -1,5 +1,10 @@
 #include "Packer.h"
 
+double maximum( double a, double b, double c )
+{
+   double max_ = ( a < b ) ? b : a;
+   return ( ( max_ < c ) ? c : max_ );
+}
 
 utils::Logger Packer::packer_logs("packer");
 
@@ -33,12 +38,14 @@ void Packer::pack_shells(Box& box, std::vector<Shell>& shells, double thickness,
     }
 
     box_t sim_box;
-    //sim_box.x = box.get_x_min();
-    //sim_box.y = box.get_y_min();
-    //sim_box.z = box.get_z_min();
     sim_box.x = box.get_x();
     sim_box.y = box.get_y();
     sim_box.z = box.get_z();
+    double max_v = maximum(sim_box.x,sim_box.y,sim_box.z);
+    sim_box.x /= max_v;
+    sim_box.y /= max_v;
+    sim_box.z /= max_v;
+    
     sim_box.pbc = box.pbc;
 
     double radius_i;
