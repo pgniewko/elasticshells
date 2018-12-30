@@ -151,6 +151,7 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
     }
 
     simulator_logs << utils::LogLevel::INFO  << "BENDING: " << (Shell::bending ? "true" : "false") << "\n";
+    simulator_logs << utils::LogLevel::INFO  << "Shells initialization IN PROGRESS" << "\n";
 
     double nx, ny, nz;
     bool flag = true;
@@ -226,6 +227,7 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
     
     create_shells_image();
     copy_shells_data();
+    simulator_logs << utils::LogLevel::INFO  << "Shells initialization is FINISHED" << "\n";
 }
 
 void Simulator::push_shell(const Shell& newShell)
