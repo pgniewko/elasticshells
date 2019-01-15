@@ -2,6 +2,8 @@
 >The code is under development so make sure you are using the most recent version.
 >We welcome bug reports and PRs but make no guarantees about fixes or responses.
 
+![Shells](./assets/Studium.jpeg)
+
 DESCRIPTION
 ==================================================
 The ```elasticshells``` simulator is written in C/C++ and designed to simulate compacted packings of elastic shells.
