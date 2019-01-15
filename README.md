@@ -1,8 +1,8 @@
+![Shells](./assets/Studium.jpeg)
+
 >Notice: This is research code that will not necessarily be maintained in the future.
 >The code is under development so make sure you are using the most recent version.
 >We welcome bug reports and PRs but make no guarantees about fixes or responses.
-
-![Shells](./assets/Studium.jpeg)
 
 DESCRIPTION
 ==================================================
