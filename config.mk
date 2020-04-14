@@ -3,7 +3,7 @@
 # License: BSD
 
 # C++ compiler
-CXX      := g++-7
+CXX      := g++-9
 
 # Flags for the C++ compiler
 # -g --Enable debugging
