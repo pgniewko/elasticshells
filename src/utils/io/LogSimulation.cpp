@@ -115,8 +115,23 @@ void LogSimulation::register_observers()
             {
                 obs_obj->set_params(3, single_line);
             }
-
-            observers.push_back( obs_obj );
+            observers.push_back(obs_obj);
+            
+            //f (obs_obj->is_per_shell())
+            //{
+            //     //Observer* new_obj;
+            //     for (int i = 0; i < obs_obj->get_i(); i++)
+            //     {
+            //        Observer* new_obj;
+            //        std::memcpy(new_obj, obs_obj, sizeof(Observer));
+            //        new_obj->set_i(i);
+            //        observers.push_back(new_obj);
+            //     }
+            //}
+            //else
+            //{
+            //    observers.push_back( obs_obj );
+            //}
         }
     }
 }

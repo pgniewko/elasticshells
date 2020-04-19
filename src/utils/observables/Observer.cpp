@@ -2,11 +2,15 @@
 
 int Observer::MAX_M = 200;
 
-Observer::Observer(const char* name, const char* format) :
-    observer_name(name), output_format(format), i_param(0), d_param(0.0) {}
+Observer::Observer(const char* name, const char* format) : observer_name(name), 
+        output_format(format), i_param(0), d_param(0.0) {}
 
-Observer::Observer(const Observer& orig) :
-    observer_name(orig.observer_name), output_format(orig.output_format), i_param(orig.i_param), d_param(orig.d_param) {};
+Observer::Observer(const Observer& orig) : observer_name(orig.observer_name),
+    output_format(orig.output_format),
+    i_param(orig.i_param),
+    d_param(orig.d_param),
+    image_not_created(orig.image_not_created) {}; //, 
+    //per_shell_observer(orig.per_shell_observer) {};
 
 Observer::~Observer() {}
 
@@ -26,7 +30,7 @@ void Observer::create_shells_image(const Box& box, const std::vector<Shell>& she
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        turgors.push_back( 0.0 );
+        turgors.push_back(0.0);
         double x_, y_, z_;
 
         for (int j = 0; j < shells[i].get_number_vertices(); j++)

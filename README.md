@@ -84,7 +84,7 @@ Make sure that the dependencies are compiled with the same compiler (GNU compile
 * GNU Scientific Library ([GSL](http://www.gnu.org/software/gsl/)).
   * On Ubuntu you can install it by running:
   ```
-  apt-get install libgsl0-dev
+  sudo apt-get install libgsl0-dev
   ```
   * On Mac OS you can install it by running:
   ```
