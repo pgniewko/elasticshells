@@ -122,10 +122,10 @@ REFERENCES
 1. "Mechanics of Confined Microbial Populations", P. Gniewek, Ph.D. Thesis, UC Berkeley (2018)
 
 
-TODO        
-=====        
+TODO
+=====
 1. Surface and volume evaluations with Loop's approximations [paper 1](https://github.com/pgniewko/elasticshells/blob/master/assets/peps/COS.200.pdf) [paper 2](https://github.com/pgniewko/elasticshells/blob/master/assets/peps/FK.2006.pdf)       
-2. Add thermal fluctuations and negative internal pressures (to stuck shells buclking) [paper] (https://github.com/pgniewko/elasticshells/blob/master/assets/peps/SKB.2020.pdf) [SI](https://github.com/pgniewko/elasticshells/blob/master/assets/peps/SKB.2020-SI.pdf)
+2. Add thermal fluctuations and negative internal pressures (to stuck shells buclking) [paper](https://github.com/pgniewko/elasticshells/blob/master/assets/peps/SKB.2020.pdf) [SI](https://github.com/pgniewko/elasticshells/blob/master/assets/peps/SKB.2020-SI.pdf)
 
 
 ACKNOWLEDGMENTS
