@@ -25,14 +25,6 @@ class Observer
 
         const char* getFormat();
         const char* getName();
-        
-        //const bool is_per_shell() {return per_shell_observer;}
-        
-        //const int get_i() {return i_param;}
-        //const int get_d() {return d_param;}
-        
-        //void set_i(int new_i) {i_param = new_i;}
-        //void set_i(double new_d) {d_param = new_d;}
 
     protected:
 
