@@ -65,6 +65,7 @@ struct arguments
 
     unsigned long seed;
     double min_force;
+    int max_iter;
 };
 
 #endif	/* ARGUMENTS_H */

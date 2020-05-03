@@ -73,6 +73,7 @@ static struct argp_option options[] =
     {"th",        515, "FLOAT", 0, "Shell-wall thickness [UNIT=1 micron]  [default: 0.1]"},
     {"vol-f",     517,       0, 0, "Constant volume flag [default: false]"},
     {"min-force", 518, "FLOAT", 0, "Minimum force"},
+    {"max-iter",  519,  "INT",  0, "Maximum number of iterations per minimization step"},
 
     {0,             0,       0, 0, "Box options:", 6},
     {"bsx",       601, "FLOAT", 0, "X Box size [default: 10.0]"},
@@ -139,6 +140,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->jam = false;
             arguments->seed = 0x123;
             arguments->min_force = 1e-6;
+            arguments->max_iter = 10000;
             break;
 
         case 'q':
@@ -271,6 +273,9 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             
         case 518:
             arguments->min_force = arg ? strtod (arg, NULL) : 1e-6;
+            break;
+        case 519:
+            arguments->max_iter = arg ? atoi (arg) : 10000;
             break;
 
         case 601:

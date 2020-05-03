@@ -61,6 +61,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     log_params();
 
     set_min_force(args.min_force);
+    set_max_iter(args.max_iter);
     fc = ForcesCalculator(estimate_m(), args.pbc, args.bending);
 }
 
@@ -224,7 +225,6 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
     }
 
     restarter.save_topology_file(shells);
-    //set_min_force();
     
     create_shells_image();
     copy_shells_data();
@@ -308,7 +308,6 @@ void Simulator::restart()
     restarter.read_last_frame(shells);
     restarter.assign_box_size_from_lf(box);
     recalculate_mass_centers();
-    //set_min_force();
     Simulator::RESTART_FLAG = true;
     create_shells_image();
     copy_shells_data();
@@ -317,6 +316,7 @@ void Simulator::restart()
 
 void Simulator::analyze()
 {
+    simulator_logs << utils::LogLevel::INFO << "Simulation runs in [analyze] mode. \n" ;
     restarter.register_vmap();
     restarter.read_topology_file(shells);
     number_of_shells = shells.size();
@@ -353,7 +353,6 @@ void Simulator::analyze()
 
         if (i == 1)
         {
-//            set_min_force();
             simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE (in <<analyze>> mode) SET TO= "  << sqrt(MIN_FORCE) << " [units?]\n";
         }
 
@@ -553,32 +552,15 @@ void Simulator::recalculate_mass_centers()
 void Simulator::set_min_force(double mf)
 {
     MIN_FORCE = mf;
-//    double average_area = shells[0].calc_surface_area();
-//    average_area /= shells[0].get_number_triangles();
-//
-//    double max_turgor = 0.0;
-//
-//    for (int i = 0; i < number_of_shells; i++)
-//    {
-//        max_turgor = std::max(max_turgor, shells[i].get_turgor());
-//    }
-//
-//    MIN_FORCE = FORCE_FRAC * max_turgor * average_area;
-//
-//    if (shells[0].get_number_vertices() == 1)
-//    {
-//        MIN_FORCE = 1e-12;
-//    }
+}
 
-//    Shell::FORCE_FRAC   = FORCE_FRAC;
-//    Shell::MIN_FORCE    = MIN_FORCE;
-
-//    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE) << " [units?]\n";
+void Simulator::set_max_iter(int mi)
+{
+    MAX_ITER = mi;
 }
 
 bool Simulator::check_min_force()
 {
-    int MAX_ITER = 10000;
     double total_force = 0.0;
     double fx, fy, fz;
     
@@ -588,11 +570,6 @@ bool Simulator::check_min_force()
         fy = forces[3 * i + 1];
         fz = forces[3 * i + 2];
         total_force += sqrt(fx*fx + fy*fy + fz*fz);
-        //max_force = std::max(abs(forces[i]), max_force);
-        //if (abs(forces[i]) > MIN_FORCE)
-        //{
-        //    return true;
-        //}
     }
     
     total_force /= get_total_vertices();
