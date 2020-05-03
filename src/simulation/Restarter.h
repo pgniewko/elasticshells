@@ -28,6 +28,7 @@ class Restarter
         void read_frame(std::string, std::vector<Shell>&, int) const;
         void assign_turgors(std::string, std::vector<Shell>&) const;
         void assign_box_size(std::string, Box&) const;
+        void assign_box_size_from_lf(Box&) const;
 
     private:
         int get_total_vertices(const std::vector<Shell>&) const;

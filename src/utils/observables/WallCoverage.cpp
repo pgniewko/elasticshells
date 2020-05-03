@@ -8,7 +8,11 @@ WallCoverage::~WallCoverage() {}
 
 void WallCoverage::set_params(const int num, std::vector<std::string> args_)
 {
-    d_param = strtod(args_[ num + 0 ].c_str(), NULL);
+//    d_param = strtod(args_[ num + 0 ].c_str(), NULL);
+    for (uint i = 0; i < (args_.size() - num); i++)
+    {
+        d_params.push_back(strtod(args_[ num + i ].c_str(), NULL));
+    }
 };
 
 bool WallCoverage::is_touching_box(const Box& box, const Vector3D& vertex, 
@@ -42,8 +46,6 @@ bool WallCoverage::is_in_contact(const Box& box, const Shell& shell, const uint 
     int idx1 = shell.triangles[t_idx].ia;
     int idx2 = shell.triangles[t_idx].ib;
     int idx3 = shell.triangles[t_idx].ic;
-    
-    //std::cout << idx1<< " " << idx2 << " " << idx3 << "\n";
 
     bool a = is_touching_box(box, shell.vertices[idx1].r_c, shell.get_vertex_size(), 1e-5);
     bool b = is_touching_box(box, shell.vertices[idx2].r_c, shell.get_vertex_size(), 1e-5);
@@ -60,22 +62,24 @@ bool WallCoverage::is_in_contact(const Box& box, const Shell& shell, const uint 
 
 double WallCoverage::contact_area(const Box& box, const Shell& shell)
 { 
-    uint t_nums = shell.get_number_triangles(); //#.triangles.size();
-    //std::cout << "t_nums="<< t_nums << "\n";
+    uint t_nums = shell.get_number_triangles();
     double cell_wall_contact_area = 0.0;
     
     Vector3D cm = shell.get_cm();
     
     for (uint tid = 0; tid < t_nums; tid++)
     {
-        //std::cout << "tid="<< tid << "\n";
         bool iic = is_in_contact(box, shell, tid);
         if (iic)
         {
-            cell_wall_contact_area += shell.triangles[tid].area(shell.vertices, cm, d_param);
+            for (uint i = 0; i < d_params.size(); i++)
+            {
+                cell_wall_contact_area += shell.triangles[tid].area(shell.vertices, cm, d_params[i]);
+            }
         }
         
     }
+    //cell_wall_contact_area /= (double)d_params.size();
     return cell_wall_contact_area;
 }
 
@@ -87,14 +91,18 @@ double WallCoverage::observe(const Box& box, const std::vector<Shell>& shells)
         return 0.0;
     }
  
-    double box_area = box.get_area(d_param);
+    double box_area = 0.0;
+    for (uint i = 0; i < d_params.size(); i++)
+    {
+        box_area += box.get_area(d_params[i]);
+    }
+    
+    
     uint cells_number = shells.size();
     double coverage = 0.0;
  
-    //std::cout << "cells_number=" << cells_number << "\n";
     for (uint i = 0; i < cells_number; i++)
     {
-        //std::cout << i << "\n";
         coverage += contact_area(box, shells[i]);
     }
  

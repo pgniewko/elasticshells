@@ -467,3 +467,35 @@ void Restarter::assign_box_size(std::string box_line, Box& box) const
     box.set_y(y);
     box.set_z(z);
 }
+
+void Restarter::assign_box_size_from_lf(Box& box) const
+{
+    restarter_logs << utils::LogLevel::INFO << "INITIALIZING BOX FROM THE LAST FRAME FILE.\n";
+    std::ifstream os;
+    os.open(last_frame_file, std::ifstream::in);
+    std::string line;
+
+    double x, y, z;
+    if ( os.is_open() )
+    {
+        std::getline (os, line);
+        std::vector<std::string> pairs = split(line, ' ');
+        x = strtod(pairs[1].c_str(), NULL);
+        y = strtod(pairs[2].c_str(), NULL);
+        z = strtod(pairs[3].c_str(), NULL);
+        
+        box.set_x(x);
+        box.set_y(y);
+        box.set_z(z);
+        
+        restarter_logs << utils::LogLevel::FINE << "Box restarting with [x,y,z] = [" << x;
+        restarter_logs << "," << y;
+        restarter_logs << "," << z << "]\n";
+        os.close();
+        return;
+    }
+    else
+    {
+        // print error
+    }
+}

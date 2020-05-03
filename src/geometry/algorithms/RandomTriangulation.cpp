@@ -15,22 +15,26 @@ std::list<Triangle> RandomTriangulation::triangulate()
 {
     return triangulate(1.0);
 }
+
 std::list<Triangle> RandomTriangulation::triangulate(double r0)
-{
+{   
     int n_ = 4.0 * (r0 / r_vertex) * (r0 / r_vertex);
     int nrow = 6;
-
+    
     double* xyz = new double[3 * n_];
     int* ltri = new int[nrow * 2 * (n_ - 2)];
 
     generate_random_points(n_, xyz, n_steps, n_anneals, T_min, T_max, r_vertex);
-
+    
     traingulate_points(n_, xyz, ltri);
+    
+    
 
     int v1_idx;
     int v2_idx;
     int v3_idx;
 
+    
     for (int i = 0; i < 2 * (n_ - 2); i++)
     {
         v1_idx = ltri[nrow * i + 0] - 1;

@@ -60,6 +60,8 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     Shell::bending = args.bending;
     log_params();
 
+    set_min_force(args.min_force);
+    set_max_iter(args.max_iter);
     fc = ForcesCalculator(estimate_m(), args.pbc, args.bending);
 }
 
@@ -223,7 +225,6 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
     }
 
     restarter.save_topology_file(shells);
-    set_min_force();
     
     create_shells_image();
     copy_shells_data();
@@ -263,6 +264,7 @@ void Simulator::add_shell(double r0)
 
         else if ( !triangulator.compare("rnd") )
         {
+            // IF ellipsoid and running with cutom n_vertex, adjust r_vertex
             RandomTriangulation rnd(10, 100, 0.1, 1000.0, params.r_vertex);
             tris = rnd.triangulate(r0);
         }
@@ -303,15 +305,25 @@ void Simulator::restart()
     restarter.read_topology_file(shells);
     number_of_shells = shells.size();
     restarter.read_last_frame(shells);
+    
+    //
+    std::vector<std::string> turgor_list = log_sim.read_turgors_file();
+    restarter.assign_turgors(turgor_list[turgor_list.size() - 1], shells);
+    //
+    
+    restarter.assign_box_size_from_lf(box);
+    fc.reset_dl(estimate_m(), box);
     recalculate_mass_centers();
-    set_min_force();
     Simulator::RESTART_FLAG = true;
-    create_shells_image();
+    create_shells_image();    
     copy_shells_data();
+    
+    simulator_logs << utils::LogLevel::INFO << "[restart] Reading the data complete.\n" ;
 }
 
 void Simulator::analyze()
 {
+    simulator_logs << utils::LogLevel::INFO << "Simulation runs in [analyze] mode. \n" ;
     restarter.register_vmap();
     restarter.read_topology_file(shells);
     number_of_shells = shells.size();
@@ -348,7 +360,6 @@ void Simulator::analyze()
 
         if (i == 1)
         {
-            set_min_force();
             simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE (in <<analyze>> mode) SET TO= "  << sqrt(MIN_FORCE) << " [units?]\n";
         }
 
@@ -364,7 +375,6 @@ void Simulator::simulate(int steps)
     log_sim.register_observers();
     log_sim.open();
     log_sim.print_header();
-
     // TRAJECTORY FILE OPEND FOR DUMP
     traj.open();
 
@@ -401,11 +411,13 @@ void Simulator::simulate(int steps)
 
         do
         {
+            Integrator::reset_iter();
             do
             {
                 integrate();
             }
             while ( check_min_force() );
+            Integrator::reset_iter();
         }
         while ( check_const_volume() );
 
@@ -469,7 +481,7 @@ void Simulator::calculate_forces()
 void Simulator::shift_shell(const Vector3D& v3d, int shell_id)
 {
     shells[shell_id].add_vector(v3d);
-    shells[shell_id].calc_cm(); //.update();
+    shells[shell_id].calc_cm();
 }
 
 double Simulator::volume_fraction()
@@ -544,41 +556,47 @@ void Simulator::recalculate_mass_centers()
     }
 }
 
-void Simulator::set_min_force()
+void Simulator::set_min_force(double mf)
 {
-    double average_area = shells[0].calc_surface_area();
-    average_area /= shells[0].get_number_triangles();
+    MIN_FORCE = mf;
+}
 
-    double max_turgor = 0.0;
-
-    for (int i = 0; i < number_of_shells; i++)
-    {
-        max_turgor = std::max(max_turgor, shells[i].get_turgor());
-    }
-
-    MIN_FORCE = FORCE_FRAC * max_turgor * average_area;
-
-    if (shells[0].get_number_vertices() == 1)
-    {
-        MIN_FORCE = 1e-12;
-    }
-
-    Shell::FORCE_FRAC   = FORCE_FRAC;
-    Shell::MIN_FORCE    = MIN_FORCE;
-
-    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE) << " [units?]\n";
+void Simulator::set_max_iter(int mi)
+{
+    MAX_ITER = mi;
 }
 
 bool Simulator::check_min_force()
 {
-    for (uint i = 0; i < forces.size(); i++)
+    double total_force = 0.0;
+    double fx, fy, fz;
+    
+    for (int i = 0; i < get_total_vertices(); i++)
     {
-        if (constants::sqrt3 * forces[i] > MIN_FORCE)
-        {
-            return true;
-        }
+        fx = forces[3 * i + 0];
+        fy = forces[3 * i + 1];
+        fz = forces[3 * i + 2];
+        total_force += sqrt(fx*fx + fy*fy + fz*fz);
+    }
+    
+    total_force /= get_total_vertices();
+    if (total_force > MIN_FORCE)
+    {
+        return true;
+    }
+    
+    if (Integrator::get_iter_num() > MAX_ITER)
+    {
+        simulator_logs << utils::LogLevel::FINE << "MAXIMUM NUMBER OF ITERATIONS >>";
+        simulator_logs << MAX_ITER;
+        simulator_logs << "<< HAS BEEN REACHED! ";
+        simulator_logs << "MAXIMUM FORCE=" << total_force << "\n";
+        
+        return false;
     }
 
+    simulator_logs << utils::LogLevel::FINE << "MINIMIZATION REACHED AFTER >>"; 
+    simulator_logs << Integrator::get_iter_num() << "<< ITERATIONS.\n";
     return false;
 }
 
@@ -612,6 +630,8 @@ bool Simulator::check_const_volume()
 
 void Simulator::integrate()
 {
+    Integrator::increment_iter();
+    Integrator::increment_total_iter();
     integrator->integrate(this);
 }
 
@@ -842,8 +862,7 @@ void Simulator::create_shells_image()
 
 void Simulator::copy_shells_data()
 {
-    int vertex_no = 0;
-
+    int vertex_no = 0;    
     for (uint i = 0; i < shells.size(); i++)
     {
         double x_, y_, z_;
@@ -866,6 +885,7 @@ void Simulator::copy_shells_data()
 
     for (uint i = 0; i < shells.size(); i++)
     {
+        //simulator_logs << utils::LogLevel::WARNING << "shells[i].get_turgor()" << shells[i].get_turgor() << "\n";
         turgors[i] = shells[i].get_turgor();
     }
 
