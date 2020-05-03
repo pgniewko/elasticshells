@@ -38,6 +38,8 @@ class ForcesCalculator
                               const std::vector<object_map>& vs_map,
                               const int num_shells,
                               const double rv);
+        
+        bool use_bending() {return bending;}
 
     private:
         int m;

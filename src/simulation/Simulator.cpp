@@ -306,12 +306,20 @@ void Simulator::restart()
     restarter.read_topology_file(shells);
     number_of_shells = shells.size();
     restarter.read_last_frame(shells);
+    
+    //
+    std::vector<std::string> turgor_list = log_sim.read_turgors_file();
+    restarter.assign_turgors(turgor_list[turgor_list.size() - 1], shells);
+    //
+    
     restarter.assign_box_size_from_lf(box);
+    fc.reset_dl(estimate_m(), box);
     recalculate_mass_centers();
     Simulator::RESTART_FLAG = true;
-    create_shells_image();
+    create_shells_image();    
     copy_shells_data();
-    simulator_logs << utils::LogLevel::INFO << "Reading [restart] data complete.\n" ;
+    
+    simulator_logs << utils::LogLevel::INFO << "[restart] Reading the data complete.\n" ;
 }
 
 void Simulator::analyze()
@@ -855,8 +863,7 @@ void Simulator::create_shells_image()
 
 void Simulator::copy_shells_data()
 {
-    int vertex_no = 0;
-
+    int vertex_no = 0;    
     for (uint i = 0; i < shells.size(); i++)
     {
         double x_, y_, z_;
@@ -879,6 +886,7 @@ void Simulator::copy_shells_data()
 
     for (uint i = 0; i < shells.size(); i++)
     {
+        //simulator_logs << utils::LogLevel::WARNING << "shells[i].get_turgor()" << shells[i].get_turgor() << "\n";
         turgors[i] = shells[i].get_turgor();
     }
 
