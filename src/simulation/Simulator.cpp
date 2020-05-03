@@ -561,6 +561,9 @@ void Simulator::set_min_force()
         max_turgor = std::max(max_turgor, shells[i].get_turgor());
     }
 
+    std::cout << "FORCE_FRAC: " << FORCE_FRAC<<std::endl;
+    std::cout << "max_turgor: " << max_turgor<<std::endl;
+    std::cout << "average_area: " << average_area<<std::endl;
     MIN_FORCE = FORCE_FRAC * max_turgor * average_area;
 
     if (shells[0].get_number_vertices() == 1)
@@ -580,14 +583,20 @@ bool Simulator::check_min_force()
     double max_force = 0.0;
     for (uint i = 0; i < forces.size(); i++)
     {
-        max_force = std::max(constants::sqrt3 * forces[i], max_force);
-        if (constants::sqrt3 * forces[i] > MIN_FORCE)
+        max_force = std::max(abs(forces[i]), max_force);
+        if (abs(forces[i]) > MIN_FORCE)
         {
             return true;
         }
     }
     
-    simulator_logs << "MAXIMUM FORCE=" << max_force << "\n";
+    //if (max_force > MIN_FORCE)
+    //{
+    //    std::cout << "max force: " << max_force << " min force: " << MIN_FORCE  << std::endl;
+    //    return true;
+    //}
+    
+    //simulator_logs << "MAXIMUM FORCE=" << max_force << "\n";
     if (Integrator::get_iter_num() > MAX_ITER)
     {
         simulator_logs << utils::LogLevel::FINE << "MAXIMUM NUMBER OF ITERATIONS >>";

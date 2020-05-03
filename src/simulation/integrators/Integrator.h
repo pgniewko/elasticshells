@@ -25,6 +25,8 @@ class Integrator
 
         static int get_iter_num() {return ITER_NUM;}
         static int get_total_iter_num() {return TOTAL_ITER_NUM;}
+        
+        int get_dt() {return FIRE_DT;}
 
     private:
 
