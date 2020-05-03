@@ -331,7 +331,7 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         Vector3D fa = turgor * calculate_dV(va, vb, vc, cm);
         Vector3D fb = turgor * calculate_dV(vb, vc, va, cm);
         Vector3D fc = turgor * calculate_dV(vc, va, vb, cm);
-
+        
         forces[3 * vert_a + 0] += fa.x;
         forces[3 * vert_a + 1] += fa.y;
         forces[3 * vert_a + 2] += fa.z;

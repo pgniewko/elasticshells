@@ -263,6 +263,7 @@ void Simulator::add_shell(double r0)
 
         else if ( !triangulator.compare("rnd") )
         {
+            // IF ellipsoid and running with cutom n_vertex, adjust r_vertex
             RandomTriangulation rnd(10, 100, 0.1, 1000.0, params.r_vertex);
             tris = rnd.triangulate(r0);
         }
@@ -298,16 +299,19 @@ void Simulator::add_shell(double r0)
 
 void Simulator::restart()
 {
+    // TODO: STILL SOME ERRORS
     simulator_logs << utils::LogLevel::INFO << "Simulation runs in [restart] mode. \n" ;
     restarter.register_vmap();
     restarter.read_topology_file(shells);
     number_of_shells = shells.size();
     restarter.read_last_frame(shells);
+    restarter.assign_box_size_from_lf(box);
     recalculate_mass_centers();
     set_min_force();
     Simulator::RESTART_FLAG = true;
     create_shells_image();
     copy_shells_data();
+    simulator_logs << utils::LogLevel::INFO << "Reading [restart] data complete.\n" ;
 }
 
 void Simulator::analyze()
@@ -364,7 +368,6 @@ void Simulator::simulate(int steps)
     log_sim.register_observers();
     log_sim.open();
     log_sim.print_header();
-
     // TRAJECTORY FILE OPEND FOR DUMP
     traj.open();
 
@@ -401,11 +404,13 @@ void Simulator::simulate(int steps)
 
         do
         {
+            Integrator::reset_iter();
             do
             {
                 integrate();
             }
             while ( check_min_force() );
+            Integrator::reset_iter();
         }
         while ( check_const_volume() );
 
@@ -571,14 +576,30 @@ void Simulator::set_min_force()
 
 bool Simulator::check_min_force()
 {
+    int MAX_ITER = 10000;
+    double max_force = 0.0;
     for (uint i = 0; i < forces.size(); i++)
     {
+        max_force = std::max(constants::sqrt3 * forces[i], max_force);
         if (constants::sqrt3 * forces[i] > MIN_FORCE)
         {
             return true;
         }
     }
+    
+    simulator_logs << "MAXIMUM FORCE=" << max_force << "\n";
+    if (Integrator::get_iter_num() > MAX_ITER)
+    {
+        simulator_logs << utils::LogLevel::FINE << "MAXIMUM NUMBER OF ITERATIONS >>";
+        simulator_logs << MAX_ITER;
+        simulator_logs << "<< HAS BEEN REACHED! ";
+        simulator_logs << "MAXIMUM FORCE=" << max_force << "\n";
+        
+        return false;
+    }
 
+    simulator_logs << utils::LogLevel::FINE << "MINIMIZATION REACHED AFTER >>"; 
+    simulator_logs << Integrator::get_iter_num() << "<< ITERATIONS.\n";
     return false;
 }
 
@@ -612,6 +633,8 @@ bool Simulator::check_const_volume()
 
 void Simulator::integrate()
 {
+    Integrator::increment_iter();
+    Integrator::increment_total_iter();
     integrator->integrate(this);
 }
 

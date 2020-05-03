@@ -9,7 +9,7 @@ WallCoverage::~WallCoverage() {}
 void WallCoverage::set_params(const int num, std::vector<std::string> args_)
 {
 //    d_param = strtod(args_[ num + 0 ].c_str(), NULL);
-    for (uint i = 0; i < args_.size(); i++)
+    for (uint i = 0; i < (args_.size() - num); i++)
     {
         d_params.push_back(strtod(args_[ num + i ].c_str(), NULL));
     }
@@ -79,7 +79,7 @@ double WallCoverage::contact_area(const Box& box, const Shell& shell)
         }
         
     }
-    cell_wall_contact_area /= (double)d_params.size();
+    //cell_wall_contact_area /= (double)d_params.size();
     return cell_wall_contact_area;
 }
 
@@ -96,7 +96,8 @@ double WallCoverage::observe(const Box& box, const std::vector<Shell>& shells)
     {
         box_area += box.get_area(d_params[i]);
     }
-
+    
+    
     uint cells_number = shells.size();
     double coverage = 0.0;
  

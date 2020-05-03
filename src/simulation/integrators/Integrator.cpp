@@ -5,6 +5,8 @@ utils::Logger Integrator::integrator_logs("integrator");
 
 int Integrator::FIRE_Nmin(5);
 int Integrator::FIRE_N(0);
+int Integrator::ITER_NUM(0);
+int Integrator::TOTAL_ITER_NUM(0);
 double Integrator::FIRE_DT(0.0);
 double Integrator::FIRE_ALPHA(0.1);
 double Integrator::FIRE_DTMAX(0.0);
