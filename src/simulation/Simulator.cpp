@@ -300,7 +300,6 @@ void Simulator::add_shell(double r0)
 
 void Simulator::restart()
 {
-    // TODO: STILL SOME ERRORS
     simulator_logs << utils::LogLevel::INFO << "Simulation runs in [restart] mode. \n" ;
     restarter.register_vmap();
     restarter.read_topology_file(shells);
@@ -482,7 +481,7 @@ void Simulator::calculate_forces()
 void Simulator::shift_shell(const Vector3D& v3d, int shell_id)
 {
     shells[shell_id].add_vector(v3d);
-    shells[shell_id].calc_cm(); //.update();
+    shells[shell_id].calc_cm();
 }
 
 double Simulator::volume_fraction()
