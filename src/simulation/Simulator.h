@@ -141,8 +141,8 @@ class Simulator
         Restarter restarter;
 
         ForcesCalculator fc;
-        double MIN_FORCE = 0.0;
-        int MAX_ITER = 0;
+        double MIN_FORCE = 1e-6;
+        int MAX_ITER = 10000;
         bool info_not_printed = true;
 
         static utils::Logger simulator_logs;

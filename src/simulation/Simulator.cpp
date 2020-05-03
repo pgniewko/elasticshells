@@ -559,11 +559,14 @@ void Simulator::recalculate_mass_centers()
 void Simulator::set_min_force(double mf)
 {
     MIN_FORCE = mf;
+    simulator_logs << utils::LogLevel::INFO  << "MIN FORCE SET TO: "<< MIN_FORCE << "\n";
+
 }
 
 void Simulator::set_max_iter(int mi)
 {
     MAX_ITER = mi;
+    simulator_logs << utils::LogLevel::INFO  << "MAX ITERATIONS SET TO: "<< MAX_ITER << "\n";
 }
 
 bool Simulator::check_min_force()
