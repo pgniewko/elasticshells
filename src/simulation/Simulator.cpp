@@ -60,6 +60,7 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
     Shell::bending = args.bending;
     log_params();
 
+    set_min_force(args.min_force);
     fc = ForcesCalculator(estimate_m(), args.pbc, args.bending);
 }
 
@@ -223,7 +224,7 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
     }
 
     restarter.save_topology_file(shells);
-    set_min_force();
+    //set_min_force();
     
     create_shells_image();
     copy_shells_data();
@@ -307,7 +308,7 @@ void Simulator::restart()
     restarter.read_last_frame(shells);
     restarter.assign_box_size_from_lf(box);
     recalculate_mass_centers();
-    set_min_force();
+    //set_min_force();
     Simulator::RESTART_FLAG = true;
     create_shells_image();
     copy_shells_data();
@@ -352,7 +353,7 @@ void Simulator::analyze()
 
         if (i == 1)
         {
-            set_min_force();
+//            set_min_force();
             simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE (in <<analyze>> mode) SET TO= "  << sqrt(MIN_FORCE) << " [units?]\n";
         }
 
@@ -549,60 +550,63 @@ void Simulator::recalculate_mass_centers()
     }
 }
 
-void Simulator::set_min_force()
+void Simulator::set_min_force(double mf)
 {
-    double average_area = shells[0].calc_surface_area();
-    average_area /= shells[0].get_number_triangles();
+    MIN_FORCE = mf;
+//    double average_area = shells[0].calc_surface_area();
+//    average_area /= shells[0].get_number_triangles();
+//
+//    double max_turgor = 0.0;
+//
+//    for (int i = 0; i < number_of_shells; i++)
+//    {
+//        max_turgor = std::max(max_turgor, shells[i].get_turgor());
+//    }
+//
+//    MIN_FORCE = FORCE_FRAC * max_turgor * average_area;
+//
+//    if (shells[0].get_number_vertices() == 1)
+//    {
+//        MIN_FORCE = 1e-12;
+//    }
 
-    double max_turgor = 0.0;
+//    Shell::FORCE_FRAC   = FORCE_FRAC;
+//    Shell::MIN_FORCE    = MIN_FORCE;
 
-    for (int i = 0; i < number_of_shells; i++)
-    {
-        max_turgor = std::max(max_turgor, shells[i].get_turgor());
-    }
-
-    std::cout << "FORCE_FRAC: " << FORCE_FRAC<<std::endl;
-    std::cout << "max_turgor: " << max_turgor<<std::endl;
-    std::cout << "average_area: " << average_area<<std::endl;
-    MIN_FORCE = FORCE_FRAC * max_turgor * average_area;
-
-    if (shells[0].get_number_vertices() == 1)
-    {
-        MIN_FORCE = 1e-12;
-    }
-
-    Shell::FORCE_FRAC   = FORCE_FRAC;
-    Shell::MIN_FORCE    = MIN_FORCE;
-
-    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE) << " [units?]\n";
+//    simulator_logs << utils::LogLevel::FINE  << "MIN_FORCE = "  << sqrt(MIN_FORCE) << " [units?]\n";
 }
 
 bool Simulator::check_min_force()
 {
     int MAX_ITER = 10000;
-    double max_force = 0.0;
-    for (uint i = 0; i < forces.size(); i++)
+    double total_force = 0.0;
+    double fx, fy, fz;
+    
+    for (int i = 0; i < get_total_vertices(); i++)
     {
-        max_force = std::max(abs(forces[i]), max_force);
-        if (abs(forces[i]) > MIN_FORCE)
-        {
-            return true;
-        }
+        fx = forces[3 * i + 0];
+        fy = forces[3 * i + 1];
+        fz = forces[3 * i + 2];
+        total_force += sqrt(fx*fx + fy*fy + fz*fz);
+        //max_force = std::max(abs(forces[i]), max_force);
+        //if (abs(forces[i]) > MIN_FORCE)
+        //{
+        //    return true;
+        //}
     }
     
-    //if (max_force > MIN_FORCE)
-    //{
-    //    std::cout << "max force: " << max_force << " min force: " << MIN_FORCE  << std::endl;
-    //    return true;
-    //}
+    total_force /= get_total_vertices();
+    if (total_force > MIN_FORCE)
+    {
+        return true;
+    }
     
-    //simulator_logs << "MAXIMUM FORCE=" << max_force << "\n";
     if (Integrator::get_iter_num() > MAX_ITER)
     {
         simulator_logs << utils::LogLevel::FINE << "MAXIMUM NUMBER OF ITERATIONS >>";
         simulator_logs << MAX_ITER;
         simulator_logs << "<< HAS BEEN REACHED! ";
-        simulator_logs << "MAXIMUM FORCE=" << max_force << "\n";
+        simulator_logs << "MAXIMUM FORCE=" << total_force << "\n";
         
         return false;
     }

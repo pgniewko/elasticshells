@@ -51,6 +51,7 @@ struct params_t
     double ddp;
     double r_vertex;
     bool const_volume;
+    double min_force;
 };
 
 class Integrator;
@@ -87,7 +88,7 @@ class Simulator
         double get_length_scale(double = 0.0);
 
         void recalculate_mass_centers();
-        void set_min_force();
+        void set_min_force(double);
         bool check_min_force();
         bool check_const_volume();
 
@@ -141,7 +142,7 @@ class Simulator
 
         ForcesCalculator fc;
         double MIN_FORCE = 0.0;
-        double FORCE_FRAC = 0.0001;
+        //double FORCE_FRAC = 0.0001;
         bool info_not_printed = true;
 
         static utils::Logger simulator_logs;

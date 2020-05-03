@@ -63,11 +63,11 @@ void Integrator::fire_integrator(Simulator* s)
     double a_start = 0.1;
     double f_a = 0.99;
 
-    // CALC P PARAMETER
     double fv = 0.0;
     double vv = 0.0;
     double ff = 0.0;
 
+    double fx, fy, fz;
     for (uint i = 0; i < n; i++)
     {
         fv += s->forces[i] * vel[i];
@@ -75,28 +75,14 @@ void Integrator::fire_integrator(Simulator* s)
         ff += s->forces[i] * s->forces[i];
     }
 
-    //double v_len, f_len;
-    //double vx, vy, vz;
-    //double fx, fy, fz;
-
     for (uint i = 0; i < n; i += 3)
     {
-        //vx = vel[i + 0];
-        //vy = vel[i + 1];
-        //vz = vel[i + 2];
-        //fx = s->forces[i + 0];
-        //fy = s->forces[i + 1];
-        //fz = s->forces[i + 2];
-        //v_len = fastmath::fast_sqrt(vx * vx + vy * vy + vz * vz);
-        //f_len = fastmath::fast_sqrt(fx * fx + fy * fy + fz * fz);
-
+        fx = s->forces[i + 0];
+        fy = s->forces[i + 1];
+        fz = s->forces[i + 2];
         vel[i + 0] *= (1 - FIRE_ALPHA);
         vel[i + 1] *= (1 - FIRE_ALPHA);
         vel[i + 2] *= (1 - FIRE_ALPHA);
-
-        //vel[i + 0] += FIRE_ALPHA * v_len * fx / f_len;
-        //vel[i + 1] += FIRE_ALPHA * v_len * fy / f_len;
-        //vel[i + 2] += FIRE_ALPHA * v_len * fz / f_len;
         vel[i + 0] += FIRE_ALPHA * sqrt(vv) * fx / sqrt(ff);
         vel[i + 1] += FIRE_ALPHA * sqrt(vv) * fy / sqrt(ff);
         vel[i + 2] += FIRE_ALPHA * sqrt(vv) * fz / sqrt(ff);

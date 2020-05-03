@@ -64,6 +64,7 @@ struct arguments
     //int nb_flag;
 
     unsigned long seed;
+    double min_force;
 };
 
 #endif	/* ARGUMENTS_H */

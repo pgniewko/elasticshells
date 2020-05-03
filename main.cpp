@@ -72,6 +72,7 @@ static struct argp_option options[] =
     {"nu",        514, "FLOAT", 0, "Shell and box Poisson's ratio (the same for box and shell) [default: 0.5]"},
     {"th",        515, "FLOAT", 0, "Shell-wall thickness [UNIT=1 micron]  [default: 0.1]"},
     {"vol-f",     517,       0, 0, "Constant volume flag [default: false]"},
+    {"min-force", 518, "FLOAT", 0, "Minimum force"},
 
     {0,             0,       0, 0, "Box options:", 6},
     {"bsx",       601, "FLOAT", 0, "X Box size [default: 10.0]"},
@@ -137,6 +138,7 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->analyze = false;
             arguments->jam = false;
             arguments->seed = 0x123;
+            arguments->min_force = 1e-6;
             break;
 
         case 'q':
@@ -244,19 +246,19 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
 
         case 506:
-            arguments->r_vertex = arg ?  strtod (arg, NULL) : 0.25;
+            arguments->r_vertex = arg ? strtod (arg, NULL) : 0.25;
             break;
 
         case 512:
-            arguments->ddp = arg ?  strtod (arg, NULL) : 0.0;
+            arguments->ddp = arg ? strtod (arg, NULL) : 0.0;
             break;
 
         case 513:
-            arguments->eps = arg ?  strtod (arg, NULL) : 0.0;
+            arguments->eps = arg ? strtod (arg, NULL) : 0.0;
             break;
 
         case 514:
-            arguments->nu = arg ?  strtod (arg, NULL) : 0.5;
+            arguments->nu = arg ? strtod (arg, NULL) : 0.5;
             break;
 
         case 515:
@@ -266,13 +268,17 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
         case 517:
             arguments->const_volume = true;
             break;
+            
+        case 518:
+            arguments->min_force = arg ? strtod (arg, NULL) : 1e-6;
+            break;
 
         case 601:
-            arguments->bsx = arg ?  strtod (arg, NULL) : 10.0;
+            arguments->bsx = arg ? strtod (arg, NULL) : 10.0;
             break;
 
         case 602:
-            arguments->bsy = arg ?  strtod (arg, NULL) : 10.0;
+            arguments->bsy = arg ? strtod (arg, NULL) : 10.0;
             break;
 
         case 603:
