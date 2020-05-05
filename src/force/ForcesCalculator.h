@@ -15,7 +15,7 @@ class ForcesCalculator
 {
     public:
         ForcesCalculator();
-        ForcesCalculator(int, bool, bool);
+        ForcesCalculator(int, bool, bool, bool);
         ForcesCalculator(const ForcesCalculator& orig);
         virtual ~ForcesCalculator();
 
@@ -46,6 +46,7 @@ class ForcesCalculator
         bool pbc;
         bool bending;
         domain_list_t dl;
+        bool ellipsoid;
 
 
 

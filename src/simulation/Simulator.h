@@ -53,6 +53,16 @@ struct params_t
     bool const_volume;
 };
 
+
+struct ellipsoid_t
+{
+    bool ellipsoid;
+    double a;
+    double b;
+    double c;
+    double n_verts;
+};
+
 class Integrator;
 
 class Simulator
@@ -78,7 +88,7 @@ class Simulator
         void log_params();
 
         void push_shell(const Shell&);
-        void add_shell(double);
+        void add_shell(double, bool=false);
 
         void calculate_forces();
         void integrate();
@@ -110,7 +120,8 @@ class Simulator
         int number_of_shells;
         std::string triangulator;
         params_t params;
-
+        
+        
         std::vector<Shell> shells;
         std::vector<double> xyz;
         std::vector<double> forces;
@@ -149,6 +160,8 @@ class Simulator
         static unsigned long FORCE_EVALUATION_COUTER;
 
         static bool RESTART_FLAG;
+        
+        ellipsoid_t e_param;
 };
 
 #endif	/* SIMULATOR_H */

@@ -24,9 +24,9 @@ std::list<Triangle> RandomTriangulation::triangulate(double r0)
     double* xyz = new double[3 * n_];
     int* ltri = new int[nrow * 2 * (n_ - 2)];
 
-    generate_random_points(n_, xyz, n_steps, n_anneals, T_min, T_max, r_vertex);
+    generate_random_points(n_, xyz, n_steps, n_anneals, T_min, T_max, r_vertex, 1, 1, 1);
     
-    traingulate_points(n_, xyz, ltri);
+    traingulate_points(n_, xyz, ltri, 1, 1, 1);
     
     
 
@@ -54,6 +54,49 @@ std::list<Triangle> RandomTriangulation::triangulate(double r0)
         i->b.set_length(r0);
         i->c.set_length(r0);
     }
+
+    delete[] xyz;
+    delete[] ltri;
+
+    return tris;
+}
+
+std::list<Triangle> RandomTriangulation::triangulate(double a, double b, double c, int n_)
+{   
+    double ab = pow(a*b, 1.6);
+    double ac = pow(a*c, 1.6) ;
+    double bc = pow(b*c, 1.6);
+    double area = 4. * pow((ab + ac + bc) / 3., 1./1.6); // skipping Pi
+    
+    double rv = 3.0 * sqrt(area/n_); // time three for a good measure
+    
+    int nrow = 6;
+    
+    double* xyz = new double[3 * n_];
+    int* ltri = new int[nrow * 2 * (n_ - 2)];
+
+    generate_random_points(n_, xyz, n_steps, n_anneals, T_min, T_max, rv, a, b, c);
+    
+    traingulate_points(n_, xyz, ltri, a, b, c);
+
+    int v1_idx;
+    int v2_idx;
+    int v3_idx;
+
+    
+    for (int i = 0; i < 2 * (n_ - 2); i++)
+    {
+        v1_idx = ltri[nrow * i + 0] - 1;
+        v2_idx = ltri[nrow * i + 1] - 1;
+        v3_idx = ltri[nrow * i + 2] - 1;
+
+        Vector3D va = Vector3D(xyz[3 * v1_idx + 0], xyz[3 * v1_idx + 1], xyz[3 * v1_idx + 2]);
+        Vector3D vb = Vector3D(xyz[3 * v2_idx + 0], xyz[3 * v2_idx + 1], xyz[3 * v2_idx + 2]);
+        Vector3D vc = Vector3D(xyz[3 * v3_idx + 0], xyz[3 * v3_idx + 1], xyz[3 * v3_idx + 2]);
+
+        tris.push_back( Triangle(va, vb, vc) );
+    }
+    
 
     delete[] xyz;
     delete[] ltri;

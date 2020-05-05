@@ -8,6 +8,7 @@ struct element
     double L2[3];
     double ki[3];
     double ci[3];
+    int sign;
 };
 
 struct hinge

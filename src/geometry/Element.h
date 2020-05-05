@@ -22,15 +22,20 @@ class Element
         int get_id() const;
         double area(const std::vector<Vertex>&) const;
         double area(const std::vector<Vertex>&, const Vector3D, double) const;
+        
 
         Vector3D normal(const std::vector<Vertex>&) const;
+        Vector3D centroid(const std::vector<Vertex>&) const;
 
         void set_params(const std::vector<Vertex>&, const double, const double, const double);
-
+        void set_sign(int sign_) {sign = sign_;}
+        const int get_sign() {return sign;}
+        
         int ia = -1;
         int ib = -1;
         int ic = -1;
         int my_id = -1;
+        int sign;
 
         friend std::ostream& operator<< (std::ostream&, const Element&);
 
@@ -39,12 +44,12 @@ class Element
         void set_an(const std::vector<Vertex>&);
         void set_ki(const std::vector<Vertex>&, const double&, const double&, const double&);
         void set_ci(const std::vector<Vertex>&, const double&, const double&, const double&);
+        
 
         double an[3];
         double L2[3];
         double ki[3];
         double ci[3];
-
 };
 
 #endif	/* VERTEXTRIANGLE_H */

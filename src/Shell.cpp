@@ -34,7 +34,7 @@ Shell::Shell(int nv, int nt, int nh)
     number_h = nh;
 }
 
-Shell::Shell(std::list<Triangle> tris) : shell_id(-1),
+Shell::Shell(std::list<Triangle> tris, bool ellipsoid) : shell_id(-1),
     number_v(0),
     number_t(0),
     number_h(0),
@@ -45,7 +45,9 @@ Shell::Shell(std::list<Triangle> tris) : shell_id(-1),
     Tinker::construct_elements(*this, tris);
     Tinker::construct_topology(*this);
     Tinker::construct_hinges(*this);
-    random_rotate();
+    if (!ellipsoid){
+        random_rotate();
+    }
 }
 
 Shell::Shell(const Shell& orig) : center_of_mass(orig.center_of_mass),
@@ -106,23 +108,25 @@ double Shell::calc_volume(double eps) const
 void Shell::calc_cm()
 {
     Vector3D tmp(0.0, 0.0, 0.0);
-    double mass = 0.0;
+//    center_of_mass *= 0.0;
+//    double mass = 0.0;
 
     for (int i = 0; i < number_v; i++)
     {
-        tmp += vertices[i].r_c;
-        mass += 1.0;
+        center_of_mass += vertices[i].r_c;
+//        mass += 1.0;
     }
 
-    if (mass > 0.0)
-    {
-        tmp /= mass;
-        center_of_mass = tmp;
-    }
-    else
-    {
-        // REPORT PROBLEM
-    }
+    center_of_mass = tmp / number_v;
+//    if (mass > 0.0)
+//    {
+//        tmp /= mass;
+//        center_of_mass = tmp;
+//    }
+//    else
+//    {
+//        // REPORT PROBLEM
+//    }
 }
 
 void Shell::set_hinges(double E, double t, double nu_)
@@ -195,6 +199,22 @@ void Shell::set_elements_parameters(double E, double t, double nu_)
     for (int i = 0; i < number_t; i++)
     {
         triangles[i].set_params(vertices, E, nu_, t);
+    }
+    
+    for (int i = 0; i < number_t; i++)
+    {
+        Vector3D centroid = triangles[i].centroid(vertices);
+        Vector3D normal = triangles[i].normal(vertices);
+        
+        double dot_prod = dot(centroid - center_of_mass, normal);
+        if (dot_prod > 0)
+        {
+            triangles[i].set_sign(1);
+        }
+        else if (dot_prod < 0)
+        {
+            triangles[i].set_sign(-1);
+        }
     }
 }
 

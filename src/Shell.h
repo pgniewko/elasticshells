@@ -37,7 +37,7 @@ class Shell
 
         Shell();
         Shell(int, int, int);
-        Shell(std::list<Triangle>);
+        Shell(std::list<Triangle>, bool=false);
         Shell(const Shell& orig);
         virtual ~Shell();
         double calc_volume(double = 0.0) const;

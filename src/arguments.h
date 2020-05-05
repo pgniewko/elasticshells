@@ -3,12 +3,9 @@
 
 struct arguments
 {
-    //std::string render_file;            /* file arg to ‘--output’ */
     std::string traj_file;
     std::string box_file;
     std::string output_file;
-    //std::string surface_file;
-    //std::string stress_file;
     std::string topology_file;
     std::string lf_file;
 
@@ -25,8 +22,6 @@ struct arguments
     char* tritype;
 
     int d;
-    //int log_step;
-    //int box_step;
     int n_shells;
     int nsteps;
     int platotype;
@@ -39,7 +34,6 @@ struct arguments
     double dp;
     double ddp;
     double eps;
-    //double ttime;
     double r_vertex;                   /* vertex radius */
     double init_radius1;
     double init_radius2;
@@ -54,18 +48,22 @@ struct arguments
     double bsye;
     double bsze;
     bool pbc;
-    //bool draw_box;
     bool osmotic_flag;
     bool bending;
     bool const_volume;
     bool restart;
     bool analyze;
     bool jam;
-    //int nb_flag;
 
     unsigned long seed;
     double min_force;
     int max_iter;
+    
+    bool ellipsoid;
+    double rx;
+    double ry;
+    double rz;
+    int n_verts;
 };
 
 #endif	/* ARGUMENTS_H */

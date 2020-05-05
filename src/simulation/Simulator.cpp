@@ -62,7 +62,25 @@ Simulator::Simulator(const arguments& args) : number_of_shells(0), box(0, 0, 0),
 
     set_min_force(args.min_force);
     set_max_iter(args.max_iter);
-    fc = ForcesCalculator(estimate_m(), args.pbc, args.bending);
+    fc = ForcesCalculator(estimate_m(), args.pbc, args.bending, args.ellipsoid);
+    
+    e_param.ellipsoid = args.ellipsoid;
+    e_param.a = args.rx;
+    e_param.b = args.ry;
+    e_param.c = args.rz;
+    e_param.n_verts = args.n_verts;
+    
+    //RESETTING rv;
+    if (e_param.ellipsoid)
+    {
+        double ab = pow(e_param.a*e_param.a, 1.6);
+        double ac = pow(e_param.a*e_param.c, 1.6) ;
+        double bc = pow(e_param.b*e_param.c, 1.6);
+        double area = 4. * pow((ab + ac + bc) / 3., 1./1.6);
+    
+        double rv = sqrt(area / e_param.n_verts);
+        params.r_vertex = rv;
+    }
 }
 
 Simulator::~Simulator()
@@ -117,6 +135,9 @@ void Simulator::diagnose_params(arguments args)
     if (args.r_vertex <= 0)
         throw DataException("Vertex radius must be larger than 0! \n!"
                             "Simulation will terminate with exit(1)!\n");
+    
+    if (args.ellipsoid && args.n_shells != 1)
+        throw DataException("Ellipsoid simulation for n_sells=1 ONLY!\n");
 
 }
 
@@ -192,12 +213,12 @@ void Simulator::init_shells(int N, double r_min, double r_max, bool jam)
 
         if (flag)
         {
-            add_shell(r0);
+            add_shell(r0, e_param.ellipsoid);
             shift_shell(shift, number_of_shells - 1);
         }
     }
 
-    if (jam)
+    if (jam && !e_param.ellipsoid)
     {
         simulator_logs << utils::LogLevel::INFO  << "SIMULATION STARTS FROM THE JAMMED PACKING\n";
 
@@ -245,7 +266,7 @@ void Simulator::push_shell(const Shell& newShell)
     }
 }
 
-void Simulator::add_shell(double r0)
+void Simulator::add_shell(double r0, bool ellipsoid)
 {
     try
     {
@@ -266,10 +287,18 @@ void Simulator::add_shell(double r0)
         {
             // IF ellipsoid and running with cutom n_vertex, adjust r_vertex
             RandomTriangulation rnd(10, 100, 0.1, 1000.0, params.r_vertex);
-            tris = rnd.triangulate(r0);
+            if (e_param.ellipsoid)
+            {
+                tris = rnd.triangulate(e_param.a, e_param.b, e_param.c, e_param.n_verts);
+            }
+            else
+            {
+                tris = rnd.triangulate(r0);
+            }
         }
 
-        Shell new_shell(tris);
+        Shell new_shell(tris, ellipsoid);
+        new_shell.calc_cm();
         new_shell.set_vertex_size(params.r_vertex);
         new_shell.set_shell_id(number_of_shells);
         new_shell.set_r0(r0);
@@ -585,6 +614,7 @@ bool Simulator::check_min_force()
     total_force /= get_total_vertices();
     if (total_force > MIN_FORCE)
     {
+//        std::cout << "total_force=" << total_force << " MIN_FORCE="<< MIN_FORCE << std::endl;
         return true;
     }
     
@@ -805,6 +835,8 @@ void Simulator::create_shells_image()
             el_.ci[1] = shells[i].triangles[j].ci[1];
             el_.ci[2] = shells[i].triangles[j].ci[2];
 
+            el_.sign = shells[i].triangles[j].get_sign();
+            
             elements.push_back(el_);
 
             object_map vm(i, j);
@@ -888,7 +920,6 @@ void Simulator::copy_shells_data()
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        //simulator_logs << utils::LogLevel::WARNING << "shells[i].get_turgor()" << shells[i].get_turgor() << "\n";
         turgors[i] = shells[i].get_turgor();
     }
 

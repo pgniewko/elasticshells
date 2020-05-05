@@ -75,6 +75,14 @@ static struct argp_option options[] =
     {"min-force", 518, "FLOAT", 0, "Minimum force"},
     {"max-iter",  519,  "INT",  0, "Maximum number of iterations per minimization step"},
 
+    {0,             0,       0, 0, "Ellipsoid options:", 7},
+    {"ellipsoid", 701,          0,  0, "Is it an ellipsoid run"},
+    {"rx",        702, "FLOAT", 0, "rx [default: 1.0]"},
+    {"ry",        703, "FLOAT", 0, "ry [default: 1.0]"},
+    {"rz",        704, "FLOAT", 0, "rz [default: 1.0]"},
+    {"nv",        705,  "INT",  0, "Number of vertices [default: 1000]"},
+    
+    
     {0,             0,       0, 0, "Box options:", 6},
     {"bsx",       601, "FLOAT", 0, "X Box size [default: 10.0]"},
     {"bsy",       602, "FLOAT", 0, "Y Box size [default: 10.0]"},
@@ -85,7 +93,7 @@ static struct argp_option options[] =
     {"bsxe",      607, "FLOAT", 0, "X end of Box size [default: 10.0]"},
     {"bsye",      608, "FLOAT", 0, "Y end of Box size [default: 10.0]"},
     {"bsze",      609, "FLOAT", 0, "Z end of Box size [default: 10.0]"},
-    {0}
+    {0},
 };
 
 
@@ -141,6 +149,11 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             arguments->seed = 0x123;
             arguments->min_force = 1e-6;
             arguments->max_iter = 10000;
+            arguments-> ellipsoid = false;
+            arguments->rx = 1.0;
+            arguments->ry = 1.0;
+            arguments->rz = 1.0;
+            arguments->n_verts = 1000;
             break;
 
         case 'q':
@@ -287,32 +300,49 @@ static int parse_opt (int key, char* arg, struct argp_state* state)
             break;
 
         case 603:
-            arguments->bsz = arg ?  strtod (arg, NULL) : 10.0;
+            arguments->bsz = arg ? strtod (arg, NULL) : 10.0;
             break;
 
         case 604:
-            arguments->bsdx = arg ?  strtod (arg, NULL) : 0.0;
+            arguments->bsdx = arg ? strtod (arg, NULL) : 0.0;
             break;
 
         case 605:
-            arguments->bsdy = arg ?  strtod (arg, NULL) : 0.0;
+            arguments->bsdy = arg ? strtod (arg, NULL) : 0.0;
             break;
 
         case 606:
-            arguments->bsdz = arg ?  strtod (arg, NULL) : 0.0;
+            arguments->bsdz = arg ? strtod (arg, NULL) : 0.0;
             break;
 
         case 607:
-            arguments->bsxe = arg ?  strtod (arg, NULL) : 10.0;
+            arguments->bsxe = arg ? strtod (arg, NULL) : 10.0;
             break;
 
         case 608:
-            arguments->bsye = arg ?  strtod (arg, NULL) : 10.0;
+            arguments->bsye = arg ? strtod (arg, NULL) : 10.0;
             break;
 
         case 609:
-            arguments->bsze = arg ?  strtod (arg, NULL) : 10.0;
+            arguments->bsze = arg ? strtod (arg, NULL) : 10.0;
             break;
+            
+        case 701:   
+            arguments->ellipsoid = true;
+            break;
+        case 702:   
+            arguments->rx = arg ? strtod (arg, NULL) : 1.0;
+            break;
+        case 703:   
+            arguments->ry = arg ? strtod (arg, NULL) : 1.0;
+            break;
+        case 704:   
+            arguments->rz = arg ? strtod (arg, NULL) : 1.0;
+            break;
+        case 705:
+            arguments->n_verts = arg ? atoi (arg) : 1000;
+            break;
+           
             
         case ARGP_KEY_ARG:
             arguments->strings = &state->argv[state->next];

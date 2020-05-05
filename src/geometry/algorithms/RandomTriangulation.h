@@ -3,9 +3,11 @@
 
 #include <rndmesh.h>
 #include <iostream>    /* cout, cin */
+#include <math.h>
 
 #include "Environment.h"
 #include "Triangulation.h"
+
 
 class RandomTriangulation : public Triangulation
 {
@@ -16,6 +18,7 @@ class RandomTriangulation : public Triangulation
 
         std::list<Triangle> triangulate();
         std::list<Triangle> triangulate(double);
+        std::list<Triangle> triangulate(double, double, double, int);
 
     private:
 

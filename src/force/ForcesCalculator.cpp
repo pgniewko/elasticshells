@@ -1,14 +1,15 @@
 #include "ForcesCalculator.h"
 
-ForcesCalculator::ForcesCalculator() : m(0), pbc(false), bending(false), dl(1, false) {}
+ForcesCalculator::ForcesCalculator() : m(0), pbc(false), bending(false), dl(1, false), ellipsoid(false) {}
 
-ForcesCalculator::ForcesCalculator(int m_, bool pbc_, bool bend) : m(m_), pbc(pbc_), bending(bend), dl(m_, pbc_)
+ForcesCalculator::ForcesCalculator(int m_, bool pbc_, bool bend, bool ellipsoid_) : 
+m(m_), pbc(pbc_), bending(bend), dl(m_, pbc_), ellipsoid(ellipsoid_)
 {
 }
 
-ForcesCalculator::ForcesCalculator(const ForcesCalculator& orig) : m(orig.m), pbc(orig.pbc), bending(orig.bending), dl(orig.m, orig.pbc)
-{
-}
+ForcesCalculator::ForcesCalculator(const ForcesCalculator& orig) : 
+m(orig.m), pbc(orig.pbc), bending(orig.bending), dl(orig.m, orig.pbc), ellipsoid(orig.ellipsoid) 
+{}
 
 ForcesCalculator::~ForcesCalculator()
 {
@@ -56,11 +57,14 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
     // PRESSURE FORCES
     evaluate_pressure(xyz, forces, elements, vs_map, turgors, num_shells);
 
-    // END WITH NON-BONDED
-    evaluate_nonbonded(xyz, forces, graph_, rv, E, nu);
-
-    // CALCULATE BOX FORCES
-    evaluate_box(xyz, forces, rv, E, nu,  Eb, nub);
+    if (!ellipsoid)
+    {
+        // END WITH NON-BONDED
+        evaluate_nonbonded(xyz, forces, graph_, rv, E, nu);
+    
+        // CALCULATE BOX FORCES
+        evaluate_box(xyz, forces, rv, E, nu,  Eb, nub);
+    }
 
 }
 
@@ -277,11 +281,6 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         vertex_counter[cell_id]++;
     }
 
-    for (uint i = 0; i < cms.size(); i++)
-    {
-        cms[i] /= vertex_counter[i];
-    }
-
     double x1, y1, z1;
     double x2, y2, z2;
     double x3, y3, z3;
@@ -331,6 +330,18 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         Vector3D fa = turgor * calculate_dV(va, vb, vc, cm);
         Vector3D fb = turgor * calculate_dV(vb, vc, va, cm);
         Vector3D fc = turgor * calculate_dV(vc, va, vb, cm);
+        
+//        if (fa.length() > 0.1){
+//           std::cout << "el.ia=" << el.ia <<" el.ib="<< el.ia << " el.ic=" << el.ia << " fa=" << fa << std::endl; 
+//        }
+//        
+//        if (fb.length() > 0.1){
+//           std::cout << "el.ia=" << el.ia <<" el.ib="<< el.ia << " el.ic=" << el.ia << " fb=" << fb << std::endl; 
+//        }
+//        
+//        if (fc.length() > 0.1){
+//           std::cout << "el.ia=" << el.ia <<" el.ib="<< el.ia << " el.ic=" << el.ia << " fc=" << fc << std::endl; 
+//        }
         
         forces[3 * vert_a + 0] += fa.x;
         forces[3 * vert_a + 1] += fa.y;

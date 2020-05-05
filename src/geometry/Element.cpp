@@ -10,7 +10,7 @@ Element::Element() : Element(-1, -1, -1)
 {
 }
 
-Element::Element(int a, int b, int c) : ia(a), ib(b), ic(c), my_id(-1)
+Element::Element(int a, int b, int c) : ia(a), ib(b), ic(c), my_id(-1), sign(0)
 {
     for (int i = 0; i < 3; i++)
     {
@@ -22,9 +22,10 @@ Element::Element(int a, int b, int c) : ia(a), ib(b), ic(c), my_id(-1)
 }
 
 Element::Element(const Element& orig) : ia(orig.ia),
-    ib(orig.ib),
-    ic(orig.ic),
-    my_id(orig.my_id)
+        ib(orig.ib),
+        ic(orig.ic),
+        my_id(orig.my_id),
+        sign(orig.sign)
 {
     for (int i = 0; i < 3; i++)
     {
@@ -96,6 +97,17 @@ Vector3D Element::normal(const std::vector<Vertex>& vs) const
     Vector3D normal = t.normal();
     return normal;
 }
+
+Vector3D Element::centroid(const std::vector<Vertex>& vs) const
+{
+    Vector3D ta = vs[ia].r_c;
+    Vector3D tb = vs[ib].r_c;
+    Vector3D tc = vs[ic].r_c;
+    
+    Vector3D centroid = (ta + tb + tc) / 3.0;
+    return centroid;
+}
+
 
 void Element::set_l2(const std::vector<Vertex>& vs)
 {
