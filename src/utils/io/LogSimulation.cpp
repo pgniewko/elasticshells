@@ -149,6 +149,7 @@ void LogSimulation::print_header()
     fflush(os);
 }
 
+//TODO: column are multiple spaces. 
 void LogSimulation::dump_state(const Box& box, const std::vector<Shell>& shells)
 {
     for (std::vector<Observer*>::iterator it = observers.begin(); it != observers.end(); ++it)
