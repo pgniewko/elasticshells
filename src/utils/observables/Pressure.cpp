@@ -8,11 +8,6 @@ Pressure::Pressure(const Pressure& orig) : Observer(orig) {}
 
 Pressure::~Pressure() {}
 
-void Pressure::set_params(const int num, std::vector<std::string> args_)
-{
-    d_param = strtod(args_[ num + 0 ].c_str(), NULL);
-}
-
 double Pressure::observe(const Box& box, const std::vector<Shell>& shells)
 {    
     double pressure = 0.0;
@@ -25,7 +20,7 @@ double Pressure::observe(const Box& box, const std::vector<Shell>& shells)
     }
 
     double totalForce = total_force(box, shells);
-    double area = box.get_area(d_param);
+    double area = box.get_area(params[0]);
     pressure = totalForce / area;
 
     return pressure;
@@ -93,7 +88,6 @@ double Pressure::total_force(const Box& box, const std::vector<Shell>& shells)
         if (h > 0)
         {
             tot_force += constants::d4_3 * e_eff * pow(rv, 0.5) * pow(h, 1.5);
-            //force_collector += fmagn * (djk / djk.length());
         }
 
         //////////////
@@ -112,7 +106,6 @@ double Pressure::total_force(const Box& box, const std::vector<Shell>& shells)
         if (h > 0)
         {
             tot_force += constants::d4_3 * e_eff * pow(rv, 0.5) * pow(h, 1.5);
-            //force_collector += fmagn * (djk / djk.length());
         }
 
         //////////////
@@ -131,16 +124,8 @@ double Pressure::total_force(const Box& box, const std::vector<Shell>& shells)
         if (h > 0)
         {
             tot_force += constants::d4_3 * e_eff * pow(rv, 0.5) * pow(h, 1.5);
-            //force_collector += fmagn * (djk / djk.length());
         }
-
-        //tot_force += force_collector.length();
-
-        //forces[3 * i + 0] += force_collector.x;
-        //forces[3 * i + 1] += force_collector.y;
-        //forces[3 * i + 2] += force_collector.z;
     }
-
     return tot_force;
 }
 

@@ -12,7 +12,6 @@ class Tensorial : public Observer
         Tensorial(const Tensorial& orig);
         virtual ~Tensorial();
 
-        void set_params(const int, std::vector<std::string>);
         double observe(const Box&, const std::vector<Shell>&);
 
     private:

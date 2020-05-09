@@ -6,11 +6,6 @@ Elongation::Elongation(const Elongation& orig) : Observer(orig) {}
 
 Elongation::~Elongation() {}
 
-void Elongation::set_params(const int num, std::vector<std::string> args_)
-{
-    return;
-};
-
 double Elongation::observe(const Box& box, const std::vector<Shell>& shells)
 {
     double min_r = 1000000.0;

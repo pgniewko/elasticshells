@@ -6,18 +6,13 @@ ShellsVolume::ShellsVolume(const ShellsVolume& orig) : Observer(orig) {}
 
 ShellsVolume::~ShellsVolume() {}
 
-void ShellsVolume::set_params(const int num, std::vector<std::string> args_)
-{
-    d_param = strtod(args_[ num + 0 ].c_str(), NULL);
-}
-
 double ShellsVolume::observe(const Box& box, const std::vector<Shell>& shells)
 {
     double shellsvolume = 0.0;
 
     for (uint i = 0; i < shells.size(); i++)
     {
-        shellsvolume += shells[i].calc_volume(d_param);
+        shellsvolume += shells[i].calc_volume(params[0]);
     }
 
     if (shells[0].get_number_vertices() == 1)

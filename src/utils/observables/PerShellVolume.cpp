@@ -6,26 +6,12 @@ PerShellVolume::PerShellVolume(const PerShellVolume& orig) : Observer(orig) {}
 
 PerShellVolume::~PerShellVolume() {}
 
-void PerShellVolume::set_params(const int num, std::vector<std::string> args_)
-{
-    i_param = atoi(args_[ num + 0 ].c_str());
-    d_param = strtod(args_[ num + 1 ].c_str(), NULL);
-}
-
-/**
- * Return the i_param-th shell's corrected volume.
- * 
- * @param box
- * @param shells
- * @return 
- */
 double PerShellVolume::observe(const Box& box, const std::vector<Shell>& shells)
 {
-    if ((uint)i_param < shells.size())
+    if ((uint)params[0] < shells.size())
     {
-        return shells[i_param].calc_volume(d_param);
+        return shells[params[0]].calc_volume(params[0]);
     }
-    
     return -1;
 }
 

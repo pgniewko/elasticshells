@@ -6,11 +6,6 @@ Tensorial::Tensorial(const Tensorial& orig) : Observer(orig) {}
 
 Tensorial::~Tensorial() {}
 
-void Tensorial::set_params(const int num, std::vector<std::string> args_)
-{
-    i_param = atoi(args_[ num + 0 ].c_str());
-};
-
 double Tensorial::observe(const Box& box, const std::vector<Shell>& shells)
 {
     double Ob = 0.0;
@@ -72,19 +67,19 @@ double Tensorial::observe(const Box& box, const std::vector<Shell>& shells)
 
         ev2 = d[0] + d[1] + d[2] - ev1 - ev3;
 
-        if (i_param == 0) // RADIUS OF GYRATION
+        if ((int)params[0] == 0) // RADIUS OF GYRATION
         {
             Ob += (ev1 + ev2 + ev3);
         }
-        else if (i_param == 1) // ASPHERICITY
+        else if ((int)params[0] == 1) // ASPHERICITY
         {
             Ob += ( ev1 - 0.5 * (ev2 + ev3) );
         }
-        else if (i_param == 2) // ACYLIDRICITY
+        else if ((int)params[0] == 2) // ACYLIDRICITY
         {
             Ob += ( ev2 - ev3 );
         }
-        else if (i_param == 3) // ASPECT-RATIO
+        else if ((int)params[0] == 3) // ASPECT-RATIO
         {
             if (ev3 > 0)
             {

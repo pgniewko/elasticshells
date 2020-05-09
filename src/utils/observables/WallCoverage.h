@@ -10,7 +10,6 @@ public:
     WallCoverage(const WallCoverage& orig);
     virtual ~WallCoverage();
     
-    void set_params(const int, std::vector<std::string>);
     double observe(const Box&, const std::vector<Shell>&);
     
 private:
@@ -18,8 +17,6 @@ private:
     bool is_in_contact(const Box&, const Shell&, const uint);
     bool is_touching_box(const Box&, const Vector3D&, const double, const double);
     static DerivedRegister<WallCoverage> reg;
-    
-    std::vector<double> d_params;
 };
 
 #endif /* WALLCOVERAGE_H */
