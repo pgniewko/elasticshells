@@ -55,8 +55,8 @@ void ForcesCalculator::calculate_forces(const std::vector<double>& xyz,
 
     // CALCULATE MASS CENTERS
     // PRESSURE FORCES
-    evaluate_pressure(xyz, forces, elements, vs_map, turgors, num_shells);
-
+    evaluate_pressure(xyz, forces, elements, vs_map, turgors);
+    
     if (!ellipsoid)
     {
         // END WITH NON-BONDED
@@ -258,28 +258,9 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         std::vector<double>& forces,
         const std::vector<element>& elements,
         const std::vector<object_map>& vs_map,
-        const std::vector<double>& turgors,
-        const int num_shells) const
+        const std::vector<double>& turgors) const
 {
-//    std::vector<Vector3D> cms;
-//    std::vector<int> vertex_counter;
-
-//    for (int i = 0; i < num_shells; i++)
-//    {
-//        cms.push_back(Vector3D(0, 0, 0));
-//        vertex_counter.push_back(0);
-//    }
-
     int cell_id;
-
-//    for (uint i = 0; i < xyz.size() / 3; i++)
-//    {
-//        cell_id = vs_map[i].shell_id;
-//        cms[cell_id].x += xyz[3 * i + 0];
-//        cms[cell_id].y += xyz[3 * i + 1];
-//        cms[cell_id].z += xyz[3 * i + 2];
-//        vertex_counter[cell_id]++;
-//    }
 
     double x1, y1, z1;
     double x2, y2, z2;
@@ -288,7 +269,6 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
 
     int vert_a, vert_b, vert_c;
     Vector3D va, vb, vc;
-//    Vector3D cm;
     element el;
 
     for (uint i = 0; i < elements.size(); i++)
@@ -301,13 +281,7 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         if (vs_map[vert_a].shell_id == vs_map[vert_b].shell_id && vs_map[vert_a].shell_id == vs_map[vert_c].shell_id)
         {
             cell_id = vs_map[vert_a].shell_id;
-//            cm = cms[cell_id];
         }
-//        else
-//        {
-//            std::cout << "ERROR in evaluate_pressure()" << std::endl;
-//            exit(0);
-//        }
 
         x1 = xyz[3 * vert_a + 0];
         y1 = xyz[3 * vert_a + 1];
@@ -328,11 +302,11 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
         turgor = turgors[cell_id];
         Triangle t = Triangle(va, vb, vc);
         
-        Vector3D pressure_force = el.sign * turgor * t.normal();
+        Vector3D pressure_force = el.sign * turgor * t.normal() * t.area();
         
-        Vector3D fa = pressure_force / 3.0; //turgor * calculate_dV(va, vb, vc, cm);
-        Vector3D fb = pressure_force / 3.0; //turgor * calculate_dV(vb, vc, va, cm);
-        Vector3D fc = pressure_force / 3.0; //turgor * calculate_dV(vc, va, vb, cm);
+        Vector3D fa = pressure_force / 3.0;
+        Vector3D fb = pressure_force / 3.0;
+        Vector3D fc = pressure_force / 3.0;
         
         forces[3 * vert_a + 0] += fa.x;
         forces[3 * vert_a + 1] += fa.y;
@@ -348,17 +322,6 @@ void ForcesCalculator::evaluate_pressure(const std::vector<double>& xyz,
     }
 }
 
-//Vector3D ForcesCalculator::calculate_dV(const Vector3D& va,
-//                                        const Vector3D& vb,
-//                                        const Vector3D& vc,
-//                                        const Vector3D& vd) const
-//{
-//    Vector3D BD = vb - vd;
-//    Vector3D CD = vc - vd;
-//    Vector3D f = cross(BD, CD) / 6;
-//
-//    return f * Tetrahedron::volume_sgn(va, vb, vc, vd);
-//}
 
 void ForcesCalculator::evaluate_nonbonded(const std::vector<double>& xyz,
         std::vector<double>& forces,

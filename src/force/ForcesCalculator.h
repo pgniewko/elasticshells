@@ -62,8 +62,7 @@ class ForcesCalculator
                                std::vector<double>& forces,
                                const std::vector<element>& elements,
                                const std::vector<object_map>& vs_map,
-                               const std::vector<double>& turgors,
-                               const int num_shells) const;
+                               const std::vector<double>& turgors) const;
 
         void evaluate_nonbonded(const std::vector<double>& xyz,
                                 std::vector<double>& forces,
@@ -78,7 +77,6 @@ class ForcesCalculator
         void zero_forces(std::vector<double>& forces) const;
 
         double calculate_theta(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&) const;
-//        Vector3D calculate_dV(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&) const;
         void distance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk) const;
 
         bool is_bonded(int, int, const std::vector<std::vector<int> >&);
