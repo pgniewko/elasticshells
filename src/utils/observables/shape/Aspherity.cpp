@@ -6,11 +6,6 @@ Aspherity::Aspherity(const Aspherity& orig) : Observer(orig) {}
 
 Aspherity::~Aspherity() {}
 
-void Aspherity::set_params(const int num, std::vector<std::string> args_)
-{
-    return;
-};
-
 double Aspherity::observe(const Box& box, const std::vector<Shell>& shells)
 {
     double av_radius = 0.0;

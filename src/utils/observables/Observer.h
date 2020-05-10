@@ -20,7 +20,7 @@ class Observer
         Observer(const Observer& orig);
         virtual ~Observer();
 
-        virtual void set_params(const int, std::vector<std::string>) = 0;
+        void set_params(const int, std::vector<std::string>);
         virtual double observe(const Box&, const std::vector<Shell>&) = 0;
 
         const char* getFormat();
@@ -36,12 +36,10 @@ class Observer
 
         const std::string observer_name;
         const std::string output_format;
-        int i_param;
-        double d_param;
+     
+        std::vector<double> params;
 
         bool image_not_created = true;
-        
-        //bool per_shell_observer = false;
         
         std::vector<double> xyz;
         std::vector<double> forces;

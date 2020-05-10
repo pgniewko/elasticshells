@@ -6,11 +6,6 @@ FeretRatio::FeretRatio(const FeretRatio& orig) : Observer(orig) {}
 
 FeretRatio::~FeretRatio() {}
 
-void FeretRatio::set_params(const int num, std::vector<std::string> args_)
-{
-    return;
-};
-
 double FeretRatio::observe(const Box& box, const std::vector<Shell>& shells)
 {
     double max_d = 0.0;

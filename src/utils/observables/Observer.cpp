@@ -3,14 +3,11 @@
 int Observer::MAX_M = 200;
 
 Observer::Observer(const char* name, const char* format) : observer_name(name), 
-        output_format(format), i_param(0), d_param(0.0) {}
+        output_format(format) {} //, i_param(0), d_param(0.0) {}
 
 Observer::Observer(const Observer& orig) : observer_name(orig.observer_name),
     output_format(orig.output_format),
-    i_param(orig.i_param),
-    d_param(orig.d_param),
-    image_not_created(orig.image_not_created) {}; //, 
-    //per_shell_observer(orig.per_shell_observer) {};
+    image_not_created(orig.image_not_created) {};
 
 Observer::~Observer() {}
 
@@ -23,6 +20,14 @@ const char* Observer::getName()
 {
     return observer_name.c_str();
 }
+
+void Observer::set_params(const int num, std::vector<std::string> args_)
+{
+    for (uint i = 0; i < (args_.size() - num); i++)
+    {
+        params.push_back(strtod(args_[num + i].c_str(), NULL));
+    }
+};
 
 void Observer::create_shells_image(const Box& box, const std::vector<Shell>& shells)
 {

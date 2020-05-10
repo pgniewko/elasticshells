@@ -610,13 +610,7 @@ bool Simulator::check_min_force()
         fz = forces[3 * i + 2];
         total_force += sqrt(fx*fx + fy*fy + fz*fz);
     }
-    
     total_force /= get_total_vertices();
-    if (total_force > MIN_FORCE)
-    {
-//        std::cout << "total_force=" << total_force << " MIN_FORCE="<< MIN_FORCE << std::endl;
-        return true;
-    }
     
     if (Integrator::get_iter_num() > MAX_ITER)
     {
@@ -626,6 +620,11 @@ bool Simulator::check_min_force()
         simulator_logs << "MAXIMUM FORCE=" << total_force << "\n";
         
         return false;
+    }
+    
+    if (total_force > MIN_FORCE)
+    {
+        return true;
     }
 
     simulator_logs << utils::LogLevel::FINE << "MINIMIZATION REACHED AFTER >>"; 

@@ -11,7 +11,6 @@ class IterationObserver : public Observer
         IterationObserver(const IterationObserver& orig);
         virtual ~IterationObserver();
 
-        void set_params(const int, std::vector<std::string>);
         double observe(const Box&, const std::vector<Shell>&);
 
     private:

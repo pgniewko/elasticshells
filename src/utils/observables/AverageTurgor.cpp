@@ -6,11 +6,6 @@ AverageTurgor::AverageTurgor(const AverageTurgor& orig) : Observer(orig) {}
 
 AverageTurgor::~AverageTurgor() {}
 
-void AverageTurgor::set_params(const int num, std::vector<std::string> args_)
-{
-    return;
-};
-
 double AverageTurgor::observe(const Box& box, const std::vector<Shell>& shells)
 {
     uint N = shells.size();

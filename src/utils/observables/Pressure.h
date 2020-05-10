@@ -1,7 +1,6 @@
 #ifndef PRESSURE_H
 #define	PRESSURE_H
 
-//#include "utils/observables/SurfaceForce.h"
 #include "utils/observables/Observer.h"
 #include "utils/Logger.h"
 
@@ -12,7 +11,6 @@ class Pressure : public Observer
         Pressure(const Pressure& orig);
         virtual ~Pressure();
 
-        void set_params(const int, std::vector<std::string>);
         double observe(const Box&, const std::vector<Shell>&);
 
     private:

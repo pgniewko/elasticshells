@@ -6,11 +6,6 @@ PackingQl::PackingQl(const PackingQl& orig) : Observer(orig) {}
 
 PackingQl::~PackingQl() {}
 
-void PackingQl::set_params(const int num, std::vector<std::string> args_)
-{
-    i_param = atoi(args_[ num + 0 ].c_str());
-}
-
 double PackingQl::observe(const Box& box, const std::vector<Shell>& shells)
 {
     if (box.pbc == false)
@@ -72,17 +67,17 @@ double PackingQl::calc_ql(const Box& box, const std::vector<Shell>& shells, unsi
     double yc = ci_cm.y;
     double zc = ci_cm.z;
 
-    qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
-    qlIm = (double*) malloc ((i_param + 1) * sizeof (double));
+    qlRe = (double*) malloc (((int)params[0] + 1) * sizeof (double));
+    qlIm = (double*) malloc (((int)params[0] + 1) * sizeof (double));
 
-    qlm(i_param, nk, xc, yc, zc, x, y, z, qlRe, qlIm);
-    qss = qsum(i_param, qlRe, qlIm);
+    qlm((int)params[0], nk, xc, yc, zc, x, y, z, qlRe, qlIm);
+    qss = qsum((int)params[0], qlRe, qlIm);
 
     double qlval = 0.0;
 
     if (qss > 1e-4)
     {
-        qlval = Ql(i_param, nk, qlRe, qlIm);
+        qlval = Ql((int)params[0], nk, qlRe, qlIm);
     }
 
     free (qlRe);

@@ -6,11 +6,6 @@ Roundness::Roundness(const Roundness& orig) : Observer(orig) {}
 
 Roundness::~Roundness() {}
 
-void Roundness::set_params(const int num, std::vector<std::string> args_)
-{
-    return;
-};
-
 double Roundness::observe(const Box& box, const std::vector<Shell>& shells)
 {
     double V, D, DR, roundness_ = 0.0;

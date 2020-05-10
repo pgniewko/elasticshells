@@ -12,7 +12,6 @@ class FeretRatio : public Observer
         FeretRatio(const FeretRatio& orig);
         virtual ~FeretRatio();
 
-        void set_params(const int, std::vector<std::string>);
         double observe(const Box&, const std::vector<Shell>&);
 
     private:

@@ -12,7 +12,6 @@ class Elongation : public Observer
         Elongation(const Elongation& orig);
         virtual ~Elongation();
 
-        void set_params(const int, std::vector<std::string>);
         double observe(const Box&, const std::vector<Shell>&);
 
     private:

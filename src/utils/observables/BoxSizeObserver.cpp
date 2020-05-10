@@ -6,14 +6,9 @@ BoxSizeObserver::BoxSizeObserver(const BoxSizeObserver& orig) : Observer(orig) {
 
 BoxSizeObserver::~BoxSizeObserver() {}
 
-void BoxSizeObserver::set_params(const int num, std::vector<std::string> args_)
-{
-    i_param = atoi(args_[ num + 0 ].c_str());
-};
-
 double BoxSizeObserver::observe(const Box& box, const std::vector<Shell>& shells)
 {
-    switch (i_param)
+    switch ((int)params[0])
     {
         case 1:
             return box.get_x();

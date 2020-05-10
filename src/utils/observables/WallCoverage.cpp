@@ -6,33 +6,24 @@ WallCoverage::WallCoverage(const WallCoverage& orig) : Observer(orig) {}
 
 WallCoverage::~WallCoverage() {}
 
-void WallCoverage::set_params(const int num, std::vector<std::string> args_)
-{
-//    d_param = strtod(args_[ num + 0 ].c_str(), NULL);
-    for (uint i = 0; i < (args_.size() - num); i++)
-    {
-        d_params.push_back(strtod(args_[ num + i ].c_str(), NULL));
-    }
-};
-
 bool WallCoverage::is_touching_box(const Box& box, const Vector3D& vertex, 
         const double v_r, const double eps=0.0)
 {
     double vx = vertex.x;
     double vy = vertex.y;
     double vz = vertex.z;
-    
+
     double bx = box.get_x() - v_r - eps;
     double by = box.get_y() - v_r - eps;
     double bz = box.get_z() - v_r - eps;
-    
+
     if (vx > bx || vx < -bx)
         return true;
     if (vy > by || vy < -by)
         return true;
     if (vz > bz || vz < -bz)
         return true;
-    
+
     return false;   
 }
 
@@ -64,22 +55,18 @@ double WallCoverage::contact_area(const Box& box, const Shell& shell)
 { 
     uint t_nums = shell.get_number_triangles();
     double cell_wall_contact_area = 0.0;
-    
+
     Vector3D cm = shell.get_cm();
-    
+
     for (uint tid = 0; tid < t_nums; tid++)
     {
         bool iic = is_in_contact(box, shell, tid);
         if (iic)
         {
-            for (uint i = 0; i < d_params.size(); i++)
-            {
-                cell_wall_contact_area += shell.triangles[tid].area(shell.vertices, cm, d_params[i]);
-            }
+            cell_wall_contact_area += shell.triangles[tid].area(shell.vertices, cm, params[0]);
         }
-        
     }
-    //cell_wall_contact_area /= (double)d_params.size();
+
     return cell_wall_contact_area;
 }
 
@@ -91,13 +78,8 @@ double WallCoverage::observe(const Box& box, const std::vector<Shell>& shells)
         return 0.0;
     }
  
-    double box_area = 0.0;
-    for (uint i = 0; i < d_params.size(); i++)
-    {
-        box_area += box.get_area(d_params[i]);
-    }
-    
-    
+    double box_area = box.get_area(params[1]);
+
     uint cells_number = shells.size();
     double coverage = 0.0;
  
@@ -105,7 +87,7 @@ double WallCoverage::observe(const Box& box, const std::vector<Shell>& shells)
     {
         coverage += contact_area(box, shells[i]);
     }
- 
+
     coverage /= box_area;
     return coverage;
 }

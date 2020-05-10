@@ -6,11 +6,6 @@ PackingWl::PackingWl(const PackingWl& orig) : Observer(orig) {}
 
 PackingWl::~PackingWl() {}
 
-void PackingWl::set_params(const int num, std::vector<std::string> args_)
-{
-    i_param = atoi(args_[ num + 0 ].c_str());
-}
-
 double PackingWl::observe(const Box& box, const std::vector<Shell>& shells)
 {
     if (box.pbc == false)
@@ -72,17 +67,17 @@ double PackingWl::calc_wl(const Box& box, const std::vector<Shell>& shells, unsi
     double yc = ci_cm.y;
     double zc = ci_cm.z;
 
-    qlRe = (double*) malloc ((i_param + 1) * sizeof (double));
-    qlIm = (double*) malloc ((i_param + 1) * sizeof (double));
+    qlRe = (double*) malloc (((int)params[0] + 1) * sizeof (double));
+    qlIm = (double*) malloc (((int)params[0] + 1) * sizeof (double));
 
-    qlm(i_param, nk, xc, yc, zc, x, y, z, qlRe, qlIm);
-    qss = qsum(i_param, qlRe, qlIm);
+    qlm((int)params[0], nk, xc, yc, zc, x, y, z, qlRe, qlIm);
+    qss = qsum((int)params[0], qlRe, qlIm);
 
     double wlval = 0.0;
 
     if (qss > 1e-4)
     {
-        wlval = Wl (i_param, qlRe, qlIm) / (qss * qss * qss);
+        wlval = Wl ((int)params[0], qlRe, qlIm) / (qss * qss * qss);
     }
 
     free (qlRe);

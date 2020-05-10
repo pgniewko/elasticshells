@@ -6,11 +6,6 @@ IterationObserver::IterationObserver(const IterationObserver& orig) : Observer(o
 
 IterationObserver::~IterationObserver() {}
 
-void IterationObserver::set_params(const int num, std::vector<std::string> args_)
-{
-    return;
-};
-
 double IterationObserver::observe(const Box& box, const std::vector<Shell>& shells)
 {
     return (double) Integrator::get_total_iter_num();
