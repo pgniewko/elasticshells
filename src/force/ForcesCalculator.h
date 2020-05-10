@@ -78,7 +78,7 @@ class ForcesCalculator
         void zero_forces(std::vector<double>& forces) const;
 
         double calculate_theta(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&) const;
-        Vector3D calculate_dV(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&) const;
+//        Vector3D calculate_dV(const Vector3D&, const Vector3D&, const Vector3D&, const Vector3D&) const;
         void distance(Vector3D& dkj, const Vector3D& vj, const Vector3D& vk) const;
 
         bool is_bonded(int, int, const std::vector<std::vector<int> >&);

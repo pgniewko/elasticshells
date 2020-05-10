@@ -45,8 +45,6 @@ double Triangle::min_angle() const
     double thetaB = std::acos(cosB);
     double thetaC = std::acos(cosC);
 
-    //std::cout << thetaA << " " << thetaB << " " << thetaC << std::endl;
-
     double mintheta = std::numeric_limits<double>::max();
     mintheta = std::min(mintheta, thetaA);
     mintheta = std::min(mintheta, thetaB);
