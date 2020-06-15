@@ -128,6 +128,7 @@ TODO
 2. Add thermal fluctuations and negative internal pressures (to stuck shells buclking) [paper](https://github.com/pgniewko/elasticshells/blob/master/assets/peps/SKB.2020.pdf) [SI](https://github.com/pgniewko/elasticshells/blob/master/assets/peps/SKB.2020-SI.pdf)          
 3. Consider also Oriented Particle Systems ([OPS](https://github.com/pgniewko/elasticshells/blob/master/assets/peps/ST.1992-OPS.pdf)) model         
 4. We could try to simulate this [experiment](https://github.com/pgniewko/elasticshells/blob/master/assets/peps/TDS.2020.pdf).         
+5. For more complex simulations, consider [PyMesh](https://pymesh.readthedocs.io/en/latest/)          
 
 ACKNOWLEDGMENTS
 ===============
